@@ -14,7 +14,7 @@ updated: 2024-11-03 16:33:42
 - Code Emitter：代码块中直接执行代码。
 - Copilot：可自定义模型的 AI 辅助工具。
 - Easy Typing：书写时实时处理文本格式。
-- Excalidraw：绘制各种图，主要很喜欢手绘风格。
+- Enveloppe：将 Obsidian 中的笔记发布为博客文章。
 - [I18N](https://github.com/0011000000110010/obsidian-i18n)：翻译其他 Obsidian 的插件。开启沉浸式翻译模式时也能用其翻译笔记。
 - Linter：格式验证及保存时格式化。
 - Omnisearch：更智能的搜索，可配合浏览器扩展或篡改猴脚本将搜索结果集成到搜索引擎中。
