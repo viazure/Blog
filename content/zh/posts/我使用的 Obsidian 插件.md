@@ -1,7 +1,7 @@
 ---
 title: 我使用的 Obsidian 插件
 date: 2024-11-02 19:58:19
-updated: 2024-12-21 12:22:28
+updated: 2024-12-21 14:15:58
 ---
 
 > 不要迷失在折腾的过程中。
@@ -18,7 +18,7 @@ updated: 2024-12-21 12:22:28
 - Enveloppe：将 Obsidian 中的笔记发布为博客文章。
 - [I18N](https://github.com/0011000000110010/obsidian-i18n)：翻译其他 Obsidian 的插件。开启沉浸式翻译模式时也能用于翻译笔记。
 - Linter：格式验证及保存时格式化。
-- Local REST API：搭配 [纸间书摘](https://www.xmnote.com/) 导出读书笔记。
+- Local REST API：搭配 [纸间书摘](https://www.xmnote.com/) 导入读书笔记。
 - Omnisearch：更智能的搜索，可配合浏览器扩展或篡改猴脚本将搜索结果集成到搜索引擎中。
 - Pandoc Plugin：更丰富的导出。
 - Recent Files：查看最新浏览过的文件。
@@ -27,6 +27,7 @@ updated: 2024-12-21 12:22:28
 - Tag Wrangler：给标签增加右键菜单，主要用于批量重命名。
 - Text Extractor：从图像和 PDF 中提取文本，搭配 Omnisearch 使用。
 - Tray：将 Obsidian 设为开机自启，并能够最小化到系统托盘。
+- Various Complements：自动填充单词与自定义内容。
 - Version History Diff：对比不同版本文本差异。
 - Weread：同步微信读书笔记。
 - Word Splitting for Simplified Chinese in Edit Mode And Vim Mode：提供结巴分词引擎，与 Omnisearch 插件配合使用。                                                                                                                                                                    
