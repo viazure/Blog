@@ -101,7 +101,7 @@ theme = "hugo-blog-awesome"
   # Note: image is not rendered if the resource(avatar image) is not found. No error is displayed.
   intro = "viazure"
   name = "viazure"
-  description = "向前看，别回头。"
+  description = ""
 
 # Allow to override webmanifest options
 [Languages.zh.params.webmanifest]
