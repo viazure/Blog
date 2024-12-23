@@ -2,7 +2,8 @@
 title: 从 Joplin 到 Obsidian：我的笔记工具迁移之旅
 date: 2024-10-27 19:38:13
 updated: 2024-12-23 15:49:37
-share: true
+tags:
+  - tools
 ---
 
 ## 失掉的安全感
