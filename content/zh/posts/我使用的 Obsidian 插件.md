@@ -2,7 +2,8 @@
 title: 我使用的 Obsidian 插件
 date: 2024-11-02 19:58:19
 updated: 2024-12-21 14:15:58
-share: true
+tags:
+  - tools
 ---
 
 > 不要迷失在折腾的过程中。
