@@ -1,35 +1,35 @@
 name: deploy
 
 on:
-  push:
-  workflow_dispatch:
-  schedule:
-    # Runs everyday at 8:00 AM
-    - cron: "0 0 * * *"
+    push:
+    workflow_dispatch:
+    schedule:
+        # Runs everyday at 8:00 AM
+        - cron: '0 0 * * *'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-          fetch-depth: 0
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  submodules: true
+                  fetch-depth: 0
 
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: "latest"
-          extended: true
+            - name: Setup Hugo
+              uses: peaceiris/actions-hugo@v3
+              with:
+                  hugo-version: 'latest'
+                  extended: true
 
-      - name: Build Web
-        run: hugoBLOG_DEPLOY_TOKEN
+            - name: Build Web
+              run: hugo
 
-      - name: Deploy Web
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.BLOG_DEPLOY_TOKEN }}
-          publish_dir: ./public
-          publish_branch: cf-pages
-          force_orphan: true
+            - name: Deploy Web
+              uses: peaceiris/actions-gh-pages@v4
+              with:
+                  github_token: ${{ secrets.BLOG_DEPLOY_TOKEN }}
+                  publish_dir: ./public
+                  publish_branch: cf-pages
+                  force_orphan: true
