@@ -29,7 +29,7 @@ jobs:
       - name: Deploy Web
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: $e{{ secrets.BLOG_DEPLOY_TOKEN }}
+          github_token: ${{ secrets.BLOG_DEPLOY_TOKEN }}
           publish_dir: ./public
           publish_branch: cf-pages
           force_orphan: true
