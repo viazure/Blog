@@ -4,8 +4,10 @@ title: "关于"
 
 👋 Hi，我是 viazure。
 
-目前是一名后端程序员，主力开发语言是 `C#`。
+目前是一名后端程序员，主力开发语言是 `C#`，开源代码主要在 [GitHub](https://github.com/viazure)。喜欢探索新技术，折腾有趣的事物。
 
-喜欢探索新技术，折腾一些自己觉得有趣的东西。爱好唱歌、长板、口琴、摄影。最近正在跑步，可以在 [Running‍](https://run.viazure.cc/) 这个页面看到我的跑步记录。
+日常爱好唱歌、长板、口琴、摄影，最近正在跑步（[记录在此](https://run.viazure.cc/)）。我的书影记录通过 [NeoDB](https://neodb.social/users/viazure/) 同步更新，听歌轨迹记录在 [Last.fm](https://www.last.fm/user/viazure)。
 
-想在这里输出一些东西，暂时还不知道未来是怎样，先开始吧。
+想在这里输出一些东西，暂时还不知道未来会怎样，先开始吧。
+
+联系方式：<hi@viazure.cc>

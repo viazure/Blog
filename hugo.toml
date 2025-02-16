@@ -123,10 +123,6 @@ name = "github"
 url = "https://github.com/viazure"
 
 [[params.socialIcons]]
-name = "lastfm"
-url = "https://www.last.fm/user/viazure"
-
-[[params.socialIcons]]
 name = "running"
 url = "https://run.viazure.cc"
 
