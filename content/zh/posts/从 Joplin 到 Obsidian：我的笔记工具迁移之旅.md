@@ -1,9 +1,14 @@
 ---
 title: 从 Joplin 到 Obsidian：我的笔记工具迁移之旅
 date: 2024-10-27 19:38:13
-updated: 2024-12-29 16:14:05
-tags:
+updated: 2025-02-19 14:43:41
+categories:
   - tools
+tags:
+  - joplin
+  - obsidian
+author:
+  - viazure
 ---
 
 ## 失掉的安全感
@@ -42,5 +47,7 @@ Obsidian 拥有强大且丰富的插件资源，尤其是当我发现有博客�
 - [x] 找到我在 VS Code 中已使用习惯的插件或者更好用的插件：[我使用的 Obsidian 插件](我使用的%20Obsidian%20插件.md)
 - [x] 搭建博客并发布我想要分享的内容。
 - [ ] 将我的旅行日记重建为文章/相册，并发布。
+
+## 后记
 
 2024-12-21：今天在小众软件上看到一篇文章《[Obsidian：一场来自意大利的"求爱"风波 - 小众软件](https://www.appinn.com/obsidian-and-bending-spoons/)》，只希望「被收购」这种事情尽量不要发生吧。

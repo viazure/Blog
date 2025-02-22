@@ -1,16 +1,19 @@
 ---
 title: 我使用的 Obsidian 插件
 date: 2024-11-02 19:58:19
-updated: 2025-01-13 17:18:07
+updated: 2025-02-15 21:30:19
 tags:
+  - obsidian_plugins
+categories:
   - tools
+author:
+  - viazure
 ---
 
 > 不要迷失在折腾的过程中。
 
 我尽量减少第三方插件的安装，只选择那些能够显著提升使用体验的插件。插件名称按字母顺序从 A 到 Z 排列。
 
-- [AttachFlow](https://github.com/Yaozhuwa/AttachFlow)：将附件管理集成到右键菜单中，查看及放大附件图片。
 - [Attachment Management](obsidian://show-plugin?id=attachment-management)：附件管理，自定义附件存储位置，自动更新笔记附件链接。
 - [Auto Link Title](obsidian://show-plugin?id=obsidian-auto-link-title)：粘贴网址时自动获取标题。
 - [BRAT](obsidian://show-plugin?id=obsidian42-brat)：安装与更新非社区插件市场中的插件。
