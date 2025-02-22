@@ -2,11 +2,11 @@
 title: 使用 docsify 在离线环境中部署文档服务
 date: 2024-12-29 09:05:52
 updated: 2025-02-20 14:03:03
+categories:
+  - tools
 tags:
   - docsify
   - service
-categories:
-  - tools
 author:
   - viazure
 ---

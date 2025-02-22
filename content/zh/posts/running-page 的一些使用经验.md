@@ -3,7 +3,6 @@ title: running-page 的一些使用经验
 date: 2024-12-22 22:36:39
 updated: 2025-02-20 10:57:44
 categories:
-  - life
   - tools
 tags:
   - running
