@@ -1,11 +1,11 @@
 ---
 title: 我使用的 Obsidian 插件
 date: 2024-11-02 19:58:19
-updated: 2025-02-15 21:30:19
-tags:
-  - obsidian_plugins
+updated: 2025-02-22 21:25:35
 categories:
   - tools
+tags:
+  - obsidian_plugins
 author:
   - viazure
 ---
