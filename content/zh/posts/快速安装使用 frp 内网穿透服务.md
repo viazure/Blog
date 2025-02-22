@@ -1,12 +1,12 @@
 ---
 title: 快速安装使用 frp 内网穿透服务
 date: 2023-01-20 18:53:25
-updated: 2025-02-15 21:31:29
-tags:
-  - network
-  - frp
+updated: 2025-02-22 21:28:08
 categories:
   - tools
+tags:
+  - frp
+  - network
 author:
   - viazure
 ---
