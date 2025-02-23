@@ -2,7 +2,7 @@
 title: running-page 的一些使用经验
 slug: running-page-usage-experience
 date: 2024-12-22 22:36:39
-updated: 2025-02-23 19:37:43
+updated: 2025-02-23 21:09:06
 categories:
   - tinkering
 tags:
@@ -22,27 +22,7 @@ share: true
 
 ### 实现路径
 
-```mermaid
-
-sequenceDiagram
-
-    participant Garmin手表
-
-    participant MagicPush应用
-
-    participant CloudflareWorker
-
-    participant GitHubAction
-
-    Garmin手表->>MagicPush应用: 触发运动完成事件
-
-    MagicPush应用->>CloudflareWorker: GET请求带参数
-
-    CloudflareWorker->>GitHubAction: 转换并转发POST请求
-
-    GitHubAction->>running_page: 触发数据同步
-
-```
+![时序图](https://webpimg.viazure.cc/250224210836773.png)
 
 ### 配置步骤
 
@@ -122,7 +102,7 @@ export default {
 };
 ```
 
-**环境变量说明**:
+**环境变量说明**：
 
 | 类型   | 名称                 | 值           | 说明                                                                                                                  |
 | ------ | -------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------- |
