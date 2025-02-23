@@ -2,9 +2,9 @@
 title: 快速安装使用 frp 内网穿透服务
 slug: quick-frp-installation-for-nat-penetration
 date: 2023-01-20 18:53:25
-updated: 2025-02-23 10:47:20
+updated: 2025-02-23 19:34:51
 categories:
-  - tools
+  - tinkering
 tags:
   - frp
   - network

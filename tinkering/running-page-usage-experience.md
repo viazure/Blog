@@ -2,9 +2,9 @@
 title: running-page 的一些使用经验
 slug: running-page-usage-experience
 date: 2024-12-22 22:36:39
-updated: 2025-02-23 11:16:45
+updated: 2025-02-23 19:37:43
 categories:
-  - tools
+  - tinkering
 tags:
   - running
 author:

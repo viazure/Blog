@@ -2,9 +2,9 @@
 title: 我使用的 Obsidian 插件
 slug: obsidian-plugins-i-use
 date: 2024-11-02 19:58:19
-updated: 2025-02-23 16:07:15
+updated: 2025-02-23 19:37:13
 categories:
-  - tools
+  - tinkering
 tags:
   - obsidian_plugins
 author:
