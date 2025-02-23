@@ -3,14 +3,14 @@ name: deploy
 on:
   push:
     branches:
-      - main # 仅 main 分支的 push 触发
+      - main
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * *"
 
 jobs:
   build:
-    concurrency: deploy-cf-pages # 并发控制
+    concurrency: deploy-cf-pages
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
