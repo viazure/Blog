@@ -12,9 +12,7 @@ author:
 share: true
 ---
 
-## 什么是 `running-page` ?
-
-[running_page](https://github.com/yihong0618/running_page) 是一个开源项目，帮助用户创建个人跑步主页。它能够自动同步来自 Garmin、Nike Run Club、Strava 等运动应用的跑步数据，并通过可视化的方式展示在网页上。
+> [running_page](https://github.com/yihong0618/running_page) 是一个开源项目，帮助用户创建个人跑步主页。它能够自动同步来自 Garmin、Nike Run Club、Strava 等运动应用的跑步数据，并通过可视化的方式展示在网页上。
 
 ## 实时同步 Garmin 运动记录
 
