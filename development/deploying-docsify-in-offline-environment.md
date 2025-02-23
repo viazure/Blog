@@ -2,9 +2,9 @@
 title: 使用 docsify 在离线环境中部署文档服务
 slug: deploying-docsify-in-offline-environment
 date: 2024-12-29 09:05:52
-updated: 2025-02-23 14:55:29
+updated: 2025-02-23 19:36:48
 categories:
-  - tools
+  - development
 tags:
   - docsify
   - service

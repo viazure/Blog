@@ -2,9 +2,9 @@
 title: 从 Joplin 到 Obsidian：我的笔记工具迁移之旅
 slug: migrating-from-joplin-to-obsidian
 date: 2024-10-27 19:38:13
-updated: 2025-02-23 17:03:13
+updated: 2025-02-23 19:34:13
 categories:
-  - tools
+  - tinkering
 tags:
   - joplin
   - obsidian
