@@ -117,6 +117,8 @@ theme = "hugo-blog-awesome"
 [params.browserconfig]
   TileColor = "#2d89ef" # default windows 10 blue tile color
 
+[params.twikoo]
+  envId = 'https://twikoo-viazure.netlify.app/.netlify/functions/twikoo'
 
 [[params.socialIcons]]
 name = "github"
