@@ -1,8 +1,8 @@
 ---
 title: 2025 步履不停
 slug: 2025-journey
-date: 2025-02-26 20:54:54
-updated: 2025-02-26 22:20:23
+date: 2025-02-26T20:54:54+08:00
+lastmod: 2025-02-26T22:21:19+08:00
 categories:
   - life
 tags:
@@ -34,7 +34,7 @@ share: true
 
 ![IMG_20250120_103748.HEIC](https://webpimg.viazure.cc/IMG_20250120_103748.HEIC)
 
-作为**嗦粉**爱好者是无法抗拒**南充米粉**的。**文兴粉馆**在当地口碑不错，我吃的是这家店：[文兴粉馆（什字街店）](https://surl.amap.com/wa7nAlzHgeq)。汤底很鲜，味道也很足。
+作为嗦粉爱好者是无法抗拒**南充米粉**的。**文兴粉馆**在当地口碑不错，我吃的是这家店：[文兴粉馆（什字街店）](https://surl.amap.com/wa7nAlzHgeq)。汤底很鲜，味道也很足。
 
 ![IMG_20250120_113658.HEIC](https://webpimg.viazure.cc/IMG_20250120_113658.HEIC)
 

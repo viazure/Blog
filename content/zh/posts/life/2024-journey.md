@@ -1,8 +1,8 @@
 ---
 title: 2024 旅行日记
-slug: 2024-jouryney
-date: 2024-11-11 21:08:54
-updated: 2025-02-23 16:38:18
+slug: 2024-journey
+date: 2024-11-11T21:08:54+08:00
+lastmod: 2025-02-23T16:38:18+08:00
 categories:
   - life
 tags:
