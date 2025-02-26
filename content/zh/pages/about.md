@@ -1,5 +1,6 @@
 ---
 title: "关于"
+comments: false
 ---
 
 👋 Hi，我是 viazure。
