@@ -101,24 +101,24 @@ theme = "hugo-blog-awesome"
   # Note: image is not rendered if the resource(avatar image) is not found. No error is displayed.
   intro = "viazure"
   name = "viazure"
-  description = ""
+  description = "不积跬步，无以至千里"
 
 # Allow to override webmanifest options
 [Languages.zh.params.webmanifest]
-  name = "sitename" # will use "params.sitename" or "title" by default
-  short_name = "sitename" # same as name
+  name = "viazure's blog" # will use "params.sitename" or "title" by default
+  short_name = "viazure" # same as name
   start_url = "/" # will use homepage url by default
   theme_color = "#434648" # default is "#434648" (base color of text). Also will override html `<meta name="theme-color" />`
   background_color = "#fff" # by default depend on "params.defaultColor" for "light" or "auto" will be set to "#fff" for dark will be "#131418" (color of dark mode background)
   display = "standalone"
 
+[Languages.zh.params.comments.twikoo]
+  envId = 'https://twikoo-viazure.netlify.app/.netlify/functions/twikoo'
+  lang = "zh-CN"
 
 # Allow to override `browserconfig.xml` params (configuration for windows embedded browsers)
 [params.browserconfig]
   TileColor = "#2d89ef" # default windows 10 blue tile color
-
-[params.twikoo]
-  envId = 'https://twikoo-viazure.netlify.app/.netlify/functions/twikoo'
 
 [[params.socialIcons]]
 name = "github"
