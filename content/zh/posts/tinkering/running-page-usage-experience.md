@@ -1,8 +1,8 @@
 ---
 title: running-page 的一些使用经验
 slug: running-page-usage-experience
-date: 2024-12-22 22:36:39
-updated: 2025-02-23 21:09:06
+date: 2024-12-22T22:36:39+08:00
+lastmod: 2025-02-23T21:09:06+08:00
 categories:
   - tinkering
 tags:
