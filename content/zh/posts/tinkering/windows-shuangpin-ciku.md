@@ -1,8 +1,8 @@
 ---
 title: 将双拼输入法的词库折腾进 Windows 10&11 自带输入法
 slug: windows-shuangpin-ciku
-date: 2020-01-05 21:49:00
-updated: 2025-02-23 19:24:09
+date: 2020-01-05T21:49:00+08:00
+lastmod: 2025-02-23T19:24:09+08:00
 categories:
   - tinkering
 tags:
