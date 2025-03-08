@@ -29,7 +29,7 @@ theme = "hugo-blog-awesome"
 # To enable Google Analytics 4 (gtag.js) provide G-MEASUREMENT_ID below.
 # To disable Google Analytics, simply leave the field empty or remove the next two lines
   [services.googleAnalytics]
-    id = '' # G-MEASUREMENT_ID
+    id = 'G-GWNZES9Y14' # G-MEASUREMENT_ID
 
 # To enable Disqus comments, provide Disqus Shortname below.
 # To disable Disqus comments, simply leave the field empty or remove the next two lines
