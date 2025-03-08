@@ -9,30 +9,22 @@ defaultContentLanguage = "zh"
 
 # 全局启用 emoji 支持
 enableEmoji = true
-ignoreErrors = ["additional-script-loading-error"] # 忽略加载额外脚本时的错误
+
+# 忽略加载额外脚本时的错误
+ignoreErrors = ["additional-script-loading-error"]
 
 # 传统方式：主题组件位于 'themes' 目录
 theme = "hugo-blog-awesome"
 
-# 现代方式：通过 hugo 模块引入主题组件
-#[module]
-  # 取消下面这行的注释可以使用在指定 Hugo 工作区中声明的本地主题克隆来构建和服务：
-  # workspace = "hugo-blog-awesome.work"
-  #[module.hugoVersion]
-    #extended = true
-    #min = "0.87.0"
-  #[[module.imports]]
-    #path = "github.com/hugo-sid/hugo-blog-awesome"
-    #disable = false
-
 [services]
-# 要启用 Google Analytics 4 (gtag.js)，请在下面提供 G-MEASUREMENT_ID
-# 要禁用 Google Analytics，只需将字段留空或删除以下两行
+
+  # 要启用 Google Analytics 4 (gtag.js)，请在下面提供 G-MEASUREMENT_ID
+  # 要禁用 Google Analytics，只需将字段留空或删除以下两行
   [services.googleAnalytics]
     id = 'G-GWNZES9Y14' # G-MEASUREMENT_ID
 
-# 要启用 Disqus 评论，请提供 Disqus Shortname
-# 要禁用 Disqus 评论，只需将字段留空或删除以下两行
+  # 要启用 Disqus 评论，请提供 Disqus Shortname
+  # 要禁用 Disqus 评论，只需将字段留空或删除以下两行
   [services.disqus]
     shortname = ''
 
@@ -55,76 +47,89 @@ theme = "hugo-blog-awesome"
   weight = 1
 
   [Languages.zh.menu]
-  [[Languages.zh.menu.main]]
-    # pageRef 用于菜单高亮
-    # 设置 pageRef 后，设置 url 是可选的；如果找不到页面，它将作为后备选项
-    pageRef="/"
-    name = '首页'
-    url = '/'
-    weight = 10
-  [[Languages.zh.menu.main]]
-    pageRef="posts"
-    name = '文章'
-    url = '/posts/'
-    weight = 20
-  [[Languages.zh.menu.main]]
-    pageRef="about"
-    name = '关于'
-    url = '/about/'
-    weight = 30
+    [[Languages.zh.menu.main]]
+      # pageRef 用于菜单高亮
+      # 设置 pageRef 后，设置 url 是可选的；如果找不到页面，它将作为后备选项
+      pageRef="/"
+      name = '首页'
+      url = '/'
+      weight = 10
+    [[Languages.zh.menu.main]]
+      pageRef="posts"
+      name = '文章'
+      url = '/posts/'
+      weight = 20
+    [[Languages.zh.menu.main]]
+      pageRef="about"
+      name = '关于'
+      url = '/about/'
+      weight = 30
 
-[Languages.zh.params]
-  sitename = "viazure"
-  defaultColor = "auto" # 设置颜色模式：dark（深色）, light（浅色）, auto（自动）
-  # 设置为 'auto' 时会根据访问者的设备颜色偏好应用配色方案
-  # 如果不指定任何内容，忽略此参数或将其留空，默认值设置为 'auto'
-  # 你可以查看 layouts/index.html 获取更多信息
-  description = "一个记录技术与生活的博客"
-  mainSections = ['posts']
-  toc = false # 设置为 false 可全局禁用目录
-  tocOpen = false # 设置为 true 可默认展开目录
-  goToTop = true # 设置为 false 可禁用"返回顶部"按钮
-  additionalScripts = ['js/custom.js', 'js/custom-2.js']
-  # 将尝试加载 'assets/js/custom.js' 和 'assets/js/custom-2.js'
-  # 你的自定义脚本将被合并到一个 'custom.js' 文件中
-  # 生产环境构建时会进行压缩
-  # 'custom.js' 文件会在每个页面的 body 标签结束前加载
-  dateFormat = "2006-01-02" # 用于在各个页面显示日期的格式。如果未指定，则使用 "2 Jan 2006" 格式
-  # 查看 https://gohugo.io/functions/format/#hugo-date-and-time-templating-reference 获取可用的日期格式
-  rssFeedDescription = "full" # 可选项：1) summary（摘要）2) full（全文）
-  # summary - 在 RSS 源中包含博文的简短摘要。使用 Hugo .Summary 生成
-  # full - 在 RSS 源中包含完整博文。使用 Hugo .Content 生成
-  # 默认（或未指定）情况下使用 summary
+  [Languages.zh.params]
+    sitename = "viazure"
+    defaultColor = "auto" # 设置颜色模式：dark（深色）, light（浅色）, auto（自动）
+    # 设置为 'auto' 时会根据访问者的设备颜色偏好应用配色方案
+    # 如果不指定任何内容，忽略此参数或将其留空，默认值设置为 'auto'
+    # 你可以查看 layouts/index.html 获取更多信息
+    description = "一个记录技术与生活的博客"
+    mainSections = ['posts']
+    toc = false # 设置为 false 可全局禁用目录
+    tocOpen = false # 设置为 true 可默认展开目录
+    goToTop = true # 设置为 false 可禁用"返回顶部"按钮
+    additionalScripts = ['js/custom.js', 'js/custom-2.js']
+    # 将尝试加载 'assets/js/custom.js' 和 'assets/js/custom-2.js'
+    # 你的自定义脚本将被合并到一个 'custom.js' 文件中
+    # 生产环境构建时会进行压缩
+    # 'custom.js' 文件会在每个页面的 body 标签结束前加载
+    dateFormat = "2006-01-02" # 用于在各个页面显示日期的格式。如果未指定，则使用 "2 Jan 2006" 格式
+    # 查看 https://gohugo.io/functions/format/#hugo-date-and-time-templating-reference 获取可用的日期格式
+    rssFeedDescription = "full" # 可选项：1) summary（摘要）2) full（全文）
+    # summary - 在 RSS 源中包含博文的简短摘要。使用 Hugo .Summary 生成
+    # full - 在 RSS 源中包含完整博文。使用 Hugo .Content 生成
+    # 默认（或未指定）情况下使用 summary
 
-[Languages.zh.params.author]
-  avatar = "avatar.png" # 将文件放在 assets 文件夹中；确保图片具有相同的高度和宽度
-  # 注意：如果找不到资源（头像图片），图片不会被渲染。不会显示错误
-  intro = "viazure"
-  name = "viazure"
-  description = "不积跬步，无以至千里"
+    [Languages.zh.params.author]
+      avatar = "avatar.png" # 将文件放在 assets 文件夹中；确保图片具有相同的高度和宽度
+      # 注意：如果找不到资源（头像图片），图片不会被渲染。不会显示错误
+      intro = "viazure"
+      name = "viazure"
+      description = "不积跬步，无以至千里"
 
-# 允许覆盖 webmanifest 选项
-[Languages.zh.params.webmanifest]
-  name = "viazure's blog" # 将使用 "params.sitename" 或 "title" 作为默认值
-  short_name = "viazure" # 与 name 相同
-  start_url = "/" # 将使用主页 url 作为默认值
-  theme_color = "#434648" # 默认为 "#434648"（文本的基色）。还会覆盖 html 的 `<meta name="theme-color" />`
-  background_color = "#fff" # 默认根据 "params.defaultColor" 设置，对于 "light" 或 "auto" 将设置为 "#fff"，对于 dark 将设置为 "#131418"（深色模式背景色）
-  display = "standalone"
-
-[Languages.zh.params.comments.twikoo]
-  envId = 'https://twikoo-viazure.netlify.app/.netlify/functions/twikoo'
-  # 以下参数都是可选的
-  # region = 'ap-shanghai'  # 环境地域，默认为 ap-shanghai，腾讯云环境填 ap-shanghai 或 ap-guangzhou；Vercel 环境不填
-  # path = ''             # 自定义文章路径，默认为 location.pathname
-  # lang = 'zh-CN'        # 评论界面语言，默认为 zh-CN
-
-[Languages.zh.params.goatcounter]
-  code = "https://viazure.goatcounter.com/count"
+    # 允许覆盖 webmanifest 选项
+    [Languages.zh.params.webmanifest]
+      name = "viazure's blog" # 将使用 "params.sitename" 或 "title" 作为默认值
+      short_name = "viazure" # 与 name 相同
+      start_url = "/" # 将使用主页 url 作为默认值
+      theme_color = "#434648" # 默认为 "#434648"（文本的基色）。还会覆盖 html 的 `<meta name="theme-color" />`
+      background_color = "#fff" # 默认根据 "params.defaultColor" 设置，对于 "light" 或 "auto" 将设置为 "#fff"，对于 dark 将设置为 "#131418"（深色模式背景色）
+      display = "standalone"
 
 # 允许覆盖 browserconfig.xml 参数（用于 Windows 嵌入式浏览器的配置）
 [params.browserconfig]
   TileColor = "#2d89ef" # Windows 10 默认的蓝色磁贴颜色
+
+# 自定义评论系统
+[params.comments]
+
+  # Twikoo
+  [params.comments.twikoo]
+    envId = 'https://twikoo-viazure.netlify.app/.netlify/functions/twikoo'
+    # region = 'ap-shanghai'  # 环境地域，默认为 ap-shanghai，腾讯云环境填 ap-shanghai 或 ap-guangzhou；Vercel 环境不填
+    # path = ''             # 自定义文章路径，默认为 location.pathname
+    # lang = 'zh-CN'        # 评论界面语言，默认为 zh-CN
+
+# 自定义统计系统
+[params.analytics]
+
+  # GoatCounter
+  [params.analytics.goatcounter]
+      code = "https://viazure.goatcounter.com/count"
+      src = "//gc.zgo.at/count.js"
+
+# Follow 订阅源认证
+[params.follow]
+feedId = "96027576665585664"
+userId = "59414119634735104"
 
 [[params.socialIcons]]
 name = "github"
