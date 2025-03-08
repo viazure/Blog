@@ -1,22 +1,22 @@
 title = "viazure"
 baseURL = 'https://viazure.cc/'
 
-# This is what goes in <html lang="">
+# 设置 <html lang=""> 的值
 languageCode = 'zh'
 
-# This defines how dates are formatted
+# 设置日期格式化的默认语言
 defaultContentLanguage = "zh"
 
-# Enable emojis globally
+# 全局启用 emoji 支持
 enableEmoji = true
-ignoreErrors = ["additional-script-loading-error"] # ignore error of loading additional scripts.
+ignoreErrors = ["additional-script-loading-error"] # 忽略加载额外脚本时的错误
 
-# traditional way: theme component resides in directory 'themes'
+# 传统方式：主题组件位于 'themes' 目录
 theme = "hugo-blog-awesome"
 
-# modern way: pull in theme component as hugo module
+# 现代方式：通过 hugo 模块引入主题组件
 #[module]
-  # Uncomment the next line to build and serve using local theme clone declared in the named Hugo workspace:
+  # 取消下面这行的注释可以使用在指定 Hugo 工作区中声明的本地主题克隆来构建和服务：
   # workspace = "hugo-blog-awesome.work"
   #[module.hugoVersion]
     #extended = true
@@ -26,28 +26,28 @@ theme = "hugo-blog-awesome"
     #disable = false
 
 [services]
-# To enable Google Analytics 4 (gtag.js) provide G-MEASUREMENT_ID below.
-# To disable Google Analytics, simply leave the field empty or remove the next two lines
+# 要启用 Google Analytics 4 (gtag.js)，请在下面提供 G-MEASUREMENT_ID
+# 要禁用 Google Analytics，只需将字段留空或删除以下两行
   [services.googleAnalytics]
     id = 'G-GWNZES9Y14' # G-MEASUREMENT_ID
 
-# To enable Disqus comments, provide Disqus Shortname below.
-# To disable Disqus comments, simply leave the field empty or remove the next two lines
+# 要启用 Disqus 评论，请提供 Disqus Shortname
+# 要禁用 Disqus 评论，只需将字段留空或删除以下两行
   [services.disqus]
     shortname = ''
 
-# set markup.highlight.noClasses=false to enable code highlight
+# 设置 markup.highlight.noClasses=false 以启用代码高亮
 [markup]
   [markup.highlight]
     noClasses = false
   [markup.goldmark.renderer]
     unsafe = true
   [markup.tableOfContents]
-    startLevel = 2 # ToC starts from H2
-    endLevel = 4 # ToC ends at H4
-    ordered = false # generates <ul> instead of <ol>
+    startLevel = 2 # 目录从 H2 开始
+    endLevel = 4   # 目录到 H4 结束
+    ordered = false # 生成 <ul> 而不是 <ol>
 
-############################## Chinese language ################################
+############################## 中文配置 ################################
 [Languages.zh]
   languageName = "Chinese"
   languageCode = "zh"
@@ -56,8 +56,8 @@ theme = "hugo-blog-awesome"
 
   [Languages.zh.menu]
   [[Languages.zh.menu.main]]
-    # The page reference (pageRef) is useful for menu highlighting
-    # When pageRef is set, setting `url` is optional; it will be used as a fallback if the page is not found.
+    # pageRef 用于菜单高亮
+    # 设置 pageRef 后，设置 url 是可选的；如果找不到页面，它将作为后备选项
     pageRef="/"
     name = '首页'
     url = '/'
@@ -75,50 +75,56 @@ theme = "hugo-blog-awesome"
 
 [Languages.zh.params]
   sitename = "viazure"
-  defaultColor = "auto" # set color mode: dark, light, auto
-  # Setting it to 'auto' applies the color scheme based on the visitor's device color preference.If you don't specify anything, ignore this parameter, or leave it blank,
-  # the default value is set to 'auto'.
-  # You can take a look at layouts/index.html for more information.
+  defaultColor = "auto" # 设置颜色模式：dark（深色）, light（浅色）, auto（自动）
+  # 设置为 'auto' 时会根据访问者的设备颜色偏好应用配色方案
+  # 如果不指定任何内容，忽略此参数或将其留空，默认值设置为 'auto'
+  # 你可以查看 layouts/index.html 获取更多信息
   description = "一个记录技术与生活的博客"
   mainSections = ['posts']
-  toc = false # set to false to disable table of contents 'globally'
-  tocOpen = false # set to true to open table of contents by default
-  goToTop = true # set to false to disable 'go to top' button
+  toc = false # 设置为 false 可全局禁用目录
+  tocOpen = false # 设置为 true 可默认展开目录
+  goToTop = true # 设置为 false 可禁用"返回顶部"按钮
   additionalScripts = ['js/custom.js', 'js/custom-2.js']
-  # Will try to load 'assets/js/custom.js' and 'assets/js/custom-2.js'.
-  # Your custom scripts will be concatenated to one file `custom.js`.
-  # When building for production it will be minified.
-  # The file `custom.js` is loaded on each page (before body tag ends).
-  dateFormat = "2006-01-02" # date format used to show dates on various pages. If nothing is specified, then "2 Jan 2006" format is used.
-  # See https://gohugo.io/functions/format/#hugo-date-and-time-templating-reference for available date formats.
-  rssFeedDescription = "full" # available options: 1) summary 2) full
-  # summary - includes a short summary of the blog post in the RSS feed. Generated using Hugo .Summary .
-  # full - includes full blog post in the RSS feed. Generated using Hugo .Content .
-  # By default (or if nothing is specified), summary is used.
+  # 将尝试加载 'assets/js/custom.js' 和 'assets/js/custom-2.js'
+  # 你的自定义脚本将被合并到一个 'custom.js' 文件中
+  # 生产环境构建时会进行压缩
+  # 'custom.js' 文件会在每个页面的 body 标签结束前加载
+  dateFormat = "2006-01-02" # 用于在各个页面显示日期的格式。如果未指定，则使用 "2 Jan 2006" 格式
+  # 查看 https://gohugo.io/functions/format/#hugo-date-and-time-templating-reference 获取可用的日期格式
+  rssFeedDescription = "full" # 可选项：1) summary（摘要）2) full（全文）
+  # summary - 在 RSS 源中包含博文的简短摘要。使用 Hugo .Summary 生成
+  # full - 在 RSS 源中包含完整博文。使用 Hugo .Content 生成
+  # 默认（或未指定）情况下使用 summary
 
 [Languages.zh.params.author]
-  avatar = "avatar.png" # put the file in assets folder; also ensure that image has same height and width
-  # Note: image is not rendered if the resource(avatar image) is not found. No error is displayed.
+  avatar = "avatar.png" # 将文件放在 assets 文件夹中；确保图片具有相同的高度和宽度
+  # 注意：如果找不到资源（头像图片），图片不会被渲染。不会显示错误
   intro = "viazure"
   name = "viazure"
   description = "不积跬步，无以至千里"
 
-# Allow to override webmanifest options
+# 允许覆盖 webmanifest 选项
 [Languages.zh.params.webmanifest]
-  name = "viazure's blog" # will use "params.sitename" or "title" by default
-  short_name = "viazure" # same as name
-  start_url = "/" # will use homepage url by default
-  theme_color = "#434648" # default is "#434648" (base color of text). Also will override html `<meta name="theme-color" />`
-  background_color = "#fff" # by default depend on "params.defaultColor" for "light" or "auto" will be set to "#fff" for dark will be "#131418" (color of dark mode background)
+  name = "viazure's blog" # 将使用 "params.sitename" 或 "title" 作为默认值
+  short_name = "viazure" # 与 name 相同
+  start_url = "/" # 将使用主页 url 作为默认值
+  theme_color = "#434648" # 默认为 "#434648"（文本的基色）。还会覆盖 html 的 `<meta name="theme-color" />`
+  background_color = "#fff" # 默认根据 "params.defaultColor" 设置，对于 "light" 或 "auto" 将设置为 "#fff"，对于 dark 将设置为 "#131418"（深色模式背景色）
   display = "standalone"
 
 [Languages.zh.params.comments.twikoo]
   envId = 'https://twikoo-viazure.netlify.app/.netlify/functions/twikoo'
-  lang = "zh-CN"
+  # 以下参数都是可选的
+  # region = 'ap-shanghai'  # 环境地域，默认为 ap-shanghai，腾讯云环境填 ap-shanghai 或 ap-guangzhou；Vercel 环境不填
+  # path = ''             # 自定义文章路径，默认为 location.pathname
+  # lang = 'zh-CN'        # 评论界面语言，默认为 zh-CN
 
-# Allow to override `browserconfig.xml` params (configuration for windows embedded browsers)
+[Languages.zh.params.goatcounter]
+  code = "https://viazure.goatcounter.com/count"
+
+# 允许覆盖 browserconfig.xml 参数（用于 Windows 嵌入式浏览器的配置）
 [params.browserconfig]
-  TileColor = "#2d89ef" # default windows 10 blue tile color
+  TileColor = "#2d89ef" # Windows 10 默认的蓝色磁贴颜色
 
 [[params.socialIcons]]
 name = "github"
