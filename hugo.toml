@@ -42,7 +42,7 @@ theme = "hugo-blog-awesome"
 ############################## 中文配置 ################################
 [Languages.zh]
   languageName = "Chinese"
-  languageCode = "zh"
+  languageCode = "zh-cn"
   contentDir = "content/zh"
   weight = 1
 
