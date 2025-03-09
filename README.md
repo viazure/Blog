@@ -1,9 +1,11 @@
 Hi 👋
 
-这里是我的个人博客项目，基于 Hugo 静态网站生成器构建，并托管于 Cloudflare Pages。
+这是我的个人博客项目，基于 Hugo 静态网站生成器构建，托管于 Cloudflare Pages 平台。
 
-我使用 Obsidian 编写博客文章，通过 Enveloppe 插件进行发布。
+项目采用 [Hugo Blog Awesome](https://github.com/hugo-sid/hugo-blog-awesome) 主题，并进行了自定义调整（修改详情见 [主题 README](https://github.com/viazure/hugo-blog-awesome/blob/main/README.md)）。
 
-自动化部署方案参考自 [@pseudoyu](https://github.com/pseudoyu) 的优质教程：《[Hugo + GitHub Action，搭建你的博客自动发布系统](https://www.pseudoyu.com/zh/2022/05/29/deploy_your_blog_using_hugo_and_github_action)》。
+文章使用 Obsidian 编写，通过 Enveloppe 插件进行发布。
 
-**访问地址**： [viazure.cc](https://viazure.cc)
+博客的多项功能实现方案参考了博主 [Pseudoyu](https://www.pseudoyu.com/) 的系列教程：[blog · Pseudoyu](https://www.pseudoyu.com/zh/tag/blog/)。
+
+**访问地址**：[viazure.cc](https://viazure.cc)
