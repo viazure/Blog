@@ -1,8 +1,8 @@
 title = "viazure"
-baseURL = 'https://viazure.cc/'
+baseURL = "https://viazure.cc/"
 
 # 设置 <html lang=""> 的值
-languageCode = 'zh'
+languageCode = "zh"
 
 # 设置日期格式化的默认语言
 defaultContentLanguage = "zh"
@@ -13,7 +13,7 @@ enableEmoji = true
 # 忽略加载额外脚本时的错误
 ignoreErrors = ["additional-script-loading-error"]
 
-# 传统方式：主题组件位于 'themes' 目录
+# 传统方式：主题组件位于 `themes` 目录
 theme = "hugo-blog-awesome"
 
 [services]
@@ -21,12 +21,12 @@ theme = "hugo-blog-awesome"
   # 要启用 Google Analytics 4 (gtag.js)，请在下面提供 G-MEASUREMENT_ID
   # 要禁用 Google Analytics，只需将字段留空或删除以下两行
   [services.googleAnalytics]
-    id = 'G-GWNZES9Y14' # G-MEASUREMENT_ID
+    id = "" # G-MEASUREMENT_ID
 
   # 要启用 Disqus 评论，请提供 Disqus Shortname
   # 要禁用 Disqus 评论，只需将字段留空或删除以下两行
   [services.disqus]
-    shortname = ''
+    shortname = ""
 
 # 设置 markup.highlight.noClasses=false 以启用代码高亮
 [markup]
@@ -51,36 +51,36 @@ theme = "hugo-blog-awesome"
       # pageRef 用于菜单高亮
       # 设置 pageRef 后，设置 url 是可选的；如果找不到页面，它将作为后备选项
       pageRef="/"
-      name = '首页'
-      url = '/'
+      name = "首页"
+      url = "/"
       weight = 10
     [[Languages.zh.menu.main]]
       pageRef="posts"
-      name = '文章'
-      url = '/posts/'
+      name = "文章"
+      url = "/posts/"
       weight = 20
     [[Languages.zh.menu.main]]
       pageRef="about"
-      name = '关于'
-      url = '/about/'
+      name = "关于"
+      url = "/about/"
       weight = 30
 
   [Languages.zh.params]
     sitename = "viazure"
     defaultColor = "auto" # 设置颜色模式：dark（深色）, light（浅色）, auto（自动）
-    # 设置为 'auto' 时会根据访问者的设备颜色偏好应用配色方案
-    # 如果不指定任何内容，忽略此参数或将其留空，默认值设置为 'auto'
+    # 设置为 "auto" 时会根据访问者的设备颜色偏好应用配色方案
+    # 如果不指定任何内容，忽略此参数或将其留空，默认值设置为 "auto"
     # 你可以查看 layouts/index.html 获取更多信息
     description = "一个记录技术与生活的博客"
-    mainSections = ['posts']
+    mainSections = ["posts"]
     toc = false # 设置为 false 可全局禁用目录
     tocOpen = false # 设置为 true 可默认展开目录
     goToTop = true # 设置为 false 可禁用"返回顶部"按钮
-    additionalScripts = ['js/custom.js', 'js/custom-2.js']
-    # 将尝试加载 'assets/js/custom.js' 和 'assets/js/custom-2.js'
-    # 你的自定义脚本将被合并到一个 'custom.js' 文件中
+    additionalScripts = ["js/custom.js", "js/custom-2.js"]
+    # 将尝试加载 "assets/js/custom.js" 和 "assets/js/custom-2.js"
+    # 你的自定义脚本将被合并到一个 "custom.js" 文件中
     # 生产环境构建时会进行压缩
-    # 'custom.js' 文件会在每个页面的 body 标签结束前加载
+    # "custom.js" 文件会在每个页面的 body 标签结束前加载
     dateFormat = "2006-01-02" # 用于在各个页面显示日期的格式。如果未指定，则使用 "2 Jan 2006" 格式
     # 查看 https://gohugo.io/functions/format/#hugo-date-and-time-templating-reference 获取可用的日期格式
     rssFeedDescription = "full" # 可选项：1) summary（摘要）2) full（全文）
@@ -113,32 +113,33 @@ theme = "hugo-blog-awesome"
 
   # Twikoo
   [params.comments.twikoo]
-    envId = 'https://twikoo-viazure.netlify.app/.netlify/functions/twikoo'
-    # region = 'ap-shanghai'  # 环境地域，默认为 ap-shanghai，腾讯云环境填 ap-shanghai 或 ap-guangzhou；Vercel 环境不填
-    # path = ''             # 自定义文章路径，默认为 location.pathname
-    # lang = 'zh-CN'        # 评论界面语言，默认为 zh-CN
+    envId = "https://comments.viazure.cc/.netlify/functions/twikoo" # 环境地址，例：https://xxx.netlify.app
+    # 下面为可选参数，配置时删除注释符号 `#` 即可。
+    # region = "ap-shanghai"  # 环境地域，默认为 ap-shanghai，腾讯云环境填 ap-shanghai 或 ap-guangzhou；Vercel 环境不填
+    # path = ""             # 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
+    # lang = "zh-CN"        # 用于手动设定评论区语言，支持的语言列表 https://github.com/twikoojs/twikoo/blob/main/src/client/utils/i18n/index.js
 
 # 自定义统计系统
 [params.analytics]
 
   # GoatCounter
   [params.analytics.goatcounter]
-      code = "https://viazure.goatcounter.com/count"
-      src = "//gc.zgo.at/count.js"
+    code = "https://viazure.goatcounter.com/count"
+    src = "//gc.zgo.at/count.js"
 
 # Follow 订阅源认证
 [params.follow]
-feedId = "96027576665585664"
-userId = "59414119634735104"
+  feedId = "96027576665585664"
+  userId = "59414119634735104"
 
 [[params.socialIcons]]
-name = "github"
-url = "https://github.com/viazure"
+  name = "github"
+  url = "https://github.com/viazure"
 
 [[params.socialIcons]]
-name = "running"
-url = "https://run.viazure.cc"
+  name = "running"
+  url = "https://run.viazure.cc"
 
 [[params.socialIcons]]
-name = "Rss"
-url = "/index.xml"
+  name = "Rss"
+  url = "/index.xml"
