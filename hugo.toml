@@ -76,8 +76,8 @@ theme = "hugo-blog-awesome"
     toc = false # 设置为 false 可全局禁用目录
     tocOpen = false # 设置为 true 可默认展开目录
     goToTop = true # 设置为 false 可禁用"返回顶部"按钮
-    additionalScripts = ["js/custom.js", "js/count.js"]
-    # 将尝试加载 "assets/js/custom.js" 和 "assets/js/count.js"
+     additionalScripts = ["js/custom.js", "js/custom-2.js"]
+    # 将尝试加载 "assets/js/custom.js" 和 "assets/js/custom-2.js"
     # 你的自定义脚本将被合并到一个 "custom.js" 文件中
     # 生产环境构建时会进行压缩
     # "custom.js" 文件会在每个页面的 body 标签结束前加载
@@ -124,8 +124,9 @@ theme = "hugo-blog-awesome"
 
   # GoatCounter
   [params.analytics.goatcounter]
-    url = "https://viazure.goatcounter.com/count" # 数据统计地址
-    src = "/js/custom.js" # 自定义统计脚本路径
+    url = "https://viazure.goatcounter.com/count"
+    localSrc = "js/goatcounter.js"  # 本地统计脚本资源路径 (assets/js/goatcounter.js)
+    # externalSrc = "https://cdn.example.com/goatcounter.js" # 需要使用外部统计脚本资源时取消注释
 
 # Follow 订阅源认证
 [params.follow]
