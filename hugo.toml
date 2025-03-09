@@ -2,10 +2,10 @@ title = "viazure"
 baseURL = "https://viazure.cc/"
 
 # 设置 <html lang=""> 的值
-languageCode = "zh"
+languageCode = "zh-cn"
 
 # 设置日期格式化的默认语言
-defaultContentLanguage = "zh"
+defaultContentLanguage = "zh-cn"
 
 # 全局启用 emoji 支持
 enableEmoji = true
@@ -40,32 +40,32 @@ theme = "hugo-blog-awesome"
     ordered = false # 生成 <ul> 而不是 <ol>
 
 ############################## 中文配置 ################################
-[Languages.zh]
+[Languages.zh-cn]
   languageName = "Chinese"
   languageCode = "zh-cn"
   contentDir = "content/zh"
   weight = 1
 
-  [Languages.zh.menu]
-    [[Languages.zh.menu.main]]
+  [Languages.zh-cn.menu]
+    [[Languages.zh-cn.menu.main]]
       # pageRef 用于菜单高亮
       # 设置 pageRef 后，设置 url 是可选的；如果找不到页面，它将作为后备选项
       pageRef="/"
       name = "首页"
       url = "/"
       weight = 10
-    [[Languages.zh.menu.main]]
+    [[Languages.zh-cn.menu.main]]
       pageRef="posts"
       name = "文章"
       url = "/posts/"
       weight = 20
-    [[Languages.zh.menu.main]]
+    [[Languages.zh-cn.menu.main]]
       pageRef="about"
       name = "关于"
       url = "/about/"
       weight = 30
 
-  [Languages.zh.params]
+  [Languages.zh-cn.params]
     sitename = "viazure"
     defaultColor = "auto" # 设置颜色模式：dark（深色）, light（浅色）, auto（自动）
     # 设置为 "auto" 时会根据访问者的设备颜色偏好应用配色方案
@@ -88,7 +88,7 @@ theme = "hugo-blog-awesome"
     # full - 在 RSS 源中包含完整博文。使用 Hugo .Content 生成
     # 默认（或未指定）情况下使用 summary
 
-    [Languages.zh.params.author]
+    [Languages.zh-cn.params.author]
       avatar = "avatar.png" # 将文件放在 assets 文件夹中；确保图片具有相同的高度和宽度
       # 注意：如果找不到资源（头像图片），图片不会被渲染。不会显示错误
       intro = "viazure"
@@ -96,7 +96,7 @@ theme = "hugo-blog-awesome"
       description = "不积跬步，无以至千里"
 
     # 允许覆盖 webmanifest 选项
-    [Languages.zh.params.webmanifest]
+    [Languages.zh-cn.params.webmanifest]
       name = "viazure's blog" # 将使用 "params.sitename" 或 "title" 作为默认值
       short_name = "viazure" # 与 name 相同
       start_url = "/" # 将使用主页 url 作为默认值
