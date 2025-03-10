@@ -21,7 +21,7 @@
 
 ## ERRORS ##
 - id: "errors.404"
-  translation: "404 错误 - 页面不存在"
+  translation: "404 - 页面不存在"
 
 - id: "errors.404_description"
   translation: "你好像来到了奇怪的地方，看看其他内容吧。"
