@@ -124,9 +124,9 @@ theme = "hugo-blog-awesome"
 
   # GoatCounter
   [params.analytics.goatcounter]
-    url = "https://viazure.goatcounter.com/count"
+    url = "https://stats.viazure.cc/count" # 为了避免被广告拦截器阻止，建议使用自定义域名
     localSrc = "js/goatcounter.js"  # 本地统计脚本资源路径 (assets/js/goatcounter.js)
-    # externalSrc = "https://cdn.example.com/goatcounter.js" # 需要使用外部统计脚本资源时取消注释
+    # externalSrc = "https://example.com/goatcounter.js" # 需要使用外部统计脚本资源时取消注释
 
 # Follow 订阅源认证
 [params.follow]
