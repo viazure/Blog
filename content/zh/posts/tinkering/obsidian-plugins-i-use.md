@@ -4,7 +4,7 @@ slug: obsidian-plugins-i-use
 author:
   - viazure
 date: 2024-11-02T19:58:19+08:00
-lastmod: 2025-03-12T08:56:01+08:00
+lastmod: 2025-03-12T10:09:56+08:00
 categories:
   - tinkering
 tags:
@@ -30,6 +30,7 @@ share: true
 - [Mind Map](https://github.com/lynchjames/obsidian-mind-map) ：使用脑图的方式更直观的查看笔记内容。
 - [Omnisearch](https://github.com/scambier/obsidian-omnisearch)：更智能的搜索，可配合浏览器扩展或篡改猴脚本将搜索结果集成到搜索引擎中。
 - [Pandoc Plugin](https://github.com/OliverBalfour/obsidian-pandoc)：可以导出更丰富的文件格式。
+- [Periodic Notes](https://github.com/liamcain/obsidian-periodic-notes)：更好的创建/管理日记、周记、月记。
 - [Recent Files](https://github.com/tgrosinger/recent-files-obsidian)：查看最新浏览过的文件。
 - [Remotely Save](https://github.com/remotely-save/remotely-save)：笔记同步。搭配 Cloudflare R2 使用。
 - [Style Settings](https://github.com/mgmeyers/obsidian-style-settings)：管理自定义 CSS。推荐一个 [改善笔记的链接编辑体验](https://forum-zh.obsidian.md/t/topic/38000) 的 CSS 。
@@ -39,5 +40,5 @@ share: true
 - [Tray](https://github.com/dragonwocky/obsidian-tray)：将 Obsidian 设为开机自启，并能够最小化到系统托盘。
 - [Various Complements](https://github.com/tadashi-aikawa/obsidian-various-complements-plugin)：自动填充单词与自定义内容。
 - [Version History Diff](https://github.com/kometenstaub/obsidian-version-history-diff)：对比不同版本文本差异。
-- [Weread](https://github.com/zhaohongxuan/obsidian-weread-plugin)：同步 [微信读书](https://weread.qq.com/) 笔记。
+- [Weread](https://github.com/zhaohongxuan/obsidian-weread-plugin)：同步微信读书笔记。
 - [Word Splitting for Simplified Chinese in Edit Mode And Vim Mode](https://github.com/aidenlx/cm-chs-patch)：提供结巴分词引擎，与 Omnisearch 插件配合使用。                                                                                                                                                                    
