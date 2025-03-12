@@ -1,14 +1,14 @@
 ---
 title: running-page 的一些使用经验
 slug: running-page-usage-experience
+author:
+  - viazure
 date: 2024-12-22T22:36:39+08:00
-lastmod: 2025-02-23T21:09:06+08:00
+lastmod: 2025-03-12T09:02:10+08:00
 categories:
   - tinkering
 tags:
   - running
-author:
-  - viazure
 share: true
 ---
 
@@ -114,7 +114,7 @@ export default {
 
 ## 删除错误同步的记录
 
-在使用 running-page 的过程中，可能会遇到数据同步错误的情况，比如重复记录或错误的数据。为了处理这些问题，我总结了以下步骤：
+在使用 running-page 的过程中，可能会遇到数据同步错误的情况，例如重复记录或错误的数据。为了处理这些问题，可以按照以下步骤进行操作：
 
 1. **删除数据库中的记录**：使用支持 SQLite 的数据库工具（例如 DBeaver）打开 `run_page/data.db` 文件，找到并删除错误的记录。
 

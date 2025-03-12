@@ -1,15 +1,15 @@
 ---
 title: 使用 docsify 在离线环境中部署文档服务
 slug: deploying-docsify-in-offline-environment
+author:
+  - viazure
 date: 2024-12-29T09:05:52+08:00
-lastmod: 2025-02-23T19:36:48+08:00
+lastmod: 2025-03-12T08:55:24+08:00
 categories:
   - development
 tags:
   - docsify
   - service
-author:
-  - viazure
 share: true
 ---
 

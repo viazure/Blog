@@ -1,15 +1,15 @@
 ---
 title: 2024 旅行日记
 slug: 2024-journey
+author:
+  - viazure
 date: 2024-11-11T21:08:54+08:00
-lastmod: 2025-02-23T16:38:18+08:00
+lastmod: 2025-03-12T09:03:26+08:00
 categories:
   - life
 tags:
   - gallery
   - journey
-author:
-  - viazure
 toc: true
 share: true
 ---
@@ -237,15 +237,15 @@ share: true
 
 ![IMG_20240704_082029](https://webpimg.viazure.cc/IMG_20240704_082029.HEIC)
 
-时间太短，行色匆匆。
-
-![IMG_20240704_114755.HEIC](https://webpimg.viazure.cc/IMG_20240704_114755.HEIC)
-
 吃吃正宗的长沙臭豆腐，喝一杯茶颜悦色。（这俩的店在五一广场到处都是，不用刻意去找。）
 
 ![IMG_20240704_120927](https://webpimg.viazure.cc/IMG_20240704_120927.HEIC)
 
 ![IMG_20240704_115607](https://webpimg.viazure.cc/IMG_20240704_115607.HEIC)
+
+时间太短，行色匆匆。
+
+![IMG_20240704_114755.HEIC](https://webpimg.viazure.cc/IMG_20240704_114755.HEIC)
 
 ### 湖南省博物馆
 
@@ -345,15 +345,15 @@ share: true
 
 ### 邛海
 
-丝丝小雨中的**邛海**有些烟雾缭绕。
+丝丝小雨中的邛海有些烟雾缭绕。
 
 ![IMG_20241108_091213](https://webpimg.viazure.cc/IMG_20241108_091213.HEIC)
 
-邛海边的人造沙滩 —— **[金鳞沙滩](https://surl.amap.com/kOdBcq0S6WI)**。
+邛海边的人造沙滩 —— [金鳞沙滩](https://surl.amap.com/kOdBcq0S6WI)。
 
 ![IMG_20241108_153959.HEIC](https://webpimg.viazure.cc/IMG_20241108_153959.HEIC)
 
-在 **[泸山](https://surl.amap.com/924nq5ZE5eG)** 看见的的第一只猴子，面对投喂，很文明的「给一点吃一点」。
+在 [泸山](https://surl.amap.com/924nq5ZE5eG) 看见的第一只猴子，面对投喂，很文明的「给一点吃一点」。
 
 ![IMG_20241108_102031](https://webpimg.viazure.cc/IMG_20241108_102031.HEIC)
 
@@ -371,8 +371,10 @@ share: true
 
 ### 西昌马拉松
 
-这次**西昌邛海湿地马拉松**我拿下了个人的半程马拉松最好成绩（净成绩：01:56:26），也是我的半程马拉松第一次跑到 2 小时内，又激动又开心😊。
+这次马拉松我拿下了个人的半程马拉松最好成绩（净成绩：01:56:26），也是我的半程马拉松第一次跑到 2 小时内，又激动又开心😊。
 
 ![IMG_20241109_074144.HEIC](https://webpimg.viazure.cc/IMG_20241109_074144.HEIC)
+
+奖牌真好看！
 
 ![IMG_20241109_100621](https://webpimg.viazure.cc/IMG_20241109_100621.HEIC)
