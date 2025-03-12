@@ -1,14 +1,14 @@
 ---
 title: 我使用的 Obsidian 插件
 slug: obsidian-plugins-i-use
+author:
+  - viazure
 date: 2024-11-02T19:58:19+08:00
-lastmod: 2025-02-23T19:37:13+08:00
+lastmod: 2025-03-12T08:56:01+08:00
 categories:
   - tinkering
 tags:
   - obsidian_plugins
-author:
-  - viazure
 share: true
 ---
 
