@@ -8,4 +8,4 @@ Hi 👋
 
 博客的多项功能实现方案参考了博主 [Pseudoyu](https://www.pseudoyu.com/) 的系列教程：[blog · Pseudoyu](https://www.pseudoyu.com/zh/tag/blog/)。
 
-**访问地址**：[viazure.cc](https://viazure.cc)
+**博客地址**：[viazure.cc](https://viazure.cc)
