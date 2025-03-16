@@ -4,7 +4,7 @@ slug: configure-domain-email-with-resend-and-cloudflare
 author:
   - viazure
 date: 2025-03-15T09:52:56+08:00
-lastmod: 2025-03-16T15:30:26+08:00
+lastmod: 2025-03-16T16:02:00+08:00
 categories:
   - tinkering
 tags:
@@ -20,7 +20,7 @@ share: true
 
 ## 背景需求
 
-我的个人域名目前托管在 Cloudflare 上，并启用了其提供的「电子邮件路由（Email Routing）」服务来实现邮件转发功能。但该方案存在一个缺陷：只能接收转发邮件，无法直接通过域名邮箱发送邮件。
+我的个人域名目前托管在 Cloudflare，并启用了其提供的「电子邮件路由（Email Routing）」服务来实现邮件转发功能。但该方案存在一个缺陷：只能接收转发邮件，无法直接通过域名邮箱发送邮件。
 
 为解决发件需求，我曾尝试按照 Gmail 官方教程《[通过其他地址或别名发送电子邮件](https://support.google.com/mail/answer/22370)》配置代发功能。但实际使用时收件方会提示「发件人未验证」警告。经排查发现，这是由于未配置 DKIM 验证机制导致的问题。
 
@@ -57,21 +57,14 @@ share: true
 
 1. 访问 [Resend 官网](https://resend.com)，注册并登录（推荐使用邮箱注册，详见：[踩坑](#踩坑)）
 2. 在 Domains 页面点击 `Add Domain` 添加域名，输入邮箱绑定的域名，并选择区域（Region），例如：`North Virginia (us-east-1)`
-3. 域名添加完成后，Resend 将自动生成 DNS 记录配置：
-
-   | Type | Name               | Content                               | TTL  | Priority | Status   |
-   | ---- | ------------------ | ------------------------------------- | ---- | -------- | -------- |
-   | MX   | send               | feedback-smtp.us-east-1.amazonses.com | Auto | 10       | verified |
-   | TXT  | send               | v=spf1 include:amazonses.com ~all     | Auto |          | verified |
-   | TXT  | resend.\_domainkey | p=MIGxxx                              | Auto |          | verified |
-   | TXT  | \_dmarc            | v=DMARC1; p=none;                     | Auto |          |          |
-
-4. 配置 DNS，Resend 提供了两种配置方式：
+3. 域名添加完成后，需要配置 DNS。Resend 提供了两种配置方式：
 
    1. 自动授权：点击 `Sign in to Cloudflare` 按钮，登录授权后，Resend 将自动添加 DNS 记录录
    2. 手动添加记录：参考 [官方指南](https://resend.com/docs/knowledge-base/cloudflare)
 
-5. 7.  Keys 页面点击 `Create API Key` 创建并记录下密钥（格式：re_xxxxxx）
+   ![DNS 记录](https://webpimg.viazure.cc/250316160031078.png)
+
+4. API Keys 页面点击 `Create API Key` 创建并记录下密钥（格式：re_xxxxxx）
 
 ### 功能验证
 
