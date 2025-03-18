@@ -113,7 +113,7 @@ theme = "hugo-blog-awesome"
 
   # Twikoo
   [params.comments.twikoo]
-    envId = "https://comments.viazure.cc/.netlify/functions/twikoo" # 环境地址，例：https://xxx.netlify.app
+    envId = "https://twikoo-viazure.netlify.app/.netlify/functions/twikoo" # 环境地址，例：https://xxx.netlify.app
     # 下面为可选参数，配置时删除注释符号 `#` 即可。
     # region = "ap-shanghai"  # 环境地域，默认为 ap-shanghai，腾讯云环境填 ap-shanghai 或 ap-guangzhou；Vercel 环境不填
     # path = ""             # 用于区分不同文章的自定义 js 路径，如果您的文章路径不是 location.pathname，需传此参数
