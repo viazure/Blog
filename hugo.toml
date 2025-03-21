@@ -71,7 +71,7 @@ theme = "hugo-blog-awesome"
     # 设置为 "auto" 时会根据访问者的设备颜色偏好应用配色方案
     # 如果不指定任何内容，忽略此参数或将其留空，默认值设置为 "auto"
     # 你可以查看 layouts/index.html 获取更多信息
-    description = "一个记录技术与生活的博客"
+    description = "生活是体验，拍照是情绪，写作是思考，折腾是？"
     mainSections = ["posts"]
     toc = false # 设置为 false 可全局禁用目录
     tocOpen = false # 设置为 true 可默认展开目录
