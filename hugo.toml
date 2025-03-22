@@ -93,7 +93,7 @@ theme = "hugo-blog-awesome"
       # 注意：如果找不到资源（头像图片），图片不会被渲染。不会显示错误
       intro = "viazure"
       name = "viazure"
-      description = "不积跬步，无以至千里"
+      description = "人若无名，可以专心练剑"
 
     # 允许覆盖 webmanifest 选项
     [Languages.zh-cn.params.webmanifest]
