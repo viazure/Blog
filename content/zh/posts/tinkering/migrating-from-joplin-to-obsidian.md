@@ -46,7 +46,7 @@ Obsidian 出来后我也一直在纠结是否需要迁移，因为我目前其�
 Obsidian 拥有强大且丰富的插件资源，尤其是当我发现有博客发布相关的插件后，便决定从 Joplin 迁移到 Obsidian。Obsidian 的文件库管理方式非常灵活，让我可以直接使用从 Joplin 导出的 Markdown 文档，从而大大减少了迁移的工作量。接下来，我只需要：
 
 - [x] 解决笔记的同步： [Remotely Save](https://github.com/remotely-save/remotely-save) + Cloudflare R2
-- [x] 找到我在 VS Code 中已使用习惯的插件或者更好用的插件：[我使用的 Obsidian 插件](https://viazure.cc/posts/obsidian-plugins-i-use/)
+- [x] 找到我在 VS Code 中已使用习惯的插件或者更好用的插件：[我使用的 Obsidian 插件](https://viazure.cc/posts/tinkering/obsidian-plugins-i-use/)
 - [x] 搭建博客并发布我想要分享的内容。
 - [x] 将我的旅行日记重建为文章/相册，并发布。
 
