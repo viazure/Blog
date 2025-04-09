@@ -9,6 +9,9 @@ categories:
   - tinkering
 tags:
   - running
+  - garmin
+  - running-page
+toc: true
 share: true
 ---
 
