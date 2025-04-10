@@ -4,7 +4,7 @@ slug: monthly-review-202503
 author:
   - viazure
 date: 2025-04-06T14:56:58+08:00
-lastmod: 2025-04-09T09:22:43+08:00
+lastmod: 2025-04-10T08:48:40+08:00
 categories:
   - life
 tags:
@@ -42,7 +42,7 @@ share: true
 
 而自从跑过马拉松后，马拉松又成为了另一种刺激我坚持跑步的动力。赛道上的气氛和那种咬牙坚持后最终冲线的愉悦让我非常享受。
 
-3 月月初去江油市参加了半程马拉松，由于赛前身体状态不太好，只想着安全完赛就行，能跑到两小时内最好，但跑起来后平均配速稳稳压在 5'25"/公里左右，我感觉**我又行了**，大众二级运动员的目标好像这次就能提前完成了。但是离终点还有一公里多的时候突然就跑崩了，最终净成绩 01:57:34 跑完了比赛。
+3 月月初去江油市参加了半程马拉松，由于赛前身体状态不太好，只想着安全完赛就行，能跑到两小时内最好，但跑起来后平均配速稳稳压在 5'25"/公里左右，我感觉我又行了，大众二级运动员的目标好像这次就能提前完成了。但是离终点还有一公里多的时候突然就跑崩了，最终净成绩 01:57:34 跑完了比赛。
 
 「当大的目标变得仿佛触手可及时，原本预想的小目标便会很容易抛之脑后。但若发现只差一点，最终却未实现时，就算预想的目标达到了也一点不开心。」—— 江油马拉松回家路上的感想。
 
@@ -58,7 +58,7 @@ share: true
 
 ![啤酒鸭](https://webpimg.viazure.cc/IMG_20250308_124132.HEIC)
 
-跑马拉松后，我学会一道新的菜品 —— 啤酒鸭。因为每次参赛都能领到一两罐啤酒。「雪花啤酒」真是很爱赞助马拉松，我跑的这几场马拉松的赞助商都有它。由于我不喝酒，所以每次都用啤酒来做菜，啤酒鸭是我试验了各种啤酒菜品里最喜欢的。3 月跑完江油市马拉松后，就又做了一次啤酒鸭。
+跑马拉松后，我学会一道新的菜品 —— 啤酒鸭，因为每次参赛都能领到一两罐啤酒。「雪花啤酒」真是很爱赞助马拉松了，我跑的每场马拉松的赞助商都有它。由于我不喝酒，所以每次都用啤酒来做菜，啤酒鸭是我试验了各种啤酒菜品里最喜欢的。于是，跑完江油马拉松回来后就又做了一次。
 
 好吃，爱吃。下一次马拉松后再继续做来吃。
 
@@ -74,31 +74,29 @@ share: true
 
 「生命不息，折腾不止。」
 
-我总是告诉自己，合理的规划自己的时间，多花点时间来学习。但是我总忍不住花大量的时间来捣鼓些有的没的。
+我总是告诉自己，合理的规划自己的时间，多花点时间来学习，但是我总是忍不住花大量的时间来捣鼓些有的没的。
 
 ### 博客
 
 在难得空闲的几个周末里完成了博客的基础装修，包括：
 
-- 新增了基于 [Twikoo](https://twikoo.js.org/) 的评论系统，增加 `comments` 参数用于控制页面评论功能的显示状态。
+- 新增了基于 [Twikoo](https://twikoo.js.org/) 的评论系统，并增加 `comments` 参数用于控制页面评论功能的显示状态。
 - 新增了基于 [GoatCounter](https://www.goatcounter.com/) 的网站统计系统。
 - 调整了 RSS 的一些设置，例如：添加网站图标，仅显示主分区文章等。
 
-在完成博客装修后，我又花了一晚上对我使用的博客主题添加了中文语言支持，并给原仓库提了 PR「 [feat: Add Chinese language #291](https://github.com/hugo-sid/hugo-blog-awesome/pull/291) 」，并被合并进了原仓库主分支，很开心。
+在完成这些后，我又花了一晚上对我使用的博客主题添加了中文语言支持，并给原仓库提了 PR「 [feat: Add Chinese language #291](https://github.com/hugo-sid/hugo-blog-awesome/pull/291) 」，后面也被合并进了主分支，很开心。
 
 ### 工具
 
 #### Obsidian
 
-使用 [Dashboard++](https://github.com/TfTHacker/DashboardPlusPlus) 模板配合 [Homepage](https://github.com/mirnovov/obsidian-homepage) 、[Dataview](https://github.com/blacksmithgu/obsidian-dataview) 插件定制好了我的 Obsdian Dashboard。
+使用 [Dashboard++](https://github.com/TfTHacker/DashboardPlusPlus) 模板配合 [Homepage](https://github.com/mirnovov/obsidian-homepage) 、[Dataview](https://github.com/blacksmithgu/obsidian-dataview) 插件定制好了我的 Obsidian Dashboard。
 
-**Dashboar++ 示例图**：
+**Dashboard++ 示例图**：
 
 ![Dashboard++](https://ghproxy.net/https://github.com/TfTHacker/DashboardPlusPlus/raw/master/images/dashboard-snapshot.png)
 
-Dataview 这个插件确实很强大，各种数据索引与查询非常方便，类 SQL 的查询语言对于程序员来说也很好入门，同时还支持全功能的 JavaScript。
-
-这里分享一个显示当前日期和天气的 `dataviewjs` ，效果类似这样： `今天是 4 月 6 日，星期日。🌦 +15°C`
+Dataview 这个插件确实很强大，各种数据索引与查询非常方便，类 SQL 的查询语言对于程序员来说也很好入门，同时还支持全功能的 JavaScript。我也折腾了一会儿，这里分享一个显示当前日期和天气的 `dataviewjs` ，效果类似这样： `今天是 4 月 6 日，星期日。🌦 +15°C`。
 
 ```javascript
 // 获取当前日期和星期几
@@ -132,13 +130,11 @@ const span = dv.span(`今天是 ${dateStr}。`);
 
 在测试自己的域名邮箱发邮件时，发现 Outlook 客户端会提示「发件人未验证」的警告，折腾了一下解决了这个问题。具体见这篇《[使用 Resend 与 Cloudflare 实现域名邮箱发信](https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/)》。
 
-#### [douban-backup：同步豆瓣标记条目到 Notion/NeoDB](https://github.com/bambooom/douban-backup)
+#### 收藏的项目
 
-本着「鸡蛋不放在一个篮子」的态度，我会同时使用豆瓣、Bangumi、NeoDB 标记我的书、影音、游戏等记录。虽然记录的频率不高，但这样操作始终有点繁琐。最后找到了这个项目，能够通过解析豆瓣 RSS，将最近的标记信息同步到 NeoDB。后面找机会再弄一下 Bangumi 的同步吧。
+- [douban-backup：同步豆瓣标记条目到 Notion/NeoDB](https://github.com/bambooom/douban-backup)，本着「鸡蛋不放在一个篮子」的原则，我会同时使用豆瓣、Bangumi、NeoDB 标记我的书、影音、游戏等记录。虽然频率不高，但这样操作始终有点繁琐。最后找到了这个项目，能够通过解析豆瓣 RSS，将最近的标记信息同步到 NeoDB。后面找机会再弄一下 Bangumi 的同步吧。
 
-#### [Windows Scrobbler](https://github.com/adrian1372/windows-scrobbler)
-
-通过监听 Windows 媒体会话，将当前正在播放的歌曲信息同步到 Last.fm。虽然只是一个控制台程序，但完全满足我在电脑上使用一些音乐播放软件（如网易云音乐、MusicFree）时自动同步听歌记录到 Last.fm 的需求了。
+- [Windows Scrobbler](https://github.com/adrian1372/windows-scrobbler)，通过监听 Windows 媒体会话，将当前正在播放的歌曲信息同步到 Last.fm。虽然只是一个控制台程序，但完全满足我在电脑上使用一些音乐播放软件（如网易云音乐、MusicFree）时自动同步听歌记录到 Last.fm 的需求了。
 
 ## 书影音
 
@@ -171,7 +167,7 @@ const span = dv.span(`今天是 ${dateStr}。`);
 
 ### 英语
 
-背单词背的有些疲了，玩会儿多邻国，类似玩游戏的体验确实比枯燥的背诵和阅读好多了，交互设计这块做得不错，但对英语能力的提升还未知，先作为这段时间厌学的替代品吧，也没啥坏处。
+背单词背的有些疲了，玩会儿多邻国，类似玩游戏的体验确实比枯燥的背诵和阅读好多了。多邻国的交互设计这块做得不错，但对英语能力的提升还未知，先作为这段时间厌学的替代品吧，也没啥坏处。
 
 ### 技术
 
@@ -195,4 +191,4 @@ const span = dv.span(`今天是 ${dateStr}。`);
 
 突然我就想通了，如果有人一直记得你，并且愿意一直记住你，那他们会利用各种手段去留下你生前的痕迹，不需要你自己刻意做什么。你在生前就考虑死后的事情，反而有些过于创造需求了。
 
-**你不应该在生前就想着死后的事情，而应该在活着的时候做让人能记住你的事情。**
+你不应该在生前就想着死后的事情，而应该在活着的时候做让人能记住你的事情。
