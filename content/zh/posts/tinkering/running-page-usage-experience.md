@@ -4,7 +4,7 @@ slug: running-page-usage-experience
 author:
   - viazure
 date: 2024-12-22T22:36:39+08:00
-lastmod: 2025-03-23T10:21:44+08:00
+lastmod: 2025-04-13T07:53:43+08:00
 categories:
   - tinkering
 tags:
@@ -44,7 +44,7 @@ share: true
 
 官方同步方案依赖 GitHub Action 定时触发（默认每天 1 次），如果想及时同步，可以通过 Garmin 手表应用 **Magic Push** 手动触发 Webhook ，来实现与 GitHub Actions 中的工作流进行交互。
 
-Magic Push 当前版本仅支持通过 GET 请求方式的 Webhook，但是 GitHub Actions 的工作流需要通过 POST 请求触发，因此我使用 Cloudflare 作为中转，将 GET 请求转换为 POST 请求。
+Magic Push 当前版本仅支持通过 GET 请求方式的 Webhook，但是 GitHub Actions 的工作流需要通过 POST 请求触发，因此我使用 Cloudflare Worker 作为中转，将 GET 请求转换为 POST 请求。
 
 ### 实现路径
 
