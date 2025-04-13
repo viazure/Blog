@@ -3,8 +3,9 @@ title: 使用 docsify 在离线环境中部署文档服务
 slug: deploying-docsify-in-offline-environment
 author:
   - viazure
+  - Kimi
 date: 2024-12-29T09:05:52+08:00
-lastmod: 2025-03-12T08:55:24+08:00
+lastmod: 2025-04-13T11:31:52+08:00
 categories:
   - development
 tags:
@@ -13,16 +14,18 @@ tags:
 share: true
 ---
 
-> 由于公司的开发服务器经历了一次被迫系统重装，导致之前使用 [docsify](https://docsify.js.org/#/) 部署的文档服务未能保留。今天着手重新部署该服务，鉴于当前服务器无法接入互联网，我计划实施一个适用于离线环境的部署方案。以下是我为此次部署过程所做的记录。
->
-> 本文由 [Kimi. ai](https://kimi.moonshot.cn/) 协助润色完成。
+> 本文初稿由 [Kimi](https://kimi.moonshot.cn/) 协助润色完成。
+
+## 前言
+
+由于公司的开发服务器经历了一次被迫系统重装，导致之前使用 [docsify](https://docsify.js.org/#/) 部署的文档服务未能保留。今天着手重新部署该服务，鉴于当前服务器无法接入互联网，我计划实施一个适用于离线环境的部署方案。以下是我为此次部署过程所做的记录。
 
 ## 步骤 1：在有网络的环境中准备
 
 1. 安装 `docsify-cli` 与 `docsify-tools`
 
    - 打开命令行工具，并确保已经安装了 `npm`。
-   - 运行以下命令来安装 `docsify-cli`：
+   - 运行以下命令来安装 `docsify-cli` 与 `docsify-tools`：
 
    ```bash
    npm install -g docsify-cli
@@ -47,11 +50,16 @@ share: true
    ```bash
    npm install docsify-cli --save
    npm install docsify-tools --save
-   ```
+   ```    
+
+5. 下载并保存项目所需的资源文件。
+
+   - 下载 `index.html` 文件所需的 [vue.css](https://cdn.jsdelivr.net/npm/docsify/themes/vue.css) 与 [docify.min.js](https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js) 文件。也可提前使用 `docsify init` 命令生成初始的 `index.html` 文件，用于获取最新引用的 `css` 与 `js` 地址。
+   - 按相同方式提前下载好需要使用的插件资源文件。
 
 ## 步骤 2：将目录传输到离线环境
 
-将整个 `docsify-setup` 目录拷贝到离线计算机中。
+将整个 `docsify-setup` 目录和下载的资源文件拷贝到离线计算机中。
 
 ## 步骤 3：在离线环境中安装
 
@@ -59,12 +67,18 @@ share: true
 2. 在 `docsify-setup` 目录中，运行以下命令来安装 `docsify-cli` 及其依赖：
 
    ```bash
-   npm install -g
+   npm install -g .
    ```
 
-3. 安装完成后，将 `docsify-setup` 所在目录的 `<path>\node_modules\.bin` 加入到环境变量 `PATH` 中。
+3. 安装完成后，将 `docsify-setup` 所在目录的 `[你的路径]\node_modules\.bin` 加入到环境变量 `PATH` 中。
 4. 可以通过运行以下命令来验证 `docsify-cli` 是否安装成功，如果 `docsify-cli` 安装成功，它将显示版本号。
 
    ```bash
    docsify -v
    ```
+
+## 步骤 4：项目部署部署与运行
+
+1. 在离线计算机中通过 `docsify init` 命令生成初始项目文件，或直接拷贝本地已生成好的相关文件。
+2. 将 `index.html` 中引用的资源文件路径替换为本地相对路径，配置示例可参考 [viazure/docsify-in-offline-example](https://github.com/viazure/docsify-in-offline-example)。
+3. 运行 `docsify serve` 命令启动文档服务。
