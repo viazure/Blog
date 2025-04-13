@@ -53,7 +53,7 @@ share: true
 
 7. 下载并保存项目所需的资源文件。
 
-   - 下载 `index.html` 文件所需的 [vue.css](https://cdn.jsdelivr.net/npm/docsify/themes/vue.css) 与 [docify.min.js](https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js) 文件。也可提前使用 `docsify init` 命令生成初始的 `index.html` 文件，用于获取最新引用的 `css` 与 `js` 地址。
+   - 下载 `index.html` 文件所需的 [vue.css](https://cdn.jsdelivr.net/npm/docsify/themes/vue.css) 与 [docsify.min.js](https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js) 文件。也可提前使用 `docsify init` 命令生成初始的 `index.html` 文件，用于获取最新引用的 `css` 与 `js` 地址。
    - 按相同方式提前下载好需要使用的插件资源文件。
 
 ## 步骤 2：将目录传输到离线环境
@@ -76,7 +76,7 @@ share: true
    docsify -v
    ```
 
-## 步骤 4：项目部署部署与运行
+## 步骤 4：项目部署与运行
 
 1. 在离线计算机中通过 `docsify init` 命令生成初始项目文件，或直接拷贝本地已生成好的相关文件。
 2. 将 `index.html` 中引用的资源文件路径替换为本地相对路径，配置示例可参考 [viazure/docsify-in-offline-example](https://github.com/viazure/docsify-in-offline-example)。
