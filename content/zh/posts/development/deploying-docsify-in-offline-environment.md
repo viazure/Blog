@@ -18,7 +18,7 @@ share: true
 
 由于公司的开发服务器经历了一次被迫系统重装，导致之前使用 [docsify](https://docsify.js.org/#/) 部署的文档服务未能保留。今天着手重新部署该服务，鉴于当前服务器无法接入互联网，我计划实施一个适用于离线环境的部署方案。以下是我为此次部署过程所做的记录。
 
-## 步骤 1 ：在有网络的环境中准备
+## 步骤 1：在有网络的环境中准备
 
 1. 访问 [Node.js 官网](https://nodejs.org/) ，下载安装程序。
 2. 运行安装程序，按照安装程序中的说明进行操作，同时安装 Node.js 和 `npm`。
@@ -49,7 +49,7 @@ share: true
    ```bash
    npm install docsify-cli --save
    npm install docsify-tools --save
-   ```    
+   ```
 
 7. 下载并保存项目所需的资源文件。
 

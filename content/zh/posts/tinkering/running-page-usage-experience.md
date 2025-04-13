@@ -4,7 +4,7 @@ slug: running-page-usage-experience
 author:
   - viazure
 date: 2024-12-22T22:36:39+08:00
-lastmod: 2025-04-13T07:53:43+08:00
+lastmod: 2025-04-13T19:12:00+08:00
 categories:
   - tinkering
 tags:
@@ -23,7 +23,7 @@ share: true
 
 1. **删除数据库中的记录**：使用支持 SQLite 的数据库工具（例如 DBeaver）打开 `run_page/data.db` 文件，找到并删除错误的记录。
 
-   示例 SQL:
+   示例 SQL 语句：
 
    ```sql
    -- 查询最近 10 条记录
@@ -42,7 +42,7 @@ share: true
 
 ## 实时同步 Garmin 运动记录
 
-官方同步方案依赖 GitHub Action 定时触发（默认每天 1 次），如果想及时同步，可以通过 Garmin 手表应用 **Magic Push** 手动触发 Webhook ，来实现与 GitHub Actions 中的工作流进行交互。
+官方同步方案依赖 GitHub Action 定时触发（默认每天 1 次），如果想及时同步，可以通过 Garmin 手表应用 **Magic Push** 手动触发 Webhook，来实现与 GitHub Actions 中的工作流进行交互。
 
 Magic Push 当前版本仅支持通过 GET 请求方式的 Webhook，但是 GitHub Actions 的工作流需要通过 POST 请求触发，因此我使用 Cloudflare Worker 作为中转，将 GET 请求转换为 POST 请求。
 
