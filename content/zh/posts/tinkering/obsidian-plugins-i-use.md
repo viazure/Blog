@@ -36,11 +36,11 @@ share: true
 - [Pandoc Plugin](https://github.com/OliverBalfour/obsidian-pandoc)：可以导出更丰富的文件格式。
 - [Recent Files](https://github.com/tgrosinger/recent-files-obsidian)：查看最近浏览过的文件。
 - [Remotely Save](https://github.com/remotely-save/remotely-save)：笔记同步。搭配 Cloudflare R2 使用。
-- [Style Settings](https://github.com/mgmeyers/obsidian-style-settings)：管理自定义 CSS。推荐一个 [改善笔记的链接编辑体验](https://forum-zh.obsidian.md/t/topic/38000) 的 CSS 。
+- [Style Settings](https://github.com/mgmeyers/obsidian-style-settings)：管理自定义 CSS。推荐一个 [改善笔记的链接编辑体验](https://forum-zh.obsidian.md/t/topic/38000)的 CSS。
 - [Sync Cnblog](https://github.com/lei-ctyh/obsidian-sync-cnblog) ：同步 Obsidian 笔记到博客园。
 - [Tag Wrangler](https://github.com/pjeby/tag-wrangler)：给标签增加右键菜单，主要用于批量重命名。
 - [Text Extractor](https://github.com/scambier/obsidian-text-extractor)：从图像和 PDF 中提取文本，搭配 Omnisearch 使用。
 - [Tray](https://github.com/dragonwocky/obsidian-tray)：将 Obsidian 设为开机自启，并能够最小化到系统托盘。
 - [Various Complements](https://github.com/tadashi-aikawa/obsidian-various-complements-plugin)：自动填充单词与自定义内容。
 - [Version History Diff](https://github.com/kometenstaub/obsidian-version-history-diff)：对比不同版本文本差异。
-- [Word Splitting for Simplified Chinese in Edit Mode And Vim Mode](https://github.com/aidenlx/cm-chs-patch)：提供结巴分词引擎，与 Omnisearch 插件配合使用。                  
+- [Word Splitting for Simplified Chinese in Edit Mode And Vim Mode](https://github.com/aidenlx/cm-chs-patch)：提供结巴分词引擎，与 Omnisearch 插件配合使用。
