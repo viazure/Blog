@@ -5,7 +5,7 @@ author:
   - viazure
   - Kimi
 date: 2024-12-29T09:05:52+08:00
-lastmod: 2025-04-15T20:08:34+08:00
+lastmod: 2025-04-15T20:46:27+08:00
 categories:
   - development
 tags:
@@ -24,7 +24,7 @@ share: true
 
 1. 访问 [Node.js 官网](https://nodejs.org/) ，下载安装程序。
 2. 运行安装程序，按照安装程序中的说明进行操作，同时安装 Node.js 和 `npm`。
-3. 安装 `docsify-cli` 与 `docsify-tools`。
+3. 安装 `docsify-cli` 与 `docsify-tools`（若无「自动生成侧边栏」需求，可不安装 `docsify-tools` ）。
 
    - 打开命令行工具，运行以下命令来安装 `docsify-cli` 与 `docsify-tools`：
 
@@ -68,7 +68,7 @@ share: true
 2. 在 `docsify-setup` 目录中，运行以下命令来安装 `docsify-cli` 及其依赖：
 
    ```bash
-   npm install -g .
+   npm install -g
    ```
 
 3. 安装完成后，将 `docsify-setup` 所在目录的 `[你的路径]\node_modules\.bin` 加入到环境变量 `PATH` 中。
@@ -81,5 +81,5 @@ share: true
 ## 步骤 4：项目部署与运行
 
 1. 在离线计算机中通过 `docsify init` 命令生成初始项目文件，或直接拷贝本地已生成好的相关文件。
-2. 将 `index.html` 中引用的资源文件路径替换为本地相对路径，配置示例可参考 [docsify-in-offline-example/index.html](https://github.com/viazure/docsify-in-offline-example/blob/main/index.html)。
-3. 运行 `docsify serve` 命令启动文档服务。其他部署方式见官方文档「 [部署](https://docsify.js.org/#/zh-cn/deploy) 」部分。
+2. 将 `index.html` 中引用的资源文件路径替换为本地相对路径，配置可参考 [docsify-in-offline-example/index.html](https://github.com/viazure/docsify-in-offline-example/blob/main/index.html)。
+3. 运行 `docsify serve` 命令启动文档服务，或通过 IIS 或 nginx 等工具直接部署修改好的静态页面。（注：在 IIS 中部署时需要添加 MIME 类型 `text/markdown`。）
