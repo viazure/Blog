@@ -17,7 +17,7 @@ share: true
 
 > 本文初稿由 [Kimi](https://kimi.moonshot.cn/) 协助润色完成。
 >
-> **2025-04-15 更新**：为方便快速上手，我已将本文中的示例代码和配置文件上传至 [GitHub](https://github.com/viazure/docsify-in-offline-example)/[Gitee](https://gitee.com/viazure/docsify-in-offline-example)。可以直接克隆或下载此项目作为模板，根据自身需求进行修改和使用。该示例项目包含了所有离线部署所需的基础文件和配置，能够在没有网络连接的环境中使用 IIS 或 nginx 等工具迅速搭建起文档服务。如有任何问题或建议，欢迎通过评论和 GitHub Issues 与我交流。
+> **2025-04-15 更新**：为方便快速上手，我已将本文中的示例代码和配置文件上传至 [GitHub](https://github.com/viazure/docsify-in-offline-example)/[Gitee](https://gitee.com/viazure/docsify-in-offline-example)。可以直接克隆或下载此项目作为模板，根据自身需求进行修改和使用。该示例项目包含了所有离线部署所需的基础文件和配置，能够在没有网络连接的环境中使用 IIS 或 Nginx 等工具迅速搭建起文档服务。如有任何问题或建议，欢迎通过评论和 GitHub Issues 与我交流。
 
 由于公司的开发服务器经历了一次被迫系统重装，导致之前使用 [docsify](https://docsify.js.org/#/) 部署的文档服务未能保留。今天着手重新部署该服务，鉴于当前服务器无法接入互联网，我计划实施一个适用于离线环境的部署方案。以下是我为此次部署过程所做的记录。
 
@@ -83,4 +83,4 @@ share: true
 
 1. 在离线计算机中通过 `docsify init` 命令生成初始项目文件，或直接拷贝本地已生成好的相关文件。
 2. 将 `index.html` 中引用的资源文件路径替换为本地相对路径，配置可参考 [docsify-in-offline-example/index.html](https://github.com/viazure/docsify-in-offline-example/blob/main/index.html)。
-3. 运行 `docsify serve` 命令启动文档服务，或通过 IIS 或 nginx 等工具直接部署修改好的静态页面。（注：在 IIS 中部署时需要添加 MIME 类型 `text/markdown`。）
+3. 运行 `docsify serve` 命令启动文档服务，或通过 IIS 或 Nginx 等工具直接部署修改好的静态页面。（注：在 IIS 中部署时需要添加 MIME 类型 `text/markdown`。）
