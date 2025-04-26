@@ -52,7 +52,7 @@ share: true
 
 ### 服务配置
 
-1. 访问 [Resend 官网](https://resend.com)，注册并登录（推荐使用邮箱注册，详见：[踩坑](#踩坑)）
+1. 访问 [Resend 官网](https://resend.com)，注册并登录（推荐使用邮箱注册，详见：[踩坑](configure-domain-email-with-resend-and-cloudflare.md##)）
 2. 在 Domains 页面点击 `Add Domain` 添加域名，输入邮箱绑定的域名，并选择区域（Region），例如：`North Virginia (us-east-1)`
 3. 域名添加完成后，需要配置 DNS。Resend 提供了两种配置方式：
 
