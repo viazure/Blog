@@ -4,7 +4,7 @@ slug: running-page-usage-experience
 author:
   - viazure
 date: 2024-12-22T22:36:39+08:00
-lastmod: 2025-04-26T16:16:48+08:00
+lastmod: 2025-04-27T16:53:31+08:00
 categories:
   - tinkering
 tags:
@@ -19,7 +19,16 @@ share: true
 
 ## 删除错误同步的记录
 
-在使用 running_page 的过程中，可能会遇到数据同步错误的情况，例如重复记录或错误的数据。为了处理这些问题，可以按照以下步骤进行操作：
+在使用 running_page 的过程中，可能会遇到数据同步错误的情况，例如重复记录或错误的数据。为了处理这些问题，可以按照以下步骤进行操作。
+
+### 数据文件在 GitHub Cache 中
+
+1. **定位并删除 GitHub Cache 中的错误记录**：进入项目的 GitHub Actions 页面，点击左侧的 `Caches`，在筛选框中输入 `key:track_data-` 筛选出所有已缓存的记录，根据生成时间删除错误记录及其之后生成的所有缓存记录。
+   ![操作示例](https://webpimg.viazure.cc/250427164618340.png)
+
+2. 重新运行 `Run Data Sync` 进行同步。
+
+### 数据文件在源文件中
 
 1. **删除数据库中的记录**：使用支持 SQLite 的数据库工具（例如 DBeaver）打开 `run_page/data.db` 文件，找到并删除错误的记录。
 
@@ -130,10 +139,10 @@ export default {
 
 **环境变量说明**：
 
-| 类型  | 名称                   | 值            | 说明                                                                                                       |
-| --- | -------------------- | ------------ | -------------------------------------------------------------------------------------------------------- |
-| 纯文本 | `GITHUB_OWENER_NAME` | viazure      | 仓库所有者                                                                                                    |
-| 纯文本 | `GITHUB_REPO_NAME`   | running_page | running_page 项目仓库名称                                                                                      |
-| 纯文本 | `GITHUB_TOKEN`       | ghp_XXX      |                                                                                                          |
+| 类型   | 名称                 | 值           | 说明                                                                                                                    |
+| ------ | -------------------- | ------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| 纯文本 | `GITHUB_OWENER_NAME` | viazure      | 仓库所有者                                                                                                              |
+| 纯文本 | `GITHUB_REPO_NAME`   | running_page | running_page 项目仓库名称                                                                                               |
+| 纯文本 | `GITHUB_TOKEN`       | ghp_XXX      |                                                                                                                         |
 | 纯文本 | `GITHUB_WORKFLOW_ID` | XXX          | 工作流 id，获取方式参考了 [shortcuts](https://github.com/yihong0618/running_page?tab=readme-ov-file#shortcuts) 示例方案 |
-| 纯文本 | `SYNC_TOKEN`         | XXX          | 可以生成一个 GUID 作为密钥，避免 URL 暴露                                                                               |
+| 纯文本 | `SYNC_TOKEN`         | XXX          | 自定义同步令牌。可以生成一个 GUID 作为同步令牌，避免 URL 暴露                                                           |
