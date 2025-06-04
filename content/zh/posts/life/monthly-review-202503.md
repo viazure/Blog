@@ -4,7 +4,7 @@ slug: monthly-review-202503
 author:
   - viazure
 date: 2025-04-06T14:56:58+08:00
-lastmod: 2025-04-15T11:43:27+08:00
+lastmod: 2025-06-02T21:40:20+08:00
 categories:
   - life
 tags:
@@ -94,7 +94,7 @@ share: true
 
 **Dashboard++ 示例图**：
 
-![Dashboard++](https://ghproxy.net/https://github.com/TfTHacker/DashboardPlusPlus/raw/master/images/dashboard-snapshot.png)
+![Dashboard++](https://github.com/TfTHacker/DashboardPlusPlus/raw/master/images/dashboard-snapshot.png)
 
 Dataview 这个插件确实很强大，各种数据索引与查询非常方便，类 SQL 的查询语言对于程序员来说也很好入门，同时还支持全功能的 JavaScript。我也折腾了一会儿，这里分享一个显示当前日期和天气的 `dataviewjs` ，效果类似这样： `今天是 4 月 6 日，星期日。🌦 +15°C`。
 
