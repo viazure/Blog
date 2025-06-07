@@ -2,7 +2,7 @@
 title: 2025 步履不停
 slug: 2025-journey
 date: 2025-02-26T20:54:54+08:00
-lastmod: 2025-06-02T19:29:02+08:00
+lastmod: 2025-06-06T16:30:23+08:00
 categories:
   - life
 tags:
@@ -28,29 +28,29 @@ share: true
 
 嘉陵江是南充人生活的一部分。沿着江边一路走着，能看到很多在江畔洗衣服的人。
 
-![IMG_20250120_101814.HEIC](https://webpimg.viazure.cc/IMG_20250120_101814.HEIC)
+![江畔洗衣服的人](https://webpimg.viazure.cc/IMG_20250120_101814.HEIC)
 
 时不时从江里冒出的人头 —— 冬泳爱好者。
 
-![IMG_20250120_103748.HEIC](https://webpimg.viazure.cc/IMG_20250120_103748.HEIC)
+![冬泳爱好者](https://webpimg.viazure.cc/IMG_20250120_103748.HEIC)
 
 作为嗦粉爱好者是无法抗拒**南充米粉**的。**文兴粉馆**在当地口碑不错，我吃的是这家店：[文兴粉馆（什字街店）](https://surl.amap.com/wa7nAlzHgeq)。汤底很鲜，味道也很足。
 
-![IMG_20250120_113658.HEIC](https://webpimg.viazure.cc/IMG_20250120_113658.HEIC)
+![南充米粉](https://webpimg.viazure.cc/IMG_20250120_113658.HEIC)
 
 南充的**锅盔夹凉粉**也是名声在外，遂在酒店附近找到一家 [潆溪侯锅盔](https://surl.amap.com/xlujAzf1yg2n)，尝过之后只觉一个买少了。超级酥脆的锅盔，裹着爽口的川北凉粉，绝了。
 
-![IMG_20250120_171452.HEIC](https://webpimg.viazure.cc/IMG_20250120_171452.HEIC)
+![锅盔夹凉粉](https://webpimg.viazure.cc/IMG_20250120_171452.HEIC)
 
 ### 西山风景区
 
 **西山**是南充市内一个登山、徒步的好去处，山不是很高，风景也不错，还可以坐到老式（刺激）的全开放缆车。
 
-![IMG_20250120_143458.HEIC](https://webpimg.viazure.cc/IMG_20250120_143458.HEIC)
+![西山的缆车](https://webpimg.viazure.cc/IMG_20250120_143458.HEIC)
 
 山顶的**栖乐寺**外挂满了祈福的风铃。
 
-![MVIMG_20250120_144119.jpg](https://webpimg.viazure.cc/MVIMG_20250120_144119.jpg)
+![栖乐寺的风铃](https://webpimg.viazure.cc/MVIMG_20250120_144119.jpg)
 
 ## 四川省江油市
 
@@ -62,13 +62,13 @@ share: true
 
 这次来江油，就是为了参加 **2025 江油马拉松**。刚好最近**哪吒 2**爆火，江油作为「哪吒祖庭」，自然也免不了蹭蹭这波热度。刚到领物现场，就看到了哪吒的塑像（塑料雕像🤣）。
 
-![IMG_20250301_103935.HEIC](https://webpimg.viazure.cc/IMG_20250301_103935.HEIC)
+![哪吒塑像](https://webpimg.viazure.cc/IMG_20250301_103935.HEIC)
 
 江油马拉松的参赛包还蛮丰富的，除了参赛包里本来的物品，还可以通过赠送的购物券在马博会上换取各种特产（例如：江油肥肠、太白酥）。
 
 种草**脆升升**，黄油味好吃。
 
-![IMG_20250301_120419.HEIC](https://webpimg.viazure.cc/IMG_20250301_120419.HEIC)
+![江油马拉松参赛包](https://webpimg.viazure.cc/IMG_20250301_120419.HEIC)
 
 **跑完了**。
 
@@ -78,13 +78,13 @@ share: true
 
 前半程节奏控制得还不错，平均配速稳稳压在 5'25"/公里左右。要是能一直保持这个节奏，说不定真能冲进二级。可惜最后一公里多实在跑不动了，双腿又重又痛，感觉在抽筋的边缘，心率也一直居高不下，差不多是走着完成了比赛。
 
-![IMG_20250302_093214.HEIC](https://webpimg.viazure.cc/IMG_20250302_093214.HEIC)
+![马拉松终点拱门](https://webpimg.viazure.cc/IMG_20250302_093214.HEIC)
 
-![250409090329788.png](https://webpimg.viazure.cc/250409090329788.png)
+![成绩证书](https://webpimg.viazure.cc/250409090329788.png)
 
 这次马拉松的奖牌还是挺好看的，下一次再来征服这个赛道吧。
 
-![IMG_20250302_100735.HEIC](https://webpimg.viazure.cc/IMG_20250302_100735.HEIC)
+![马拉松奖牌](https://webpimg.viazure.cc/IMG_20250302_100735.HEIC)
 
 ## 贵州省铜仁市
 
@@ -94,10 +94,10 @@ share: true
 
 在铜仁出差，小待了两天。闲着没事准备去铜仁古城逛逛。路边吃了个卷粉，味道不错。
 
-![IMG_20250514_184325.HEIC](https://webpimg.viazure.cc/IMG_20250514_184325.HEIC)
+![卷粉](https://webpimg.viazure.cc/IMG_20250514_184325.HEIC)
 
 去的时间还早，街道上的灯还没开，索性沿着旁边的河走了一圈。逛完回来灯也开了，晚上的塔还算好看。喝了杯当地的抹茶饮料就匆匆回酒店了。
 
-![IMG_20250514_191858.HEIC](https://webpimg.viazure.cc/IMG_20250514_191858.HEIC)
+![母女](https://webpimg.viazure.cc/IMG_20250514_191858.HEIC)
 
-![IMG_20250515_205534.HEIF](https://webpimg.viazure.cc/IMG_20250515_205534.HEIF)
+![晚上的塔](https://webpimg.viazure.cc/IMG_20250515_205534.HEIF)
