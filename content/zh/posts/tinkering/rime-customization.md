@@ -1,6 +1,6 @@
 ---
 date: 2025-08-30T22:07:02+08:00
-lastmod: 2025-08-30T22:07:02+08:00
+lastmod: 2025-08-30T22:34:29+08:00
 title: Rime 输入法折腾笔记
 slug: rime-customization
 author:
@@ -17,7 +17,7 @@ share: true
 
 ## 前言
 
-近期 Windows 自带输入法与 Visual Studio 2022 八字不合，每次编写中文的 commit message 时，输入法都会崩掉，系统直接卡死。所以开源、高度可定制（折腾），注重隐私与效率的 Rime 输入法成为我下一个输入法，花了一些时间折腾配置，在此记录下操作过程。
+近期被 Windows 自带输入法和 Visual Studio 2022 的兼容性问题困扰——每次写中文 commit message 时，输入法都会崩溃，系统卡死。于是转向了开源、高度可定制（折腾）且注重隐私的 Rime 输入法。花了不少时间折腾配置，在此记录下操作过程。
 
 ## 一、词库整理
 
@@ -38,13 +38,13 @@ share: true
 ### 2.1 转换词库
 
 1. 打开 [深蓝词库转换工具](https://github.com/studyzy/imewlconverter)。
-2. 选择已保存的姓名 `.txt` 文件，方案选择「无拼音纯汉字」-->> 「Rime 中州韵」。
+2. 选择已保存的姓名 `.txt` 文件，方案选择「无拼音纯汉字」→ 「Rime 中州韵」。
 
 ### 2.2 处理自定义短语
 
 1. 打开 [深蓝词库转换工具](https://github.com/studyzy/imewlconverter)。
 2. 选择已保存的自定义短语文件 `UserDefinedPhrase.dat`，选择拼音编码方案，我使用的是自然码双拼，故此选择「自然码」。
-3. 转换方案选择「Win10 微软五笔（用户自定义短语）」-->> 「Gboard - 自然码」。必须选择「Win10 微软五笔（用户自定义短语）」才能正常转换出实际的双拼方案的词库文件。也可以先导出为无拼音纯汉字，再转换为双拼。
+3. 转换方案选择「Win10 微软五笔（用户自定义短语）」→ 「Gboard - 自然码」。必须选择「Win10 微软五笔（用户自定义短语）」才能正常转换出实际的双拼方案的词库文件。也可以先导出为无拼音纯汉字，再转换为双拼。
 4. 将深蓝词库转换工具程序所在目录中转换成功后的 `Gboard词库.zip` 解压，获取词库文本文件 `dictionary.txt`。
 5. 用文本编辑器打开此文件，将内容复制到 Excel 中，以便调整列顺序或替换词汇。例如将 `zh-CN` 替换为 Rime 中的权重值 `100`。
 
@@ -66,7 +66,6 @@ share: true
       - text # 词汇
       - code # 编码
       - weight # 权重
-      - stem # 造词码（不知道是啥，好像和拼音方案没有关系）
     ```
 
 3. 修改完成后以「UTF-8」编码保存到 `cn_dicts` 文件夹中。
@@ -101,7 +100,7 @@ share: true
 
 ### 3.3 配置自定义短语
 
-「白霜拼音」的双拼自定义短语文件为默认为 `custom_phrase_double.txt`，需要手工建立此文件，并将 `custom_phrase.txt` 文件的内容复制过来，修改 `db_name` 为 `custom_phrase_double.txt`。然后将自定义短语按照 `词汇<Tab>编码<Tab>权重` 的格式加入到文件中即可。
+「白霜拼音」的双拼自定义短语文件默认为 `custom_phrase_double.txt`，需要手工建立此文件，并将 `custom_phrase.txt` 文件的内容复制过来，修改 `db_name` 为 `custom_phrase_double.txt`。然后将自定义短语按照 `词汇<Tab>编码<Tab>权重` 的格式加入到文件中即可。
 
 ## 个人配置
 
@@ -179,7 +178,10 @@ patch:
     # CapsLock 键切换大小写
     good_old_caps_lock: true
     # CapsLock 键清屏；左、右 Shift 键直接上屏
-    switch_key: { Caps_Lock: clear, Shift_L: commit_code, Shift_R: commit_code }
+    switch_key:
+      Caps_Lock: clear
+      Shift_L: commit_code
+      Shift_R: commit_code
 
   # 候选词个数
   menu/page_size: 7
