@@ -199,10 +199,10 @@ patch:
   schema_list:
     - { schema: rime_frost_double_pinyin }
 
-  # 方案选单：清除默认的快捷键，新增 Shift+grave（`）
+  # 方案选单：清除默认的快捷键，新增 Ctrl+Shift+F4
   switcher/hotkeys: []
   switcher/hotkeys/+:
-    - Shift+grave
+    - Control+Shift+F4
 ```
 
 ## 其他
