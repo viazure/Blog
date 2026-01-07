@@ -6,8 +6,9 @@ author:
 categories:
   - life
 tags:
-  - review
+  - review_monthly
   - life
+  - period_2025
 toc: true
 share: true
 date: 2025-06-02T15:37:29+08:00
