@@ -8,10 +8,11 @@ lastmod: 2025-06-06T16:45:03+08:00
 categories:
   - life
 tags:
-  - review
+  - review_monthly
   - life
   - running
   - tinkering
+  - period_2025
 toc: true
 share: true
 ---
