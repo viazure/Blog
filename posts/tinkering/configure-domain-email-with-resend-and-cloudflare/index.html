@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name">使用 Resend 与 Cloudflare 实现域名邮箱发信 | viazure</title>
+<meta property="og:title" content="使用 Resend 与 Cloudflare 实现域名邮箱发信 | viazure" />
+<meta name="twitter:title" content="使用 Resend 与 Cloudflare 实现域名邮箱发信 | viazure" />
+<meta itemprop="name" content="使用 Resend 与 Cloudflare 实现域名邮箱发信 | viazure" />
+<meta name="application-name" content="使用 Resend 与 Cloudflare 实现域名邮箱发信 | viazure" />
+<meta property="og:site_name" content="viazure" />
+
+<meta name="description" content="生活是体验，拍照是情绪，写作是思考，折腾是？">
+<meta itemprop="description" content="生活是体验，拍照是情绪，写作是思考，折腾是？" />
+<meta property="og:description" content="生活是体验，拍照是情绪，写作是思考，折腾是？" />
+<meta name="twitter:description" content="生活是体验，拍照是情绪，写作是思考，折腾是？" />
+
+<meta property="og:locale" content="zh-cn" />
+<meta name="language" content="zh-cn" />
+
+  <link rel="alternate" hreflang="zh-cn" href="https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/" title="Chinese" />
+
+
+
+
+
+    
+    
+    
+
+    <meta property="og:type" content="article" />
+    <meta property="og:article:published_time" content=2025-03-15T09:52:56&#43;0800 />
+    <meta property="article:published_time" content=2025-03-15T09:52:56&#43;0800 />
+    <meta property="og:url" content="https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/" />
+
+    
+    <meta property="og:article:author" content="viazure" />
+    <meta property="article:author" content="viazure" />
+    <meta name="author" content="viazure" />
+    
+    
+
+    
+
+    <script defer type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "Article",
+        "headline": "使用 Resend 与 Cloudflare 实现域名邮箱发信",
+        "author": {
+        "@type": "Person",
+        "name": ""
+        },
+        "datePublished": "2025-03-15",
+        "description": "",
+        "wordCount":  158 ,
+        "mainEntityOfPage": "True",
+        "dateModified": "2025-03-21",
+        "image": {
+        "@type": "imageObject",
+        "url": ""
+        },
+        "publisher": {
+        "@type": "Organization",
+        "name": "viazure"
+        }
+    }
+    </script>
+
+
+<meta name="generator" content="Hugo 0.157.0">
+
+    
+    <meta property="og:url" content="https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/">
+  <meta property="og:site_name" content="viazure">
+  <meta property="og:title" content="使用 Resend 与 Cloudflare 实现域名邮箱发信">
+  <meta property="og:description" content="最近尝试解决域名邮箱发信问题，记录下具体操作过程。
+背景需求 我的个人域名目前托管在 Cloudflare，并启用了其提供的「电子邮件路由（Email Routing）」服务来实现邮件转发功能。但该方案存在一个缺陷：只能接收转发邮件，无法直接通过域名邮箱发送邮件。
+为了解决发件需求，我曾尝试按照 Gmail 官方教程《通过其他地址或别名发送电子邮件》配置邮件代发功能。但在实际使用过程中，发现收件方会提示「发件人未验证」警告。经排查发现，这是由于未配置 DKIM 验证机制导致的问题。
+根据 Google Workspace 的《设置 DKIM》指南文档说明：
+如果您的域名提供商是 Google Domains 或 Squarespace，则 Google 会自动创建 DKIM 密钥，并将其添加到网域的 DNS 记录。
+由于我的域名既非托管在 Google Domains/Squarespace，又未开通 Google Workspace，所以暂时无法使用 Google 提供的「自动创建 DKIM 密钥」服务。
+现状总结：
+✅ 已实现功能
+Cloudflare 域名托管 邮件接收及转发服务正常运作 ❌ 待解决问题
+无法通过域名邮箱直接发送邮件 Gmail 代发触发「未验证」警告（原因：缺失 DKIM 记录） 咨询了 DeepSeek，又参考了多篇技术博客，最终选用 Resend 作为最终邮件发送方案，它有这些优势：
+无需自建服务器 API 友好 免费额度充足（每天 100 封，对于我这种偶尔发发邮件的场景完全够用） 实施步骤 服务配置 访问 Resend 官网，注册并登录（推荐使用邮箱注册，详见：踩坑）
+在 Domains 页面点击 Add Domain 添加域名，输入邮箱绑定的域名，并选择区域（Region），例如：North Virginia (us-east-1)
+域名添加完成后，需要配置 DNS。Resend 提供了两种配置方式：">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-03-15T09:52:56+08:00">
+    <meta property="article:modified_time" content="2025-03-21T09:32:44+08:00">
+    <meta property="article:tag" content="Email">
+    <meta property="article:tag" content="Cloudflare">
+    <meta property="article:tag" content="Resend">
+    <meta property="article:tag" content="Smtp">
+    <meta property="article:tag" content="Dns">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="使用 Resend 与 Cloudflare 实现域名邮箱发信">
+  <meta name="twitter:description" content="最近尝试解决域名邮箱发信问题，记录下具体操作过程。
+背景需求 我的个人域名目前托管在 Cloudflare，并启用了其提供的「电子邮件路由（Email Routing）」服务来实现邮件转发功能。但该方案存在一个缺陷：只能接收转发邮件，无法直接通过域名邮箱发送邮件。
+为了解决发件需求，我曾尝试按照 Gmail 官方教程《通过其他地址或别名发送电子邮件》配置邮件代发功能。但在实际使用过程中，发现收件方会提示「发件人未验证」警告。经排查发现，这是由于未配置 DKIM 验证机制导致的问题。
+根据 Google Workspace 的《设置 DKIM》指南文档说明：
+如果您的域名提供商是 Google Domains 或 Squarespace，则 Google 会自动创建 DKIM 密钥，并将其添加到网域的 DNS 记录。
+由于我的域名既非托管在 Google Domains/Squarespace，又未开通 Google Workspace，所以暂时无法使用 Google 提供的「自动创建 DKIM 密钥」服务。
+现状总结：
+✅ 已实现功能
+Cloudflare 域名托管 邮件接收及转发服务正常运作 ❌ 待解决问题
+无法通过域名邮箱直接发送邮件 Gmail 代发触发「未验证」警告（原因：缺失 DKIM 记录） 咨询了 DeepSeek，又参考了多篇技术博客，最终选用 Resend 作为最终邮件发送方案，它有这些优势：
+无需自建服务器 API 友好 免费额度充足（每天 100 封，对于我这种偶尔发发邮件的场景完全够用） 实施步骤 服务配置 访问 Resend 官网，注册并登录（推荐使用邮箱注册，详见：踩坑）
+在 Domains 页面点击 Add Domain 添加域名，输入邮箱绑定的域名，并选择区域（Region），例如：North Virginia (us-east-1)
+域名添加完成后，需要配置 DNS。Resend 提供了两种配置方式：">
+
+
+    
+
+    <link rel="canonical" href="https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/">
+    <link href="/style.min.2d921c18cf1ec555ffc03d59a8adc211c402c68c930c27d6a0c306ab175a8d09.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="https://viazure.cc/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+    <meta name="color-scheme" content="light dark">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+    
+      <script data-goatcounter="https://stats.viazure.cc/count"
+            async
+            src="/js/goatcounter.min.3b169bac6a7027c185ea591dceeee009a2abe7d87f2ea35adaa1fb4a1ec089aa.js"
+            integrity="sha256-OxabrGpwJ8GF6lkdzu7gCaKr59h/LqNa2qH7Sh7Aiao="
+            crossorigin="anonymous"></script>
+    
+</head>
+<body data-theme = "auto" class="notransition">
+
+<script src="/js/theme.min.8961c317c5b88b953fe27525839672c9343f1058ab044696ca225656c8ba2ab0.js" integrity="sha256-iWHDF8W4i5U/4nUlg5ZyyTQ/EFirBEaWyiJWVsi6KrA="></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="https://viazure.cc/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title>首页</title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/">
+                        首页
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link active" href="/posts/">
+                        文章
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        关于
+                    </a>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title">使用 Resend 与 Cloudflare 实现域名邮箱发信</h1>
+                
+                
+                
+                <div class="post-meta">
+                    <time datetime="2025-03-15T09:52:56&#43;08:00" itemprop="datePublished"> 2025-03-15 </time>
+                </div>
+                
+            </header>
+            
+            <div class="page-content">
+                <p>最近尝试解决域名邮箱发信问题，记录下具体操作过程。</p>
+<h2 id="背景需求">背景需求</h2>
+<p>我的个人域名目前托管在 Cloudflare，并启用了其提供的「电子邮件路由（Email Routing）」服务来实现邮件转发功能。但该方案存在一个缺陷：只能接收转发邮件，无法直接通过域名邮箱发送邮件。</p>
+<p>为了解决发件需求，我曾尝试按照 Gmail 官方教程《<a href="https://support.google.com/mail/answer/22370">通过其他地址或别名发送电子邮件</a>》配置邮件代发功能。但在实际使用过程中，发现收件方会提示「发件人未验证」警告。经排查发现，这是由于未配置 DKIM 验证机制导致的问题。</p>
+<p>根据 Google Workspace 的《<a href="https://support.google.com/a/answer/174124?sjid=17788796605478889522-NC&amp;rd=1#dkim-check-set-up">设置 DKIM</a>》指南文档说明：</p>
+<blockquote>
+<p>如果您的域名提供商是 Google Domains 或  <a href="https://squarespace.com/">Squarespace</a>，则 Google 会自动创建 DKIM 密钥，并将其添加到网域的 DNS 记录。</p>
+</blockquote>
+<p>由于我的域名既非托管在 Google Domains/Squarespace，又未开通 Google Workspace，所以暂时无法使用 Google 提供的「自动创建 DKIM 密钥」服务。</p>
+<p>现状总结：</p>
+<p>✅ 已实现功能</p>
+<ul>
+<li>Cloudflare 域名托管</li>
+<li>邮件接收及转发服务正常运作</li>
+</ul>
+<p>❌ 待解决问题</p>
+<ul>
+<li>无法通过域名邮箱直接发送邮件</li>
+<li>Gmail 代发触发「未验证」警告（原因：缺失 DKIM 记录）</li>
+</ul>
+<p>咨询了 DeepSeek，又参考了多篇技术博客，最终选用 Resend 作为最终邮件发送方案，它有这些优势：</p>
+<ul>
+<li>无需自建服务器</li>
+<li>API 友好</li>
+<li>免费额度充足（每天 100 封，对于我这种偶尔发发邮件的场景完全够用）</li>
+</ul>
+<h2 id="实施步骤">实施步骤</h2>
+<h3 id="服务配置">服务配置</h3>
+<ol>
+<li>
+<p>访问 <a href="https://resend.com">Resend 官网</a>，注册并登录（推荐使用邮箱注册，详见：<a href="/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/##">踩坑</a>）</p>
+</li>
+<li>
+<p>在 Domains 页面点击 <code>Add Domain</code> 添加域名，输入邮箱绑定的域名，并选择区域（Region），例如：<code>North Virginia (us-east-1)</code></p>
+</li>
+<li>
+<p>域名添加完成后，需要配置 DNS。Resend 提供了两种配置方式：</p>
+<ol>
+<li>自动授权：点击 <code>Sign in to Cloudflare</code> 按钮登录授权后，Resend 将自动添加 DNS 记录</li>
+<li>手动添加记录：参考 <a href="https://resend.com/docs/knowledge-base/cloudflare">官方指南</a></li>
+</ol>
+<p><img src="https://webpimg.viazure.cc/250316160031078.png" alt="DNS 记录"></p>
+</li>
+<li>
+<p>API Keys 页面点击 <code>Create API Key</code> 创建并记录下密钥（格式：re_xxxxxx）</p>
+</li>
+</ol>
+<h3 id="功能验证">功能验证</h3>
+<p>API 接口方式（cURL 示例）：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">curl -X POST <span class="s1">&#39;https://api.resend.com/emails&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"> -H <span class="s1">&#39;Authorization: Bearer re_xxxxxx&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"> -H <span class="s1">&#39;Content-Type: application/json&#39;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"> -d <span class="s1">$&#39;{
+</span></span></span><span class="line"><span class="cl"><span class="s1">  &#34;from&#34;: &#34;发件人 &lt;发件人邮箱地址&gt;&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s1">  &#34;to&#34;: [&#34;接收人邮箱地址&#34;],
+</span></span></span><span class="line"><span class="cl"><span class="s1">  &#34;subject&#34;: &#34;hello world&#34;,
+</span></span></span><span class="line"><span class="cl"><span class="s1">  &#34;html&#34;: &#34;&lt;p&gt;it works!&lt;/p&gt;&#34;
+</span></span></span><span class="line"><span class="cl"><span class="s1">}&#39;</span>
+</span></span></code></pre></div><p>SMTP 客户端配置：</p>
+<ul>
+<li>服务器：smtp.resend.com</li>
+<li>端口：465</li>
+<li>账户：resend</li>
+<li>密码：API 密钥</li>
+</ul>
+<h3 id="使用与优化">使用与优化</h3>
+<p><strong>使用</strong>：沿用 Gmail 客户端配置模式，将发送邮件的 SMTP 服务配置改为 Resend 的配置参数。更多示例参考 <a href="https://resend.com/docs/send-with-smtp">官方帮助文档</a></p>
+<p><strong>优化</strong>：使用 <a href="https://www.mail-tester.com/">Mail Tester</a> 测试邮件的<strong>垃圾邮件匹配度</strong>，根据建议调整相关配置。</p>
+<h2 id="踩坑">踩坑</h2>
+<ol>
+<li>账号注册问题：使用 GitHub 直接登录后发现无法修改主邮箱，最后只能删除账号，重新使用邮箱注册。账号删除步骤：控制台 -&gt; Settings -&gt; Team -&gt; <code>Delete Team</code> -&gt; <code>Delete Account</code></li>
+</ol>
+
+            </div>
+        </article><hr style="margin-top: 40px; margin-bottom: 40px;" />
+<div id="tcomment"></div>
+<script src="https://registry.npmmirror.com/twikoo/1.6.41/files/dist/twikoo.min.js"
+    integrity="sha384-QgZlvw//W8lQwue8uv2qAszlmDJE1GzJa4dEA/tt3EEyn7VQd5BgrdZMzoCAkTQT"
+    crossorigin="anonymous"
+    defer></script>
+<script>
+    window.addEventListener('load', () => {
+        twikoo.init({
+            envId: 'https:\/\/twikoo-viazure.netlify.app\/.netlify\/functions\/twikoo',
+            el: '#tcomment',})
+    })
+</script></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+<a href="https://github.com/viazure" target="_blank" rel="noopener noreferrer me"
+    title="Github">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+</a>
+<a href="https://run.viazure.cc" target="_blank" rel="noopener noreferrer me"
+    title="Running">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor" stroke="currentColor"
+    stroke-width="30" stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M768 349.866667c-76.8 0-136.533333-64-136.533333-136.533334s64-136.533333 136.533333-136.533333 136.533333 64 136.533333 136.533333-59.733333 136.533333-136.533333 136.533334z m0-213.333334c-42.666667 0-76.8 34.133333-76.8 76.8S725.333333 290.133333 768 290.133333 844.8 256 844.8 213.333333 810.666667 136.533333 768 136.533333zM512 968.533333c-8.533333 0-12.8 0-17.066667-8.533333-12.8-8.533333-17.066667-29.866667-4.266666-42.666667l128-170.666666-204.8-136.533334c-8.533333-4.266667-12.8-17.066667-12.8-25.6 0-8.533333 4.266667-21.333333 12.8-25.6l192-145.066666-174.933334-85.333334-166.4 59.733334c-12.8 4.266667-34.133333-4.266667-38.4-21.333334-4.266667-17.066667 4.266667-34.133333 21.333334-42.666666l170.666666-59.733334c8.533333-4.266667 17.066667-4.266667 25.6 0l234.666667 110.933334c8.533333 4.266667 17.066667 12.8 17.066667 25.6s-4.266667 21.333333-12.8 29.866666l-196.266667 149.333334 196.266667 128c8.533333 4.266667 12.8 12.8 12.8 21.333333s0 17.066667-4.266667 25.6l-149.333333 200.533333c-8.533333 8.533333-21.333333 12.8-29.866667 12.8zM810.666667 524.8c-4.266667 0-8.533333 0-17.066667-4.266667l-55.466667-29.866666c-17.066667-8.533333-21.333333-29.866667-12.8-42.666667 8.533333-17.066667 29.866667-21.333333 42.666667-12.8l38.4 21.333333 110.933333-102.4c12.8-12.8 34.133333-12.8 46.933334 0 12.8 12.8 12.8 34.133333 0 46.933334l-128 119.466666c-8.533333 0-17.066667 4.266667-25.6 4.266667z">
+    </path>
+    <path
+        d="M85.333333 904.533333c-12.8 0-21.333333-4.266667-29.866666-17.066666-8.533333-17.066667-4.266667-34.133333 12.8-42.666667l204.8-115.2 59.733333-76.8c12.8-12.8 29.866667-17.066667 46.933333-4.266667 12.8 12.8 17.066667 29.866667 4.266667 46.933334l-64 85.333333c-4.266667 4.266667-4.266667 8.533333-8.533333 8.533333l-209.066667 119.466667c-4.266667-4.266667-12.8-4.266667-17.066667-4.266667z">
+    </path>
+</svg>
+</a>
+<a href="/index.xml" target="_blank" rel="noopener noreferrer me"
+    title="Rss">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11a9 9 0 0 1 9 9" />
+    <path d="M4 4a16 16 0 0 1 16 16" />
+    <circle cx="5" cy="19" r="1" />
+</svg>
+</a>
+</div>
+    <small class="footer_copyright">
+        © 2026 viazure.
+        Powered by <a href="https://github.com/viazure/hugo-blog-awesome" target="_blank" rel="noopener">Hugo blog awesome</a>.
+    </small>
+</footer><a href="#" title="回到顶部" id="totop">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" stroke="currentColor" viewBox="0 96 960 960">
+    <path d="M283 704.739 234.261 656 480 410.261 725.739 656 677 704.739l-197-197-197 197Z"/>
+</svg>
+
+</a>
+
+
+    
+
+
+
+
+    
+    
+        
+    
+
+    
+    
+        
+    
+
+
+
+    
+    <script src="https://viazure.cc/js/main.min.35f435a5d8eac613c52daa28d8af544a4512337d3e95236e4a4978417b8dcb2f.js" integrity="sha256-NfQ1pdjqxhPFLaoo2K9USkUSM30&#43;lSNuSkl4QXuNyy8="></script>
+
+    
+
+</body>
+</html>

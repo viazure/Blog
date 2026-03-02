@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name">running_page 的一些使用经验 | viazure</title>
+<meta property="og:title" content="running_page 的一些使用经验 | viazure" />
+<meta name="twitter:title" content="running_page 的一些使用经验 | viazure" />
+<meta itemprop="name" content="running_page 的一些使用经验 | viazure" />
+<meta name="application-name" content="running_page 的一些使用经验 | viazure" />
+<meta property="og:site_name" content="viazure" />
+
+<meta name="description" content="生活是体验，拍照是情绪，写作是思考，折腾是？">
+<meta itemprop="description" content="生活是体验，拍照是情绪，写作是思考，折腾是？" />
+<meta property="og:description" content="生活是体验，拍照是情绪，写作是思考，折腾是？" />
+<meta name="twitter:description" content="生活是体验，拍照是情绪，写作是思考，折腾是？" />
+
+<meta property="og:locale" content="zh-cn" />
+<meta name="language" content="zh-cn" />
+
+  <link rel="alternate" hreflang="zh-cn" href="https://viazure.cc/posts/tinkering/running-page-usage-experience/" title="Chinese" />
+
+
+
+
+
+    
+    
+    
+
+    <meta property="og:type" content="article" />
+    <meta property="og:article:published_time" content=2024-12-22T22:36:39&#43;0800 />
+    <meta property="article:published_time" content=2024-12-22T22:36:39&#43;0800 />
+    <meta property="og:url" content="https://viazure.cc/posts/tinkering/running-page-usage-experience/" />
+
+    
+    <meta property="og:article:author" content="viazure" />
+    <meta property="article:author" content="viazure" />
+    <meta name="author" content="viazure" />
+    
+    
+
+    
+
+    <script defer type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "Article",
+        "headline": "running_page 的一些使用经验",
+        "author": {
+        "@type": "Person",
+        "name": ""
+        },
+        "datePublished": "2024-12-22",
+        "description": "",
+        "wordCount":  319 ,
+        "mainEntityOfPage": "True",
+        "dateModified": "2025-04-27",
+        "image": {
+        "@type": "imageObject",
+        "url": ""
+        },
+        "publisher": {
+        "@type": "Organization",
+        "name": "viazure"
+        }
+    }
+    </script>
+
+
+<meta name="generator" content="Hugo 0.157.0">
+
+    
+    <meta property="og:url" content="https://viazure.cc/posts/tinkering/running-page-usage-experience/">
+  <meta property="og:site_name" content="viazure">
+  <meta property="og:title" content="running_page 的一些使用经验">
+  <meta property="og:description" content="running_page 是一个帮助用户创建个人跑步主页的开源项目，它能够自动同步来自 Garmin、Nike Run Club、Strava 等运动应用的跑步数据，并通过可视化的方式展示在网页上。
+删除错误同步的记录 在使用 running_page 的过程中，可能会遇到数据同步错误的情况，例如重复记录或错误的数据。为了处理这些问题，可以按照以下步骤进行操作。
+数据文件在 GitHub Cache 中 定位并删除 GitHub Cache 中的错误记录：进入项目的 GitHub Actions 页面，点击左侧的 Caches，在筛选框中输入 key:track_data- 筛选出所有已缓存的记录，根据生成时间删除错误记录及其之后生成的所有缓存记录。 重新运行 Run Data Sync 进行同步。
+数据文件在源文件中 删除数据库中的记录：使用支持 SQLite 的数据库工具（例如 DBeaver）打开 run_page/data.db 文件，找到并删除错误的记录。
+示例 SQL 语句：
+-- 查询最近 10 条记录 SELECT * FROM activities ORDER BY run_id DESC LIMIT 10; -- 删除指定记录（示例 ID） DELETE FROM activities WHERE run_id = &#39;1736636014000&#39;; 删除 JSON 文件中的记录：打开 src/static/activities.json 文件，找到并删除对应的记录。这个文件包含了跑步活动的详细信息，删除后需要重新同步活动数据。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-12-22T22:36:39+08:00">
+    <meta property="article:modified_time" content="2025-04-27T16:53:31+08:00">
+    <meta property="article:tag" content="Running">
+    <meta property="article:tag" content="Garmin">
+    <meta property="article:tag" content="Running_page">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="running_page 的一些使用经验">
+  <meta name="twitter:description" content="running_page 是一个帮助用户创建个人跑步主页的开源项目，它能够自动同步来自 Garmin、Nike Run Club、Strava 等运动应用的跑步数据，并通过可视化的方式展示在网页上。
+删除错误同步的记录 在使用 running_page 的过程中，可能会遇到数据同步错误的情况，例如重复记录或错误的数据。为了处理这些问题，可以按照以下步骤进行操作。
+数据文件在 GitHub Cache 中 定位并删除 GitHub Cache 中的错误记录：进入项目的 GitHub Actions 页面，点击左侧的 Caches，在筛选框中输入 key:track_data- 筛选出所有已缓存的记录，根据生成时间删除错误记录及其之后生成的所有缓存记录。 重新运行 Run Data Sync 进行同步。
+数据文件在源文件中 删除数据库中的记录：使用支持 SQLite 的数据库工具（例如 DBeaver）打开 run_page/data.db 文件，找到并删除错误的记录。
+示例 SQL 语句：
+-- 查询最近 10 条记录 SELECT * FROM activities ORDER BY run_id DESC LIMIT 10; -- 删除指定记录（示例 ID） DELETE FROM activities WHERE run_id = &#39;1736636014000&#39;; 删除 JSON 文件中的记录：打开 src/static/activities.json 文件，找到并删除对应的记录。这个文件包含了跑步活动的详细信息，删除后需要重新同步活动数据。">
+
+
+    
+
+    <link rel="canonical" href="https://viazure.cc/posts/tinkering/running-page-usage-experience/">
+    <link href="/style.min.2d921c18cf1ec555ffc03d59a8adc211c402c68c930c27d6a0c306ab175a8d09.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="https://viazure.cc/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+    <meta name="color-scheme" content="light dark">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+    
+      <script data-goatcounter="https://stats.viazure.cc/count"
+            async
+            src="/js/goatcounter.min.3b169bac6a7027c185ea591dceeee009a2abe7d87f2ea35adaa1fb4a1ec089aa.js"
+            integrity="sha256-OxabrGpwJ8GF6lkdzu7gCaKr59h/LqNa2qH7Sh7Aiao="
+            crossorigin="anonymous"></script>
+    
+</head>
+<body data-theme = "auto" class="notransition">
+
+<script src="/js/theme.min.8961c317c5b88b953fe27525839672c9343f1058ab044696ca225656c8ba2ab0.js" integrity="sha256-iWHDF8W4i5U/4nUlg5ZyyTQ/EFirBEaWyiJWVsi6KrA="></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="https://viazure.cc/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title>首页</title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/">
+                        首页
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link active" href="/posts/">
+                        文章
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        关于
+                    </a>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title">running_page 的一些使用经验</h1>
+                
+                
+                
+                <div class="post-meta">
+                    <time datetime="2024-12-22T22:36:39&#43;08:00" itemprop="datePublished"> 2024-12-22 </time>
+                </div>
+                
+            </header>
+            
+    
+    <details class="toc" ZgotmplZ>
+        <summary><b>目录</b></summary>
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#删除错误同步的记录">删除错误同步的记录</a>
+      <ul>
+        <li><a href="#数据文件在-github-cache-中">数据文件在 GitHub Cache 中</a></li>
+        <li><a href="#数据文件在源文件中">数据文件在源文件中</a></li>
+      </ul>
+    </li>
+    <li><a href="#实时同步-garmin-运动记录">实时同步 Garmin 运动记录</a>
+      <ul>
+        <li><a href="#实现路径">实现路径</a></li>
+        <li><a href="#配置步骤">配置步骤</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </details>
+            <div class="page-content">
+                <blockquote>
+<p><a href="https://github.com/yihong0618/running_page">running_page</a> 是一个帮助用户创建个人跑步主页的开源项目，它能够自动同步来自 Garmin、Nike Run Club、Strava 等运动应用的跑步数据，并通过可视化的方式展示在网页上。</p>
+</blockquote>
+<h2 id="删除错误同步的记录">删除错误同步的记录</h2>
+<p>在使用 running_page 的过程中，可能会遇到数据同步错误的情况，例如重复记录或错误的数据。为了处理这些问题，可以按照以下步骤进行操作。</p>
+<h3 id="数据文件在-github-cache-中">数据文件在 GitHub Cache 中</h3>
+<ol>
+<li>
+<p><strong>定位并删除 GitHub Cache 中的错误记录</strong>：进入项目的 GitHub Actions 页面，点击左侧的 <code>Caches</code>，在筛选框中输入 <code>key:track_data-</code> 筛选出所有已缓存的记录，根据生成时间删除错误记录及其之后生成的所有缓存记录。
+<img src="https://webpimg.viazure.cc/250427164618340.png" alt="操作示例"></p>
+</li>
+<li>
+<p>重新运行 <code>Run Data Sync</code> 进行同步。</p>
+</li>
+</ol>
+<h3 id="数据文件在源文件中">数据文件在源文件中</h3>
+<ol>
+<li>
+<p><strong>删除数据库中的记录</strong>：使用支持 SQLite 的数据库工具（例如 DBeaver）打开 <code>run_page/data.db</code> 文件，找到并删除错误的记录。</p>
+<p>示例 SQL 语句：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 查询最近 10 条记录
+</span></span></span><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">activities</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">run_id</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="c1">-- 删除指定记录（示例 ID）
+</span></span></span><span class="line"><span class="cl"><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">activities</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">run_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;1736636014000&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div></li>
+<li>
+<p><strong>删除 JSON 文件中的记录</strong>：打开 <code>src/static/activities.json</code> 文件，找到并删除对应的记录。这个文件包含了跑步活动的详细信息，删除后需要重新同步活动数据。</p>
+</li>
+</ol>
+<blockquote>
+<p>[!TIP]</p>
+<ul>
+<li>建议先备份 <code>data.db</code> 和 <code>activities.json</code></li>
+<li>保持两个数据源的记录 ID 一致</li>
+</ul>
+</blockquote>
+<h2 id="实时同步-garmin-运动记录">实时同步 Garmin 运动记录</h2>
+<p>官方同步方案依赖 GitHub Action 定时触发（默认每天 1 次），如果想及时同步，可以通过 Garmin 手表应用 <strong>Magic Push</strong> 手动触发 Webhook，来实现与 GitHub Actions 中的工作流进行交互。</p>
+<p>Magic Push 当前版本仅支持通过 GET 请求方式的 Webhook，但是 GitHub Actions 的工作流需要通过 POST 请求触发，因此我使用 Cloudflare Worker 作为中转，将 GET 请求转换为 POST 请求。</p>
+<h3 id="实现路径">实现路径</h3>
+<p><img src="https://webpimg.viazure.cc/250224210836773.png" alt="时序图"></p>
+<h3 id="配置步骤">配置步骤</h3>
+<ol>
+<li>
+<p><strong>MagicPush 配置</strong></p>
+<ul>
+<li>在 Connect IQ 商店下载安装 <a href="https://apps.garmin.com/en-US/apps/53da8d3a-f7a1-448f-9fe8-1e1b8cd212d5">Magic Push</a></li>
+<li>Webhook 地址格式：<code>https://your-worker.url/SYNC_TOKEN</code></li>
+</ul>
+</li>
+<li>
+<p><strong>配置 Cloudflare Worker</strong></p>
+<ul>
+<li>将以下代码部署到 Cloudflare Worker 中，并设置相关环境变量。</li>
+</ul>
+</li>
+</ol>
+<p><strong>Cloudflare Worker 代码</strong>：</p>
+<p>最新代码同步更新在 <a href="https://gist.github.com/viazure/6750aba76e92fcfe0e25d74f229700b1">gists</a> 中。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * @typedef {Object} Env
+</span></span></span><span class="line"><span class="cl"><span class="cm"> */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @param {Request} request
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @param {Env} env
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @param {ExecutionContext} ctx
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @returns {Promise&lt;Response&gt;}
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">async</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span> <span class="nx">env</span><span class="p">,</span> <span class="nx">ctx</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">url</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">URL</span><span class="p">(</span><span class="nx">request</span><span class="p">.</span><span class="nx">url</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">sync_token</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">SYNC_TOKEN</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">url</span><span class="p">.</span><span class="nx">pathname</span> <span class="o">!==</span> <span class="sb">`/</span><span class="si">${</span><span class="nx">sync_token</span><span class="si">}</span><span class="sb">`</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="s2">&#34;:(&#34;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span> <span class="s2">&#34;content-type&#34;</span><span class="o">:</span> <span class="s2">&#34;text/plain&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">status</span><span class="o">:</span> <span class="mi">401</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">github_owener</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">GITHUB_OWENER_NAME</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">github_repo</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">GITHUB_REPO_NAME</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">github_token</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">GITHUB_TOKEN</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">github_workflow_id</span> <span class="o">=</span> <span class="nx">env</span><span class="p">.</span><span class="nx">GITHUB_WORKFLOW_ID</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">ghBody</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">ref</span><span class="o">:</span> <span class="s2">&#34;master&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">ghReq</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;Content-Type&#34;</span><span class="o">:</span> <span class="s2">&#34;application/json&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;User-Agent&#34;</span><span class="o">:</span> <span class="sb">`Cloudflare - </span><span class="si">${</span><span class="nx">github_owener</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Authorization</span><span class="o">:</span> <span class="sb">`Bearer </span><span class="si">${</span><span class="nx">github_token</span><span class="si">}</span><span class="sb">`</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">method</span><span class="o">:</span> <span class="s2">&#34;POST&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">body</span><span class="o">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">ghBody</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">ghUrl</span> <span class="o">=</span> <span class="sb">`https://api.github.com/repos/</span><span class="si">${</span><span class="nx">github_owener</span><span class="si">}</span><span class="sb">/</span><span class="si">${</span><span class="nx">github_repo</span><span class="si">}</span><span class="sb">/actions/workflows/</span><span class="si">${</span><span class="nx">github_workflow_id</span><span class="si">}</span><span class="sb">/dispatches`</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">ghResp</span> <span class="o">=</span> <span class="kr">await</span> <span class="nx">fetch</span><span class="p">(</span><span class="nx">ghUrl</span><span class="p">,</span> <span class="nx">ghReq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">ghResp</span><span class="p">.</span><span class="nx">status</span> <span class="o">!==</span> <span class="mi">204</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;Request: &#34;</span><span class="p">,</span> <span class="nx">ghReq</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&#34;Response: &#34;</span><span class="p">,</span> <span class="nx">ghResp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="s2">&#34;:(&#34;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span> <span class="s2">&#34;content-type&#34;</span><span class="o">:</span> <span class="s2">&#34;text/plain&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">status</span><span class="o">:</span> <span class="nx">ghResp</span><span class="p">.</span><span class="nx">status</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="p">});</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="k">new</span> <span class="nx">Response</span><span class="p">(</span><span class="s2">&#34;:)&#34;</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span> <span class="s2">&#34;content-type&#34;</span><span class="o">:</span> <span class="s2">&#34;text/plain&#34;</span> <span class="p">},</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">status</span><span class="o">:</span> <span class="mi">200</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p><strong>环境变量说明</strong>：</p>
+<table>
+  <thead>
+      <tr>
+          <th>类型</th>
+          <th>名称</th>
+          <th>值</th>
+          <th>说明</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>纯文本</td>
+          <td><code>GITHUB_OWENER_NAME</code></td>
+          <td>viazure</td>
+          <td>仓库所有者</td>
+      </tr>
+      <tr>
+          <td>纯文本</td>
+          <td><code>GITHUB_REPO_NAME</code></td>
+          <td>running_page</td>
+          <td>running_page 项目仓库名称</td>
+      </tr>
+      <tr>
+          <td>纯文本</td>
+          <td><code>GITHUB_TOKEN</code></td>
+          <td>ghp_XXX</td>
+          <td></td>
+      </tr>
+      <tr>
+          <td>纯文本</td>
+          <td><code>GITHUB_WORKFLOW_ID</code></td>
+          <td>XXX</td>
+          <td>工作流 id，获取方式参考了 <a href="https://github.com/yihong0618/running_page?tab=readme-ov-file#shortcuts">shortcuts</a> 示例方案</td>
+      </tr>
+      <tr>
+          <td>纯文本</td>
+          <td><code>SYNC_TOKEN</code></td>
+          <td>XXX</td>
+          <td>自定义同步令牌。可以生成一个 GUID 作为同步令牌，避免 URL 暴露</td>
+      </tr>
+  </tbody>
+</table>
+
+            </div>
+        </article><hr style="margin-top: 40px; margin-bottom: 40px;" />
+<div id="tcomment"></div>
+<script src="https://registry.npmmirror.com/twikoo/1.6.41/files/dist/twikoo.min.js"
+    integrity="sha384-QgZlvw//W8lQwue8uv2qAszlmDJE1GzJa4dEA/tt3EEyn7VQd5BgrdZMzoCAkTQT"
+    crossorigin="anonymous"
+    defer></script>
+<script>
+    window.addEventListener('load', () => {
+        twikoo.init({
+            envId: 'https:\/\/twikoo-viazure.netlify.app\/.netlify\/functions\/twikoo',
+            el: '#tcomment',})
+    })
+</script></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+<a href="https://github.com/viazure" target="_blank" rel="noopener noreferrer me"
+    title="Github">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+</a>
+<a href="https://run.viazure.cc" target="_blank" rel="noopener noreferrer me"
+    title="Running">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor" stroke="currentColor"
+    stroke-width="30" stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M768 349.866667c-76.8 0-136.533333-64-136.533333-136.533334s64-136.533333 136.533333-136.533333 136.533333 64 136.533333 136.533333-59.733333 136.533333-136.533333 136.533334z m0-213.333334c-42.666667 0-76.8 34.133333-76.8 76.8S725.333333 290.133333 768 290.133333 844.8 256 844.8 213.333333 810.666667 136.533333 768 136.533333zM512 968.533333c-8.533333 0-12.8 0-17.066667-8.533333-12.8-8.533333-17.066667-29.866667-4.266666-42.666667l128-170.666666-204.8-136.533334c-8.533333-4.266667-12.8-17.066667-12.8-25.6 0-8.533333 4.266667-21.333333 12.8-25.6l192-145.066666-174.933334-85.333334-166.4 59.733334c-12.8 4.266667-34.133333-4.266667-38.4-21.333334-4.266667-17.066667 4.266667-34.133333 21.333334-42.666666l170.666666-59.733334c8.533333-4.266667 17.066667-4.266667 25.6 0l234.666667 110.933334c8.533333 4.266667 17.066667 12.8 17.066667 25.6s-4.266667 21.333333-12.8 29.866666l-196.266667 149.333334 196.266667 128c8.533333 4.266667 12.8 12.8 12.8 21.333333s0 17.066667-4.266667 25.6l-149.333333 200.533333c-8.533333 8.533333-21.333333 12.8-29.866667 12.8zM810.666667 524.8c-4.266667 0-8.533333 0-17.066667-4.266667l-55.466667-29.866666c-17.066667-8.533333-21.333333-29.866667-12.8-42.666667 8.533333-17.066667 29.866667-21.333333 42.666667-12.8l38.4 21.333333 110.933333-102.4c12.8-12.8 34.133333-12.8 46.933334 0 12.8 12.8 12.8 34.133333 0 46.933334l-128 119.466666c-8.533333 0-17.066667 4.266667-25.6 4.266667z">
+    </path>
+    <path
+        d="M85.333333 904.533333c-12.8 0-21.333333-4.266667-29.866666-17.066666-8.533333-17.066667-4.266667-34.133333 12.8-42.666667l204.8-115.2 59.733333-76.8c12.8-12.8 29.866667-17.066667 46.933333-4.266667 12.8 12.8 17.066667 29.866667 4.266667 46.933334l-64 85.333333c-4.266667 4.266667-4.266667 8.533333-8.533333 8.533333l-209.066667 119.466667c-4.266667-4.266667-12.8-4.266667-17.066667-4.266667z">
+    </path>
+</svg>
+</a>
+<a href="/index.xml" target="_blank" rel="noopener noreferrer me"
+    title="Rss">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11a9 9 0 0 1 9 9" />
+    <path d="M4 4a16 16 0 0 1 16 16" />
+    <circle cx="5" cy="19" r="1" />
+</svg>
+</a>
+</div>
+    <small class="footer_copyright">
+        © 2026 viazure.
+        Powered by <a href="https://github.com/viazure/hugo-blog-awesome" target="_blank" rel="noopener">Hugo blog awesome</a>.
+    </small>
+</footer><a href="#" title="回到顶部" id="totop">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" stroke="currentColor" viewBox="0 96 960 960">
+    <path d="M283 704.739 234.261 656 480 410.261 725.739 656 677 704.739l-197-197-197 197Z"/>
+</svg>
+
+</a>
+
+
+    
+
+
+
+
+    
+    
+        
+    
+
+    
+    
+        
+    
+
+
+
+    
+    <script src="https://viazure.cc/js/main.min.35f435a5d8eac613c52daa28d8af544a4512337d3e95236e4a4978417b8dcb2f.js" integrity="sha256-NfQ1pdjqxhPFLaoo2K9USkUSM30&#43;lSNuSkl4QXuNyy8="></script>
+
+    
+
+</body>
+</html>

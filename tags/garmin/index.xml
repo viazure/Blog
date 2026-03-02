@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:webfeeds="http://webfeeds.org/rss/1.0">
+  <channel>
+    <title>Garmin on viazure</title>
+    <link>https://viazure.cc/tags/garmin/</link>
+    <description>Recent content in Garmin on viazure</description><follow_challenge>
+    <feedId>96027576665585664</feedId>
+    <userId>59414119634735104</userId>
+    </follow_challenge><generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <webfeeds:icon>https://viazure.cc/icons/favicon.svg</webfeeds:icon>
+    <webfeeds:logo>https://viazure.cc/icons/favicon.svg</webfeeds:logo>
+    <image>
+      <url>https://viazure.cc/icons/favicon.svg</url>
+      <title>viazure</title>
+      <link>https://viazure.cc/</link>
+    </image>
+    
+    <lastBuildDate>Sun, 22 Dec 2024 22:36:39 +0800</lastBuildDate><atom:link href="https://viazure.cc/tags/garmin/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>running_page 的一些使用经验</title>
+      <link>https://viazure.cc/posts/tinkering/running-page-usage-experience/</link>
+      <pubDate>Sun, 22 Dec 2024 22:36:39 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/running-page-usage-experience/</guid>
+      
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/yihong0618/running_page&#34;&gt;running_page&lt;/a&gt; 是一个帮助用户创建个人跑步主页的开源项目，它能够自动同步来自 Garmin、Nike Run Club、Strava 等运动应用的跑步数据，并通过可视化的方式展示在网页上。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;删除错误同步的记录&#34;&gt;删除错误同步的记录&lt;/h2&gt;
+&lt;p&gt;在使用 running_page 的过程中，可能会遇到数据同步错误的情况，例如重复记录或错误的数据。为了处理这些问题，可以按照以下步骤进行操作。&lt;/p&gt;
+&lt;h3 id=&#34;数据文件在-github-cache-中&#34;&gt;数据文件在 GitHub Cache 中&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;定位并删除 GitHub Cache 中的错误记录&lt;/strong&gt;：进入项目的 GitHub Actions 页面，点击左侧的 &lt;code&gt;Caches&lt;/code&gt;，在筛选框中输入 &lt;code&gt;key:track_data-&lt;/code&gt; 筛选出所有已缓存的记录，根据生成时间删除错误记录及其之后生成的所有缓存记录。
+&lt;img src=&#34;https://webpimg.viazure.cc/250427164618340.png&#34; alt=&#34;操作示例&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重新运行 &lt;code&gt;Run Data Sync&lt;/code&gt; 进行同步。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;数据文件在源文件中&#34;&gt;数据文件在源文件中&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;删除数据库中的记录&lt;/strong&gt;：使用支持 SQLite 的数据库工具（例如 DBeaver）打开 &lt;code&gt;run_page/data.db&lt;/code&gt; 文件，找到并删除错误的记录。&lt;/p&gt;
+&lt;p&gt;示例 SQL 语句：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;-- 查询最近 10 条记录
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;SELECT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;activities&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;ORDER&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;BY&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run_id&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;DESC&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;LIMIT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;-- 删除指定记录（示例 ID）
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;DELETE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;activities&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;WHERE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run_id&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;1736636014000&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;删除 JSON 文件中的记录&lt;/strong&gt;：打开 &lt;code&gt;src/static/activities.json&lt;/code&gt; 文件，找到并删除对应的记录。这个文件包含了跑步活动的详细信息，删除后需要重新同步活动数据。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!TIP]&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;建议先备份 &lt;code&gt;data.db&lt;/code&gt; 和 &lt;code&gt;activities.json&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;保持两个数据源的记录 ID 一致&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;实时同步-garmin-运动记录&#34;&gt;实时同步 Garmin 运动记录&lt;/h2&gt;
+&lt;p&gt;官方同步方案依赖 GitHub Action 定时触发（默认每天 1 次），如果想及时同步，可以通过 Garmin 手表应用 &lt;strong&gt;Magic Push&lt;/strong&gt; 手动触发 Webhook，来实现与 GitHub Actions 中的工作流进行交互。&lt;/p&gt;
+&lt;p&gt;Magic Push 当前版本仅支持通过 GET 请求方式的 Webhook，但是 GitHub Actions 的工作流需要通过 POST 请求触发，因此我使用 Cloudflare Worker 作为中转，将 GET 请求转换为 POST 请求。&lt;/p&gt;
+&lt;h3 id=&#34;实现路径&#34;&gt;实现路径&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250224210836773.png&#34; alt=&#34;时序图&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;配置步骤&#34;&gt;配置步骤&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;MagicPush 配置&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在 Connect IQ 商店下载安装 &lt;a href=&#34;https://apps.garmin.com/en-US/apps/53da8d3a-f7a1-448f-9fe8-1e1b8cd212d5&#34;&gt;Magic Push&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Webhook 地址格式：&lt;code&gt;https://your-worker.url/SYNC_TOKEN&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;配置 Cloudflare Worker&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将以下代码部署到 Cloudflare Worker 中，并设置相关环境变量。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Cloudflare Worker 代码&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;最新代码同步更新在 &lt;a href=&#34;https://gist.github.com/viazure/6750aba76e92fcfe0e25d74f229700b1&#34;&gt;gists&lt;/a&gt; 中。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt; * @typedef {Object} Env
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;default&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;cm&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   * @param {Request} request
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   * @param {Env} env
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   * @param {ExecutionContext} ctx
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   * @returns {Promise&amp;lt;Response&amp;gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;kr&#34;&gt;async&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fetch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;url&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;URL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;sync_token&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;SYNC_TOKEN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;pathname&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!==&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;sync_token&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Response&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;:(&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;headers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;content-type&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;text/plain&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;401&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;github_owener&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GITHUB_OWENER_NAME&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;github_repo&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GITHUB_REPO_NAME&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;github_token&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GITHUB_TOKEN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;github_workflow_id&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GITHUB_WORKFLOW_ID&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghBody&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;ref&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;master&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghReq&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;headers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;s2&#34;&gt;&amp;#34;Content-Type&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;s2&#34;&gt;&amp;#34;User-Agent&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`Cloudflare - &lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_owener&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;Authorization&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`Bearer &lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_token&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;POST&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;body&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;JSON&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;stringify&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ghBody&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghUrl&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`https://api.github.com/repos/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_owener&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_repo&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;/actions/workflows/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_workflow_id&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;/dispatches`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghResp&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kr&#34;&gt;await&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fetch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ghUrl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghReq&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ghResp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;204&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;console&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Request: &amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghReq&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;console&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Response: &amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghResp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Response&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;:(&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;headers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;content-type&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;text/plain&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghResp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Response&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;:)&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;headers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;content-type&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;text/plain&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;200&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;环境变量说明&lt;/strong&gt;：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;类型&lt;/th&gt;
+          &lt;th&gt;名称&lt;/th&gt;
+          &lt;th&gt;值&lt;/th&gt;
+          &lt;th&gt;说明&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;GITHUB_OWENER_NAME&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;viazure&lt;/td&gt;
+          &lt;td&gt;仓库所有者&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;GITHUB_REPO_NAME&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;running_page&lt;/td&gt;
+          &lt;td&gt;running_page 项目仓库名称&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;GITHUB_TOKEN&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;ghp_XXX&lt;/td&gt;
+          &lt;td&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;GITHUB_WORKFLOW_ID&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;XXX&lt;/td&gt;
+          &lt;td&gt;工作流 id，获取方式参考了 &lt;a href=&#34;https://github.com/yihong0618/running_page?tab=readme-ov-file#shortcuts&#34;&gt;shortcuts&lt;/a&gt; 示例方案&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;SYNC_TOKEN&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;XXX&lt;/td&gt;
+          &lt;td&gt;自定义同步令牌。可以生成一个 GUID 作为同步令牌，避免 URL 暴露&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+      
+    </item>
+    
+  </channel>
+</rss>

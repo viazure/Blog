@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name">使用 docsify 在离线环境中部署文档服务 | viazure</title>
+<meta property="og:title" content="使用 docsify 在离线环境中部署文档服务 | viazure" />
+<meta name="twitter:title" content="使用 docsify 在离线环境中部署文档服务 | viazure" />
+<meta itemprop="name" content="使用 docsify 在离线环境中部署文档服务 | viazure" />
+<meta name="application-name" content="使用 docsify 在离线环境中部署文档服务 | viazure" />
+<meta property="og:site_name" content="viazure" />
+
+<meta name="description" content="生活是体验，拍照是情绪，写作是思考，折腾是？">
+<meta itemprop="description" content="生活是体验，拍照是情绪，写作是思考，折腾是？" />
+<meta property="og:description" content="生活是体验，拍照是情绪，写作是思考，折腾是？" />
+<meta name="twitter:description" content="生活是体验，拍照是情绪，写作是思考，折腾是？" />
+
+<meta property="og:locale" content="zh-cn" />
+<meta name="language" content="zh-cn" />
+
+  <link rel="alternate" hreflang="zh-cn" href="https://viazure.cc/posts/development/deploying-docsify-in-offline-environment/" title="Chinese" />
+
+
+
+
+
+    
+    
+    
+
+    <meta property="og:type" content="article" />
+    <meta property="og:article:published_time" content=2024-12-29T09:05:52&#43;0800 />
+    <meta property="article:published_time" content=2024-12-29T09:05:52&#43;0800 />
+    <meta property="og:url" content="https://viazure.cc/posts/development/deploying-docsify-in-offline-environment/" />
+
+    
+    <meta property="og:article:author" content="viazure" />
+    <meta property="article:author" content="viazure" />
+    <meta name="author" content="viazure" />
+    
+    
+
+    
+
+    <script defer type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "Article",
+        "headline": "使用 docsify 在离线环境中部署文档服务",
+        "author": {
+        "@type": "Person",
+        "name": ""
+        },
+        "datePublished": "2024-12-29",
+        "description": "",
+        "wordCount":  146 ,
+        "mainEntityOfPage": "True",
+        "dateModified": "2025-04-16",
+        "image": {
+        "@type": "imageObject",
+        "url": ""
+        },
+        "publisher": {
+        "@type": "Organization",
+        "name": "viazure"
+        }
+    }
+    </script>
+
+
+<meta name="generator" content="Hugo 0.157.0">
+
+    
+    <meta property="og:url" content="https://viazure.cc/posts/development/deploying-docsify-in-offline-environment/">
+  <meta property="og:site_name" content="viazure">
+  <meta property="og:title" content="使用 docsify 在离线环境中部署文档服务">
+  <meta property="og:description" content="本文初稿由 Kimi 协助润色完成。
+2025-04-15 更新：为方便快速上手，我已将本文中的示例代码和配置文件上传至 GitHub/Gitee。可以直接克隆或下载此项目作为模板，根据自身需求进行修改和使用。该示例项目包含了所有离线部署所需的基础文件和配置，能够在没有网络连接的环境中使用 IIS 或 Nginx 等工具迅速搭建起文档服务。如有任何问题或建议，欢迎通过评论和 GitHub Issues 与我交流。
+由于公司的开发服务器经历了一次被迫系统重装，导致之前使用 docsify 部署的文档服务未能保留。今天着手重新部署该服务，鉴于当前服务器无法接入互联网，我计划实施一个适用于离线环境的部署方案。以下是我为此次部署过程所做的记录。
+步骤 1：在有网络的环境中准备 访问 Node.js 官网 ，下载安装程序。
+运行安装程序，按照安装程序中的说明进行操作，同时安装 Node.js 和 npm。
+安装 docsify-cli 与 docsify-tools（若无「自动生成侧边栏」需求，可不安装 docsify-tools ）。
+打开命令行工具，运行以下命令来安装 docsify-cli 与 docsify-tools： npm install -g docsify-cli npm install -g docsify-tools 创建一个新的目录 docsify-setup，用于存放 docsify-cli 与 docsify-tools 及其依赖。
+mkdir docsify-setup cd docsify-setup 运行以下命令，在新目录中初始化一个新的 package.json 文件。
+npm init -y 运行以下命令，将 docsify-cli 及其依赖保存到当前目录。
+npm install docsify-cli --save npm install docsify-tools --save 下载并保存项目所需的资源文件。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-12-29T09:05:52+08:00">
+    <meta property="article:modified_time" content="2025-04-16T09:00:33+08:00">
+    <meta property="article:tag" content="Docsify">
+    <meta property="article:tag" content="Markdown">
+    <meta property="article:tag" content="Example">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="使用 docsify 在离线环境中部署文档服务">
+  <meta name="twitter:description" content="本文初稿由 Kimi 协助润色完成。
+2025-04-15 更新：为方便快速上手，我已将本文中的示例代码和配置文件上传至 GitHub/Gitee。可以直接克隆或下载此项目作为模板，根据自身需求进行修改和使用。该示例项目包含了所有离线部署所需的基础文件和配置，能够在没有网络连接的环境中使用 IIS 或 Nginx 等工具迅速搭建起文档服务。如有任何问题或建议，欢迎通过评论和 GitHub Issues 与我交流。
+由于公司的开发服务器经历了一次被迫系统重装，导致之前使用 docsify 部署的文档服务未能保留。今天着手重新部署该服务，鉴于当前服务器无法接入互联网，我计划实施一个适用于离线环境的部署方案。以下是我为此次部署过程所做的记录。
+步骤 1：在有网络的环境中准备 访问 Node.js 官网 ，下载安装程序。
+运行安装程序，按照安装程序中的说明进行操作，同时安装 Node.js 和 npm。
+安装 docsify-cli 与 docsify-tools（若无「自动生成侧边栏」需求，可不安装 docsify-tools ）。
+打开命令行工具，运行以下命令来安装 docsify-cli 与 docsify-tools： npm install -g docsify-cli npm install -g docsify-tools 创建一个新的目录 docsify-setup，用于存放 docsify-cli 与 docsify-tools 及其依赖。
+mkdir docsify-setup cd docsify-setup 运行以下命令，在新目录中初始化一个新的 package.json 文件。
+npm init -y 运行以下命令，将 docsify-cli 及其依赖保存到当前目录。
+npm install docsify-cli --save npm install docsify-tools --save 下载并保存项目所需的资源文件。">
+
+
+    
+
+    <link rel="canonical" href="https://viazure.cc/posts/development/deploying-docsify-in-offline-environment/">
+    <link href="/style.min.2d921c18cf1ec555ffc03d59a8adc211c402c68c930c27d6a0c306ab175a8d09.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="https://viazure.cc/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+    <meta name="color-scheme" content="light dark">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+    
+      <script data-goatcounter="https://stats.viazure.cc/count"
+            async
+            src="/js/goatcounter.min.3b169bac6a7027c185ea591dceeee009a2abe7d87f2ea35adaa1fb4a1ec089aa.js"
+            integrity="sha256-OxabrGpwJ8GF6lkdzu7gCaKr59h/LqNa2qH7Sh7Aiao="
+            crossorigin="anonymous"></script>
+    
+</head>
+<body data-theme = "auto" class="notransition">
+
+<script src="/js/theme.min.8961c317c5b88b953fe27525839672c9343f1058ab044696ca225656c8ba2ab0.js" integrity="sha256-iWHDF8W4i5U/4nUlg5ZyyTQ/EFirBEaWyiJWVsi6KrA="></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="https://viazure.cc/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title>首页</title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/">
+                        首页
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link active" href="/posts/">
+                        文章
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        关于
+                    </a>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title">使用 docsify 在离线环境中部署文档服务</h1>
+                
+                
+                
+                <div class="post-meta">
+                    <time datetime="2024-12-29T09:05:52&#43;08:00" itemprop="datePublished"> 2024-12-29 </time>
+                </div>
+                
+            </header>
+            
+            <div class="page-content">
+                <blockquote>
+<p>本文初稿由 <a href="https://kimi.moonshot.cn/">Kimi</a> 协助润色完成。</p>
+<p><strong>2025-04-15 更新</strong>：为方便快速上手，我已将本文中的示例代码和配置文件上传至 <a href="https://github.com/viazure/docsify-in-offline-example">GitHub</a>/<a href="https://gitee.com/viazure/docsify-in-offline-example">Gitee</a>。可以直接克隆或下载此项目作为模板，根据自身需求进行修改和使用。该示例项目包含了所有离线部署所需的基础文件和配置，能够在没有网络连接的环境中使用 IIS 或 Nginx 等工具迅速搭建起文档服务。如有任何问题或建议，欢迎通过评论和 GitHub Issues 与我交流。</p>
+</blockquote>
+<p>由于公司的开发服务器经历了一次被迫系统重装，导致之前使用 <a href="https://docsify.js.org/#/">docsify</a> 部署的文档服务未能保留。今天着手重新部署该服务，鉴于当前服务器无法接入互联网，我计划实施一个适用于离线环境的部署方案。以下是我为此次部署过程所做的记录。</p>
+<h2 id="步骤-1在有网络的环境中准备">步骤 1：在有网络的环境中准备</h2>
+<ol>
+<li>
+<p>访问 <a href="https://nodejs.org/">Node.js 官网</a> ，下载安装程序。</p>
+</li>
+<li>
+<p>运行安装程序，按照安装程序中的说明进行操作，同时安装 Node.js 和 <code>npm</code>。</p>
+</li>
+<li>
+<p>安装 <code>docsify-cli</code> 与 <code>docsify-tools</code>（若无「自动生成侧边栏」需求，可不安装 <code>docsify-tools</code> ）。</p>
+<ul>
+<li>打开命令行工具，运行以下命令来安装 <code>docsify-cli</code> 与 <code>docsify-tools</code>：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">npm install -g docsify-cli
+</span></span><span class="line"><span class="cl">npm install -g docsify-tools
+</span></span></code></pre></div></li>
+<li>
+<p>创建一个新的目录 <code>docsify-setup</code>，用于存放 <code>docsify-cli</code> 与 <code>docsify-tools</code> 及其依赖。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">mkdir docsify-setup
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> docsify-setup
+</span></span></code></pre></div></li>
+<li>
+<p>运行以下命令，在新目录中初始化一个新的 <code>package.json</code> 文件。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">npm init -y
+</span></span></code></pre></div></li>
+<li>
+<p>运行以下命令，将 <code>docsify-cli</code> 及其依赖保存到当前目录。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">npm install docsify-cli --save
+</span></span><span class="line"><span class="cl">npm install docsify-tools --save
+</span></span></code></pre></div></li>
+<li>
+<p>下载并保存项目所需的资源文件。</p>
+<ul>
+<li>下载 <code>index.html</code> 文件所需的 <a href="https://cdn.jsdelivr.net/npm/docsify/themes/vue.css">vue.css</a> 与 <a href="https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js">docsify.min.js</a> 文件。也可提前使用 <code>docsify init</code> 命令生成初始的 <code>index.html</code> 文件，用于获取最新引用的 <code>css</code> 与 <code>js</code> 地址。</li>
+<li>按相同方式提前下载好需要使用的插件资源文件。</li>
+</ul>
+</li>
+</ol>
+<h2 id="步骤-2将目录传输到离线环境">步骤 2：将目录传输到离线环境</h2>
+<p>将 Node.js 安装包和整个 <code>docsify-setup</code> 目录以及下载的资源文件拷贝到离线计算机中。</p>
+<h2 id="步骤-3在离线环境中安装">步骤 3：在离线环境中安装</h2>
+<ol>
+<li>
+<p>在离线计算机上，打开命令行工具，导航到包含 <code>docsify-setup</code> 目录的位置。</p>
+</li>
+<li>
+<p>在 <code>docsify-setup</code> 目录中，运行以下命令来安装 <code>docsify-cli</code> 及其依赖：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">npm install -g
+</span></span></code></pre></div></li>
+<li>
+<p>安装完成后，将 <code>docsify-setup</code> 所在目录的 <code>[你的路径]\node_modules\.bin</code> 加入到环境变量 <code>PATH</code> 中。</p>
+</li>
+<li>
+<p>可以通过运行以下命令来验证 <code>docsify-cli</code> 是否安装成功，如果 <code>docsify-cli</code> 安装成功，它将显示版本号。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">docsify -v
+</span></span></code></pre></div></li>
+</ol>
+<h2 id="步骤-4项目部署与运行">步骤 4：项目部署与运行</h2>
+<ol>
+<li>在离线计算机中通过 <code>docsify init</code> 命令生成初始项目文件，或直接拷贝本地已生成好的相关文件。</li>
+<li>将 <code>index.html</code> 中引用的资源文件路径替换为本地相对路径，配置可参考 <a href="https://github.com/viazure/docsify-in-offline-example/blob/main/index.html">docsify-in-offline-example/index.html</a>。</li>
+<li>运行 <code>docsify serve</code> 命令启动文档服务，或通过 IIS 或 Nginx 等工具直接部署修改好的静态页面。（注：在 IIS 中部署时需要添加 MIME 类型 <code>text/markdown</code>。）</li>
+</ol>
+
+            </div>
+        </article><hr style="margin-top: 40px; margin-bottom: 40px;" />
+<div id="tcomment"></div>
+<script src="https://registry.npmmirror.com/twikoo/1.6.41/files/dist/twikoo.min.js"
+    integrity="sha384-QgZlvw//W8lQwue8uv2qAszlmDJE1GzJa4dEA/tt3EEyn7VQd5BgrdZMzoCAkTQT"
+    crossorigin="anonymous"
+    defer></script>
+<script>
+    window.addEventListener('load', () => {
+        twikoo.init({
+            envId: 'https:\/\/twikoo-viazure.netlify.app\/.netlify\/functions\/twikoo',
+            el: '#tcomment',})
+    })
+</script></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+<a href="https://github.com/viazure" target="_blank" rel="noopener noreferrer me"
+    title="Github">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+</a>
+<a href="https://run.viazure.cc" target="_blank" rel="noopener noreferrer me"
+    title="Running">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor" stroke="currentColor"
+    stroke-width="30" stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M768 349.866667c-76.8 0-136.533333-64-136.533333-136.533334s64-136.533333 136.533333-136.533333 136.533333 64 136.533333 136.533333-59.733333 136.533333-136.533333 136.533334z m0-213.333334c-42.666667 0-76.8 34.133333-76.8 76.8S725.333333 290.133333 768 290.133333 844.8 256 844.8 213.333333 810.666667 136.533333 768 136.533333zM512 968.533333c-8.533333 0-12.8 0-17.066667-8.533333-12.8-8.533333-17.066667-29.866667-4.266666-42.666667l128-170.666666-204.8-136.533334c-8.533333-4.266667-12.8-17.066667-12.8-25.6 0-8.533333 4.266667-21.333333 12.8-25.6l192-145.066666-174.933334-85.333334-166.4 59.733334c-12.8 4.266667-34.133333-4.266667-38.4-21.333334-4.266667-17.066667 4.266667-34.133333 21.333334-42.666666l170.666666-59.733334c8.533333-4.266667 17.066667-4.266667 25.6 0l234.666667 110.933334c8.533333 4.266667 17.066667 12.8 17.066667 25.6s-4.266667 21.333333-12.8 29.866666l-196.266667 149.333334 196.266667 128c8.533333 4.266667 12.8 12.8 12.8 21.333333s0 17.066667-4.266667 25.6l-149.333333 200.533333c-8.533333 8.533333-21.333333 12.8-29.866667 12.8zM810.666667 524.8c-4.266667 0-8.533333 0-17.066667-4.266667l-55.466667-29.866666c-17.066667-8.533333-21.333333-29.866667-12.8-42.666667 8.533333-17.066667 29.866667-21.333333 42.666667-12.8l38.4 21.333333 110.933333-102.4c12.8-12.8 34.133333-12.8 46.933334 0 12.8 12.8 12.8 34.133333 0 46.933334l-128 119.466666c-8.533333 0-17.066667 4.266667-25.6 4.266667z">
+    </path>
+    <path
+        d="M85.333333 904.533333c-12.8 0-21.333333-4.266667-29.866666-17.066666-8.533333-17.066667-4.266667-34.133333 12.8-42.666667l204.8-115.2 59.733333-76.8c12.8-12.8 29.866667-17.066667 46.933333-4.266667 12.8 12.8 17.066667 29.866667 4.266667 46.933334l-64 85.333333c-4.266667 4.266667-4.266667 8.533333-8.533333 8.533333l-209.066667 119.466667c-4.266667-4.266667-12.8-4.266667-17.066667-4.266667z">
+    </path>
+</svg>
+</a>
+<a href="/index.xml" target="_blank" rel="noopener noreferrer me"
+    title="Rss">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11a9 9 0 0 1 9 9" />
+    <path d="M4 4a16 16 0 0 1 16 16" />
+    <circle cx="5" cy="19" r="1" />
+</svg>
+</a>
+</div>
+    <small class="footer_copyright">
+        © 2026 viazure.
+        Powered by <a href="https://github.com/viazure/hugo-blog-awesome" target="_blank" rel="noopener">Hugo blog awesome</a>.
+    </small>
+</footer><a href="#" title="回到顶部" id="totop">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" stroke="currentColor" viewBox="0 96 960 960">
+    <path d="M283 704.739 234.261 656 480 410.261 725.739 656 677 704.739l-197-197-197 197Z"/>
+</svg>
+
+</a>
+
+
+    
+
+
+
+
+    
+    
+        
+    
+
+    
+    
+        
+    
+
+
+
+    
+    <script src="https://viazure.cc/js/main.min.35f435a5d8eac613c52daa28d8af544a4512337d3e95236e4a4978417b8dcb2f.js" integrity="sha256-NfQ1pdjqxhPFLaoo2K9USkUSM30&#43;lSNuSkl4QXuNyy8="></script>
+
+    
+
+</body>
+</html>

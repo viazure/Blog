@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:webfeeds="http://webfeeds.org/rss/1.0">
+  <channel>
+    <title>Tinkering on viazure</title>
+    <link>https://viazure.cc/categories/tinkering/</link>
+    <description>Recent content in Tinkering on viazure</description><follow_challenge>
+    <feedId>96027576665585664</feedId>
+    <userId>59414119634735104</userId>
+    </follow_challenge><generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <webfeeds:icon>https://viazure.cc/icons/favicon.svg</webfeeds:icon>
+    <webfeeds:logo>https://viazure.cc/icons/favicon.svg</webfeeds:logo>
+    <image>
+      <url>https://viazure.cc/icons/favicon.svg</url>
+      <title>viazure</title>
+      <link>https://viazure.cc/</link>
+    </image>
+    
+    <lastBuildDate>Sat, 30 Aug 2025 22:07:02 +0800</lastBuildDate><atom:link href="https://viazure.cc/categories/tinkering/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rime 输入法折腾笔记</title>
+      <link>https://viazure.cc/posts/tinkering/rime-customization/</link>
+      <pubDate>Sat, 30 Aug 2025 22:07:02 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/rime-customization/</guid>
+      
+      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;近期被 Windows 自带输入法和 Visual Studio 2022 的兼容性问题困扰——每次写中文 commit message 时，输入法都会崩溃，系统卡死。于是转向了开源、高度可定制（折腾）且注重隐私的 Rime 输入法。花了不少时间折腾配置，在此记录下操作过程。&lt;/p&gt;
+&lt;h2 id=&#34;一词库整理&#34;&gt;一、词库整理&lt;/h2&gt;
+&lt;h3 id=&#34;11-手机通讯录&#34;&gt;1.1 手机通讯录&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;导出手机通讯录 &lt;code&gt;.vcf&lt;/code&gt; 文件。&lt;/li&gt;
+&lt;li&gt;使用 Excel 打开 &lt;code&gt;.vcf&lt;/code&gt; 文件，使用 &lt;code&gt;:&lt;/code&gt; 作为分割符号分列，然后筛选出姓名（FN）列。也可以使用各种「vcf 转 Excel/CSV 工具」进行转换，例如 &lt;a href=&#34;https://cdkm.com/cn/vcf-to-xls&#34;&gt;VCF 转 EXCEL - 免费在线将 VCF 文件转换成 EXCEL&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;复制姓名列，粘贴保存至一个新的 &lt;code&gt;.txt&lt;/code&gt; 文件中。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;12-自定义短语&#34;&gt;1.2 自定义短语&lt;/h3&gt;
+&lt;p&gt;由于之前我已在 Windows 自带输入法中维护了一套自定义短语，这里直接通过自带的导出功能导出为 &lt;code&gt;UserDefinedPhrase.dat&lt;/code&gt; 文件。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250830215734186.png&#34; alt=&#34;导出自定义短语&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;二生成词库&#34;&gt;二、生成词库&lt;/h2&gt;
+&lt;h3 id=&#34;21-转换词库&#34;&gt;2.1 转换词库&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;打开 &lt;a href=&#34;https://github.com/studyzy/imewlconverter&#34;&gt;深蓝词库转换工具&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;选择已保存的姓名 &lt;code&gt;.txt&lt;/code&gt; 文件，方案选择「无拼音纯汉字」→ 「Rime 中州韵」。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;22-处理自定义短语&#34;&gt;2.2 处理自定义短语&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;打开 &lt;a href=&#34;https://github.com/studyzy/imewlconverter&#34;&gt;深蓝词库转换工具&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;选择已保存的自定义短语文件 &lt;code&gt;UserDefinedPhrase.dat&lt;/code&gt;，选择拼音编码方案，我使用的是自然码双拼，故此选择「自然码」。&lt;/li&gt;
+&lt;li&gt;转换方案选择「Win10 微软五笔（用户自定义短语）」→ 「Gboard - 自然码」。必须选择「Win10 微软五笔（用户自定义短语）」才能正常转换出实际的双拼方案的词库文件。也可以先导出为无拼音纯汉字，再转换为双拼。&lt;/li&gt;
+&lt;li&gt;将深蓝词库转换工具程序所在目录中转换成功后的 &lt;code&gt;Gboard词库.zip&lt;/code&gt; 解压，获取词库文本文件 &lt;code&gt;dictionary.txt&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;用文本编辑器打开此文件，将内容复制到 Excel 中，以便调整列顺序或替换词汇。例如将 &lt;code&gt;zh-CN&lt;/code&gt; 替换为 Rime 中的权重值 &lt;code&gt;100&lt;/code&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;三编写-rime-词库&#34;&gt;三、编写 Rime 词库&lt;/h2&gt;
+&lt;p&gt;为了降低配置难度，减少折腾时间，我选择了 &lt;a href=&#34;https://github.com/gaboolic/rime-frost&#34;&gt;白霜拼音&lt;/a&gt; 作为我的基础词库，所以以下配置内容皆在此基础上进行。&lt;/p&gt;
+&lt;h3 id=&#34;31-编写联系人词库&#34;&gt;3.1 编写「联系人」词库&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;将 2.1 得到的 &lt;code&gt;.txt&lt;/code&gt; 文件改名为  &lt;code&gt;&amp;lt;词库名&amp;gt;.dict.yaml&lt;/code&gt;。并使用文本编辑器打开。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在行首增加词库文件头：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nn&#34;&gt;---&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;contacts&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 词库名称&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;version&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;2025-08-29&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 词库版本&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;sort&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;by_weight&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 按权重排序&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;columns&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 不写 columns 属性时，默认顺序为：&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;text&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 词汇&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;code&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 编码&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;weight&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 权重&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;修改完成后以「UTF-8」编码保存到 &lt;code&gt;cn_dicts&lt;/code&gt; 文件夹中。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;32-挂载词库&#34;&gt;3.2 挂载词库&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;在「用户文件夹」找到原主词库文件 &lt;code&gt;rime_frost.dict.yaml&lt;/code&gt;，将其复制为一个新文件，并重命名为  &lt;code&gt;extended.dict.yaml&lt;/code&gt;，用作新的主词库。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用文件编辑器打开  &lt;code&gt;extended.dict.yaml&lt;/code&gt;，修改其标题（name）为 &lt;code&gt;extended&lt;/code&gt;。在 &lt;code&gt;import_tables&lt;/code&gt; 节点增加 3.1 的「联系人（contacts）」词库，配置示例如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nn&#34;&gt;---&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;extended&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;version&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;2025-08-29&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;import_tables&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;cn_dicts/contacts&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 联系人&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;cn_dicts/8105&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 字表&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;cn_dicts/base&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 基础词库&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;cn_dicts/ext&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 扩展词库&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;cn_dicts/others&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 一些杂项&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 其他词库&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;新建自然码双拼方案（&lt;code&gt;rime_frost_double_pinyin.schema.yaml&lt;/code&gt;）的补丁文件 &lt;code&gt;rime_frost_double_pinyin.custom.yaml&lt;/code&gt;，并在其中增加以下内容，用于将词库设置为新建的 &lt;code&gt;extended&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;patch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;translator/dictionary&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;extended&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;33-配置自定义短语&#34;&gt;3.3 配置自定义短语&lt;/h3&gt;
+&lt;p&gt;「白霜拼音」的双拼自定义短语文件默认为 &lt;code&gt;custom_phrase_double.txt&lt;/code&gt;，需要手工建立此文件，并将 &lt;code&gt;custom_phrase.txt&lt;/code&gt; 文件的内容复制过来，修改 &lt;code&gt;db_name&lt;/code&gt; 为 &lt;code&gt;custom_phrase_double.txt&lt;/code&gt;。然后将自定义短语按照 &lt;code&gt;词汇&amp;lt;Tab&amp;gt;编码&amp;lt;Tab&amp;gt;权重&lt;/code&gt; 的格式加入到文件中即可。&lt;/p&gt;
+&lt;h2 id=&#34;个人配置&#34;&gt;个人配置&lt;/h2&gt;
+&lt;h3 id=&#34;weaselcustomyaml&#34;&gt;&lt;code&gt;weasel.custom.yaml&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;皮肤使用的 Windows 11 风格，参考 &lt;a href=&#34;https://github.com/rime/weasel/wiki/%E7%A4%BA%E4%BE%8B#windows-11-%E9%A3%8E%E6%A0%BC&#34;&gt;官方示例&lt;/a&gt;，做了简单微调。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250830220429087.png&#34; alt=&#34;输入法皮肤（浅色）.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/1756562793228.png&#34; alt=&#34;输入法皮肤（深色）.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;完整配置如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;patch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 字体&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;style/font_face&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Microsoft YaHei UI,JetBrains Maple Mono&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;style/label_font_face&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Microsoft YaHei UI,JetBrains Maple Mono&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;style/comment_font_face&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Microsoft YaHei UI,JetBrains Maple Mono&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 禁止显示托盘图标&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;style/display_tray_icon&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;false&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 候选窗样式&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;style/+&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;label_format&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;%s&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;inline_preedit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;font_point&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;label_font_point&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;comment_font_point&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;horizontal&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;color_scheme&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;win11light&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;color_scheme_dark&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;win11dark&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;layout&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;min_width&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;margin_x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;16&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;margin_y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;border&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;candidate_spacing&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;22&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilite_spacing&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilite_padding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilite_padding_x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;corner_radius&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;round_corner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;shadow_radius&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 候选窗颜色&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;preset_color_schemes/+&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;win11light&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Win11 浅色 / Win11light&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;text_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x191919&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;label_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x191919&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilited_label_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x191919&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;back_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0xf9f9f9&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;border_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x009e5a00&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilited_mark_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0xc06700&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilited_candidate_back_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0xf0f0f0&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;shadow_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x20000000&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;win11dark&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Win11 暗色 / Win11Dark&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;text_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0xf9f9f9&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;label_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0xf9f9f9&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;back_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;0x2C2C2C&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilited_label_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0xf9f9f9&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;border_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;0x002C2C2C&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilited_mark_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;0xFFC24C&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilited_candidate_back_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x383838&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;shadow_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x20000000&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;defaultcustomyaml&#34;&gt;&lt;code&gt;default.custom.yaml&lt;/code&gt;&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;patch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;ascii_composer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# CapsLock 键切换大小写&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;good_old_caps_lock&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# CapsLock 键清屏；左、右 Shift 键直接上屏&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;switch_key&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;Caps_Lock&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;clear&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;Shift_L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;commit_code&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;Shift_R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;commit_code&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 候选词个数&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;menu/page_size&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 按键绑定&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;key_binder/bindings/+&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 候选翻页：逗号上一页（仅在翻页状态下生效）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- {&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;accept: comma, send: Page_Up, when&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;paging }&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 候选翻页：句号下一页（只要候选窗存在就生效）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- {&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;accept: period, send: Page_Down, when&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;has_menu }&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 全角 / 半角切换：Shift+space&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- {&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;accept&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Shift+space&amp;#34;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;, toggle: full_shape, when&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;always }&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 方案列表设置为「白霜双拼」&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;schema_list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- {&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;schema&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;rime_frost_double_pinyin }&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 方案选单：清除默认的快捷键，新增 Ctrl+Shift+F4&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;switcher/hotkeys&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;switcher/hotkeys/+&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;Control+Shift+F4&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;其他&#34;&gt;其他&lt;/h2&gt;
+&lt;p&gt;若输入时有卡顿或不跟手现象，可尝试禁用 &lt;code&gt;lua_translator@f/rce_gc&lt;/code&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;方法一：在 &lt;code&gt;rime_frost_xxx.schema.yaml&lt;/code&gt; 中将其注释；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;方法二：在 &lt;code&gt;rime_frost_xxx.custom.yaml&lt;/code&gt; 中覆盖 &lt;code&gt;engine/translators&lt;/code&gt; 列表，移除该项。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;patch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;engine/translators&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# - lua_translator@f/rce_gc  ← 已禁用&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;一些参考链接&#34;&gt;一些参考链接&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://zhuanlan.zhihu.com/p/636562523&#34;&gt;全拼词库转双拼词库的方法（适用各种输入法） - 知乎&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://sspai.com/post/84373&#34;&gt;自由输入法 RIME 简明配置指南 - 少数派&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dvel.me/posts/rime-ice&#34;&gt;Rime 配置：雾凇拼音&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.v2ex.com/t/1085587&#34;&gt;RIME 输入法+白霜词库真的很好用诶 - V2EX&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>使用 Resend 与 Cloudflare 实现域名邮箱发信</title>
+      <link>https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/</link>
+      <pubDate>Sat, 15 Mar 2025 09:52:56 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/</guid>
+      
+      <description>&lt;p&gt;最近尝试解决域名邮箱发信问题，记录下具体操作过程。&lt;/p&gt;
+&lt;h2 id=&#34;背景需求&#34;&gt;背景需求&lt;/h2&gt;
+&lt;p&gt;我的个人域名目前托管在 Cloudflare，并启用了其提供的「电子邮件路由（Email Routing）」服务来实现邮件转发功能。但该方案存在一个缺陷：只能接收转发邮件，无法直接通过域名邮箱发送邮件。&lt;/p&gt;
+&lt;p&gt;为了解决发件需求，我曾尝试按照 Gmail 官方教程《&lt;a href=&#34;https://support.google.com/mail/answer/22370&#34;&gt;通过其他地址或别名发送电子邮件&lt;/a&gt;》配置邮件代发功能。但在实际使用过程中，发现收件方会提示「发件人未验证」警告。经排查发现，这是由于未配置 DKIM 验证机制导致的问题。&lt;/p&gt;
+&lt;p&gt;根据 Google Workspace 的《&lt;a href=&#34;https://support.google.com/a/answer/174124?sjid=17788796605478889522-NC&amp;amp;rd=1#dkim-check-set-up&#34;&gt;设置 DKIM&lt;/a&gt;》指南文档说明：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果您的域名提供商是 Google Domains 或  &lt;a href=&#34;https://squarespace.com/&#34;&gt;Squarespace&lt;/a&gt;，则 Google 会自动创建 DKIM 密钥，并将其添加到网域的 DNS 记录。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;由于我的域名既非托管在 Google Domains/Squarespace，又未开通 Google Workspace，所以暂时无法使用 Google 提供的「自动创建 DKIM 密钥」服务。&lt;/p&gt;
+&lt;p&gt;现状总结：&lt;/p&gt;
+&lt;p&gt;✅ 已实现功能&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cloudflare 域名托管&lt;/li&gt;
+&lt;li&gt;邮件接收及转发服务正常运作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;❌ 待解决问题&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;无法通过域名邮箱直接发送邮件&lt;/li&gt;
+&lt;li&gt;Gmail 代发触发「未验证」警告（原因：缺失 DKIM 记录）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;咨询了 DeepSeek，又参考了多篇技术博客，最终选用 Resend 作为最终邮件发送方案，它有这些优势：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;无需自建服务器&lt;/li&gt;
+&lt;li&gt;API 友好&lt;/li&gt;
+&lt;li&gt;免费额度充足（每天 100 封，对于我这种偶尔发发邮件的场景完全够用）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;实施步骤&#34;&gt;实施步骤&lt;/h2&gt;
+&lt;h3 id=&#34;服务配置&#34;&gt;服务配置&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;访问 &lt;a href=&#34;https://resend.com&#34;&gt;Resend 官网&lt;/a&gt;，注册并登录（推荐使用邮箱注册，详见：&lt;a href=&#34;https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/##&#34;&gt;踩坑&lt;/a&gt;）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在 Domains 页面点击 &lt;code&gt;Add Domain&lt;/code&gt; 添加域名，输入邮箱绑定的域名，并选择区域（Region），例如：&lt;code&gt;North Virginia (us-east-1)&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;域名添加完成后，需要配置 DNS。Resend 提供了两种配置方式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;自动授权：点击 &lt;code&gt;Sign in to Cloudflare&lt;/code&gt; 按钮登录授权后，Resend 将自动添加 DNS 记录&lt;/li&gt;
+&lt;li&gt;手动添加记录：参考 &lt;a href=&#34;https://resend.com/docs/knowledge-base/cloudflare&#34;&gt;官方指南&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250316160031078.png&#34; alt=&#34;DNS 记录&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;API Keys 页面点击 &lt;code&gt;Create API Key&lt;/code&gt; 创建并记录下密钥（格式：re_xxxxxx）&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;功能验证&#34;&gt;功能验证&lt;/h3&gt;
+&lt;p&gt;API 接口方式（cURL 示例）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;curl -X POST &lt;span class=&#34;s1&#34;&gt;&amp;#39;https://api.resend.com/emails&amp;#39;&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; -H &lt;span class=&#34;s1&#34;&gt;&amp;#39;Authorization: Bearer re_xxxxxx&amp;#39;&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; -H &lt;span class=&#34;s1&#34;&gt;&amp;#39;Content-Type: application/json&amp;#39;&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; -d &lt;span class=&#34;s1&#34;&gt;$&amp;#39;{
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;  &amp;#34;from&amp;#34;: &amp;#34;发件人 &amp;lt;发件人邮箱地址&amp;gt;&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;  &amp;#34;to&amp;#34;: [&amp;#34;接收人邮箱地址&amp;#34;],
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;  &amp;#34;subject&amp;#34;: &amp;#34;hello world&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;  &amp;#34;html&amp;#34;: &amp;#34;&amp;lt;p&amp;gt;it works!&amp;lt;/p&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;}&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;SMTP 客户端配置：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;服务器：smtp.resend.com&lt;/li&gt;
+&lt;li&gt;端口：465&lt;/li&gt;
+&lt;li&gt;账户：resend&lt;/li&gt;
+&lt;li&gt;密码：API 密钥&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;使用与优化&#34;&gt;使用与优化&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;使用&lt;/strong&gt;：沿用 Gmail 客户端配置模式，将发送邮件的 SMTP 服务配置改为 Resend 的配置参数。更多示例参考 &lt;a href=&#34;https://resend.com/docs/send-with-smtp&#34;&gt;官方帮助文档&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优化&lt;/strong&gt;：使用 &lt;a href=&#34;https://www.mail-tester.com/&#34;&gt;Mail Tester&lt;/a&gt; 测试邮件的&lt;strong&gt;垃圾邮件匹配度&lt;/strong&gt;，根据建议调整相关配置。&lt;/p&gt;
+&lt;h2 id=&#34;踩坑&#34;&gt;踩坑&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;账号注册问题：使用 GitHub 直接登录后发现无法修改主邮箱，最后只能删除账号，重新使用邮箱注册。账号删除步骤：控制台 -&amp;gt; Settings -&amp;gt; Team -&amp;gt; &lt;code&gt;Delete Team&lt;/code&gt; -&amp;gt; &lt;code&gt;Delete Account&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>running_page 的一些使用经验</title>
+      <link>https://viazure.cc/posts/tinkering/running-page-usage-experience/</link>
+      <pubDate>Sun, 22 Dec 2024 22:36:39 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/running-page-usage-experience/</guid>
+      
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/yihong0618/running_page&#34;&gt;running_page&lt;/a&gt; 是一个帮助用户创建个人跑步主页的开源项目，它能够自动同步来自 Garmin、Nike Run Club、Strava 等运动应用的跑步数据，并通过可视化的方式展示在网页上。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;删除错误同步的记录&#34;&gt;删除错误同步的记录&lt;/h2&gt;
+&lt;p&gt;在使用 running_page 的过程中，可能会遇到数据同步错误的情况，例如重复记录或错误的数据。为了处理这些问题，可以按照以下步骤进行操作。&lt;/p&gt;
+&lt;h3 id=&#34;数据文件在-github-cache-中&#34;&gt;数据文件在 GitHub Cache 中&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;定位并删除 GitHub Cache 中的错误记录&lt;/strong&gt;：进入项目的 GitHub Actions 页面，点击左侧的 &lt;code&gt;Caches&lt;/code&gt;，在筛选框中输入 &lt;code&gt;key:track_data-&lt;/code&gt; 筛选出所有已缓存的记录，根据生成时间删除错误记录及其之后生成的所有缓存记录。
+&lt;img src=&#34;https://webpimg.viazure.cc/250427164618340.png&#34; alt=&#34;操作示例&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重新运行 &lt;code&gt;Run Data Sync&lt;/code&gt; 进行同步。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;数据文件在源文件中&#34;&gt;数据文件在源文件中&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;删除数据库中的记录&lt;/strong&gt;：使用支持 SQLite 的数据库工具（例如 DBeaver）打开 &lt;code&gt;run_page/data.db&lt;/code&gt; 文件，找到并删除错误的记录。&lt;/p&gt;
+&lt;p&gt;示例 SQL 语句：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;-- 查询最近 10 条记录
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;SELECT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;activities&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;ORDER&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;BY&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run_id&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;DESC&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;LIMIT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;-- 删除指定记录（示例 ID）
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;DELETE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;activities&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;WHERE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run_id&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;1736636014000&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;删除 JSON 文件中的记录&lt;/strong&gt;：打开 &lt;code&gt;src/static/activities.json&lt;/code&gt; 文件，找到并删除对应的记录。这个文件包含了跑步活动的详细信息，删除后需要重新同步活动数据。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!TIP]&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;建议先备份 &lt;code&gt;data.db&lt;/code&gt; 和 &lt;code&gt;activities.json&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;保持两个数据源的记录 ID 一致&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;实时同步-garmin-运动记录&#34;&gt;实时同步 Garmin 运动记录&lt;/h2&gt;
+&lt;p&gt;官方同步方案依赖 GitHub Action 定时触发（默认每天 1 次），如果想及时同步，可以通过 Garmin 手表应用 &lt;strong&gt;Magic Push&lt;/strong&gt; 手动触发 Webhook，来实现与 GitHub Actions 中的工作流进行交互。&lt;/p&gt;
+&lt;p&gt;Magic Push 当前版本仅支持通过 GET 请求方式的 Webhook，但是 GitHub Actions 的工作流需要通过 POST 请求触发，因此我使用 Cloudflare Worker 作为中转，将 GET 请求转换为 POST 请求。&lt;/p&gt;
+&lt;h3 id=&#34;实现路径&#34;&gt;实现路径&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250224210836773.png&#34; alt=&#34;时序图&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;配置步骤&#34;&gt;配置步骤&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;MagicPush 配置&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在 Connect IQ 商店下载安装 &lt;a href=&#34;https://apps.garmin.com/en-US/apps/53da8d3a-f7a1-448f-9fe8-1e1b8cd212d5&#34;&gt;Magic Push&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Webhook 地址格式：&lt;code&gt;https://your-worker.url/SYNC_TOKEN&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;配置 Cloudflare Worker&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将以下代码部署到 Cloudflare Worker 中，并设置相关环境变量。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Cloudflare Worker 代码&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;最新代码同步更新在 &lt;a href=&#34;https://gist.github.com/viazure/6750aba76e92fcfe0e25d74f229700b1&#34;&gt;gists&lt;/a&gt; 中。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt; * @typedef {Object} Env
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;default&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;cm&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   * @param {Request} request
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   * @param {Env} env
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   * @param {ExecutionContext} ctx
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   * @returns {Promise&amp;lt;Response&amp;gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;kr&#34;&gt;async&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fetch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;url&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;URL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;sync_token&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;SYNC_TOKEN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;pathname&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!==&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;sync_token&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Response&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;:(&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;headers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;content-type&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;text/plain&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;401&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;github_owener&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GITHUB_OWENER_NAME&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;github_repo&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GITHUB_REPO_NAME&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;github_token&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GITHUB_TOKEN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;github_workflow_id&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GITHUB_WORKFLOW_ID&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghBody&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;ref&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;master&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghReq&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;headers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;s2&#34;&gt;&amp;#34;Content-Type&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;s2&#34;&gt;&amp;#34;User-Agent&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`Cloudflare - &lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_owener&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;Authorization&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`Bearer &lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_token&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;POST&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;body&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;JSON&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;stringify&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ghBody&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghUrl&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`https://api.github.com/repos/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_owener&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_repo&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;/actions/workflows/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_workflow_id&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;/dispatches`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghResp&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kr&#34;&gt;await&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fetch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ghUrl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghReq&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ghResp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;204&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;console&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Request: &amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghReq&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;console&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Response: &amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghResp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Response&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;:(&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;headers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;content-type&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;text/plain&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghResp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Response&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;:)&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;headers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;content-type&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;text/plain&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;200&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;环境变量说明&lt;/strong&gt;：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;类型&lt;/th&gt;
+          &lt;th&gt;名称&lt;/th&gt;
+          &lt;th&gt;值&lt;/th&gt;
+          &lt;th&gt;说明&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;GITHUB_OWENER_NAME&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;viazure&lt;/td&gt;
+          &lt;td&gt;仓库所有者&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;GITHUB_REPO_NAME&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;running_page&lt;/td&gt;
+          &lt;td&gt;running_page 项目仓库名称&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;GITHUB_TOKEN&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;ghp_XXX&lt;/td&gt;
+          &lt;td&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;GITHUB_WORKFLOW_ID&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;XXX&lt;/td&gt;
+          &lt;td&gt;工作流 id，获取方式参考了 &lt;a href=&#34;https://github.com/yihong0618/running_page?tab=readme-ov-file#shortcuts&#34;&gt;shortcuts&lt;/a&gt; 示例方案&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;SYNC_TOKEN&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;XXX&lt;/td&gt;
+          &lt;td&gt;自定义同步令牌。可以生成一个 GUID 作为同步令牌，避免 URL 暴露&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>我使用的 Obsidian 插件</title>
+      <link>https://viazure.cc/posts/tinkering/obsidian-plugins-i-use/</link>
+      <pubDate>Sat, 02 Nov 2024 19:58:19 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/obsidian-plugins-i-use/</guid>
+      
+      <description>&lt;blockquote&gt;
+&lt;p&gt;不要迷失在折腾的过程中。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;我尽量减少第三方插件的安装，只选择那些能够显著提升使用体验的插件。插件名称按字母顺序从 A 到 Z 排列。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/tgrosinger/advanced-tables-obsidian&#34;&gt;Advanced tables&lt;/a&gt;：加强表格编辑。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/trganda/obsidian-attachment-management&#34;&gt;Attachment Management&lt;/a&gt;：附件管理，自定义附件存储位置，自动更新笔记附件链接。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/zolrath/obsidian-auto-link-title&#34;&gt;Auto Link Title&lt;/a&gt;：粘贴网址时自动获取标题。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/TfTHacker/obsidian42-brat&#34;&gt;BRAT&lt;/a&gt;：安装与更新非社区插件市场中的插件。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/ozntel/oz-clear-unused-images-obsidian&#34;&gt;Clear Unused Images&lt;/a&gt;：清理无效的图片及附件。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/blacksmithgu/obsidian-dataview&#34;&gt;Dataview&lt;/a&gt;：查询和整合数据视图。只需要一些简单的脚本就能完成一些笔记的快速整理，还能使用 JavaScript 脚本，超级强大。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Yaozhuwa/easy-typing-obsidian&#34;&gt;Easy Typing&lt;/a&gt;：书写时实时处理文本格式。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/PKM-er/obsidian-editing-toolbar&#34;&gt;Editting Toolbar&lt;/a&gt;：在编辑区增加快捷操作的工具栏。除了常用的命令选项，还可以将自定义命令添加到工具栏中。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Enveloppe/obsidian-enveloppe&#34;&gt;Enveloppe&lt;/a&gt;：将 Obsidian 中的笔记发布为博客文章。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mirnovov/obsidian-homepage&#34;&gt;Homepage&lt;/a&gt; ：设置软件启动时打开的页面。使用 &lt;a href=&#34;https://github.com/TfTHacker/DashboardPlusPlus&#34;&gt;Dashboard++&lt;/a&gt; 模板配合 Dataview 定制好了我的 Dashboard。&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;&lt;a href=&#34;https://github.com/0011000000110010/obsidian-i18n&#34;&gt;I18N&lt;/a&gt;：翻译其他 Obsidian 的插件。开启沉浸式翻译模式时也能用于翻译笔记。&lt;/del&gt; 已弃用，翻译内容较为依赖社区，翻译的更新频率无法与插件本身同步。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/infiolab/infio-copilot&#34;&gt;Infio-Copilot&lt;/a&gt;：类 Cursor 的 AI 辅助工具，具有智能自动补全和交互式对话功能。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/platers/obsidian-linter&#34;&gt;Linter&lt;/a&gt;：格式验证及保存时格式化。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/coddingtonbear/obsidian-local-rest-api&#34;&gt;Local REST API&lt;/a&gt;：通过 REST API 与笔记交互。我主要用于搭配 &lt;a href=&#34;https://www.xmnote.com/&#34;&gt;纸间书摘&lt;/a&gt; 导入读书笔记。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Kh4f/obsidian-manual-sorting&#34;&gt;Manual Sorting&lt;/a&gt;：拖拽手工排序。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/scambier/obsidian-omnisearch&#34;&gt;Omnisearch&lt;/a&gt;：更智能的搜索，可配合浏览器扩展或篡改猴脚本将搜索结果集成到搜索引擎中。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/OliverBalfour/obsidian-pandoc&#34;&gt;Pandoc Plugin&lt;/a&gt;：可以导出更丰富的文件格式。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/tgrosinger/recent-files-obsidian&#34;&gt;Recent Files&lt;/a&gt;：查看最近浏览过的文件。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/remotely-save/remotely-save&#34;&gt;Remotely Save&lt;/a&gt;：笔记同步。搭配 Cloudflare R2 使用。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mgmeyers/obsidian-style-settings&#34;&gt;Style Settings&lt;/a&gt;：管理自定义 CSS。推荐一个 &lt;a href=&#34;https://forum-zh.obsidian.md/t/topic/38000&#34;&gt;改善笔记的链接编辑体验&lt;/a&gt; 的 CSS。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/lei-ctyh/obsidian-sync-cnblog&#34;&gt;Sync Cnblog&lt;/a&gt; ：同步 Obsidian 笔记到博客园。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/pjeby/tag-wrangler&#34;&gt;Tag Wrangler&lt;/a&gt;：给标签增加右键菜单，主要用于批量重命名。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/scambier/obsidian-text-extractor&#34;&gt;Text Extractor&lt;/a&gt;：从图像和 PDF 中提取文本，搭配 Omnisearch 使用。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/dragonwocky/obsidian-tray&#34;&gt;Tray&lt;/a&gt;：将 Obsidian 设为开机自启，并能够最小化到系统托盘。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/tadashi-aikawa/obsidian-various-complements-plugin&#34;&gt;Various Complements&lt;/a&gt;：自动填充单词与自定义内容。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/kometenstaub/obsidian-version-history-diff&#34;&gt;Version History Diff&lt;/a&gt;：对比不同版本文本差异。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/aidenlx/cm-chs-patch&#34;&gt;Word Splitting for Simplified Chinese in Edit Mode And Vim Mode&lt;/a&gt;：提供结巴分词引擎，与 Omnisearch 插件配合使用。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>从 Joplin 到 Obsidian：我的笔记工具迁移之旅</title>
+      <link>https://viazure.cc/posts/tinkering/migrating-from-joplin-to-obsidian/</link>
+      <pubDate>Sun, 27 Oct 2024 19:38:13 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/migrating-from-joplin-to-obsidian/</guid>
+      
+      <description>&lt;h2 id=&#34;失掉的安全感&#34;&gt;失掉的安全感&lt;/h2&gt;
+&lt;p&gt;我一直在使用 Joplin 存储我的笔记和剪裁的文章。得益于一个 Joplin 爱好者开发的 VS Code 插件 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=rxliuli.joplin-vscode-plugin&#34;&gt;joplin-vscode-plugin&lt;/a&gt;，我能够在 VS Code 中编写我钟爱的 Markdown 格式的笔记内容。借助 VS Code 里好用的插件，我能通过 AI 联想我的输入文本内容，通过绘图插件绘制流程图等内容。Joplin 我只用作笔记的统一管理、同步、其他客户端的查看。这些需求 Joplin 都能很好的满足，这也是我一直使用它的原因。&lt;/p&gt;
+&lt;p&gt;Obsidian 出来后我也一直在纠结是否需要迁移，因为我目前其实用不上 Obsidian 的亮点功能——双链笔记，Joplin 完全够我使用了，我一直告诉自己，不用为了使用工具而使用工具，不要折腾，把时间用在其他有用的地方。&lt;/p&gt;
+&lt;p&gt;我忍住了自己的折腾之心，我也一直用着我的 VS Code + Joplin 组合。我爱他们，我习惯着他们。直到前两个月发现的一件事情让我又重拾迁移之心。&lt;/p&gt;
+&lt;p&gt;我有一个习惯，我会定时的将本地存储的东西进行备份，我永远保持着「鸡蛋不能放在同一个篮子里」的想法。我希望我的东西 99.99% 不会丢失，所以每个月我都会将 Joplin 中的笔记导出，再备份到 OneDrive 里。&lt;/p&gt;
+&lt;p&gt;有一天，我打开笔记备份目录，想看看历史笔记的东西，结果发现所有笔记都没了，只剩下资源文件夹 &lt;code&gt;_resources&lt;/code&gt; 静静的躺在那儿，我有点崩溃，此时我以为是我备份的问题。但由于其他琐事繁忙，我暂时将此事搁置。&lt;/p&gt;
+&lt;p&gt;到了下一个月的备份日，我再次将 Joplin 笔记导出，这次我发现导出的内容仍然只有 &lt;code&gt;_resources&lt;/code&gt; 文件夹。我试着去寻找问题的原因，最终在 Joplin 社区发现了有同样问题的帖子。原因是目录名称里含有 emoji，同时作者也回复确认了此 BUG，并建立了对应的 &lt;a href=&#34;https://github.com/laurent22/joplin/issues/11110&#34;&gt;issue&lt;/a&gt;。这个 issue 搁置了两个月一直没有动静，直到今天有用户回复新版本已经没有了这个问题。&lt;/p&gt;
+&lt;p&gt;我更新到新版本后，发现问题确实得到了解决。但是我不由的思考，开源软件虽然有其独特的优势，但在某些情况下，一些小问题也可能对用户体验产生较大的影响，让我觉得不再那么有安全感。&lt;/p&gt;
+&lt;h2 id=&#34;分享欲的出口&#34;&gt;分享欲的出口&lt;/h2&gt;
+&lt;p&gt;上半年网上冲浪时，在一个技术大佬的博客里发现了一个行程地图 —— &lt;a href=&#34;https://exping.world/&#34;&gt;exping&lt;/a&gt; 。我一向特别中意这种 UI 漂亮的产品，试用了下很快就决定将其作为我的行程记录工具。我很喜欢这款产品，我将上半年出差和旅行时觉得不错的地点都记录在了上面，我为每个打卡点精心挑选了照片，写下体验感受，我希望它能成为我的旅行日记，也同时希望能被 exping 社区的一小撮人看到（快来看我精心写下的游记呀）。&lt;/p&gt;
+&lt;p&gt;可是，这件事情在前两天突然发生了变故，exping 突然发布了 &lt;a href=&#34;https://exping.world/zh/goodbye&#34;&gt;停止运营的公告&lt;/a&gt;。我在和朋友感慨「小而美的产品不好做啊」的同时，也在思考旅途数据的下一个归宿。&lt;/p&gt;
+&lt;p&gt;除了他们，其实我还有一些想要输出的想法或分享的东西想被非熟人看到，我希望有一个虽然少有人关顾，但我又乐意打理的地方。我又拾起了写博客的想法，它确实适合做我输出内容的野花园。&lt;/p&gt;
+&lt;p&gt;我是个拥有完美主义的&lt;strong&gt;懒&lt;/strong&gt;人，这就导致了我的好多想法和产出都难产或者夭折。我曾经使用 Hexo 搭建过博客，也曾在博客园写过几篇技术文章。但是长时间却只有几篇不算高质量的内容产出，这使我没有太多动力做这事情，我归档了我的 Hexo 博客，博客园里也只留下几篇阅读量还行的文章。&lt;/p&gt;
+&lt;p&gt;我毕竟还是有分享的欲望，虽然大多是比较私人的事情，但我希望有一个地方能够保留这些内容，即使被陌生人看到对我的生活也没太多影响，或许不经意能对上脑波呢。&lt;/p&gt;
+&lt;p&gt;我第一时间想到了前文提到的开发 Joplin VS Code 扩展的那个大佬，他还开发了一款用于发布博客的 Joplin 插件 —— &lt;a href=&#34;https://joplin-utils.rxliuli.com/zh-CN/joplin-publisher/&#34;&gt;Joplin Publisher&lt;/a&gt;，它可以帮我发布 Joplin 笔记到 GitHub，并通过 GitHub Actions 来自动化构建部署成博客文章。但是今天，我发现导出的文章有些丢失了我辛苦编辑的，完全符合 Markdown Lint 的笔记内容，例如它在一些有序列表中增加了多余的空格，加上无法掌控的可能失修的 Bug，我放弃了这个想法。&lt;/p&gt;
+&lt;p&gt;Obsidian 拥有强大且丰富的插件资源，尤其是当我发现有博客发布相关的插件后，便决定从 Joplin 迁移到 Obsidian。Obsidian 的文件库管理方式非常灵活，让我可以直接使用从 Joplin 导出的 Markdown 文档，从而大大减少了迁移的工作量。接下来，我只需要：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 解决笔记的同步： &lt;a href=&#34;https://github.com/remotely-save/remotely-save&#34;&gt;Remotely Save&lt;/a&gt; + Cloudflare R2&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 找到我在 VS Code 中已使用习惯的插件或者更好用的插件：&lt;a href=&#34;https://viazure.cc/posts/tinkering/obsidian-plugins-i-use/&#34;&gt;我使用的 Obsidian 插件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 搭建博客并发布我想要分享的内容。&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 将我的旅行日记重建为文章/相册，并发布。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;后记&#34;&gt;后记&lt;/h2&gt;
+&lt;p&gt;2024-12-21：今天在小众软件上看到一篇文章《&lt;a href=&#34;https://www.appinn.com/obsidian-and-bending-spoons/&#34;&gt;Obsidian：一场来自意大利的&amp;quot;求爱&amp;quot;风波 - 小众软件&lt;/a&gt;》，只希望「被收购」这种事情尽量不要发生吧。&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>快速安装使用 frp 内网穿透服务</title>
+      <link>https://viazure.cc/posts/tinkering/quick-frp-installation-for-nat-penetration/</link>
+      <pubDate>Fri, 20 Jan 2023 18:53:25 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/quick-frp-installation-for-nat-penetration/</guid>
+      
+      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;虽然已经能够通过 ZeroTier&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt; 访问公司电脑上部署的服务，但由于 iOS 的 ZeroTier 客户端不支持 moon 服务，在打洞失败时速度很慢，所以我决定使用 frp&lt;sup id=&#34;fnref:2&#34;&gt;&lt;a href=&#34;#fn:2&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;2&lt;/a&gt;&lt;/sup&gt; 进行内网穿透，以备不时之需。&lt;/p&gt;
+&lt;h2 id=&#34;安装过程&#34;&gt;安装过程&lt;/h2&gt;
+&lt;h3 id=&#34;服务端&#34;&gt;服务端&lt;/h3&gt;
+&lt;p&gt;ssh 到服务器，通过人家写好的一键配置 shell 脚本 &lt;a href=&#34;https://github.com/mvscode/frps-onekey&#34;&gt;frps-onekey&lt;/a&gt; 安装 frp 服务端，这个脚本会自动下载并配置 frp 服务端，简化手动配置的步骤。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;wget https://gitee.com/mvscode/frps-onekey/raw/master/install-frps.sh -O ./install-frps.sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;chmod &lt;span class=&#34;m&#34;&gt;700&lt;/span&gt; ./install-frps.sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;./install-frps.sh install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;按照提示进行各种配置，然后启动。&lt;/p&gt;
+&lt;h3 id=&#34;客户端&#34;&gt;客户端&lt;/h3&gt;
+&lt;p&gt;在 frp 项目的 release 中下载最新的 Windows 客户端压缩包，解压后修改启动中的 &lt;code&gt;frpc.toml&lt;/code&gt; 文件。示例如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-toml:frpc.toml&#34; data-lang=&#34;toml:frpc.toml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;serverAddr&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;100.100.100.100&amp;#34;&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# 服务器地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;serverPort&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;7443&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# 服务器端口&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;auth&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;method&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;token&amp;#34;&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# 认证方式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;auth&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;token&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;egXXX&amp;#34;&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# 认证令牌&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;proxies&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;debug-api&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;tcp&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;localIP&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;127.0.0.1&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;localPort&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8084&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;remotePort&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8084&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;http 服务可以使用多个子用户名分别映射，没有域名的话可以使用 &lt;code&gt;tcp&lt;/code&gt; 的方式进行映射。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;配置完成后，通过命令行执行命令启动服务：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-cmd&#34; data-lang=&#34;cmd&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.\frpc.exe -c frpc.toml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;但这种启动方式在命令行关闭后就停止服务了，所以可以使用 Shawl&lt;sup id=&#34;fnref:3&#34;&gt;&lt;a href=&#34;#fn:3&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;3&lt;/a&gt;&lt;/sup&gt; 将其注册为 Windows 服务，示例如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-cmd&#34; data-lang=&#34;cmd&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;shawl add --name frp -- C:\Services\frp\frpc.exe -c C:\Services\frp\frpc.toml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;好了，安装完毕。&lt;/p&gt;
+&lt;h2 id=&#34;踩坑&#34;&gt;踩坑&lt;/h2&gt;
+&lt;p&gt;在修改 systemctl 服务配置后，需要执行 &lt;code&gt;systemctl daemon-reload&lt;/code&gt; 重新加载配置，否则可能会提示：&lt;code&gt;frps.service: Failed to execute command: Permission denied&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn:1&#34;&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.zerotier.com/&#34;&gt;ZeroTier&lt;/a&gt; 是一款开源的软件定义广域网（SD-WAN）工具，它允许用户轻松在不同设备之间创建虚拟专用网络（VPN）。ZeroTier 采用点对点（P2P）连接和现代加密技术，将不同网络环境下的设备组建成一个虚拟局域网，使局域网内的设备可以互相访问。&amp;#160;&lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id=&#34;fn:2&#34;&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/fatedier/frp&#34;&gt;frp&lt;/a&gt; 是一个专注于内网穿透的高性能的反向代理应用，支持 TCP、UDP、HTTP、HTTPS 等多种协议。可以将内网服务以安全、便捷的方式通过具有公网 IP 节点的中转暴露到公网。&amp;#160;&lt;a href=&#34;#fnref:2&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id=&#34;fn:3&#34;&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/mtkennerly/shawl&#34;&gt;Shawl&lt;/a&gt; 是一个用于将任意程序作为 Windows 服务运行的包装器，用 Rust 编写。它为您处理 Windows 服务 API，因此您的程序只需响应 ctrl-C/SIGINT。&amp;#160;&lt;a href=&#34;#fnref:3&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+      
+    </item>
+    
+  </channel>
+</rss>

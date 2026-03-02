@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title itemprop="name">Rime 输入法折腾笔记 | viazure</title>
+<meta property="og:title" content="Rime 输入法折腾笔记 | viazure" />
+<meta name="twitter:title" content="Rime 输入法折腾笔记 | viazure" />
+<meta itemprop="name" content="Rime 输入法折腾笔记 | viazure" />
+<meta name="application-name" content="Rime 输入法折腾笔记 | viazure" />
+<meta property="og:site_name" content="viazure" />
+
+<meta name="description" content="生活是体验，拍照是情绪，写作是思考，折腾是？">
+<meta itemprop="description" content="生活是体验，拍照是情绪，写作是思考，折腾是？" />
+<meta property="og:description" content="生活是体验，拍照是情绪，写作是思考，折腾是？" />
+<meta name="twitter:description" content="生活是体验，拍照是情绪，写作是思考，折腾是？" />
+
+<meta property="og:locale" content="zh-cn" />
+<meta name="language" content="zh-cn" />
+
+  <link rel="alternate" hreflang="zh-cn" href="https://viazure.cc/posts/tinkering/rime-customization/" title="Chinese" />
+
+
+
+
+
+    
+    
+    
+
+    <meta property="og:type" content="article" />
+    <meta property="og:article:published_time" content=2025-08-30T22:07:02&#43;0800 />
+    <meta property="article:published_time" content=2025-08-30T22:07:02&#43;0800 />
+    <meta property="og:url" content="https://viazure.cc/posts/tinkering/rime-customization/" />
+
+    
+    <meta property="og:article:author" content="viazure" />
+    <meta property="article:author" content="viazure" />
+    <meta name="author" content="viazure" />
+    
+    
+
+    
+
+    <script defer type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "Article",
+        "headline": "Rime 输入法折腾笔记",
+        "author": {
+        "@type": "Person",
+        "name": ""
+        },
+        "datePublished": "2025-08-30",
+        "description": "",
+        "wordCount":  419 ,
+        "mainEntityOfPage": "True",
+        "dateModified": "2025-08-30",
+        "image": {
+        "@type": "imageObject",
+        "url": ""
+        },
+        "publisher": {
+        "@type": "Organization",
+        "name": "viazure"
+        }
+    }
+    </script>
+
+
+<meta name="generator" content="Hugo 0.157.0">
+
+    
+    <meta property="og:url" content="https://viazure.cc/posts/tinkering/rime-customization/">
+  <meta property="og:site_name" content="viazure">
+  <meta property="og:title" content="Rime 输入法折腾笔记">
+  <meta property="og:description" content="前言 近期被 Windows 自带输入法和 Visual Studio 2022 的兼容性问题困扰——每次写中文 commit message 时，输入法都会崩溃，系统卡死。于是转向了开源、高度可定制（折腾）且注重隐私的 Rime 输入法。花了不少时间折腾配置，在此记录下操作过程。
+一、词库整理 1.1 手机通讯录 导出手机通讯录 .vcf 文件。 使用 Excel 打开 .vcf 文件，使用 : 作为分割符号分列，然后筛选出姓名（FN）列。也可以使用各种「vcf 转 Excel/CSV 工具」进行转换，例如 VCF 转 EXCEL - 免费在线将 VCF 文件转换成 EXCEL。 复制姓名列，粘贴保存至一个新的 .txt 文件中。 1.2 自定义短语 由于之前我已在 Windows 自带输入法中维护了一套自定义短语，这里直接通过自带的导出功能导出为 UserDefinedPhrase.dat 文件。
+二、生成词库 2.1 转换词库 打开 深蓝词库转换工具。 选择已保存的姓名 .txt 文件，方案选择「无拼音纯汉字」→ 「Rime 中州韵」。 2.2 处理自定义短语 打开 深蓝词库转换工具。 选择已保存的自定义短语文件 UserDefinedPhrase.dat，选择拼音编码方案，我使用的是自然码双拼，故此选择「自然码」。 转换方案选择「Win10 微软五笔（用户自定义短语）」→ 「Gboard - 自然码」。必须选择「Win10 微软五笔（用户自定义短语）」才能正常转换出实际的双拼方案的词库文件。也可以先导出为无拼音纯汉字，再转换为双拼。 将深蓝词库转换工具程序所在目录中转换成功后的 Gboard词库.zip 解压，获取词库文本文件 dictionary.txt。 用文本编辑器打开此文件，将内容复制到 Excel 中，以便调整列顺序或替换词汇。例如将 zh-CN 替换为 Rime 中的权重值 100。 三、编写 Rime 词库 为了降低配置难度，减少折腾时间，我选择了 白霜拼音 作为我的基础词库，所以以下配置内容皆在此基础上进行。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-08-30T22:07:02+08:00">
+    <meta property="article:modified_time" content="2025-08-30T22:34:29+08:00">
+    <meta property="article:tag" content="Tools">
+    <meta property="article:tag" content="Windows">
+    <meta property="article:tag" content="Rime">
+    <meta property="article:tag" content="Weasel">
+
+
+    
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Rime 输入法折腾笔记">
+  <meta name="twitter:description" content="前言 近期被 Windows 自带输入法和 Visual Studio 2022 的兼容性问题困扰——每次写中文 commit message 时，输入法都会崩溃，系统卡死。于是转向了开源、高度可定制（折腾）且注重隐私的 Rime 输入法。花了不少时间折腾配置，在此记录下操作过程。
+一、词库整理 1.1 手机通讯录 导出手机通讯录 .vcf 文件。 使用 Excel 打开 .vcf 文件，使用 : 作为分割符号分列，然后筛选出姓名（FN）列。也可以使用各种「vcf 转 Excel/CSV 工具」进行转换，例如 VCF 转 EXCEL - 免费在线将 VCF 文件转换成 EXCEL。 复制姓名列，粘贴保存至一个新的 .txt 文件中。 1.2 自定义短语 由于之前我已在 Windows 自带输入法中维护了一套自定义短语，这里直接通过自带的导出功能导出为 UserDefinedPhrase.dat 文件。
+二、生成词库 2.1 转换词库 打开 深蓝词库转换工具。 选择已保存的姓名 .txt 文件，方案选择「无拼音纯汉字」→ 「Rime 中州韵」。 2.2 处理自定义短语 打开 深蓝词库转换工具。 选择已保存的自定义短语文件 UserDefinedPhrase.dat，选择拼音编码方案，我使用的是自然码双拼，故此选择「自然码」。 转换方案选择「Win10 微软五笔（用户自定义短语）」→ 「Gboard - 自然码」。必须选择「Win10 微软五笔（用户自定义短语）」才能正常转换出实际的双拼方案的词库文件。也可以先导出为无拼音纯汉字，再转换为双拼。 将深蓝词库转换工具程序所在目录中转换成功后的 Gboard词库.zip 解压，获取词库文本文件 dictionary.txt。 用文本编辑器打开此文件，将内容复制到 Excel 中，以便调整列顺序或替换词汇。例如将 zh-CN 替换为 Rime 中的权重值 100。 三、编写 Rime 词库 为了降低配置难度，减少折腾时间，我选择了 白霜拼音 作为我的基础词库，所以以下配置内容皆在此基础上进行。">
+
+
+    
+
+    <link rel="canonical" href="https://viazure.cc/posts/tinkering/rime-customization/">
+    <link href="/style.min.2d921c18cf1ec555ffc03d59a8adc211c402c68c930c27d6a0c306ab175a8d09.css" rel="stylesheet">
+    <link href="/code-highlight.min.706d31975fec544a864cb7f0d847a73ea55ca1df91bf495fd12a177138d807cf.css" rel="stylesheet">
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+    <link rel="mask-icon" href="/icons/safari-pinned-tab.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+<link rel="manifest" href="https://viazure.cc/site.webmanifest">
+
+<meta name="msapplication-config" content="/browserconfig.xml">
+<meta name="msapplication-TileColor" content="#2d89ef">
+<meta name="theme-color" content="#434648">
+    <meta name="color-scheme" content="light dark">
+
+    
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg">
+
+    
+    
+    
+      <script data-goatcounter="https://stats.viazure.cc/count"
+            async
+            src="/js/goatcounter.min.3b169bac6a7027c185ea591dceeee009a2abe7d87f2ea35adaa1fb4a1ec089aa.js"
+            integrity="sha256-OxabrGpwJ8GF6lkdzu7gCaKr59h/LqNa2qH7Sh7Aiao="
+            crossorigin="anonymous"></script>
+    
+</head>
+<body data-theme = "auto" class="notransition">
+
+<script src="/js/theme.min.8961c317c5b88b953fe27525839672c9343f1058ab044696ca225656c8ba2ab0.js" integrity="sha256-iWHDF8W4i5U/4nUlg5ZyyTQ/EFirBEaWyiJWVsi6KrA="></script>
+
+<div class="navbar" role="navigation">
+    <nav class="menu" aria-label="Main Navigation">
+        <a href="https://viazure.cc/" class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
+viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+stroke-linejoin="round" class="feather feather-home">
+<title>首页</title>
+<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+<polyline points="9 22 9 12 15 12 15 22"></polyline>
+</svg>
+        </a>
+        <input type="checkbox" id="menu-trigger" class="menu-trigger" />
+        <label for="menu-trigger">
+            <span class="menu-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" stroke="currentColor" fill="none" viewBox="0 0 14 14"><title>Menu</title><path stroke-linecap="round" stroke-linejoin="round" d="M10.595 7L3.40726 7"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 3.51488L3.49301 3.51488"></path><path stroke-linecap="round" stroke-linejoin="round" d="M10.5096 10.4851H3.49301"></path><path stroke-linecap="round" stroke-linejoin="round" d="M0.5 12.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H12.5C13.0523 0.5 13.5 0.947715 13.5 1.5V12.5C13.5 13.0523 13.0523 13.5 12.5 13.5H1.5C0.947715 13.5 0.5 13.0523 0.5 12.5Z"></path></svg>
+            </span>
+        </label>
+
+        <div class="trigger">
+            <ul class="trigger-container">
+                
+                
+                <li>
+                    <a class="menu-link " href="/">
+                        首页
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link active" href="/posts/">
+                        文章
+                    </a>
+                    
+                </li>
+                
+                <li>
+                    <a class="menu-link " href="/pages/about/">
+                        关于
+                    </a>
+                    
+                </li>
+                
+                <li class="menu-separator">
+                    <span>|</span>
+                </li>
+                
+                
+            </ul>
+            <a id="mode" href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-sunny" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>LIGHT</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="mode-moon" width="21" height="21" viewBox="0 0 14 14" stroke-width="1">
+<title>DARK</title><g><circle cx="7" cy="7" r="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></circle><line x1="7" y1="0.5" x2="7" y2="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="2.4" x2="3.82" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="0.5" y1="7" x2="2.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="2.4" y1="11.6" x2="3.82" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="7" y1="13.5" x2="7" y2="11.5" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="11.6" x2="10.18" y2="10.18" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="13.5" y1="7" x2="11.5" y2="7" fill="none" stroke-linecap="round" stroke-linejoin="round"></line><line x1="11.6" y1="2.4" x2="10.18" y2="3.82" fill="none" stroke-linecap="round" stroke-linejoin="round"></line></g></svg>
+            </a>
+        </div>
+    </nav>
+</div>
+
+<div class="wrapper post">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title">Rime 输入法折腾笔记</h1>
+                
+                
+                
+                <div class="post-meta">
+                    <time datetime="2025-08-30T22:07:02&#43;08:00" itemprop="datePublished"> 2025-08-30 </time>
+                </div>
+                
+            </header>
+            
+            <div class="page-content">
+                <h2 id="前言">前言</h2>
+<p>近期被 Windows 自带输入法和 Visual Studio 2022 的兼容性问题困扰——每次写中文 commit message 时，输入法都会崩溃，系统卡死。于是转向了开源、高度可定制（折腾）且注重隐私的 Rime 输入法。花了不少时间折腾配置，在此记录下操作过程。</p>
+<h2 id="一词库整理">一、词库整理</h2>
+<h3 id="11-手机通讯录">1.1 手机通讯录</h3>
+<ol>
+<li>导出手机通讯录 <code>.vcf</code> 文件。</li>
+<li>使用 Excel 打开 <code>.vcf</code> 文件，使用 <code>:</code> 作为分割符号分列，然后筛选出姓名（FN）列。也可以使用各种「vcf 转 Excel/CSV 工具」进行转换，例如 <a href="https://cdkm.com/cn/vcf-to-xls">VCF 转 EXCEL - 免费在线将 VCF 文件转换成 EXCEL</a>。</li>
+<li>复制姓名列，粘贴保存至一个新的 <code>.txt</code> 文件中。</li>
+</ol>
+<h3 id="12-自定义短语">1.2 自定义短语</h3>
+<p>由于之前我已在 Windows 自带输入法中维护了一套自定义短语，这里直接通过自带的导出功能导出为 <code>UserDefinedPhrase.dat</code> 文件。</p>
+<p><img src="https://webpimg.viazure.cc/250830215734186.png" alt="导出自定义短语"></p>
+<h2 id="二生成词库">二、生成词库</h2>
+<h3 id="21-转换词库">2.1 转换词库</h3>
+<ol>
+<li>打开 <a href="https://github.com/studyzy/imewlconverter">深蓝词库转换工具</a>。</li>
+<li>选择已保存的姓名 <code>.txt</code> 文件，方案选择「无拼音纯汉字」→ 「Rime 中州韵」。</li>
+</ol>
+<h3 id="22-处理自定义短语">2.2 处理自定义短语</h3>
+<ol>
+<li>打开 <a href="https://github.com/studyzy/imewlconverter">深蓝词库转换工具</a>。</li>
+<li>选择已保存的自定义短语文件 <code>UserDefinedPhrase.dat</code>，选择拼音编码方案，我使用的是自然码双拼，故此选择「自然码」。</li>
+<li>转换方案选择「Win10 微软五笔（用户自定义短语）」→ 「Gboard - 自然码」。必须选择「Win10 微软五笔（用户自定义短语）」才能正常转换出实际的双拼方案的词库文件。也可以先导出为无拼音纯汉字，再转换为双拼。</li>
+<li>将深蓝词库转换工具程序所在目录中转换成功后的 <code>Gboard词库.zip</code> 解压，获取词库文本文件 <code>dictionary.txt</code>。</li>
+<li>用文本编辑器打开此文件，将内容复制到 Excel 中，以便调整列顺序或替换词汇。例如将 <code>zh-CN</code> 替换为 Rime 中的权重值 <code>100</code>。</li>
+</ol>
+<h2 id="三编写-rime-词库">三、编写 Rime 词库</h2>
+<p>为了降低配置难度，减少折腾时间，我选择了 <a href="https://github.com/gaboolic/rime-frost">白霜拼音</a> 作为我的基础词库，所以以下配置内容皆在此基础上进行。</p>
+<h3 id="31-编写联系人词库">3.1 编写「联系人」词库</h3>
+<ol>
+<li>
+<p>将 2.1 得到的 <code>.txt</code> 文件改名为  <code>&lt;词库名&gt;.dict.yaml</code>。并使用文本编辑器打开。</p>
+</li>
+<li>
+<p>在行首增加词库文件头：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">contacts</span><span class="w"> </span><span class="c"># 词库名称</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2025-08-29&#34;</span><span class="w"> </span><span class="c"># 词库版本</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">sort</span><span class="p">:</span><span class="w"> </span><span class="l">by_weight</span><span class="w"> </span><span class="c"># 按权重排序</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">columns</span><span class="p">:</span><span class="w"> </span><span class="c"># 不写 columns 属性时，默认顺序为：</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">text</span><span class="w"> </span><span class="c"># 词汇</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">code</span><span class="w"> </span><span class="c"># 编码</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">weight</span><span class="w"> </span><span class="c"># 权重</span><span class="w">
+</span></span></span></code></pre></div></li>
+<li>
+<p>修改完成后以「UTF-8」编码保存到 <code>cn_dicts</code> 文件夹中。</p>
+</li>
+</ol>
+<h3 id="32-挂载词库">3.2 挂载词库</h3>
+<ol>
+<li>
+<p>在「用户文件夹」找到原主词库文件 <code>rime_frost.dict.yaml</code>，将其复制为一个新文件，并重命名为  <code>extended.dict.yaml</code>，用作新的主词库。</p>
+</li>
+<li>
+<p>使用文件编辑器打开  <code>extended.dict.yaml</code>，修改其标题（name）为 <code>extended</code>。在 <code>import_tables</code> 节点增加 3.1 的「联系人（contacts）」词库，配置示例如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">extended</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2025-08-29&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">import_tables</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">cn_dicts/contacts</span><span class="w"> </span><span class="c"># 联系人</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">cn_dicts/8105</span><span class="w"> </span><span class="c"># 字表</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">cn_dicts/base</span><span class="w"> </span><span class="c"># 基础词库</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">cn_dicts/ext</span><span class="w"> </span><span class="c"># 扩展词库</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">cn_dicts/others</span><span class="w"> </span><span class="c"># 一些杂项</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># 其他词库</span><span class="w">
+</span></span></span></code></pre></div></li>
+<li>
+<p>新建自然码双拼方案（<code>rime_frost_double_pinyin.schema.yaml</code>）的补丁文件 <code>rime_frost_double_pinyin.custom.yaml</code>，并在其中增加以下内容，用于将词库设置为新建的 <code>extended</code>。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">patch</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">translator/dictionary</span><span class="p">:</span><span class="w"> </span><span class="l">extended</span><span class="w">
+</span></span></span></code></pre></div></li>
+</ol>
+<h3 id="33-配置自定义短语">3.3 配置自定义短语</h3>
+<p>「白霜拼音」的双拼自定义短语文件默认为 <code>custom_phrase_double.txt</code>，需要手工建立此文件，并将 <code>custom_phrase.txt</code> 文件的内容复制过来，修改 <code>db_name</code> 为 <code>custom_phrase_double.txt</code>。然后将自定义短语按照 <code>词汇&lt;Tab&gt;编码&lt;Tab&gt;权重</code> 的格式加入到文件中即可。</p>
+<h2 id="个人配置">个人配置</h2>
+<h3 id="weaselcustomyaml"><code>weasel.custom.yaml</code></h3>
+<p>皮肤使用的 Windows 11 风格，参考 <a href="https://github.com/rime/weasel/wiki/%E7%A4%BA%E4%BE%8B#windows-11-%E9%A3%8E%E6%A0%BC">官方示例</a>，做了简单微调。</p>
+<p><img src="https://webpimg.viazure.cc/250830220429087.png" alt="输入法皮肤（浅色）.png"></p>
+<p><img src="https://webpimg.viazure.cc/1756562793228.png" alt="输入法皮肤（深色）.png"></p>
+<p>完整配置如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">patch</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># 字体</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">style/font_face</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Microsoft YaHei UI,JetBrains Maple Mono&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">style/label_font_face</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Microsoft YaHei UI,JetBrains Maple Mono&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">style/comment_font_face</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Microsoft YaHei UI,JetBrains Maple Mono&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># 禁止显示托盘图标</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">style/display_tray_icon</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># 候选窗样式</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">style/+</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">label_format</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;%s&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">inline_preedit</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">font_point</span><span class="p">:</span><span class="w"> </span><span class="m">12</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">label_font_point</span><span class="p">:</span><span class="w"> </span><span class="m">10</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">comment_font_point</span><span class="p">:</span><span class="w"> </span><span class="m">12</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">horizontal</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">color_scheme</span><span class="p">:</span><span class="w"> </span><span class="l">win11light</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">color_scheme_dark</span><span class="p">:</span><span class="w"> </span><span class="l">win11dark</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">layout</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">min_width</span><span class="p">:</span><span class="w"> </span><span class="m">10</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">margin_x</span><span class="p">:</span><span class="w"> </span><span class="m">16</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">margin_y</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">border</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">candidate_spacing</span><span class="p">:</span><span class="w"> </span><span class="m">22</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilite_spacing</span><span class="p">:</span><span class="w"> </span><span class="m">6</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilite_padding</span><span class="p">:</span><span class="w"> </span><span class="m">2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilite_padding_x</span><span class="p">:</span><span class="w"> </span><span class="m">8</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">corner_radius</span><span class="p">:</span><span class="w"> </span><span class="m">5</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">round_corner</span><span class="p">:</span><span class="w"> </span><span class="m">4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">shadow_radius</span><span class="p">:</span><span class="w"> </span><span class="m">4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># 候选窗颜色</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">preset_color_schemes/+</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">win11light</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Win11 浅色 / Win11light&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">text_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x191919</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">label_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x191919</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_label_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x191919</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">back_color</span><span class="p">:</span><span class="w"> </span><span class="m">0xf9f9f9</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">border_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x009e5a00</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_mark_color</span><span class="p">:</span><span class="w"> </span><span class="m">0xc06700</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_candidate_back_color</span><span class="p">:</span><span class="w"> </span><span class="m">0xf0f0f0</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">shadow_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x20000000</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">win11dark</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Win11 暗色 / Win11Dark&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">text_color</span><span class="p">:</span><span class="w"> </span><span class="m">0xf9f9f9</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">label_color</span><span class="p">:</span><span class="w"> </span><span class="m">0xf9f9f9</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">back_color</span><span class="p">:</span><span class="w"> </span><span class="l">0x2C2C2C</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_label_color</span><span class="p">:</span><span class="w"> </span><span class="m">0xf9f9f9</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">border_color</span><span class="p">:</span><span class="w"> </span><span class="l">0x002C2C2C</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_mark_color</span><span class="p">:</span><span class="w"> </span><span class="l">0xFFC24C</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">hilited_candidate_back_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x383838</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">shadow_color</span><span class="p">:</span><span class="w"> </span><span class="m">0x20000000</span><span class="w">
+</span></span></span></code></pre></div><h3 id="defaultcustomyaml"><code>default.custom.yaml</code></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">patch</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ascii_composer</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># CapsLock 键切换大小写</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">good_old_caps_lock</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># CapsLock 键清屏；左、右 Shift 键直接上屏</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">switch_key</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">Caps_Lock</span><span class="p">:</span><span class="w"> </span><span class="l">clear</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">Shift_L</span><span class="p">:</span><span class="w"> </span><span class="l">commit_code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">Shift_R</span><span class="p">:</span><span class="w"> </span><span class="l">commit_code</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># 候选词个数</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">menu/page_size</span><span class="p">:</span><span class="w"> </span><span class="m">7</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># 按键绑定</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">key_binder/bindings/+</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># 候选翻页：逗号上一页（仅在翻页状态下生效）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- {<span class="w"> </span><span class="nt">accept: comma, send: Page_Up, when</span><span class="p">:</span><span class="w"> </span><span class="l">paging }</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># 候选翻页：句号下一页（只要候选窗存在就生效）</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- {<span class="w"> </span><span class="nt">accept: period, send: Page_Down, when</span><span class="p">:</span><span class="w"> </span><span class="l">has_menu }</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># 全角 / 半角切换：Shift+space</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- {<span class="w"> </span><span class="nt">accept</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;Shift+space&#34;</span><span class="nt">, toggle: full_shape, when</span><span class="p">:</span><span class="w"> </span><span class="l">always }</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># 方案列表设置为「白霜双拼」</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">schema_list</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- {<span class="w"> </span><span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l">rime_frost_double_pinyin }</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c"># 方案选单：清除默认的快捷键，新增 Ctrl+Shift+F4</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">switcher/hotkeys</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">switcher/hotkeys/+</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">Control+Shift+F4</span><span class="w">
+</span></span></span></code></pre></div><h2 id="其他">其他</h2>
+<p>若输入时有卡顿或不跟手现象，可尝试禁用 <code>lua_translator@f/rce_gc</code>。</p>
+<ul>
+<li>
+<p>方法一：在 <code>rime_frost_xxx.schema.yaml</code> 中将其注释；</p>
+</li>
+<li>
+<p>方法二：在 <code>rime_frost_xxx.custom.yaml</code> 中覆盖 <code>engine/translators</code> 列表，移除该项。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">patch</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">engine/translators</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># - lua_translator@f/rce_gc  ← 已禁用</span><span class="w">
+</span></span></span></code></pre></div></li>
+</ul>
+<h2 id="一些参考链接">一些参考链接</h2>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/636562523">全拼词库转双拼词库的方法（适用各种输入法） - 知乎</a></li>
+<li><a href="https://sspai.com/post/84373">自由输入法 RIME 简明配置指南 - 少数派</a></li>
+<li><a href="https://dvel.me/posts/rime-ice">Rime 配置：雾凇拼音</a></li>
+<li><a href="https://www.v2ex.com/t/1085587">RIME 输入法+白霜词库真的很好用诶 - V2EX</a></li>
+</ul>
+
+            </div>
+        </article><hr style="margin-top: 40px; margin-bottom: 40px;" />
+<div id="tcomment"></div>
+<script src="https://registry.npmmirror.com/twikoo/1.6.41/files/dist/twikoo.min.js"
+    integrity="sha384-QgZlvw//W8lQwue8uv2qAszlmDJE1GzJa4dEA/tt3EEyn7VQd5BgrdZMzoCAkTQT"
+    crossorigin="anonymous"
+    defer></script>
+<script>
+    window.addEventListener('load', () => {
+        twikoo.init({
+            envId: 'https:\/\/twikoo-viazure.netlify.app\/.netlify\/functions\/twikoo',
+            el: '#tcomment',})
+    })
+</script></main>
+</div>
+<footer class="footer">
+    <span class="footer_item"> </span>
+    &nbsp;
+
+    <div class="footer_social-icons">
+<a href="https://github.com/viazure" target="_blank" rel="noopener noreferrer me"
+    title="Github">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+</a>
+<a href="https://run.viazure.cc" target="_blank" rel="noopener noreferrer me"
+    title="Running">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="currentColor" stroke="currentColor"
+    stroke-width="30" stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M768 349.866667c-76.8 0-136.533333-64-136.533333-136.533334s64-136.533333 136.533333-136.533333 136.533333 64 136.533333 136.533333-59.733333 136.533333-136.533333 136.533334z m0-213.333334c-42.666667 0-76.8 34.133333-76.8 76.8S725.333333 290.133333 768 290.133333 844.8 256 844.8 213.333333 810.666667 136.533333 768 136.533333zM512 968.533333c-8.533333 0-12.8 0-17.066667-8.533333-12.8-8.533333-17.066667-29.866667-4.266666-42.666667l128-170.666666-204.8-136.533334c-8.533333-4.266667-12.8-17.066667-12.8-25.6 0-8.533333 4.266667-21.333333 12.8-25.6l192-145.066666-174.933334-85.333334-166.4 59.733334c-12.8 4.266667-34.133333-4.266667-38.4-21.333334-4.266667-17.066667 4.266667-34.133333 21.333334-42.666666l170.666666-59.733334c8.533333-4.266667 17.066667-4.266667 25.6 0l234.666667 110.933334c8.533333 4.266667 17.066667 12.8 17.066667 25.6s-4.266667 21.333333-12.8 29.866666l-196.266667 149.333334 196.266667 128c8.533333 4.266667 12.8 12.8 12.8 21.333333s0 17.066667-4.266667 25.6l-149.333333 200.533333c-8.533333 8.533333-21.333333 12.8-29.866667 12.8zM810.666667 524.8c-4.266667 0-8.533333 0-17.066667-4.266667l-55.466667-29.866666c-17.066667-8.533333-21.333333-29.866667-12.8-42.666667 8.533333-17.066667 29.866667-21.333333 42.666667-12.8l38.4 21.333333 110.933333-102.4c12.8-12.8 34.133333-12.8 46.933334 0 12.8 12.8 12.8 34.133333 0 46.933334l-128 119.466666c-8.533333 0-17.066667 4.266667-25.6 4.266667z">
+    </path>
+    <path
+        d="M85.333333 904.533333c-12.8 0-21.333333-4.266667-29.866666-17.066666-8.533333-17.066667-4.266667-34.133333 12.8-42.666667l204.8-115.2 59.733333-76.8c12.8-12.8 29.866667-17.066667 46.933333-4.266667 12.8 12.8 17.066667 29.866667 4.266667 46.933334l-64 85.333333c-4.266667 4.266667-4.266667 8.533333-8.533333 8.533333l-209.066667 119.466667c-4.266667-4.266667-12.8-4.266667-17.066667-4.266667z">
+    </path>
+</svg>
+</a>
+<a href="/index.xml" target="_blank" rel="noopener noreferrer me"
+    title="Rss">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11a9 9 0 0 1 9 9" />
+    <path d="M4 4a16 16 0 0 1 16 16" />
+    <circle cx="5" cy="19" r="1" />
+</svg>
+</a>
+</div>
+    <small class="footer_copyright">
+        © 2026 viazure.
+        Powered by <a href="https://github.com/viazure/hugo-blog-awesome" target="_blank" rel="noopener">Hugo blog awesome</a>.
+    </small>
+</footer><a href="#" title="回到顶部" id="totop">
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" stroke="currentColor" viewBox="0 96 960 960">
+    <path d="M283 704.739 234.261 656 480 410.261 725.739 656 677 704.739l-197-197-197 197Z"/>
+</svg>
+
+</a>
+
+
+    
+
+
+
+
+    
+    
+        
+    
+
+    
+    
+        
+    
+
+
+
+    
+    <script src="https://viazure.cc/js/main.min.35f435a5d8eac613c52daa28d8af544a4512337d3e95236e4a4978417b8dcb2f.js" integrity="sha256-NfQ1pdjqxhPFLaoo2K9USkUSM30&#43;lSNuSkl4QXuNyy8="></script>
+
+    
+
+</body>
+</html>

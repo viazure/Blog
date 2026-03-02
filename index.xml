@@ -1,0 +1,1243 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:webfeeds="http://webfeeds.org/rss/1.0">
+  <channel>
+    <title>viazure</title>
+    <link>https://viazure.cc/</link>
+    <description>Recent content on viazure</description><follow_challenge>
+    <feedId>96027576665585664</feedId>
+    <userId>59414119634735104</userId>
+    </follow_challenge><generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <webfeeds:icon>https://viazure.cc/icons/favicon.svg</webfeeds:icon>
+    <webfeeds:logo>https://viazure.cc/icons/favicon.svg</webfeeds:logo>
+    <image>
+      <url>https://viazure.cc/icons/favicon.svg</url>
+      <title>viazure</title>
+      <link>https://viazure.cc/</link>
+    </image>
+    
+    <lastBuildDate>Sat, 30 Aug 2025 22:07:02 +0800</lastBuildDate><atom:link href="https://viazure.cc/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Rime 输入法折腾笔记</title>
+      <link>https://viazure.cc/posts/tinkering/rime-customization/</link>
+      <pubDate>Sat, 30 Aug 2025 22:07:02 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/rime-customization/</guid>
+      
+      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;近期被 Windows 自带输入法和 Visual Studio 2022 的兼容性问题困扰——每次写中文 commit message 时，输入法都会崩溃，系统卡死。于是转向了开源、高度可定制（折腾）且注重隐私的 Rime 输入法。花了不少时间折腾配置，在此记录下操作过程。&lt;/p&gt;
+&lt;h2 id=&#34;一词库整理&#34;&gt;一、词库整理&lt;/h2&gt;
+&lt;h3 id=&#34;11-手机通讯录&#34;&gt;1.1 手机通讯录&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;导出手机通讯录 &lt;code&gt;.vcf&lt;/code&gt; 文件。&lt;/li&gt;
+&lt;li&gt;使用 Excel 打开 &lt;code&gt;.vcf&lt;/code&gt; 文件，使用 &lt;code&gt;:&lt;/code&gt; 作为分割符号分列，然后筛选出姓名（FN）列。也可以使用各种「vcf 转 Excel/CSV 工具」进行转换，例如 &lt;a href=&#34;https://cdkm.com/cn/vcf-to-xls&#34;&gt;VCF 转 EXCEL - 免费在线将 VCF 文件转换成 EXCEL&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;复制姓名列，粘贴保存至一个新的 &lt;code&gt;.txt&lt;/code&gt; 文件中。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;12-自定义短语&#34;&gt;1.2 自定义短语&lt;/h3&gt;
+&lt;p&gt;由于之前我已在 Windows 自带输入法中维护了一套自定义短语，这里直接通过自带的导出功能导出为 &lt;code&gt;UserDefinedPhrase.dat&lt;/code&gt; 文件。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250830215734186.png&#34; alt=&#34;导出自定义短语&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;二生成词库&#34;&gt;二、生成词库&lt;/h2&gt;
+&lt;h3 id=&#34;21-转换词库&#34;&gt;2.1 转换词库&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;打开 &lt;a href=&#34;https://github.com/studyzy/imewlconverter&#34;&gt;深蓝词库转换工具&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;选择已保存的姓名 &lt;code&gt;.txt&lt;/code&gt; 文件，方案选择「无拼音纯汉字」→ 「Rime 中州韵」。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;22-处理自定义短语&#34;&gt;2.2 处理自定义短语&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;打开 &lt;a href=&#34;https://github.com/studyzy/imewlconverter&#34;&gt;深蓝词库转换工具&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;选择已保存的自定义短语文件 &lt;code&gt;UserDefinedPhrase.dat&lt;/code&gt;，选择拼音编码方案，我使用的是自然码双拼，故此选择「自然码」。&lt;/li&gt;
+&lt;li&gt;转换方案选择「Win10 微软五笔（用户自定义短语）」→ 「Gboard - 自然码」。必须选择「Win10 微软五笔（用户自定义短语）」才能正常转换出实际的双拼方案的词库文件。也可以先导出为无拼音纯汉字，再转换为双拼。&lt;/li&gt;
+&lt;li&gt;将深蓝词库转换工具程序所在目录中转换成功后的 &lt;code&gt;Gboard词库.zip&lt;/code&gt; 解压，获取词库文本文件 &lt;code&gt;dictionary.txt&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;用文本编辑器打开此文件，将内容复制到 Excel 中，以便调整列顺序或替换词汇。例如将 &lt;code&gt;zh-CN&lt;/code&gt; 替换为 Rime 中的权重值 &lt;code&gt;100&lt;/code&gt;。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;三编写-rime-词库&#34;&gt;三、编写 Rime 词库&lt;/h2&gt;
+&lt;p&gt;为了降低配置难度，减少折腾时间，我选择了 &lt;a href=&#34;https://github.com/gaboolic/rime-frost&#34;&gt;白霜拼音&lt;/a&gt; 作为我的基础词库，所以以下配置内容皆在此基础上进行。&lt;/p&gt;
+&lt;h3 id=&#34;31-编写联系人词库&#34;&gt;3.1 编写「联系人」词库&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;将 2.1 得到的 &lt;code&gt;.txt&lt;/code&gt; 文件改名为  &lt;code&gt;&amp;lt;词库名&amp;gt;.dict.yaml&lt;/code&gt;。并使用文本编辑器打开。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在行首增加词库文件头：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nn&#34;&gt;---&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;contacts&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 词库名称&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;version&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;2025-08-29&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 词库版本&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;sort&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;by_weight&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 按权重排序&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;columns&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 不写 columns 属性时，默认顺序为：&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;text&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 词汇&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;code&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 编码&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;weight&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 权重&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;修改完成后以「UTF-8」编码保存到 &lt;code&gt;cn_dicts&lt;/code&gt; 文件夹中。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;32-挂载词库&#34;&gt;3.2 挂载词库&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;在「用户文件夹」找到原主词库文件 &lt;code&gt;rime_frost.dict.yaml&lt;/code&gt;，将其复制为一个新文件，并重命名为  &lt;code&gt;extended.dict.yaml&lt;/code&gt;，用作新的主词库。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;使用文件编辑器打开  &lt;code&gt;extended.dict.yaml&lt;/code&gt;，修改其标题（name）为 &lt;code&gt;extended&lt;/code&gt;。在 &lt;code&gt;import_tables&lt;/code&gt; 节点增加 3.1 的「联系人（contacts）」词库，配置示例如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nn&#34;&gt;---&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;extended&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;version&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;2025-08-29&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;import_tables&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;cn_dicts/contacts&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 联系人&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;cn_dicts/8105&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 字表&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;cn_dicts/base&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 基础词库&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;cn_dicts/ext&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 扩展词库&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;cn_dicts/others&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 一些杂项&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 其他词库&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;新建自然码双拼方案（&lt;code&gt;rime_frost_double_pinyin.schema.yaml&lt;/code&gt;）的补丁文件 &lt;code&gt;rime_frost_double_pinyin.custom.yaml&lt;/code&gt;，并在其中增加以下内容，用于将词库设置为新建的 &lt;code&gt;extended&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;patch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;translator/dictionary&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;extended&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;33-配置自定义短语&#34;&gt;3.3 配置自定义短语&lt;/h3&gt;
+&lt;p&gt;「白霜拼音」的双拼自定义短语文件默认为 &lt;code&gt;custom_phrase_double.txt&lt;/code&gt;，需要手工建立此文件，并将 &lt;code&gt;custom_phrase.txt&lt;/code&gt; 文件的内容复制过来，修改 &lt;code&gt;db_name&lt;/code&gt; 为 &lt;code&gt;custom_phrase_double.txt&lt;/code&gt;。然后将自定义短语按照 &lt;code&gt;词汇&amp;lt;Tab&amp;gt;编码&amp;lt;Tab&amp;gt;权重&lt;/code&gt; 的格式加入到文件中即可。&lt;/p&gt;
+&lt;h2 id=&#34;个人配置&#34;&gt;个人配置&lt;/h2&gt;
+&lt;h3 id=&#34;weaselcustomyaml&#34;&gt;&lt;code&gt;weasel.custom.yaml&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;皮肤使用的 Windows 11 风格，参考 &lt;a href=&#34;https://github.com/rime/weasel/wiki/%E7%A4%BA%E4%BE%8B#windows-11-%E9%A3%8E%E6%A0%BC&#34;&gt;官方示例&lt;/a&gt;，做了简单微调。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250830220429087.png&#34; alt=&#34;输入法皮肤（浅色）.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/1756562793228.png&#34; alt=&#34;输入法皮肤（深色）.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;完整配置如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;patch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 字体&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;style/font_face&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Microsoft YaHei UI,JetBrains Maple Mono&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;style/label_font_face&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Microsoft YaHei UI,JetBrains Maple Mono&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;style/comment_font_face&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Microsoft YaHei UI,JetBrains Maple Mono&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 禁止显示托盘图标&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;style/display_tray_icon&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;false&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 候选窗样式&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;style/+&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;label_format&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;%s&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;inline_preedit&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;font_point&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;label_font_point&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;comment_font_point&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;horizontal&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;color_scheme&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;win11light&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;color_scheme_dark&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;win11dark&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;layout&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;min_width&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;margin_x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;16&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;margin_y&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;border&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;candidate_spacing&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;22&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilite_spacing&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilite_padding&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilite_padding_x&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;corner_radius&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;round_corner&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;shadow_radius&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 候选窗颜色&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;preset_color_schemes/+&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;win11light&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Win11 浅色 / Win11light&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;text_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x191919&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;label_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x191919&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilited_label_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x191919&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;back_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0xf9f9f9&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;border_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x009e5a00&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilited_mark_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0xc06700&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilited_candidate_back_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0xf0f0f0&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;shadow_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x20000000&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;win11dark&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;name&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Win11 暗色 / Win11Dark&amp;#34;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;text_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0xf9f9f9&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;label_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0xf9f9f9&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;back_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;0x2C2C2C&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilited_label_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0xf9f9f9&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;border_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;0x002C2C2C&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilited_mark_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;0xFFC24C&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;hilited_candidate_back_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x383838&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;shadow_color&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;0x20000000&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h3 id=&#34;defaultcustomyaml&#34;&gt;&lt;code&gt;default.custom.yaml&lt;/code&gt;&lt;/h3&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;patch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;ascii_composer&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# CapsLock 键切换大小写&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;good_old_caps_lock&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kc&#34;&gt;true&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# CapsLock 键清屏；左、右 Shift 键直接上屏&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;switch_key&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;Caps_Lock&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;clear&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;Shift_L&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;commit_code&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;      &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;Shift_R&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;commit_code&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 候选词个数&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;menu/page_size&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;m&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 按键绑定&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;key_binder/bindings/+&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 候选翻页：逗号上一页（仅在翻页状态下生效）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- {&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;accept: comma, send: Page_Up, when&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;paging }&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 候选翻页：句号下一页（只要候选窗存在就生效）&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- {&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;accept: period, send: Page_Down, when&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;has_menu }&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 全角 / 半角切换：Shift+space&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- {&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;accept&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Shift+space&amp;#34;&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;, toggle: full_shape, when&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;always }&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 方案列表设置为「白霜双拼」&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;schema_list&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- {&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;schema&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;l&#34;&gt;rime_frost_double_pinyin }&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 方案选单：清除默认的快捷键，新增 Ctrl+Shift+F4&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;switcher/hotkeys&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[]&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;switcher/hotkeys/+&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;- &lt;span class=&#34;l&#34;&gt;Control+Shift+F4&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;其他&#34;&gt;其他&lt;/h2&gt;
+&lt;p&gt;若输入时有卡顿或不跟手现象，可尝试禁用 &lt;code&gt;lua_translator@f/rce_gc&lt;/code&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;方法一：在 &lt;code&gt;rime_frost_xxx.schema.yaml&lt;/code&gt; 中将其注释；&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;方法二：在 &lt;code&gt;rime_frost_xxx.custom.yaml&lt;/code&gt; 中覆盖 &lt;code&gt;engine/translators&lt;/code&gt; 列表，移除该项。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-yaml&#34; data-lang=&#34;yaml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;patch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;  &lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;engine/translators&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;:&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;    &lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# - lua_translator@f/rce_gc  ← 已禁用&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;一些参考链接&#34;&gt;一些参考链接&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://zhuanlan.zhihu.com/p/636562523&#34;&gt;全拼词库转双拼词库的方法（适用各种输入法） - 知乎&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://sspai.com/post/84373&#34;&gt;自由输入法 RIME 简明配置指南 - 少数派&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://dvel.me/posts/rime-ice&#34;&gt;Rime 配置：雾凇拼音&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.v2ex.com/t/1085587&#34;&gt;RIME 输入法+白霜词库真的很好用诶 - V2EX&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>月度回顾 Vol.2：髂胫束综合征，过敏与口琴复健</title>
+      <link>https://viazure.cc/posts/life/monthly-review-202504-202505/</link>
+      <pubDate>Mon, 02 Jun 2025 15:37:29 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/life/monthly-review-202504-202505/</guid>
+      
+      <description>&lt;p&gt;持续输出真是一件困难的事情。拖延症和完美主义使我迟迟没有完成 4 月的总结回顾，以至于到后面直接放弃了，最终和 5 月一起攒一波大的。&lt;/p&gt;
+&lt;p&gt;总之，虽迟但到。以下为 2025 年 4 月和 5 月生活的记录与思考。&lt;/p&gt;
+&lt;h2 id=&#34;跑步&#34;&gt;跑步&lt;/h2&gt;
+&lt;p&gt;4 月倒数的第二周，终于结束了为期一个半月的加班，我也终于可以恢复我的正常作息时间，一大早起床跑步也不那么痛苦了。4、5 月共跑了 237+ 公里，慢慢地将前几个月落下的里程拉了回来，如此进行下去，年度目标——1200 公里应该能够顺利完成。&lt;/p&gt;
+&lt;p&gt;5 月一开始的状态还挺好，五一假期第二天去公园跑了个 8 公里，平均配速 5:35/公里，心率 143。让我感觉现在参加比赛应该能够达到大众二级运动员标准了，特别想参加一次马拉松来检验一下我如今的跑步训练成果。但万万没想到我高兴得太早了，第二周开始，只要跑稍微长点的距离，右腿的髂胫束就不舒服，周末跑了个长距离后，第二天甚至走路都痛。第三周在外出差，顺便休息了一周，又增加了一些臀部的力量训练，但是效果一般，后面几天跑完还是有点不舒服。只希望在 6 月的贵阳马拉松我的髂胫束能给力点，不要让我太早崩掉。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250602155823898.png&#34; alt=&#34;4、5 月跑量&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;跑步的成本&#34;&gt;跑步的成本&lt;/h3&gt;
+&lt;p&gt;虽然跑步已经算是一种非常低成本的运动了（只需要一双适合跑步的鞋子就行），但是入坑后还是花了一些钱。&lt;/p&gt;
+&lt;p&gt;首先是跑步装备，恰逢 618 促销活动提前开启，趁此我也买了两双新鞋，让陪伴我跑完第一个 1000 公里的跑步鞋正式退役。这双鞋当时是和朋友在线下商场买的，那会儿还不知道什么跑步鞋合适，试穿的时候只觉得很轻很舒服就买了。&lt;/p&gt;
+&lt;p&gt;脚后跟已磨出洞的老伙计 &lt;strong&gt;Skechers GOrun Ride 7&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250604_202713.HEIF&#34; alt=&#34;退役的斯凯奇跑步鞋&#34;&gt;&lt;/p&gt;
+&lt;p&gt;然后是跑步赛事，报名、交通、住宿都是钱。大概是疫情后大家都开始运动了，又或许马拉松确实是能给城市带来大量流量和促进消费，这两年涌现出超级多的马拉松赛事。我参加一次后便热衷于这项活动，今年甚至不再满足省内的比赛，开始往周边城市探索了。最近报了这几场：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;兰州马拉松（候补失败）&lt;/li&gt;
+&lt;li&gt;贵阳马拉松（已中签）&lt;/li&gt;
+&lt;li&gt;成都马拉松（待抽签）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;生活点滴&#34;&gt;生活点滴&lt;/h2&gt;
+&lt;h3 id=&#34;过敏&#34;&gt;过敏&lt;/h3&gt;
+&lt;p&gt;很难想象，我吃&lt;strong&gt;基围虾&lt;/strong&gt;居然过敏了。自从多年前吃蚕蛹过敏后，仿佛触发了某种开关，原本各种食材百无禁忌的我有过好几次过敏经验了。这次只多吃了几只虾，脸、胸口和背部就都起疹子了。还好家里备着「氯雷他定」，本来是用于缓解我的过敏性鼻炎的，赶紧吃了一片症状才慢慢缓解。&lt;/p&gt;
+&lt;p&gt;（我以前吃的那些海鲜自助难道是假海鲜吗？）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250419_123739.HEIC&#34; alt=&#34;白灼基围虾&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;口琴&#34;&gt;口琴&lt;/h3&gt;
+&lt;p&gt;清理了吃灰一年有余的口琴，这把 Hohner CX12 当初也是犹豫了很久才下单，因为我怕我坚持不下去，花 1000 多买来没吹两天就吃灰那就太败家了。结果也只坚持了小一年，记不起后来怎么的就没动力练了。&lt;/p&gt;
+&lt;p&gt;最近回顾 flomo 看到之前收藏的这样一段话：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果你有爱好，那么每个月至少抽出一天时间做些与之相关的事情，并当成重要事件。&lt;/p&gt;
+&lt;p&gt;比如你喜欢钓鱼，记得要留出一整天的时间，早点出发前往想要钓鱼的地方，安排一整天的时间集中做钓鱼相关的事，这样做的好处是你能对自己的爱好时刻保持活力，觉得吸引力越来越足，给生活里留一些激情和盼头。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;虽然有点鸡汤，但想到最近下班后总是躺着啥事儿不想做，漫无目的地刷手机，倒不如把这个爱好慢慢捡回来。试着吹了几天，以前常吹的那几首曲子跟着谱子还是能熟练地吹出来，只是吹完非常累。看来肌肉记忆还在，只是太久没练习基本功丢得有点多了，后面继续努力练习吧！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250419_180215.HEIC&#34; alt=&#34;口琴&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;点滴&#34;&gt;点滴&lt;/h3&gt;
+&lt;p&gt;虽然只过了短短两个月，但此刻回想起来已不记得大部分细节，还好有照片能够帮我记住那些生活的点点滴滴。&lt;/p&gt;
+&lt;p&gt;这次过了一个充实的五一。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;和奶奶一起去坐席，吃上了久违的&lt;strong&gt;坝坝宴&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;和小伙伴们约了一直想吃的包子，然后带上锄头、尼龙口袋去竹林里挖竹笋。&lt;/li&gt;
+&lt;li&gt;去医院看望刚刚当上妈妈的好朋友。&lt;/li&gt;
+&lt;li&gt;陪朋友爬山，到寺庙还愿，顺便吃个斋饭。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250501_175651.HEIC&#34; alt=&#34;坝坝宴&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250502_090450.HEIC&#34; alt=&#34;饭特稀的包子&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250502_095934.HEIC&#34; alt=&#34;竹笋大丰收&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/mmexport1746185143704.jpg&#34; alt=&#34;对望着的两个小辈&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250503_105212.HEIC&#34; alt=&#34;寺庙的大黄&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250602_175323.jpg&#34; alt=&#34;斋饭&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在立夏后的第一个周末做一顿属于夏天的午饭。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250510_131346.HEIF&#34; alt=&#34;夏日午餐&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在 5 月的最后一天，做一顿丰盛的午饭庆祝端午节。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250531_123144.HEIC&#34; alt=&#34;端午节午饭&#34;&gt;&lt;/p&gt;
+&lt;p&gt;给不知不觉用了两年的笔记本清灰。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250518_160426.HEIC&#34; alt=&#34;电脑清灰&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;折腾&#34;&gt;折腾&lt;/h2&gt;
+&lt;h3 id=&#34;工具&#34;&gt;工具&lt;/h3&gt;
+&lt;p&gt;在 Cursor 的辅助下，完成了 docsify 的离线环境部署的示例项目 &lt;a href=&#34;https://github.com/viazure/docsify-in-offline-example&#34;&gt;docsify-in-offline-example&lt;/a&gt;，并配置好了 CDN 资源同步的 GitHub Actions，每天拉取服务所需的最新静态资源文件，这样之后再遇到需要部署文档服务时直接就能用这个项目弄了。&lt;/p&gt;
+&lt;p&gt;又折腾了一下 &lt;a href=&#34;https://run.viazure.cc/&#34;&gt;跑步页面&lt;/a&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;同步更新了 running_page 的最新修改，增加了 Summary 页面和海拔的数据。&lt;/li&gt;
+&lt;li&gt;在作者的鼓励下贡献了一个小小的 &lt;a href=&#34;https://github.com/yihong0618/running_page/pull/839&#34;&gt;PR&lt;/a&gt;：修正了文档的一个错误，做了一些关于 Markdown Lint 的内容改进工作。&lt;/li&gt;
+&lt;li&gt;调整了同步流程，新增了一个仅同步佳明国区数据到国际区的 &lt;a href=&#34;https://github.com/viazure/running_page/blob/master/run_page/garmin_only_sync_cn_global.py&#34;&gt;脚本&lt;/a&gt;，并加了一个 &lt;a href=&#34;https://github.com/viazure/running_page/actions/workflows/garmin_cn_sync_to_global.yml&#34;&gt;新工作流&lt;/a&gt; 用于执行它，然后将国际区的佳明账号链接到了 Strava，这样在跑步页面发布时只需要从 Strava 里同步跑步的数据即可。这样做的目的一是为了在国际区备份，其次是为了将所有渠道的数据在 Strava 整合。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;收藏的项目&#34;&gt;收藏的项目&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Karben233/bili-hardcore&#34;&gt;Bilibili 硬核会员答题&lt;/a&gt;，利用 AI 完成 B 站的硬核会员试炼。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/open-ani/animeko&#34;&gt;Animeko&lt;/a&gt;，一款看番 App，全平台 + Bangumi 收藏同步。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://madaha-translate.com/&#34;&gt;马大哈翻译&lt;/a&gt;，一款在语境中学习英语的浏览器插件。主要工作方式是将原有的中文内容的部分单词或句子替换成英文，实现结合上下文来推导学习英语的目的。起初是在 V2EX 上看到另一款类似应用「Ries」的 &lt;a href=&#34;https://www.v2ex.com/t/1134678&#34;&gt;贴子&lt;/a&gt; ，但由于其服务器一直异常，且免费体验效果一般。然后看到了 Chrome 扩展商店相关推荐下这款扩展，试用下来体验很好，单词替换速度快，并且支持替换整个句子。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Kuingsmile/PicHoro&#34;&gt;PicHoro&lt;/a&gt;，手机端图床管理 App，方便直接在手机上传图片到图床。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/ccbikai/hacker-news&#34;&gt;Hacker News 每日播报&lt;/a&gt;，一个基于 AI 的 Hacker News 中文播客项目，每天自动抓取 Hacker News 热门文章，通过 AI 生成中文总结并转换为播客内容。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;学习&#34;&gt;学习&lt;/h2&gt;
+&lt;p&gt;本来说在多邻国上学下英语，但发现前面的课程太过简单，于是一路跳关考试把所有课程一股脑跳完了。结果后续在「每日巩固练习」时又发现其实好多语法和从句都不会🤣。&lt;/p&gt;
+&lt;p&gt;我发现工作外是一点不想学习工作上的东西。《C# 图解教程》看了 100 多页又停了，刷到一些技术视频也没耐心看完。&lt;/p&gt;
+&lt;p&gt;哎，也许只是我又菜又懒吧。&lt;/p&gt;
+&lt;h2 id=&#34;书影音&#34;&gt;书影音&lt;/h2&gt;
+&lt;h3 id=&#34;电影&#34;&gt;电影&lt;/h3&gt;
+&lt;h4 id=&#34;从-21-世纪安全撤离&#34;&gt;从 21 世纪安全撤离&lt;/h4&gt;
+&lt;p&gt;之前在社交平台看到这部电影时，被很多好评种草，据说有超级无敌的脑洞，实际观感也确实如此，各种奇异的镜头语言，天马行空的剧情…… 拿起字幕这件事情由于早早被剧透，所以没给我带来太多震撼。最终快进着看完了，因为我 get 不到，或许有一点点有趣，但也就还行？&lt;/p&gt;
+&lt;h4 id=&#34;蜡笔小新-超时空呼风唤雨的我的新娘&#34;&gt;蜡笔小新 超时空！呼风唤雨的我的新娘&lt;/h4&gt;
+&lt;p&gt;我不得不说蜡笔小新确实能给人带来快乐，虽然剧情很平淡，坏人也坏的很“动画”，但是我看的时候确实蛮开心的。&lt;/p&gt;
+&lt;h3 id=&#34;视频&#34;&gt;视频&lt;/h3&gt;
+&lt;h4 id=&#34;浓墨重彩的青春值得再回忆一遍&#34;&gt;&lt;a href=&#34;https://www.bilibili.com/video/BV1qrRNYQExS&#34;&gt;浓墨重彩的青春值得再回忆一遍&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;在「静静」的花絮里再一次看了一边小缸、丽丽、静静三个人摩托到内蒙的记录，最爱他们的团建和公路片相关的视频内容，又笑又泪。很喜欢就是了。&lt;/p&gt;
+&lt;h4 id=&#34;up-主--假装讲电影&#34;&gt;UP 主 | &lt;a href=&#34;https://space.bilibili.com/407275913&#34;&gt;假装讲电影&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;无意间刷到了这个 Up 主，有些早期「瞎看什么」的感觉，关注了。&lt;/p&gt;
+&lt;h3 id=&#34;番剧&#34;&gt;番剧&lt;/h3&gt;
+&lt;h4 id=&#34;日常&#34;&gt;日常&lt;/h4&gt;
+&lt;p&gt;在 A 站看了 Up 主「渣丸子」的 &lt;a href=&#34;https://www.acfun.cn/v/ac47134061&#34;&gt;推荐视频&lt;/a&gt; 后入坑。番剧名为「日常」，但内容&lt;strong&gt;完全不日常&lt;/strong&gt;。无敌的脑洞，究极的无厘头，笑死了。&lt;/p&gt;
+&lt;h3 id=&#34;播客&#34;&gt;播客&lt;/h3&gt;
+&lt;h4 id=&#34;半拿铁西游篇&#34;&gt;&lt;a href=&#34;https://www.xiaoyuzhoufm.com/podcast/66cf49c856bfd3907ac9250b&#34;&gt;半拿铁·西游篇&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;对《西游记》原著进行“中译中”之后的重新讲解，以前没看过《西游记》原著，播客听下来特别有意思，这也是我听播客以来第一个付费的节目。&lt;/p&gt;
+&lt;h4 id=&#34;012-外孙的姥姥我的爷爷&#34;&gt;&lt;a href=&#34;https://www.xiaoyuzhoufm.com/episode/66ecf57be7176e8a5cb60c21&#34;&gt;012 外孙的姥姥，我的爷爷&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;出自「半拿铁」主播刘飞的另一档节目「空杯子」，这期听哭了。&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>3 月回顾：跑完 1000 公里，在时间夹缝里使劲折腾</title>
+      <link>https://viazure.cc/posts/life/monthly-review-202503/</link>
+      <pubDate>Sun, 06 Apr 2025 14:56:58 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/life/monthly-review-202503/</guid>
+      
+      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;最近看了 &lt;a href=&#34;https://blog.douchi.space/&#34;&gt;椒盐豆豉&lt;/a&gt; 的这篇博文《&lt;a href=&#34;https://blog.douchi.space/2023-why-you-need-a-blog/&#34;&gt;2023 年了你为什么需要写博客&lt;/a&gt;》，深有同感。&lt;/p&gt;
+&lt;p&gt;其实我一直非常羡慕与钦佩能够将自己心中所想表达清楚的人，这是我目前欠缺的一种能力，我尝试着写博客，希望以此提升我的这种表达能力，同时&lt;strong&gt;输出倒逼输入&lt;/strong&gt;，刺激我不断学习。&lt;/p&gt;
+&lt;p&gt;正如文章里所说的「整理是最好的复习」，趁着周末空闲，整理一下上个月发生的事和我的一些零散想法。&lt;/p&gt;
+&lt;h2 id=&#34;跑步&#34;&gt;跑步&lt;/h2&gt;
+&lt;p&gt;我从去年 3 月开始有计划的跑步，到现在已经有一年了，总距离也有 1000+ 公里，算是少有的一直坚持做的事情之一。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250406164319927.png&#34; alt=&#34;跑步记录&#34;&gt;&lt;/p&gt;
+&lt;p&gt;本来我只将跑步作为一种锻炼身体与排解压力的方式，往年总是想起来才跑一下，但去年我在坚持跑了一段时间后，发现一个有趣的现象：跑步能把我一些一直想做但没做的事情串起来。&lt;/p&gt;
+&lt;p&gt;我需要在繁忙的工作日中抽出时间跑步，我就必须在早上或晚上进行这项活动，当我选择晨跑时，我不得不早睡以便能够早起，这就和&lt;strong&gt;不熬夜&lt;/strong&gt;不谋而合。&lt;/p&gt;
+&lt;p&gt;当我跑了一段时间后，我开始因为肌肉力量薄弱产生伤痛，我又得练我的核心、练我的臀、练我的腿，而我因为长期久坐造成的&lt;strong&gt;腰肌劳损&lt;/strong&gt;也需要练核心和臀，它们又刚好匹配了。&lt;/p&gt;
+&lt;p&gt;除此之外，我发现跑步后我的&lt;strong&gt;过敏性鼻炎&lt;/strong&gt;好像也缓解了一些。&lt;/p&gt;
+&lt;p&gt;这便是我这一年能坚持跑步的主要原因，我期待跑步能给我的生活带来更多的变化。&lt;/p&gt;
+&lt;p&gt;而自从跑过马拉松后，马拉松又成为了另一种刺激我坚持跑步的动力。赛道上的气氛和那种咬牙坚持后最终冲线的愉悦让我非常享受。&lt;/p&gt;
+&lt;p&gt;3 月月初去江油市参加了半程马拉松，由于赛前身体状态不太好，只想着安全完赛就行，能跑到两小时内最好，但跑起来后平均配速稳稳压在 5&#39;25&amp;quot;/公里左右，我感觉我又行了，大众二级运动员的目标好像这次就能提前完成了。但是离终点还有一公里多的时候突然就跑崩了，最终净成绩 01:57:34 跑完了比赛。&lt;/p&gt;
+&lt;p&gt;「当大的目标变得仿佛触手可及时，原本预想的小目标便会很容易抛之脑后。但若发现只差一点，最终却未实现时，就算预想的目标达到了也一点不开心。」—— 江油马拉松回家路上的感想。&lt;/p&gt;
+&lt;p&gt;3 月的第二周开始常态化加班，每天都加到晚上 10 点，于是晨跑变得困难起来，虽然回来倒头就睡的睡眠时间也能和平时差不多，但加班和不加班真的不一样，睡不够，完全睡不够，早上起不来一点。&lt;/p&gt;
+&lt;p&gt;所幸周末跑了几次长距离，穿插几个工作日强制让身体开机，月底最终还是完成了 100 公里的月目标。不过这样的节奏，真不知道 1200 公里的年目标是否能够完成。&lt;/p&gt;
+&lt;p&gt;真不想上班呀。&lt;/p&gt;
+&lt;h2 id=&#34;食&#34;&gt;食&lt;/h2&gt;
+&lt;h3 id=&#34;啤酒鸭&#34;&gt;啤酒鸭&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250308_124132.HEIC&#34; alt=&#34;啤酒鸭&#34;&gt;&lt;/p&gt;
+&lt;p&gt;跑马拉松后，我学会一道新的菜品 —— 啤酒鸭，因为每次参赛都能领到一两罐啤酒。「雪花啤酒」真是很爱赞助马拉松了，我跑的每场马拉松的赞助商都有它。由于我不喝酒，所以每次都用啤酒来做菜，啤酒鸭是我试验了各种啤酒菜品里最喜欢的。于是，跑完江油马拉松回来后就又做了一次。&lt;/p&gt;
+&lt;p&gt;好吃，爱吃。下一次马拉松后再继续做来吃。&lt;/p&gt;
+&lt;h3 id=&#34;豆角焖面&#34;&gt;豆角焖面&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250321_182721.HEIC&#34; alt=&#34;豆角焖面&#34;&gt;&lt;/p&gt;
+&lt;p&gt;「有些东西，过了反而就不好了。」&lt;/p&gt;
+&lt;p&gt;这是一次失败的豆角焖面，所以我要记录下来。由于这次买的五花肉有一点点肥，所以我在煸肉的时候多煸了一会儿，煸出很多油没舍得倒出来，结果弄出来的焖面非常油腻，反而不好吃了，也让我真正明白了&lt;strong&gt;过犹不及&lt;/strong&gt;的道理。&lt;/p&gt;
+&lt;h2 id=&#34;折腾&#34;&gt;折腾&lt;/h2&gt;
+&lt;p&gt;「生命不息，折腾不止。」&lt;/p&gt;
+&lt;p&gt;我总是告诉自己，合理的规划自己的时间，多花点时间来学习，但是我总是忍不住花大量的时间来捣鼓些有的没的。&lt;/p&gt;
+&lt;h3 id=&#34;博客&#34;&gt;博客&lt;/h3&gt;
+&lt;p&gt;在难得空闲的几个周末里完成了博客的基础装修，包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;新增了基于 &lt;a href=&#34;https://twikoo.js.org/&#34;&gt;Twikoo&lt;/a&gt; 的评论系统，并增加 &lt;code&gt;comments&lt;/code&gt; 参数用于控制页面评论功能的显示状态。&lt;/li&gt;
+&lt;li&gt;新增了基于 &lt;a href=&#34;https://www.goatcounter.com/&#34;&gt;GoatCounter&lt;/a&gt; 的网站统计系统。&lt;/li&gt;
+&lt;li&gt;调整了 RSS 的一些设置，例如：添加网站图标，仅显示主分区文章等。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在完成这些后，我又花了一晚上对我使用的博客主题添加了中文语言支持，并给原仓库提了 PR「 &lt;a href=&#34;https://github.com/hugo-sid/hugo-blog-awesome/pull/291&#34;&gt;feat: Add Chinese language #291&lt;/a&gt; 」，后面也被合并进了主分支，很开心。&lt;/p&gt;
+&lt;h3 id=&#34;工具&#34;&gt;工具&lt;/h3&gt;
+&lt;h4 id=&#34;obsidian&#34;&gt;Obsidian&lt;/h4&gt;
+&lt;p&gt;使用 &lt;a href=&#34;https://github.com/TfTHacker/DashboardPlusPlus&#34;&gt;Dashboard++&lt;/a&gt; 模板配合 &lt;a href=&#34;https://github.com/mirnovov/obsidian-homepage&#34;&gt;Homepage&lt;/a&gt; 、&lt;a href=&#34;https://github.com/blacksmithgu/obsidian-dataview&#34;&gt;Dataview&lt;/a&gt; 插件定制好了我的 Obsidian Dashboard。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Dashboard++ 示例图&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://github.com/TfTHacker/DashboardPlusPlus/raw/master/images/dashboard-snapshot.png&#34; alt=&#34;Dashboard&amp;#43;&amp;#43;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;Dataview 这个插件确实很强大，各种数据索引与查询非常方便，类 SQL 的查询语言对于程序员来说也很好入门，同时还支持全功能的 JavaScript。我也折腾了一会儿，这里分享一个显示当前日期和天气的 &lt;code&gt;dataviewjs&lt;/code&gt; ，效果类似这样： &lt;code&gt;今天是 4 月 6 日，星期日。🌦 +15°C&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 获取当前日期和星期几
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;now&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;Date&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;month&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;now&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;getMonth&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;+&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 月份从 0 开始，需要加 1
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;day&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;now&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;getDate&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;weekday&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;now&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;toLocaleDateString&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;zh-CN&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;weekday&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;long&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 拼接日期和星期几的字符串
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;dateStr&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;month&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt; 月 &lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;day&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt; 日，&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;weekday&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 使用 dv.span 创建一个内联元素，先展示日期和星期几
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;span&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;dv&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;span&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`今天是 &lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;dateStr&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;。`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;// 异步获取城市天气信息
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;kr&#34;&gt;async&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;()&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;city&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;Beijing&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; &lt;span class=&#34;c1&#34;&gt;// 替换为你想查询的城市
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;url&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`https://wttr.in/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;city&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;?format=%c+%t`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;k&#34;&gt;try&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;response&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kr&#34;&gt;await&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fetch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;weatherData&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kr&#34;&gt;await&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;response&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;text&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;c1&#34;&gt;// 更新 span 元素的内容，添加天气信息
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nx&#34;&gt;span&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;textContent&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`今天是 &lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;dateStr&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;。&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;weatherData&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;catch&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;error&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nx&#34;&gt;console&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;error&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;获取天气信息失败：&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;error&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;})();&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;域名邮箱发信&#34;&gt;域名邮箱发信&lt;/h4&gt;
+&lt;p&gt;在测试自己的域名邮箱发邮件时，发现 Outlook 客户端会提示「发件人未验证」的警告，折腾了一下解决了这个问题。具体见这篇《&lt;a href=&#34;https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/&#34;&gt;使用 Resend 与 Cloudflare 实现域名邮箱发信&lt;/a&gt;》。&lt;/p&gt;
+&lt;h4 id=&#34;收藏的项目&#34;&gt;收藏的项目&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/bambooom/douban-backup&#34;&gt;douban-backup：同步豆瓣标记条目到 Notion/NeoDB&lt;/a&gt;，本着「鸡蛋不放在一个篮子」的原则，我会同时使用豆瓣、Bangumi、NeoDB 标记我的书、影音、游戏等记录。虽然频率不高，但这样操作始终有点繁琐。最后找到了这个项目，能够通过解析豆瓣 RSS，将最近的标记信息同步到 NeoDB。后面找机会再弄一下 Bangumi 的同步吧。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/adrian1372/windows-scrobbler&#34;&gt;Windows Scrobbler&lt;/a&gt;，通过监听 Windows 媒体会话，将当前正在播放的歌曲信息同步到 Last.fm。虽然只是一个控制台程序，但完全满足我在电脑上使用一些音乐播放软件（如网易云音乐、MusicFree）时自动同步听歌记录到 Last.fm 的需求了。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;书影音&#34;&gt;书影音&lt;/h2&gt;
+&lt;h3 id=&#34;影视&#34;&gt;影视&lt;/h3&gt;
+&lt;h4 id=&#34;人生切割术severance&#34;&gt;人生切割术（Severance）&lt;/h4&gt;
+&lt;p&gt;找下饭视频的时候，无意间看到了它的解说版本，想着最近好像挺火的，就看了一集，发现很有意思，于是把第一季和第二季的解说版本看完了。&lt;/p&gt;
+&lt;p&gt;曾经也经常幻想能有个分身帮我做不想做又不得不做的事情，果然还是想象的太美好了。&lt;/p&gt;
+&lt;h4 id=&#34;棋士&#34;&gt;棋士&lt;/h4&gt;
+&lt;p&gt;3 月初看到这个剧的预告片时非常期待，无论是预告片里的一些剧情还有演员阵容感觉都很不错，于是上映的那周周末就找来看了。怎么说呢，目前看到第 8 集了，感觉有点失望。剧情上非常多的 Bug，正反派的智商像是信号不好一样，一会儿上线一会儿下线，剧中主角的搭档也各种作妖，尽干些蠢事，看着非常难受。后续大概不会再追原剧了，等完结后直接看解说版吧。&lt;/p&gt;
+&lt;h3 id=&#34;书籍&#34;&gt;书籍&lt;/h3&gt;
+&lt;h4 id=&#34;打造超人学习&#34;&gt;打造超人学习&lt;/h4&gt;
+&lt;p&gt;在播客「&lt;a href=&#34;https://www.xiaoyuzhoufm.com/podcast/61df010313704eb05c10dece&#34;&gt;冰镇电波&lt;/a&gt;」里知道的这本书，断断续续的看完了，初看完后印象最深的有两点：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;拆解大任务的方法：将问题一一记录下来，反推每个问题的解决方案，将其变成待办。&lt;/li&gt;
+&lt;li&gt;ORID 结构化框架。
+&lt;ul&gt;
+&lt;li&gt;Objective（客观事实）&lt;/li&gt;
+&lt;li&gt;Reflective（感受反应）&lt;/li&gt;
+&lt;li&gt;Interpretive（分析意义）&lt;/li&gt;
+&lt;li&gt;Decisional（决策行动）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;学习&#34;&gt;学习&lt;/h2&gt;
+&lt;h3 id=&#34;英语&#34;&gt;英语&lt;/h3&gt;
+&lt;p&gt;背单词背的有些疲了，玩会儿多邻国，类似玩游戏的体验确实比枯燥的背诵和阅读好多了。多邻国的交互设计这块做得不错，但对英语能力的提升还未知，先作为这段时间厌学的替代品吧，也没啥坏处。&lt;/p&gt;
+&lt;h3 id=&#34;技术&#34;&gt;技术&lt;/h3&gt;
+&lt;p&gt;作为 CURD 熟练工，时常感觉基础知识还是不够扎实。挤了些时间又重新把一直没看完的《C# 图解教程》重头看了起来，刚看到 100 来页。&lt;/p&gt;
+&lt;h2 id=&#34;一些思考&#34;&gt;一些思考&lt;/h2&gt;
+&lt;h3 id=&#34;关于-ai&#34;&gt;关于 AI&lt;/h3&gt;
+&lt;p&gt;听了一期关于 AI 的播客《&lt;a href=&#34;https://sv101.fireside.fm/193&#34;&gt;硅谷 101: E184 ｜“我爱你，这不是算法”：15 个被 AI 击中瞬间的声音故事&lt;/a&gt;》，主要讲 AI 给人们带来的影响改变。&lt;/p&gt;
+&lt;p&gt;我做为程序员非常能感受 AI 给我带来的巨大影响，工作效率的提升、代码的优化、学习的便捷性等等，方方面面都感觉离不开 AI 了。在写博客后，我也总会想着让 AI 帮我查错，润色，我希望它能帮我处理语法错误的，读着突兀的内容。听了这期播客里各种 AI 的故事，我突然意识到会不会正是这点“错误”才造就了真正的人类，或者说这样才算&lt;strong&gt;有点人味儿&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;于是我决定至少在输出想法和表达自我时，不再使用 AI。我不想让我的博客成为 AI 的内容农场。&lt;/p&gt;
+&lt;h3 id=&#34;个人博客的永生&#34;&gt;个人博客的永生&lt;/h3&gt;
+&lt;p&gt;看了这篇文章《&lt;a href=&#34;https://laike9m.com/blog/people-die-but-long-live-github,122/&#34;&gt;People Die, but Long Live GitHub&lt;/a&gt;》后，我也想着如何让我的博客一直活下去，就算死后也还能被人看到，但一直比较忙，这件事放在待办里也没仔细去研究。&lt;/p&gt;
+&lt;p&gt;直到某个周末晚上刷 RSS，发现一个叫「酷壳 - CoolShell.cn」的网站很久没更新了，认真回想了一下才想起是已故技术大佬——左耳朵耗子（陈皓）的博客。进到博客里发现很多人都在「 &lt;a href=&#34;https://coolshell.cn/haoel&#34;&gt;关于陈皓&lt;/a&gt; 」页面的评论区缅怀他。顺手搜了一下「酷壳」，发现已经有人做了他博客的镜像网站和电子存档。&lt;/p&gt;
+&lt;p&gt;突然我就想通了，如果有人一直记得你，并且愿意一直记住你，那他们会利用各种手段去留下你生前的痕迹，不需要你自己刻意做什么。你在生前就考虑死后的事情，反而有些过于创造需求了。&lt;/p&gt;
+&lt;p&gt;你不应该在生前就想着死后的事情，而应该在活着的时候做让人能记住你的事情。&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>使用 Resend 与 Cloudflare 实现域名邮箱发信</title>
+      <link>https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/</link>
+      <pubDate>Sat, 15 Mar 2025 09:52:56 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/</guid>
+      
+      <description>&lt;p&gt;最近尝试解决域名邮箱发信问题，记录下具体操作过程。&lt;/p&gt;
+&lt;h2 id=&#34;背景需求&#34;&gt;背景需求&lt;/h2&gt;
+&lt;p&gt;我的个人域名目前托管在 Cloudflare，并启用了其提供的「电子邮件路由（Email Routing）」服务来实现邮件转发功能。但该方案存在一个缺陷：只能接收转发邮件，无法直接通过域名邮箱发送邮件。&lt;/p&gt;
+&lt;p&gt;为了解决发件需求，我曾尝试按照 Gmail 官方教程《&lt;a href=&#34;https://support.google.com/mail/answer/22370&#34;&gt;通过其他地址或别名发送电子邮件&lt;/a&gt;》配置邮件代发功能。但在实际使用过程中，发现收件方会提示「发件人未验证」警告。经排查发现，这是由于未配置 DKIM 验证机制导致的问题。&lt;/p&gt;
+&lt;p&gt;根据 Google Workspace 的《&lt;a href=&#34;https://support.google.com/a/answer/174124?sjid=17788796605478889522-NC&amp;amp;rd=1#dkim-check-set-up&#34;&gt;设置 DKIM&lt;/a&gt;》指南文档说明：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果您的域名提供商是 Google Domains 或  &lt;a href=&#34;https://squarespace.com/&#34;&gt;Squarespace&lt;/a&gt;，则 Google 会自动创建 DKIM 密钥，并将其添加到网域的 DNS 记录。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;由于我的域名既非托管在 Google Domains/Squarespace，又未开通 Google Workspace，所以暂时无法使用 Google 提供的「自动创建 DKIM 密钥」服务。&lt;/p&gt;
+&lt;p&gt;现状总结：&lt;/p&gt;
+&lt;p&gt;✅ 已实现功能&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cloudflare 域名托管&lt;/li&gt;
+&lt;li&gt;邮件接收及转发服务正常运作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;❌ 待解决问题&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;无法通过域名邮箱直接发送邮件&lt;/li&gt;
+&lt;li&gt;Gmail 代发触发「未验证」警告（原因：缺失 DKIM 记录）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;咨询了 DeepSeek，又参考了多篇技术博客，最终选用 Resend 作为最终邮件发送方案，它有这些优势：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;无需自建服务器&lt;/li&gt;
+&lt;li&gt;API 友好&lt;/li&gt;
+&lt;li&gt;免费额度充足（每天 100 封，对于我这种偶尔发发邮件的场景完全够用）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;实施步骤&#34;&gt;实施步骤&lt;/h2&gt;
+&lt;h3 id=&#34;服务配置&#34;&gt;服务配置&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;访问 &lt;a href=&#34;https://resend.com&#34;&gt;Resend 官网&lt;/a&gt;，注册并登录（推荐使用邮箱注册，详见：&lt;a href=&#34;https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/##&#34;&gt;踩坑&lt;/a&gt;）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在 Domains 页面点击 &lt;code&gt;Add Domain&lt;/code&gt; 添加域名，输入邮箱绑定的域名，并选择区域（Region），例如：&lt;code&gt;North Virginia (us-east-1)&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;域名添加完成后，需要配置 DNS。Resend 提供了两种配置方式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;自动授权：点击 &lt;code&gt;Sign in to Cloudflare&lt;/code&gt; 按钮登录授权后，Resend 将自动添加 DNS 记录&lt;/li&gt;
+&lt;li&gt;手动添加记录：参考 &lt;a href=&#34;https://resend.com/docs/knowledge-base/cloudflare&#34;&gt;官方指南&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250316160031078.png&#34; alt=&#34;DNS 记录&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;API Keys 页面点击 &lt;code&gt;Create API Key&lt;/code&gt; 创建并记录下密钥（格式：re_xxxxxx）&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;功能验证&#34;&gt;功能验证&lt;/h3&gt;
+&lt;p&gt;API 接口方式（cURL 示例）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;curl -X POST &lt;span class=&#34;s1&#34;&gt;&amp;#39;https://api.resend.com/emails&amp;#39;&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; -H &lt;span class=&#34;s1&#34;&gt;&amp;#39;Authorization: Bearer re_xxxxxx&amp;#39;&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; -H &lt;span class=&#34;s1&#34;&gt;&amp;#39;Content-Type: application/json&amp;#39;&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; -d &lt;span class=&#34;s1&#34;&gt;$&amp;#39;{
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;  &amp;#34;from&amp;#34;: &amp;#34;发件人 &amp;lt;发件人邮箱地址&amp;gt;&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;  &amp;#34;to&amp;#34;: [&amp;#34;接收人邮箱地址&amp;#34;],
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;  &amp;#34;subject&amp;#34;: &amp;#34;hello world&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;  &amp;#34;html&amp;#34;: &amp;#34;&amp;lt;p&amp;gt;it works!&amp;lt;/p&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;}&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;SMTP 客户端配置：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;服务器：smtp.resend.com&lt;/li&gt;
+&lt;li&gt;端口：465&lt;/li&gt;
+&lt;li&gt;账户：resend&lt;/li&gt;
+&lt;li&gt;密码：API 密钥&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;使用与优化&#34;&gt;使用与优化&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;使用&lt;/strong&gt;：沿用 Gmail 客户端配置模式，将发送邮件的 SMTP 服务配置改为 Resend 的配置参数。更多示例参考 &lt;a href=&#34;https://resend.com/docs/send-with-smtp&#34;&gt;官方帮助文档&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优化&lt;/strong&gt;：使用 &lt;a href=&#34;https://www.mail-tester.com/&#34;&gt;Mail Tester&lt;/a&gt; 测试邮件的&lt;strong&gt;垃圾邮件匹配度&lt;/strong&gt;，根据建议调整相关配置。&lt;/p&gt;
+&lt;h2 id=&#34;踩坑&#34;&gt;踩坑&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;账号注册问题：使用 GitHub 直接登录后发现无法修改主邮箱，最后只能删除账号，重新使用邮箱注册。账号删除步骤：控制台 -&amp;gt; Settings -&amp;gt; Team -&amp;gt; &lt;code&gt;Delete Team&lt;/code&gt; -&amp;gt; &lt;code&gt;Delete Account&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>2025 步履不停</title>
+      <link>https://viazure.cc/posts/life/2025-journey/</link>
+      <pubDate>Wed, 26 Feb 2025 20:54:54 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/life/2025-journey/</guid>
+      
+      <description>&lt;p&gt;2025 年我走过的地方。持续更新中……&lt;/p&gt;
+&lt;h2 id=&#34;四川省南充市&#34;&gt;四川省南充市&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间&lt;/strong&gt;：2025 年 1 月下旬&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地点&lt;/strong&gt;：南充市市区、西山风景区&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;这次来南充是以伴郎的身份参加大学室友的婚礼，正如室友所说「身边相仿的都结婚了」。作为他身边少有的单身汉，便成了伴郎之一。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&#34;南充市市区&#34;&gt;南充市市区&lt;/h3&gt;
+&lt;p&gt;嘉陵江是南充人生活的一部分。沿着江边一路走着，能看到很多在江畔洗衣服的人。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250120_101814.HEIC&#34; alt=&#34;江畔洗衣服的人&#34;&gt;&lt;/p&gt;
+&lt;p&gt;时不时从江里冒出的人头 —— 冬泳爱好者。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250120_103748.HEIC&#34; alt=&#34;冬泳爱好者&#34;&gt;&lt;/p&gt;
+&lt;p&gt;作为嗦粉爱好者是无法抗拒&lt;strong&gt;南充米粉&lt;/strong&gt;的。&lt;strong&gt;文兴粉馆&lt;/strong&gt;在当地口碑不错，我吃的是这家店：&lt;a href=&#34;https://surl.amap.com/wa7nAlzHgeq&#34;&gt;文兴粉馆（什字街店）&lt;/a&gt;。汤底很鲜，味道也很足。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250120_113658.HEIC&#34; alt=&#34;南充米粉&#34;&gt;&lt;/p&gt;
+&lt;p&gt;南充的&lt;strong&gt;锅盔夹凉粉&lt;/strong&gt;也是名声在外，遂在酒店附近找到一家 &lt;a href=&#34;https://surl.amap.com/xlujAzf1yg2n&#34;&gt;潆溪侯锅盔&lt;/a&gt;，尝过之后只觉一个买少了。超级酥脆的锅盔，裹着爽口的川北凉粉，绝了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250120_171452.HEIC&#34; alt=&#34;锅盔夹凉粉&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;西山风景区&#34;&gt;西山风景区&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;西山&lt;/strong&gt;是南充市内一个登山、徒步的好去处，山不是很高，风景也不错，还可以坐到老式（刺激）的全开放缆车。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250120_143458.HEIC&#34; alt=&#34;西山的缆车&#34;&gt;&lt;/p&gt;
+&lt;p&gt;山顶的&lt;strong&gt;栖乐寺&lt;/strong&gt;外挂满了祈福的风铃。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/MVIMG_20250120_144119.jpg&#34; alt=&#34;栖乐寺的风铃&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;四川省江油市&#34;&gt;四川省江油市&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间&lt;/strong&gt;：2025 年 3 月初&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地点&lt;/strong&gt;：江油市市区&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;江油马拉松&#34;&gt;江油马拉松&lt;/h3&gt;
+&lt;p&gt;这次来江油，就是为了参加 &lt;strong&gt;2025 江油马拉松&lt;/strong&gt;。刚好最近&lt;strong&gt;哪吒 2&lt;/strong&gt;爆火，江油作为「哪吒祖庭」，自然也免不了蹭蹭这波热度。刚到领物现场，就看到了哪吒的塑像（塑料雕像🤣）。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250301_103935.HEIC&#34; alt=&#34;哪吒塑像&#34;&gt;&lt;/p&gt;
+&lt;p&gt;江油马拉松的参赛包还蛮丰富的，除了参赛包里本来的物品，还可以通过赠送的购物券在马博会上换取各种特产（例如：江油肥肠、太白酥）。&lt;/p&gt;
+&lt;p&gt;种草&lt;strong&gt;脆升升&lt;/strong&gt;，黄油味好吃。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250301_120419.HEIC&#34; alt=&#34;江油马拉松参赛包&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;跑完了&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;最终成绩：枪时 02:01:59，净成绩 01:57:34。&lt;/p&gt;
+&lt;p&gt;这次比赛的成绩只能说&lt;strong&gt;还行吧&lt;/strong&gt;。赛前身体状态其实不太好（可能是诺如病毒，上吐下泻折腾了一周），本来只想着能安全完赛就行。结果跑了一阵后，感觉状态还可以，于是就调整计划，朝着目标——大众二级运动员标准（1 小时 55 分）冲了。&lt;/p&gt;
+&lt;p&gt;前半程节奏控制得还不错，平均配速稳稳压在 5&#39;25&amp;quot;/公里左右。要是能一直保持这个节奏，说不定真能冲进二级。可惜最后一公里多实在跑不动了，双腿又重又痛，感觉在抽筋的边缘，心率也一直居高不下，差不多是走着完成了比赛。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250302_093214.HEIC&#34; alt=&#34;马拉松终点拱门&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250409090329788.png&#34; alt=&#34;成绩证书&#34;&gt;&lt;/p&gt;
+&lt;p&gt;这次马拉松的奖牌还是挺好看的，下一次再来征服这个赛道吧。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250302_100735.HEIC&#34; alt=&#34;马拉松奖牌&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;贵州省铜仁市&#34;&gt;贵州省铜仁市&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间&lt;/strong&gt;：2025 年 5 月中旬&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地点&lt;/strong&gt;：铜仁古城&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在铜仁出差，小待了两天。闲着没事准备去铜仁古城逛逛。路边吃了个卷粉，味道不错。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250514_184325.HEIC&#34; alt=&#34;卷粉&#34;&gt;&lt;/p&gt;
+&lt;p&gt;去的时间还早，街道上的灯还没开，索性沿着旁边的河走了一圈。逛完回来灯也开了，晚上的塔还算好看。喝了杯当地的抹茶饮料就匆匆回酒店了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250514_191858.HEIC&#34; alt=&#34;母女&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20250515_205534.HEIF&#34; alt=&#34;晚上的塔&#34;&gt;&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>使用 docsify 在离线环境中部署文档服务</title>
+      <link>https://viazure.cc/posts/development/deploying-docsify-in-offline-environment/</link>
+      <pubDate>Sun, 29 Dec 2024 09:05:52 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/development/deploying-docsify-in-offline-environment/</guid>
+      
+      <description>&lt;blockquote&gt;
+&lt;p&gt;本文初稿由 &lt;a href=&#34;https://kimi.moonshot.cn/&#34;&gt;Kimi&lt;/a&gt; 协助润色完成。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2025-04-15 更新&lt;/strong&gt;：为方便快速上手，我已将本文中的示例代码和配置文件上传至 &lt;a href=&#34;https://github.com/viazure/docsify-in-offline-example&#34;&gt;GitHub&lt;/a&gt;/&lt;a href=&#34;https://gitee.com/viazure/docsify-in-offline-example&#34;&gt;Gitee&lt;/a&gt;。可以直接克隆或下载此项目作为模板，根据自身需求进行修改和使用。该示例项目包含了所有离线部署所需的基础文件和配置，能够在没有网络连接的环境中使用 IIS 或 Nginx 等工具迅速搭建起文档服务。如有任何问题或建议，欢迎通过评论和 GitHub Issues 与我交流。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;由于公司的开发服务器经历了一次被迫系统重装，导致之前使用 &lt;a href=&#34;https://docsify.js.org/#/&#34;&gt;docsify&lt;/a&gt; 部署的文档服务未能保留。今天着手重新部署该服务，鉴于当前服务器无法接入互联网，我计划实施一个适用于离线环境的部署方案。以下是我为此次部署过程所做的记录。&lt;/p&gt;
+&lt;h2 id=&#34;步骤-1在有网络的环境中准备&#34;&gt;步骤 1：在有网络的环境中准备&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;访问 &lt;a href=&#34;https://nodejs.org/&#34;&gt;Node.js 官网&lt;/a&gt; ，下载安装程序。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;运行安装程序，按照安装程序中的说明进行操作，同时安装 Node.js 和 &lt;code&gt;npm&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安装 &lt;code&gt;docsify-cli&lt;/code&gt; 与 &lt;code&gt;docsify-tools&lt;/code&gt;（若无「自动生成侧边栏」需求，可不安装 &lt;code&gt;docsify-tools&lt;/code&gt; ）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;打开命令行工具，运行以下命令来安装 &lt;code&gt;docsify-cli&lt;/code&gt; 与 &lt;code&gt;docsify-tools&lt;/code&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm install -g docsify-cli
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm install -g docsify-tools
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;创建一个新的目录 &lt;code&gt;docsify-setup&lt;/code&gt;，用于存放 &lt;code&gt;docsify-cli&lt;/code&gt; 与 &lt;code&gt;docsify-tools&lt;/code&gt; 及其依赖。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mkdir docsify-setup
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; docsify-setup
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;运行以下命令，在新目录中初始化一个新的 &lt;code&gt;package.json&lt;/code&gt; 文件。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm init -y
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;运行以下命令，将 &lt;code&gt;docsify-cli&lt;/code&gt; 及其依赖保存到当前目录。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm install docsify-cli --save
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm install docsify-tools --save
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;下载并保存项目所需的资源文件。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;下载 &lt;code&gt;index.html&lt;/code&gt; 文件所需的 &lt;a href=&#34;https://cdn.jsdelivr.net/npm/docsify/themes/vue.css&#34;&gt;vue.css&lt;/a&gt; 与 &lt;a href=&#34;https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js&#34;&gt;docsify.min.js&lt;/a&gt; 文件。也可提前使用 &lt;code&gt;docsify init&lt;/code&gt; 命令生成初始的 &lt;code&gt;index.html&lt;/code&gt; 文件，用于获取最新引用的 &lt;code&gt;css&lt;/code&gt; 与 &lt;code&gt;js&lt;/code&gt; 地址。&lt;/li&gt;
+&lt;li&gt;按相同方式提前下载好需要使用的插件资源文件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;步骤-2将目录传输到离线环境&#34;&gt;步骤 2：将目录传输到离线环境&lt;/h2&gt;
+&lt;p&gt;将 Node.js 安装包和整个 &lt;code&gt;docsify-setup&lt;/code&gt; 目录以及下载的资源文件拷贝到离线计算机中。&lt;/p&gt;
+&lt;h2 id=&#34;步骤-3在离线环境中安装&#34;&gt;步骤 3：在离线环境中安装&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;在离线计算机上，打开命令行工具，导航到包含 &lt;code&gt;docsify-setup&lt;/code&gt; 目录的位置。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在 &lt;code&gt;docsify-setup&lt;/code&gt; 目录中，运行以下命令来安装 &lt;code&gt;docsify-cli&lt;/code&gt; 及其依赖：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm install -g
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安装完成后，将 &lt;code&gt;docsify-setup&lt;/code&gt; 所在目录的 &lt;code&gt;[你的路径]\node_modules\.bin&lt;/code&gt; 加入到环境变量 &lt;code&gt;PATH&lt;/code&gt; 中。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可以通过运行以下命令来验证 &lt;code&gt;docsify-cli&lt;/code&gt; 是否安装成功，如果 &lt;code&gt;docsify-cli&lt;/code&gt; 安装成功，它将显示版本号。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;docsify -v
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;步骤-4项目部署与运行&#34;&gt;步骤 4：项目部署与运行&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;在离线计算机中通过 &lt;code&gt;docsify init&lt;/code&gt; 命令生成初始项目文件，或直接拷贝本地已生成好的相关文件。&lt;/li&gt;
+&lt;li&gt;将 &lt;code&gt;index.html&lt;/code&gt; 中引用的资源文件路径替换为本地相对路径，配置可参考 &lt;a href=&#34;https://github.com/viazure/docsify-in-offline-example/blob/main/index.html&#34;&gt;docsify-in-offline-example/index.html&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;运行 &lt;code&gt;docsify serve&lt;/code&gt; 命令启动文档服务，或通过 IIS 或 Nginx 等工具直接部署修改好的静态页面。（注：在 IIS 中部署时需要添加 MIME 类型 &lt;code&gt;text/markdown&lt;/code&gt;。）&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>running_page 的一些使用经验</title>
+      <link>https://viazure.cc/posts/tinkering/running-page-usage-experience/</link>
+      <pubDate>Sun, 22 Dec 2024 22:36:39 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/running-page-usage-experience/</guid>
+      
+      <description>&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/yihong0618/running_page&#34;&gt;running_page&lt;/a&gt; 是一个帮助用户创建个人跑步主页的开源项目，它能够自动同步来自 Garmin、Nike Run Club、Strava 等运动应用的跑步数据，并通过可视化的方式展示在网页上。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;删除错误同步的记录&#34;&gt;删除错误同步的记录&lt;/h2&gt;
+&lt;p&gt;在使用 running_page 的过程中，可能会遇到数据同步错误的情况，例如重复记录或错误的数据。为了处理这些问题，可以按照以下步骤进行操作。&lt;/p&gt;
+&lt;h3 id=&#34;数据文件在-github-cache-中&#34;&gt;数据文件在 GitHub Cache 中&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;定位并删除 GitHub Cache 中的错误记录&lt;/strong&gt;：进入项目的 GitHub Actions 页面，点击左侧的 &lt;code&gt;Caches&lt;/code&gt;，在筛选框中输入 &lt;code&gt;key:track_data-&lt;/code&gt; 筛选出所有已缓存的记录，根据生成时间删除错误记录及其之后生成的所有缓存记录。
+&lt;img src=&#34;https://webpimg.viazure.cc/250427164618340.png&#34; alt=&#34;操作示例&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重新运行 &lt;code&gt;Run Data Sync&lt;/code&gt; 进行同步。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;数据文件在源文件中&#34;&gt;数据文件在源文件中&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;删除数据库中的记录&lt;/strong&gt;：使用支持 SQLite 的数据库工具（例如 DBeaver）打开 &lt;code&gt;run_page/data.db&lt;/code&gt; 文件，找到并删除错误的记录。&lt;/p&gt;
+&lt;p&gt;示例 SQL 语句：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-sql&#34; data-lang=&#34;sql&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;-- 查询最近 10 条记录
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;SELECT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;*&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;activities&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;ORDER&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;BY&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run_id&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;DESC&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;LIMIT&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;c1&#34;&gt;-- 删除指定记录（示例 ID）
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;DELETE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;FROM&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;activities&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;k&#34;&gt;WHERE&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;run_id&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;w&#34;&gt; &lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;1736636014000&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;&lt;span class=&#34;w&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;删除 JSON 文件中的记录&lt;/strong&gt;：打开 &lt;code&gt;src/static/activities.json&lt;/code&gt; 文件，找到并删除对应的记录。这个文件包含了跑步活动的详细信息，删除后需要重新同步活动数据。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[!TIP]&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;建议先备份 &lt;code&gt;data.db&lt;/code&gt; 和 &lt;code&gt;activities.json&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;保持两个数据源的记录 ID 一致&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;h2 id=&#34;实时同步-garmin-运动记录&#34;&gt;实时同步 Garmin 运动记录&lt;/h2&gt;
+&lt;p&gt;官方同步方案依赖 GitHub Action 定时触发（默认每天 1 次），如果想及时同步，可以通过 Garmin 手表应用 &lt;strong&gt;Magic Push&lt;/strong&gt; 手动触发 Webhook，来实现与 GitHub Actions 中的工作流进行交互。&lt;/p&gt;
+&lt;p&gt;Magic Push 当前版本仅支持通过 GET 请求方式的 Webhook，但是 GitHub Actions 的工作流需要通过 POST 请求触发，因此我使用 Cloudflare Worker 作为中转，将 GET 请求转换为 POST 请求。&lt;/p&gt;
+&lt;h3 id=&#34;实现路径&#34;&gt;实现路径&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250224210836773.png&#34; alt=&#34;时序图&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;配置步骤&#34;&gt;配置步骤&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;MagicPush 配置&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在 Connect IQ 商店下载安装 &lt;a href=&#34;https://apps.garmin.com/en-US/apps/53da8d3a-f7a1-448f-9fe8-1e1b8cd212d5&#34;&gt;Magic Push&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Webhook 地址格式：&lt;code&gt;https://your-worker.url/SYNC_TOKEN&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;配置 Cloudflare Worker&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将以下代码部署到 Cloudflare Worker 中，并设置相关环境变量。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;strong&gt;Cloudflare Worker 代码&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;最新代码同步更新在 &lt;a href=&#34;https://gist.github.com/viazure/6750aba76e92fcfe0e25d74f229700b1&#34;&gt;gists&lt;/a&gt; 中。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-javascript&#34; data-lang=&#34;javascript&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt; * @typedef {Object} Env
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt; */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;kr&#34;&gt;export&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;default&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;cm&#34;&gt;/**
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   * @param {Request} request
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   * @param {Env} env
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   * @param {ExecutionContext} ctx
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   * @returns {Promise&amp;lt;Response&amp;gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;   */&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;kr&#34;&gt;async&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fetch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ctx&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;url&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;URL&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;request&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;sync_token&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;SYNC_TOKEN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;url&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;pathname&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!==&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;sync_token&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Response&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;:(&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;headers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;content-type&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;text/plain&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;401&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;github_owener&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GITHUB_OWENER_NAME&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;github_repo&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GITHUB_REPO_NAME&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;github_token&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GITHUB_TOKEN&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;github_workflow_id&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;env&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;GITHUB_WORKFLOW_ID&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghBody&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;ref&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;master&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghReq&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;headers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;s2&#34;&gt;&amp;#34;Content-Type&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;application/json&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;s2&#34;&gt;&amp;#34;User-Agent&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`Cloudflare - &lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_owener&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;Authorization&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`Bearer &lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_token&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;method&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;POST&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;body&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;JSON&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;stringify&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ghBody&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;),&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghUrl&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;sb&#34;&gt;`https://api.github.com/repos/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_owener&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_repo&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;/actions/workflows/&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;${&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;github_workflow_id&lt;/span&gt;&lt;span class=&#34;si&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;sb&#34;&gt;/dispatches`&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;kr&#34;&gt;const&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghResp&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;kr&#34;&gt;await&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;fetch&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ghUrl&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghReq&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;ghResp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;!==&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;204&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;console&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Request: &amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghReq&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;console&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;log&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;Response: &amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghResp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Response&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;:(&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;headers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;content-type&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;text/plain&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;ghResp&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;return&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;new&lt;/span&gt; &lt;span class=&#34;nx&#34;&gt;Response&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;:)&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;headers&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;{&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;content-type&amp;#34;&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;text/plain&amp;#34;&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;      &lt;span class=&#34;nx&#34;&gt;status&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;:&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;200&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;});&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  &lt;span class=&#34;p&#34;&gt;},&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;};&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;环境变量说明&lt;/strong&gt;：&lt;/p&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+      &lt;tr&gt;
+          &lt;th&gt;类型&lt;/th&gt;
+          &lt;th&gt;名称&lt;/th&gt;
+          &lt;th&gt;值&lt;/th&gt;
+          &lt;th&gt;说明&lt;/th&gt;
+      &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;GITHUB_OWENER_NAME&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;viazure&lt;/td&gt;
+          &lt;td&gt;仓库所有者&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;GITHUB_REPO_NAME&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;running_page&lt;/td&gt;
+          &lt;td&gt;running_page 项目仓库名称&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;GITHUB_TOKEN&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;ghp_XXX&lt;/td&gt;
+          &lt;td&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;GITHUB_WORKFLOW_ID&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;XXX&lt;/td&gt;
+          &lt;td&gt;工作流 id，获取方式参考了 &lt;a href=&#34;https://github.com/yihong0618/running_page?tab=readme-ov-file#shortcuts&#34;&gt;shortcuts&lt;/a&gt; 示例方案&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+          &lt;td&gt;纯文本&lt;/td&gt;
+          &lt;td&gt;&lt;code&gt;SYNC_TOKEN&lt;/code&gt;&lt;/td&gt;
+          &lt;td&gt;XXX&lt;/td&gt;
+          &lt;td&gt;自定义同步令牌。可以生成一个 GUID 作为同步令牌，避免 URL 暴露&lt;/td&gt;
+      &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>2024 旅行日记</title>
+      <link>https://viazure.cc/posts/life/2024-journey/</link>
+      <pubDate>Mon, 11 Nov 2024 21:08:54 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/life/2024-journey/</guid>
+      
+      <description>&lt;p&gt;由于我用来记录旅途的软件——exping 将在年底停止服务，所以我决定将这些珍贵的旅行记忆暂时存放在我的博客里。下面是我 2024 年走过的地方。&lt;/p&gt;
+&lt;h2 id=&#34;湖北省十堰市&#34;&gt;湖北省十堰市&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间&lt;/strong&gt;：2024 年 3 月末、4 月 初&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地点&lt;/strong&gt;：郧西县城区、十堰市市区、武当山风景区&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;郧西县十堰市市区&#34;&gt;郧西县、十堰市市区&lt;/h3&gt;
+&lt;p&gt;郧西县的夜景还不错，到处走走看看。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240325_194842.jpg&#34; alt=&#34;郧西夜景&#34;&gt;&lt;/p&gt;
+&lt;p&gt;走饿了，吃一盘丰盛的炒饭。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240325_201927.jpg&#34; alt=&#34;夜市炒饭&#34;&gt;&lt;/p&gt;
+&lt;p&gt;十堰的生活节奏挺舒适的，逛逛公园，城市流浪。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240331_153900.HEIC&#34; alt=&#34;公园的大爷&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240404_150737.HEIC&#34; alt=&#34;公园的小女孩&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240404_151721.HEIC&#34; alt=&#34;爷孙俩&#34;&gt;&lt;/p&gt;
+&lt;p&gt;来到一个城市，还是得去博物馆（&lt;a href=&#34;https://surl.amap.com/tohhDOhh0b1&#34;&gt;十堰博物馆&lt;/a&gt;）看看。看着满墙的汽车挺感慨的，当年的二汽早已不再。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240404_161742.HEIC&#34; alt=&#34;汽车陈列墙&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240404_161631.HEIC&#34; alt=&#34;老汽车&#34;&gt;&lt;/p&gt;
+&lt;p&gt;走一走十堰市内依山而建的步道，入口这个 &lt;a href=&#34;https://surl.amap.com/tv4VlrX13aSF&#34;&gt;螺旋塔&lt;/a&gt; 像一个大面筋。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240404_163227.HEIC&#34; alt=&#34;螺旋塔&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240404_165812.HEIC&#34; alt=&#34;十堰步道&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;武当山&#34;&gt;武当山&lt;/h3&gt;
+&lt;p&gt;第一次爬这么高的山，还是有亿点点困难的。玩了两天，第一天下午下雨了住在了半山腰，第二天早上 4 点多就起床继续爬，看到了山顶的云海与日出，超级棒！&lt;/p&gt;
+&lt;p&gt;路线：太子坡 -&amp;gt; 逍遥谷 -&amp;gt; 紫霄宫 -&amp;gt; 南岩宫 -&amp;gt; 金顶&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240405_101659.HEIC&#34; alt=&#34;太子坡城门一隅&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240405_102247.HEIC&#34; alt=&#34;一柱十二梁&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240405_105251.HEIC&#34; alt=&#34;逍遥谷的猴子&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240405_115614.HEIC&#34; alt=&#34;紫霄大殿的飞角屋檐&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240405_154346.HEIC&#34; alt=&#34;南岩宫的龙头香&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/MVIMG_20240406_060457.jpg&#34; alt=&#34;金顶的云海&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/mmexport1712386380406.jpg&#34; alt=&#34;金顶的云海&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;四川省江油市&#34;&gt;四川省江油市&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间&lt;/strong&gt;：2024 年 4 月末、9 月中旬&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地点&lt;/strong&gt;：乾元山（金光洞、银光洞）、窦圌山&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;乾元山金光洞银光洞&#34;&gt;乾元山（金光洞、银光洞）&lt;/h3&gt;
+&lt;p&gt;山不高，&lt;strong&gt;银光洞&lt;/strong&gt;来回 1 个小时左右，&lt;strong&gt;金光洞&lt;/strong&gt;需要再爬四五十分钟，还在修路，修好了应该是能走一个环线的（也正是因为修路，错误选择路线，导致下山沿着盘山公路走了两个多小时😥）。风景还行，银光洞那边的洞口还蛮出片的（效果见 &lt;a href=&#34;https://viazure.cc/posts/life/2024-journey/##image4-anchor&#34;&gt;图 4&lt;/a&gt;)。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240427_111459.HEIC&#34; alt=&#34;通往银光洞的山路&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240427_145729.webp&#34; alt=&#34;像铁锈一样的颜色的石头&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240427_141241.HEIC&#34; alt=&#34;《洞内严禁刻字》&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a id=&#34;image4-anchor&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240427_120307.HEIC&#34; alt=&#34;银光洞&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;窦圌山&#34;&gt;窦圌山&lt;/h3&gt;
+&lt;p&gt;走走停停大概爬了 1 个小时，除了开头的百步梯爬着会有点累，后面的路程基本没有挑战。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;百步梯&lt;/strong&gt;一来就榨干了大家。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240914_145251.HEIC&#34; alt=&#34;百步梯&#34;&gt;&lt;/p&gt;
+&lt;p&gt;远远的看到了&lt;strong&gt;高空走钢丝&lt;/strong&gt;表演。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240914_153523.HEIC&#34; alt=&#34;高空走钢丝&#34;&gt;&lt;/p&gt;
+&lt;p&gt;登顶。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240914_155140.HEIC&#34; alt=&#34;窦圌山山顶&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;四川省成都市&#34;&gt;四川省成都市&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间&lt;/strong&gt;：2024 年端午假期&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地点&lt;/strong&gt;：成都市区、温江区、龙泉山&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;龙泉山&#34;&gt;龙泉山🚶&lt;/h3&gt;
+&lt;p&gt;徒步路线：仰天窝 -&amp;gt; 石经寺。走的脚疼、髋疼。龙泉山的桃子很甜，很好吃。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240608_130435.HEIC&#34; alt=&#34;龙泉山山顶&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/MVIMG_20240608_125852.jpg&#34; alt=&#34;眺望远方的风景&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;成都市区&#34;&gt;成都市区🛹&lt;/h3&gt;
+&lt;p&gt;和朋友滑着长板在成都到处晃，青龙湖、三色路、新华公园、成都绿道……&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/mmexport1717939086322.jpg&#34; alt=&#34;滑板双人行&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/mmexport1717938955915.jpg&#34; alt=&#34;青龙湖&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240609_202344.HEIC&#34; alt=&#34;晚霞&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;温江&#34;&gt;温江🚴‍♂️&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;温江南城绿道&lt;/strong&gt;骑行，环境不错，就是蚊子太多啦。😂&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240610_130413.HEIC&#34; alt=&#34;温江南城绿道标牌&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240610_130501.HEIC&#34; alt=&#34;与好友骑行中&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;四川省广元市&#34;&gt;四川省广元市&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间&lt;/strong&gt;：2024 年 6 月中旬、8 月末&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地点&lt;/strong&gt;：剑阁县、广元市区&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;剑门关&#34;&gt;剑门关&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;噫吁嚱，危乎高哉！
+蜀道之难，难于上青天！&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;路线（南进北出）：南门进 -&amp;gt; 关楼 -&amp;gt; 绝壁廊 -&amp;gt; 石笋峰观光车站 -&amp;gt; 步行至仙女廊 -&amp;gt; 鸟道 -&amp;gt; 玻璃观景平台 -&amp;gt; 梁山寺 -&amp;gt; 玻璃观景平台 -&amp;gt; 二号索道 -&amp;gt; 一号索道 - 北门出&lt;/p&gt;
+&lt;p&gt;整个山不算高，按照👆路线 3 小时左右走完。&lt;strong&gt;一线天&lt;/strong&gt;没开放，旁边的&lt;strong&gt;石笋峰&lt;/strong&gt;也没去，不然可能会多个把小时。可惜恐高，没有爬无护栏的&lt;strong&gt;猿猱道&lt;/strong&gt;，不然记忆可能会更深刻。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240615_135908.HEIC&#34; alt=&#34;关楼&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240615_150258.HEIC&#34; alt=&#34;在远方眺望鸟道&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240615_151911.HEIC&#34; alt=&#34;亲自攀登鸟道&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;麻辣串&lt;/strong&gt;不愧是广元当地特色，好吃！推荐这家 &lt;a href=&#34;https://surl.amap.com/tGNrZoRueDH&#34;&gt;重聚老地方麻辣串&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;食材推荐：鳝鱼、鸡脚、土豆片、莴笋片、魔芋皮。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240615_180210.HEIC&#34; alt=&#34;麻辣串&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;广元凉面&lt;/strong&gt;，本来只是路过顺便买碗尝尝，结果出乎意料的好吃，辣椒超级香！第二天一早又专门去吃了一大碗，地址在这里：&lt;a href=&#34;https://surl.amap.com/tJXonbX1t3Bw&#34;&gt;姚博士宽凉面&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240616_094451.HEIC&#34; alt=&#34;宽凉面&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;剑阁是个好地方&lt;/strong&gt;，下次再来。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240616_101432.HEIC&#34; alt=&#34;「剑阁是个好地方」&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;广元半程马拉松&#34;&gt;广元半程马拉松&lt;/h3&gt;
+&lt;p&gt;8 月 31 日，再次来到广元，完成了我人生中首个（半程）马拉松 —— &lt;strong&gt;广元半程马拉松&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240831_084701.HEIC&#34; alt=&#34;马拉松跑步中&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240831_094907.HEIC&#34; alt=&#34;广元半程马拉松的奖牌&#34;&gt;&lt;/p&gt;
+&lt;p&gt;跑完马拉松虽然很累了，但「来都来了」。&lt;/p&gt;
+&lt;p&gt;总得看看&lt;strong&gt;千佛崖&lt;/strong&gt;，&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240901_084951.HEIC&#34; alt=&#34;千佛崖&#34;&gt;&lt;/p&gt;
+&lt;p&gt;爬一爬&lt;strong&gt;凤凰楼&lt;/strong&gt;，&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240901_102443.HEIC&#34; alt=&#34;凤凰楼&#34;&gt;&lt;/p&gt;
+&lt;p&gt;逛一逛&lt;strong&gt;广元博物馆&lt;/strong&gt;吧。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240901_112158.HEIC&#34; alt=&#34;广元博物馆&#34;&gt;&lt;/p&gt;
+&lt;p&gt;再蹭蹭&lt;strong&gt;女儿节&lt;/strong&gt;的热闹，&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240901_115155.HEIC&#34; alt=&#34;热闹的街道&#34;&gt;&lt;/p&gt;
+&lt;p&gt;吃上一碗正宗的&lt;strong&gt;广元凉面&lt;/strong&gt;（&lt;a href=&#34;https://surl.amap.com/tVzGZJT1wa82&#34;&gt;吴凉面夜凉面​&lt;/a&gt; ）。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240901_121250.HEIC&#34; alt=&#34;广元凉面&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;湖南省邵阳市&#34;&gt;湖南省邵阳市&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间&lt;/strong&gt;：2024 年 7 月初&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地点&lt;/strong&gt;：邵阳市市区&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;邵阳市市区&#34;&gt;邵阳市市区&lt;/h3&gt;
+&lt;p&gt;先嗦一碗邵阳的米粉（&lt;a href=&#34;https://surl.amap.com/u8pOhuF1z9Mt&#34;&gt;苏记回民粉面店&lt;/a&gt;）。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240702_191248.HEIC&#34; alt=&#34;邵阳米粉&#34;&gt;&lt;/p&gt;
+&lt;p&gt;再到资江边看看傍晚的天空。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240702_200305.HEIC&#34; alt=&#34;资江&#34;&gt;&lt;/p&gt;
+&lt;p&gt;江边玩耍的一家，高兴到模糊。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240702_195655.HEIF&#34; alt=&#34;江边玩耍的一家&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;湖南长沙市&#34;&gt;湖南长沙市&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间&lt;/strong&gt;：2024 年 7 月初&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地点&lt;/strong&gt;：长沙市市区、湖南省博物馆、岳麓山&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;长沙市市区&#34;&gt;长沙市市区&lt;/h3&gt;
+&lt;p&gt;先嗦一碗长沙滴米粉（&lt;a href=&#34;https://surl.amap.com/ueZKjDj1c1pl&#34;&gt;津市牛肉粉&lt;/a&gt;）。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240704_082029.HEIC&#34; alt=&#34;牛肉米粉&#34;&gt;&lt;/p&gt;
+&lt;p&gt;吃吃正宗的长沙臭豆腐，喝一杯茶颜悦色。（这俩的店在五一广场到处都是，不用刻意去找。）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240704_120927.HEIC&#34; alt=&#34;臭豆腐&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240704_115607.HEIC&#34; alt=&#34;茶颜悦色&#34;&gt;&lt;/p&gt;
+&lt;p&gt;时间太短，行色匆匆。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240704_114755.HEIC&#34; alt=&#34;地下通道一隅&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;湖南省博物馆&#34;&gt;湖南省博物馆&lt;/h3&gt;
+&lt;p&gt;人非常多，如果要来&lt;strong&gt;一定要提前预约&lt;/strong&gt;，不行就晚上 8 点放票的时候碰碰运气。&lt;/p&gt;
+&lt;p&gt;最火的 3 楼马王堆汉墓人太多了，体验一般。2 楼介绍历史反而更喜欢看一点，古楚国人民的生活有点意思的。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240704_094308.HEIC&#34; alt=&#34;豕尊&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240704_093520.HEIC&#34; alt=&#34;超帅的剑&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240704_095309.HEIC&#34; alt=&#34;形态各异的泥偶&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240704_101224.HEIC&#34; alt=&#34;拥挤的人群&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;岳麓山&#34;&gt;岳麓山&lt;/h3&gt;
+&lt;p&gt;南门进东门出，山不算高，爬了 1 个小时左右。就是太热了🔥。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240704_133138.HEIC&#34; alt=&#34;伟人像&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240704_134402.webp&#34; alt=&#34;爱晚亭&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240704_140240.HEIC&#34; alt=&#34;岳麓山山顶&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;广西省桂林市&#34;&gt;广西省桂林市&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间&lt;/strong&gt;：2024 年 7 月、8 月&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地点&lt;/strong&gt;：桂林市市区&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;桂林市市区&#34;&gt;桂林市市区&lt;/h3&gt;
+&lt;p&gt;都说「桂林山水甲天下」，但 7、8 月的天气实在太热了，白天基本没有出过门，没有见识到秀丽的山水确实有一点可惜。&lt;/p&gt;
+&lt;p&gt;记忆里只有跑了很多圈的&lt;strong&gt;山水公园&lt;/strong&gt;，&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240719_063202.HEIC&#34; alt=&#34;山水公园&#34;&gt;&lt;/p&gt;
+&lt;p&gt;每次跑步都会遇到的海绵宝宝（抽象版）。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240721_083742.HEIC&#34; alt=&#34;海绵宝宝（抽象版）&#34;&gt;&lt;/p&gt;
+&lt;p&gt;吃了超多次的桂林米粉、螺蛳粉。（我大概是真的很爱嗦粉&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240717_073003.HEIC&#34; alt=&#34;桂林米粉&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240727_185326.HEIC&#34; alt=&#34;螺蛳粉&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;象鼻山公园&lt;/strong&gt;的象鼻子。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240824_110519.jpg&#34; alt=&#34;象鼻山&#34;&gt;&lt;/p&gt;
+&lt;p&gt;这家烤鱼（&lt;a href=&#34;https://surl.amap.com/qLufN9npd3W&#34;&gt;黄记留一手特色烤鱼香锅&lt;/a&gt;）很好吃，鱼是木炭烤的，很香，配菜很丰富，在桂林待的这段时间吃了两三次，推荐。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20240803_183310.HEIC&#34; alt=&#34;烤鱼&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;河北省高碑店市&#34;&gt;河北省高碑店市&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间&lt;/strong&gt;：2024 年 10 月下旬&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地点&lt;/strong&gt;：高碑店市市区&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;高碑店市市区&#34;&gt;高碑店市市区&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;高碑店&lt;/strong&gt;是保定市下的一个县级市，虽然没时间出去玩，但还是吃到了一些好吃的北方食物。&lt;/p&gt;
+&lt;p&gt;非常好吃的牛舌饼（&lt;a href=&#34;https://surl.amap.com/uweY9hLweWl&#34;&gt;曹氏牛舌饼&lt;/a&gt;），配上一碗咸豆腐脑，赞！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241022_122502.HEIC&#34; alt=&#34;牛舌饼&#34;&gt;&lt;/p&gt;
+&lt;p&gt;想吃烤肉了，就找到了一家烤肉店（&lt;a href=&#34;https://surl.amap.com/uCutRstG928&#34;&gt;炭牛烤肉&lt;/a&gt;），没想到居然很不错，食材很新鲜。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241025_181058.HEIC&#34; alt=&#34;烤肉&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;四川省西昌市&#34;&gt;四川省西昌市&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;时间&lt;/strong&gt;：2024 年 11 月初&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;地点&lt;/strong&gt;：西昌市市区&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;西昌市市区&#34;&gt;西昌市市区&lt;/h3&gt;
+&lt;p&gt;果然，马拉松只有零次与无数次。这次又来参加西昌邛海湿地马拉松啦。&lt;/p&gt;
+&lt;p&gt;领完参赛包，拿着赠送的烧烤券，吃上一顿丰盛的西昌火盆烧烤（&lt;a href=&#34;https://surl.amap.com/1yBPtjHq8aSu&#34;&gt;李小肠特色烧烤园&lt;/a&gt;）。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241107_200431.HEIC&#34; alt=&#34;火盆烧烤&#34;&gt;&lt;/p&gt;
+&lt;p&gt;凉山“汉堡”。（路边很多大爷大妈在卖，要挑小一点的卖，大的可能夹生。记得让老板&lt;strong&gt;不要放小米辣&lt;/strong&gt;，因为真的超级辣。）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241109_195957.HEIC&#34; alt=&#34;凉山“汉堡”&#34;&gt;&lt;/p&gt;
+&lt;p&gt;西昌特色羊杂粉（&lt;a href=&#34;https://surl.amap.com/v1gXQXf15bOb&#34;&gt;熊氏鲜牛羊杂粉&lt;/a&gt;），汤底非常的鲜，也是第一次知道薄荷也能作为米粉的配料😄。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241108_083245.HEIC&#34; alt=&#34;羊杂粉&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;邛海&#34;&gt;邛海&lt;/h3&gt;
+&lt;p&gt;丝丝小雨中的邛海有些烟雾缭绕。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241108_091213.HEIC&#34; alt=&#34;邛海&#34;&gt;&lt;/p&gt;
+&lt;p&gt;邛海边的人造沙滩 —— &lt;a href=&#34;https://surl.amap.com/kOdBcq0S6WI&#34;&gt;金鳞沙滩&lt;/a&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241108_153959.HEIC&#34; alt=&#34;金鳞沙滩&#34;&gt;&lt;/p&gt;
+&lt;p&gt;在 &lt;a href=&#34;https://surl.amap.com/924nq5ZE5eG&#34;&gt;泸山&lt;/a&gt; 看见的第一只猴子，面对投喂，很文明的「给一点吃一点」。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241108_102031.webp&#34; alt=&#34;好猴子&#34;&gt;&lt;/p&gt;
+&lt;p&gt;本以为山里的都是文明猴，结果在毫不设防的情况下，同伴的包就被抓了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241108_112639.HEIC&#34; alt=&#34;报被猴子抓了&#34;&gt;&lt;/p&gt;
+&lt;p&gt;罪魁祸&lt;strong&gt;猴&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241108_112547.HEIC&#34; alt=&#34;坏猴子&#34;&gt;&lt;/p&gt;
+&lt;p&gt;下山又被另一只猴抢走了饮料，好一出《泸山历险记》。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241108_114427.HEIC&#34; alt=&#34;坏坏猴子&#34;&gt;&lt;/p&gt;
+&lt;h3 id=&#34;西昌马拉松&#34;&gt;西昌马拉松&lt;/h3&gt;
+&lt;p&gt;这次马拉松我拿下了个人的半程马拉松最好成绩（净成绩：01:56:26），也是我的半程马拉松第一次跑到 2 小时内，又激动又开心😊。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241109_074144.HEIC&#34; alt=&#34;西昌马拉松&#34;&gt;&lt;/p&gt;
+&lt;p&gt;奖牌真好看！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/IMG_20241109_100621.HEIC&#34; alt=&#34;西昌马拉松奖牌&#34;&gt;&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>我使用的 Obsidian 插件</title>
+      <link>https://viazure.cc/posts/tinkering/obsidian-plugins-i-use/</link>
+      <pubDate>Sat, 02 Nov 2024 19:58:19 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/obsidian-plugins-i-use/</guid>
+      
+      <description>&lt;blockquote&gt;
+&lt;p&gt;不要迷失在折腾的过程中。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;我尽量减少第三方插件的安装，只选择那些能够显著提升使用体验的插件。插件名称按字母顺序从 A 到 Z 排列。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/tgrosinger/advanced-tables-obsidian&#34;&gt;Advanced tables&lt;/a&gt;：加强表格编辑。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/trganda/obsidian-attachment-management&#34;&gt;Attachment Management&lt;/a&gt;：附件管理，自定义附件存储位置，自动更新笔记附件链接。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/zolrath/obsidian-auto-link-title&#34;&gt;Auto Link Title&lt;/a&gt;：粘贴网址时自动获取标题。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/TfTHacker/obsidian42-brat&#34;&gt;BRAT&lt;/a&gt;：安装与更新非社区插件市场中的插件。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/ozntel/oz-clear-unused-images-obsidian&#34;&gt;Clear Unused Images&lt;/a&gt;：清理无效的图片及附件。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/blacksmithgu/obsidian-dataview&#34;&gt;Dataview&lt;/a&gt;：查询和整合数据视图。只需要一些简单的脚本就能完成一些笔记的快速整理，还能使用 JavaScript 脚本，超级强大。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Yaozhuwa/easy-typing-obsidian&#34;&gt;Easy Typing&lt;/a&gt;：书写时实时处理文本格式。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/PKM-er/obsidian-editing-toolbar&#34;&gt;Editting Toolbar&lt;/a&gt;：在编辑区增加快捷操作的工具栏。除了常用的命令选项，还可以将自定义命令添加到工具栏中。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Enveloppe/obsidian-enveloppe&#34;&gt;Enveloppe&lt;/a&gt;：将 Obsidian 中的笔记发布为博客文章。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mirnovov/obsidian-homepage&#34;&gt;Homepage&lt;/a&gt; ：设置软件启动时打开的页面。使用 &lt;a href=&#34;https://github.com/TfTHacker/DashboardPlusPlus&#34;&gt;Dashboard++&lt;/a&gt; 模板配合 Dataview 定制好了我的 Dashboard。&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;&lt;a href=&#34;https://github.com/0011000000110010/obsidian-i18n&#34;&gt;I18N&lt;/a&gt;：翻译其他 Obsidian 的插件。开启沉浸式翻译模式时也能用于翻译笔记。&lt;/del&gt; 已弃用，翻译内容较为依赖社区，翻译的更新频率无法与插件本身同步。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/infiolab/infio-copilot&#34;&gt;Infio-Copilot&lt;/a&gt;：类 Cursor 的 AI 辅助工具，具有智能自动补全和交互式对话功能。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/platers/obsidian-linter&#34;&gt;Linter&lt;/a&gt;：格式验证及保存时格式化。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/coddingtonbear/obsidian-local-rest-api&#34;&gt;Local REST API&lt;/a&gt;：通过 REST API 与笔记交互。我主要用于搭配 &lt;a href=&#34;https://www.xmnote.com/&#34;&gt;纸间书摘&lt;/a&gt; 导入读书笔记。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Kh4f/obsidian-manual-sorting&#34;&gt;Manual Sorting&lt;/a&gt;：拖拽手工排序。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/scambier/obsidian-omnisearch&#34;&gt;Omnisearch&lt;/a&gt;：更智能的搜索，可配合浏览器扩展或篡改猴脚本将搜索结果集成到搜索引擎中。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/OliverBalfour/obsidian-pandoc&#34;&gt;Pandoc Plugin&lt;/a&gt;：可以导出更丰富的文件格式。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/tgrosinger/recent-files-obsidian&#34;&gt;Recent Files&lt;/a&gt;：查看最近浏览过的文件。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/remotely-save/remotely-save&#34;&gt;Remotely Save&lt;/a&gt;：笔记同步。搭配 Cloudflare R2 使用。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mgmeyers/obsidian-style-settings&#34;&gt;Style Settings&lt;/a&gt;：管理自定义 CSS。推荐一个 &lt;a href=&#34;https://forum-zh.obsidian.md/t/topic/38000&#34;&gt;改善笔记的链接编辑体验&lt;/a&gt; 的 CSS。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/lei-ctyh/obsidian-sync-cnblog&#34;&gt;Sync Cnblog&lt;/a&gt; ：同步 Obsidian 笔记到博客园。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/pjeby/tag-wrangler&#34;&gt;Tag Wrangler&lt;/a&gt;：给标签增加右键菜单，主要用于批量重命名。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/scambier/obsidian-text-extractor&#34;&gt;Text Extractor&lt;/a&gt;：从图像和 PDF 中提取文本，搭配 Omnisearch 使用。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/dragonwocky/obsidian-tray&#34;&gt;Tray&lt;/a&gt;：将 Obsidian 设为开机自启，并能够最小化到系统托盘。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/tadashi-aikawa/obsidian-various-complements-plugin&#34;&gt;Various Complements&lt;/a&gt;：自动填充单词与自定义内容。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/kometenstaub/obsidian-version-history-diff&#34;&gt;Version History Diff&lt;/a&gt;：对比不同版本文本差异。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/aidenlx/cm-chs-patch&#34;&gt;Word Splitting for Simplified Chinese in Edit Mode And Vim Mode&lt;/a&gt;：提供结巴分词引擎，与 Omnisearch 插件配合使用。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>从 Joplin 到 Obsidian：我的笔记工具迁移之旅</title>
+      <link>https://viazure.cc/posts/tinkering/migrating-from-joplin-to-obsidian/</link>
+      <pubDate>Sun, 27 Oct 2024 19:38:13 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/migrating-from-joplin-to-obsidian/</guid>
+      
+      <description>&lt;h2 id=&#34;失掉的安全感&#34;&gt;失掉的安全感&lt;/h2&gt;
+&lt;p&gt;我一直在使用 Joplin 存储我的笔记和剪裁的文章。得益于一个 Joplin 爱好者开发的 VS Code 插件 &lt;a href=&#34;https://marketplace.visualstudio.com/items?itemName=rxliuli.joplin-vscode-plugin&#34;&gt;joplin-vscode-plugin&lt;/a&gt;，我能够在 VS Code 中编写我钟爱的 Markdown 格式的笔记内容。借助 VS Code 里好用的插件，我能通过 AI 联想我的输入文本内容，通过绘图插件绘制流程图等内容。Joplin 我只用作笔记的统一管理、同步、其他客户端的查看。这些需求 Joplin 都能很好的满足，这也是我一直使用它的原因。&lt;/p&gt;
+&lt;p&gt;Obsidian 出来后我也一直在纠结是否需要迁移，因为我目前其实用不上 Obsidian 的亮点功能——双链笔记，Joplin 完全够我使用了，我一直告诉自己，不用为了使用工具而使用工具，不要折腾，把时间用在其他有用的地方。&lt;/p&gt;
+&lt;p&gt;我忍住了自己的折腾之心，我也一直用着我的 VS Code + Joplin 组合。我爱他们，我习惯着他们。直到前两个月发现的一件事情让我又重拾迁移之心。&lt;/p&gt;
+&lt;p&gt;我有一个习惯，我会定时的将本地存储的东西进行备份，我永远保持着「鸡蛋不能放在同一个篮子里」的想法。我希望我的东西 99.99% 不会丢失，所以每个月我都会将 Joplin 中的笔记导出，再备份到 OneDrive 里。&lt;/p&gt;
+&lt;p&gt;有一天，我打开笔记备份目录，想看看历史笔记的东西，结果发现所有笔记都没了，只剩下资源文件夹 &lt;code&gt;_resources&lt;/code&gt; 静静的躺在那儿，我有点崩溃，此时我以为是我备份的问题。但由于其他琐事繁忙，我暂时将此事搁置。&lt;/p&gt;
+&lt;p&gt;到了下一个月的备份日，我再次将 Joplin 笔记导出，这次我发现导出的内容仍然只有 &lt;code&gt;_resources&lt;/code&gt; 文件夹。我试着去寻找问题的原因，最终在 Joplin 社区发现了有同样问题的帖子。原因是目录名称里含有 emoji，同时作者也回复确认了此 BUG，并建立了对应的 &lt;a href=&#34;https://github.com/laurent22/joplin/issues/11110&#34;&gt;issue&lt;/a&gt;。这个 issue 搁置了两个月一直没有动静，直到今天有用户回复新版本已经没有了这个问题。&lt;/p&gt;
+&lt;p&gt;我更新到新版本后，发现问题确实得到了解决。但是我不由的思考，开源软件虽然有其独特的优势，但在某些情况下，一些小问题也可能对用户体验产生较大的影响，让我觉得不再那么有安全感。&lt;/p&gt;
+&lt;h2 id=&#34;分享欲的出口&#34;&gt;分享欲的出口&lt;/h2&gt;
+&lt;p&gt;上半年网上冲浪时，在一个技术大佬的博客里发现了一个行程地图 —— &lt;a href=&#34;https://exping.world/&#34;&gt;exping&lt;/a&gt; 。我一向特别中意这种 UI 漂亮的产品，试用了下很快就决定将其作为我的行程记录工具。我很喜欢这款产品，我将上半年出差和旅行时觉得不错的地点都记录在了上面，我为每个打卡点精心挑选了照片，写下体验感受，我希望它能成为我的旅行日记，也同时希望能被 exping 社区的一小撮人看到（快来看我精心写下的游记呀）。&lt;/p&gt;
+&lt;p&gt;可是，这件事情在前两天突然发生了变故，exping 突然发布了 &lt;a href=&#34;https://exping.world/zh/goodbye&#34;&gt;停止运营的公告&lt;/a&gt;。我在和朋友感慨「小而美的产品不好做啊」的同时，也在思考旅途数据的下一个归宿。&lt;/p&gt;
+&lt;p&gt;除了他们，其实我还有一些想要输出的想法或分享的东西想被非熟人看到，我希望有一个虽然少有人关顾，但我又乐意打理的地方。我又拾起了写博客的想法，它确实适合做我输出内容的野花园。&lt;/p&gt;
+&lt;p&gt;我是个拥有完美主义的&lt;strong&gt;懒&lt;/strong&gt;人，这就导致了我的好多想法和产出都难产或者夭折。我曾经使用 Hexo 搭建过博客，也曾在博客园写过几篇技术文章。但是长时间却只有几篇不算高质量的内容产出，这使我没有太多动力做这事情，我归档了我的 Hexo 博客，博客园里也只留下几篇阅读量还行的文章。&lt;/p&gt;
+&lt;p&gt;我毕竟还是有分享的欲望，虽然大多是比较私人的事情，但我希望有一个地方能够保留这些内容，即使被陌生人看到对我的生活也没太多影响，或许不经意能对上脑波呢。&lt;/p&gt;
+&lt;p&gt;我第一时间想到了前文提到的开发 Joplin VS Code 扩展的那个大佬，他还开发了一款用于发布博客的 Joplin 插件 —— &lt;a href=&#34;https://joplin-utils.rxliuli.com/zh-CN/joplin-publisher/&#34;&gt;Joplin Publisher&lt;/a&gt;，它可以帮我发布 Joplin 笔记到 GitHub，并通过 GitHub Actions 来自动化构建部署成博客文章。但是今天，我发现导出的文章有些丢失了我辛苦编辑的，完全符合 Markdown Lint 的笔记内容，例如它在一些有序列表中增加了多余的空格，加上无法掌控的可能失修的 Bug，我放弃了这个想法。&lt;/p&gt;
+&lt;p&gt;Obsidian 拥有强大且丰富的插件资源，尤其是当我发现有博客发布相关的插件后，便决定从 Joplin 迁移到 Obsidian。Obsidian 的文件库管理方式非常灵活，让我可以直接使用从 Joplin 导出的 Markdown 文档，从而大大减少了迁移的工作量。接下来，我只需要：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 解决笔记的同步： &lt;a href=&#34;https://github.com/remotely-save/remotely-save&#34;&gt;Remotely Save&lt;/a&gt; + Cloudflare R2&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 找到我在 VS Code 中已使用习惯的插件或者更好用的插件：&lt;a href=&#34;https://viazure.cc/posts/tinkering/obsidian-plugins-i-use/&#34;&gt;我使用的 Obsidian 插件&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 搭建博客并发布我想要分享的内容。&lt;/li&gt;
+&lt;li&gt;&lt;input checked=&#34;&#34; disabled=&#34;&#34; type=&#34;checkbox&#34;&gt; 将我的旅行日记重建为文章/相册，并发布。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;后记&#34;&gt;后记&lt;/h2&gt;
+&lt;p&gt;2024-12-21：今天在小众软件上看到一篇文章《&lt;a href=&#34;https://www.appinn.com/obsidian-and-bending-spoons/&#34;&gt;Obsidian：一场来自意大利的&amp;quot;求爱&amp;quot;风波 - 小众软件&lt;/a&gt;》，只希望「被收购」这种事情尽量不要发生吧。&lt;/p&gt;
+</description>
+      
+    </item>
+    
+    <item>
+      <title>快速安装使用 frp 内网穿透服务</title>
+      <link>https://viazure.cc/posts/tinkering/quick-frp-installation-for-nat-penetration/</link>
+      <pubDate>Fri, 20 Jan 2023 18:53:25 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/quick-frp-installation-for-nat-penetration/</guid>
+      
+      <description>&lt;h2 id=&#34;前言&#34;&gt;前言&lt;/h2&gt;
+&lt;p&gt;虽然已经能够通过 ZeroTier&lt;sup id=&#34;fnref:1&#34;&gt;&lt;a href=&#34;#fn:1&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;1&lt;/a&gt;&lt;/sup&gt; 访问公司电脑上部署的服务，但由于 iOS 的 ZeroTier 客户端不支持 moon 服务，在打洞失败时速度很慢，所以我决定使用 frp&lt;sup id=&#34;fnref:2&#34;&gt;&lt;a href=&#34;#fn:2&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;2&lt;/a&gt;&lt;/sup&gt; 进行内网穿透，以备不时之需。&lt;/p&gt;
+&lt;h2 id=&#34;安装过程&#34;&gt;安装过程&lt;/h2&gt;
+&lt;h3 id=&#34;服务端&#34;&gt;服务端&lt;/h3&gt;
+&lt;p&gt;ssh 到服务器，通过人家写好的一键配置 shell 脚本 &lt;a href=&#34;https://github.com/mvscode/frps-onekey&#34;&gt;frps-onekey&lt;/a&gt; 安装 frp 服务端，这个脚本会自动下载并配置 frp 服务端，简化手动配置的步骤。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-shell&#34; data-lang=&#34;shell&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;wget https://gitee.com/mvscode/frps-onekey/raw/master/install-frps.sh -O ./install-frps.sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;chmod &lt;span class=&#34;m&#34;&gt;700&lt;/span&gt; ./install-frps.sh
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;./install-frps.sh install
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;按照提示进行各种配置，然后启动。&lt;/p&gt;
+&lt;h3 id=&#34;客户端&#34;&gt;客户端&lt;/h3&gt;
+&lt;p&gt;在 frp 项目的 release 中下载最新的 Windows 客户端压缩包，解压后修改启动中的 &lt;code&gt;frpc.toml&lt;/code&gt; 文件。示例如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-toml:frpc.toml&#34; data-lang=&#34;toml:frpc.toml&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;serverAddr&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;100.100.100.100&amp;#34;&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# 服务器地址&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;serverPort&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;7443&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# 服务器端口&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;auth&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;method&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;token&amp;#34;&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# 认证方式&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;auth&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;token&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;egXXX&amp;#34;&lt;/span&gt;  &lt;span class=&#34;c&#34;&gt;# 认证令牌&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;[[&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;proxies&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;]]&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;name&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;debug-api&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;type&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;tcp&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;localIP&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;127.0.0.1&amp;#34;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;localPort&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8084&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;remotePort&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;mi&#34;&gt;8084&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&lt;strong&gt;http 服务可以使用多个子用户名分别映射，没有域名的话可以使用 &lt;code&gt;tcp&lt;/code&gt; 的方式进行映射。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;配置完成后，通过命令行执行命令启动服务：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-cmd&#34; data-lang=&#34;cmd&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;.\frpc.exe -c frpc.toml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;但这种启动方式在命令行关闭后就停止服务了，所以可以使用 Shawl&lt;sup id=&#34;fnref:3&#34;&gt;&lt;a href=&#34;#fn:3&#34; class=&#34;footnote-ref&#34; role=&#34;doc-noteref&#34;&gt;3&lt;/a&gt;&lt;/sup&gt; 将其注册为 Windows 服务，示例如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-cmd&#34; data-lang=&#34;cmd&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;shawl add --name frp -- C:\Services\frp\frpc.exe -c C:\Services\frp\frpc.toml
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;好了，安装完毕。&lt;/p&gt;
+&lt;h2 id=&#34;踩坑&#34;&gt;踩坑&lt;/h2&gt;
+&lt;p&gt;在修改 systemctl 服务配置后，需要执行 &lt;code&gt;systemctl daemon-reload&lt;/code&gt; 重新加载配置，否则可能会提示：&lt;code&gt;frps.service: Failed to execute command: Permission denied&lt;/code&gt;。&lt;/p&gt;
+&lt;div class=&#34;footnotes&#34; role=&#34;doc-endnotes&#34;&gt;
+&lt;hr&gt;
+&lt;ol&gt;
+&lt;li id=&#34;fn:1&#34;&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.zerotier.com/&#34;&gt;ZeroTier&lt;/a&gt; 是一款开源的软件定义广域网（SD-WAN）工具，它允许用户轻松在不同设备之间创建虚拟专用网络（VPN）。ZeroTier 采用点对点（P2P）连接和现代加密技术，将不同网络环境下的设备组建成一个虚拟局域网，使局域网内的设备可以互相访问。&amp;#160;&lt;a href=&#34;#fnref:1&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id=&#34;fn:2&#34;&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/fatedier/frp&#34;&gt;frp&lt;/a&gt; 是一个专注于内网穿透的高性能的反向代理应用，支持 TCP、UDP、HTTP、HTTPS 等多种协议。可以将内网服务以安全、便捷的方式通过具有公网 IP 节点的中转暴露到公网。&amp;#160;&lt;a href=&#34;#fnref:2&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li id=&#34;fn:3&#34;&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/mtkennerly/shawl&#34;&gt;Shawl&lt;/a&gt; 是一个用于将任意程序作为 Windows 服务运行的包装器，用 Rust 编写。它为您处理 Windows 服务 API，因此您的程序只需响应 ctrl-C/SIGINT。&amp;#160;&lt;a href=&#34;#fnref:3&#34; class=&#34;footnote-backref&#34; role=&#34;doc-backlink&#34;&gt;&amp;#x21a9;&amp;#xfe0e;&lt;/a&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+      
+    </item>
+    
+  </channel>
+</rss>
