@@ -2,7 +2,7 @@ title = "viazure"
 baseURL = "https://viazure.cc/"
 
 # 设置 <html lang=""> 的值
-languageCode = "zh-cn"
+locale = "zh-cn"
 
 # 设置日期格式化的默认语言
 defaultContentLanguage = "zh-cn"
@@ -41,8 +41,8 @@ theme = "hugo-blog-awesome"
 
 ############################## 中文配置 ################################
 [Languages.zh-cn]
-  languageName = "Chinese"
-  languageCode = "zh-cn"
+  label = "Chinese"
+  locale = "zh-cn"
   contentDir = "content/zh"
   weight = 1
 
