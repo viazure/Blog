@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:webfeeds="http://webfeeds.org/rss/1.0">
+  <channel>
+    <title>Dns on viazure</title>
+    <link>https://viazure.cc/tags/dns/</link>
+    <description>Recent content in Dns on viazure</description><follow_challenge>
+    <feedId>96027576665585664</feedId>
+    <userId>59414119634735104</userId>
+    </follow_challenge><generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <webfeeds:icon>https://viazure.cc/icons/favicon.svg</webfeeds:icon>
+    <webfeeds:logo>https://viazure.cc/icons/favicon.svg</webfeeds:logo>
+    <image>
+      <url>https://viazure.cc/icons/favicon.svg</url>
+      <title>viazure</title>
+      <link>https://viazure.cc/</link>
+    </image>
+    
+    <lastBuildDate>Sat, 15 Mar 2025 09:52:56 +0800</lastBuildDate><atom:link href="https://viazure.cc/tags/dns/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 Resend 与 Cloudflare 实现域名邮箱发信</title>
+      <link>https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/</link>
+      <pubDate>Sat, 15 Mar 2025 09:52:56 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/</guid>
+      
+      <description>&lt;p&gt;最近尝试解决域名邮箱发信问题，记录下具体操作过程。&lt;/p&gt;
+&lt;h2 id=&#34;背景需求&#34;&gt;背景需求&lt;/h2&gt;
+&lt;p&gt;我的个人域名目前托管在 Cloudflare，并启用了其提供的「电子邮件路由（Email Routing）」服务来实现邮件转发功能。但该方案存在一个缺陷：只能接收转发邮件，无法直接通过域名邮箱发送邮件。&lt;/p&gt;
+&lt;p&gt;为了解决发件需求，我曾尝试按照 Gmail 官方教程《&lt;a href=&#34;https://support.google.com/mail/answer/22370&#34;&gt;通过其他地址或别名发送电子邮件&lt;/a&gt;》配置邮件代发功能。但在实际使用过程中，发现收件方会提示「发件人未验证」警告。经排查发现，这是由于未配置 DKIM 验证机制导致的问题。&lt;/p&gt;
+&lt;p&gt;根据 Google Workspace 的《&lt;a href=&#34;https://support.google.com/a/answer/174124?sjid=17788796605478889522-NC&amp;amp;rd=1#dkim-check-set-up&#34;&gt;设置 DKIM&lt;/a&gt;》指南文档说明：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果您的域名提供商是 Google Domains 或  &lt;a href=&#34;https://squarespace.com/&#34;&gt;Squarespace&lt;/a&gt;，则 Google 会自动创建 DKIM 密钥，并将其添加到网域的 DNS 记录。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;由于我的域名既非托管在 Google Domains/Squarespace，又未开通 Google Workspace，所以暂时无法使用 Google 提供的「自动创建 DKIM 密钥」服务。&lt;/p&gt;
+&lt;p&gt;现状总结：&lt;/p&gt;
+&lt;p&gt;✅ 已实现功能&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cloudflare 域名托管&lt;/li&gt;
+&lt;li&gt;邮件接收及转发服务正常运作&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;❌ 待解决问题&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;无法通过域名邮箱直接发送邮件&lt;/li&gt;
+&lt;li&gt;Gmail 代发触发「未验证」警告（原因：缺失 DKIM 记录）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;咨询了 DeepSeek，又参考了多篇技术博客，最终选用 Resend 作为最终邮件发送方案，它有这些优势：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;无需自建服务器&lt;/li&gt;
+&lt;li&gt;API 友好&lt;/li&gt;
+&lt;li&gt;免费额度充足（每天 100 封，对于我这种偶尔发发邮件的场景完全够用）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;实施步骤&#34;&gt;实施步骤&lt;/h2&gt;
+&lt;h3 id=&#34;服务配置&#34;&gt;服务配置&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;访问 &lt;a href=&#34;https://resend.com&#34;&gt;Resend 官网&lt;/a&gt;，注册并登录（推荐使用邮箱注册，详见：&lt;a href=&#34;https://viazure.cc/posts/tinkering/configure-domain-email-with-resend-and-cloudflare/##&#34;&gt;踩坑&lt;/a&gt;）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在 Domains 页面点击 &lt;code&gt;Add Domain&lt;/code&gt; 添加域名，输入邮箱绑定的域名，并选择区域（Region），例如：&lt;code&gt;North Virginia (us-east-1)&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;域名添加完成后，需要配置 DNS。Resend 提供了两种配置方式：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;自动授权：点击 &lt;code&gt;Sign in to Cloudflare&lt;/code&gt; 按钮登录授权后，Resend 将自动添加 DNS 记录&lt;/li&gt;
+&lt;li&gt;手动添加记录：参考 &lt;a href=&#34;https://resend.com/docs/knowledge-base/cloudflare&#34;&gt;官方指南&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&#34;https://webpimg.viazure.cc/250316160031078.png&#34; alt=&#34;DNS 记录&#34;&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;API Keys 页面点击 &lt;code&gt;Create API Key&lt;/code&gt; 创建并记录下密钥（格式：re_xxxxxx）&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&#34;功能验证&#34;&gt;功能验证&lt;/h3&gt;
+&lt;p&gt;API 接口方式（cURL 示例）：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;curl -X POST &lt;span class=&#34;s1&#34;&gt;&amp;#39;https://api.resend.com/emails&amp;#39;&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; -H &lt;span class=&#34;s1&#34;&gt;&amp;#39;Authorization: Bearer re_xxxxxx&amp;#39;&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; -H &lt;span class=&#34;s1&#34;&gt;&amp;#39;Content-Type: application/json&amp;#39;&lt;/span&gt; &lt;span class=&#34;se&#34;&gt;\
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt; -d &lt;span class=&#34;s1&#34;&gt;$&amp;#39;{
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;  &amp;#34;from&amp;#34;: &amp;#34;发件人 &amp;lt;发件人邮箱地址&amp;gt;&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;  &amp;#34;to&amp;#34;: [&amp;#34;接收人邮箱地址&amp;#34;],
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;  &amp;#34;subject&amp;#34;: &amp;#34;hello world&amp;#34;,
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;  &amp;#34;html&amp;#34;: &amp;#34;&amp;lt;p&amp;gt;it works!&amp;lt;/p&amp;gt;&amp;#34;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;s1&#34;&gt;}&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;SMTP 客户端配置：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;服务器：smtp.resend.com&lt;/li&gt;
+&lt;li&gt;端口：465&lt;/li&gt;
+&lt;li&gt;账户：resend&lt;/li&gt;
+&lt;li&gt;密码：API 密钥&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&#34;使用与优化&#34;&gt;使用与优化&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;使用&lt;/strong&gt;：沿用 Gmail 客户端配置模式，将发送邮件的 SMTP 服务配置改为 Resend 的配置参数。更多示例参考 &lt;a href=&#34;https://resend.com/docs/send-with-smtp&#34;&gt;官方帮助文档&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;优化&lt;/strong&gt;：使用 &lt;a href=&#34;https://www.mail-tester.com/&#34;&gt;Mail Tester&lt;/a&gt; 测试邮件的&lt;strong&gt;垃圾邮件匹配度&lt;/strong&gt;，根据建议调整相关配置。&lt;/p&gt;
+&lt;h2 id=&#34;踩坑&#34;&gt;踩坑&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;账号注册问题：使用 GitHub 直接登录后发现无法修改主邮箱，最后只能删除账号，重新使用邮箱注册。账号删除步骤：控制台 -&amp;gt; Settings -&amp;gt; Team -&amp;gt; &lt;code&gt;Delete Team&lt;/code&gt; -&amp;gt; &lt;code&gt;Delete Account&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+      
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:webfeeds="http://webfeeds.org/rss/1.0">
+  <channel>
+    <title>Obsidian_plugins on viazure</title>
+    <link>https://viazure.cc/tags/obsidian_plugins/</link>
+    <description>Recent content in Obsidian_plugins on viazure</description><follow_challenge>
+    <feedId>96027576665585664</feedId>
+    <userId>59414119634735104</userId>
+    </follow_challenge><generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <webfeeds:icon>https://viazure.cc/icons/favicon.svg</webfeeds:icon>
+    <webfeeds:logo>https://viazure.cc/icons/favicon.svg</webfeeds:logo>
+    <image>
+      <url>https://viazure.cc/icons/favicon.svg</url>
+      <title>viazure</title>
+      <link>https://viazure.cc/</link>
+    </image>
+    
+    <lastBuildDate>Sat, 02 Nov 2024 19:58:19 +0800</lastBuildDate><atom:link href="https://viazure.cc/tags/obsidian_plugins/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>我使用的 Obsidian 插件</title>
+      <link>https://viazure.cc/posts/tinkering/obsidian-plugins-i-use/</link>
+      <pubDate>Sat, 02 Nov 2024 19:58:19 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/tinkering/obsidian-plugins-i-use/</guid>
+      
+      <description>&lt;blockquote&gt;
+&lt;p&gt;不要迷失在折腾的过程中。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;我尽量减少第三方插件的安装，只选择那些能够显著提升使用体验的插件。插件名称按字母顺序从 A 到 Z 排列。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/tgrosinger/advanced-tables-obsidian&#34;&gt;Advanced tables&lt;/a&gt;：加强表格编辑。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/trganda/obsidian-attachment-management&#34;&gt;Attachment Management&lt;/a&gt;：附件管理，自定义附件存储位置，自动更新笔记附件链接。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/zolrath/obsidian-auto-link-title&#34;&gt;Auto Link Title&lt;/a&gt;：粘贴网址时自动获取标题。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/TfTHacker/obsidian42-brat&#34;&gt;BRAT&lt;/a&gt;：安装与更新非社区插件市场中的插件。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/ozntel/oz-clear-unused-images-obsidian&#34;&gt;Clear Unused Images&lt;/a&gt;：清理无效的图片及附件。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/blacksmithgu/obsidian-dataview&#34;&gt;Dataview&lt;/a&gt;：查询和整合数据视图。只需要一些简单的脚本就能完成一些笔记的快速整理，还能使用 JavaScript 脚本，超级强大。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Yaozhuwa/easy-typing-obsidian&#34;&gt;Easy Typing&lt;/a&gt;：书写时实时处理文本格式。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/PKM-er/obsidian-editing-toolbar&#34;&gt;Editting Toolbar&lt;/a&gt;：在编辑区增加快捷操作的工具栏。除了常用的命令选项，还可以将自定义命令添加到工具栏中。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Enveloppe/obsidian-enveloppe&#34;&gt;Enveloppe&lt;/a&gt;：将 Obsidian 中的笔记发布为博客文章。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mirnovov/obsidian-homepage&#34;&gt;Homepage&lt;/a&gt; ：设置软件启动时打开的页面。使用 &lt;a href=&#34;https://github.com/TfTHacker/DashboardPlusPlus&#34;&gt;Dashboard++&lt;/a&gt; 模板配合 Dataview 定制好了我的 Dashboard。&lt;/li&gt;
+&lt;li&gt;&lt;del&gt;&lt;a href=&#34;https://github.com/0011000000110010/obsidian-i18n&#34;&gt;I18N&lt;/a&gt;：翻译其他 Obsidian 的插件。开启沉浸式翻译模式时也能用于翻译笔记。&lt;/del&gt; 已弃用，翻译内容较为依赖社区，翻译的更新频率无法与插件本身同步。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/infiolab/infio-copilot&#34;&gt;Infio-Copilot&lt;/a&gt;：类 Cursor 的 AI 辅助工具，具有智能自动补全和交互式对话功能。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/platers/obsidian-linter&#34;&gt;Linter&lt;/a&gt;：格式验证及保存时格式化。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/coddingtonbear/obsidian-local-rest-api&#34;&gt;Local REST API&lt;/a&gt;：通过 REST API 与笔记交互。我主要用于搭配 &lt;a href=&#34;https://www.xmnote.com/&#34;&gt;纸间书摘&lt;/a&gt; 导入读书笔记。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/Kh4f/obsidian-manual-sorting&#34;&gt;Manual Sorting&lt;/a&gt;：拖拽手工排序。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/scambier/obsidian-omnisearch&#34;&gt;Omnisearch&lt;/a&gt;：更智能的搜索，可配合浏览器扩展或篡改猴脚本将搜索结果集成到搜索引擎中。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/OliverBalfour/obsidian-pandoc&#34;&gt;Pandoc Plugin&lt;/a&gt;：可以导出更丰富的文件格式。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/tgrosinger/recent-files-obsidian&#34;&gt;Recent Files&lt;/a&gt;：查看最近浏览过的文件。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/remotely-save/remotely-save&#34;&gt;Remotely Save&lt;/a&gt;：笔记同步。搭配 Cloudflare R2 使用。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/mgmeyers/obsidian-style-settings&#34;&gt;Style Settings&lt;/a&gt;：管理自定义 CSS。推荐一个 &lt;a href=&#34;https://forum-zh.obsidian.md/t/topic/38000&#34;&gt;改善笔记的链接编辑体验&lt;/a&gt; 的 CSS。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/lei-ctyh/obsidian-sync-cnblog&#34;&gt;Sync Cnblog&lt;/a&gt; ：同步 Obsidian 笔记到博客园。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/pjeby/tag-wrangler&#34;&gt;Tag Wrangler&lt;/a&gt;：给标签增加右键菜单，主要用于批量重命名。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/scambier/obsidian-text-extractor&#34;&gt;Text Extractor&lt;/a&gt;：从图像和 PDF 中提取文本，搭配 Omnisearch 使用。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/dragonwocky/obsidian-tray&#34;&gt;Tray&lt;/a&gt;：将 Obsidian 设为开机自启，并能够最小化到系统托盘。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/tadashi-aikawa/obsidian-various-complements-plugin&#34;&gt;Various Complements&lt;/a&gt;：自动填充单词与自定义内容。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/kometenstaub/obsidian-version-history-diff&#34;&gt;Version History Diff&lt;/a&gt;：对比不同版本文本差异。&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://github.com/aidenlx/cm-chs-patch&#34;&gt;Word Splitting for Simplified Chinese in Edit Mode And Vim Mode&lt;/a&gt;：提供结巴分词引擎，与 Omnisearch 插件配合使用。&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+      
+    </item>
+    
+  </channel>
+</rss>
