@@ -1,0 +1,395 @@
+.data-page {
+  .data-label {
+    margin: 1.6rem 0 0.5rem;
+    color: $gray;
+    font-size: $small-font-size;
+    font-weight: $normal-weight;
+    line-height: 1.4;
+  }
+
+  /* 标题链统一跟正文色，避免有 URL 变蓝、没 URL 不变造成斑驳；悬停再显链接蓝。
+     选择器要比主题的 `.page-content a` / `html.dark .page-content a` 更具体。
+     短评里的外链仍走主题的链接蓝。 */
+  .page-content a.card-title,
+  .page-content .rank-title a,
+  .page-content .timeline-title a,
+  .page-content a.want-title,
+  .page-content a.run-page {
+    color: inherit;
+
+    &:link,
+    &:visited {
+      color: inherit;
+    }
+
+    &:hover,
+    &:focus {
+      color: $text-link-blue;
+    }
+  }
+}
+
+/* 次要说明：跟在标签后面，比标签更淡 */
+.data-note {
+  color: $gray;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-meta,
+.data-summary,
+.timeline-time,
+.rank-count,
+.year-count,
+.tab-count,
+.card-date {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.data-meta {
+  display: block;
+  color: $gray;
+  font-size: $small-font-size;
+}
+
+.data-summary {
+  margin: 0.2rem 0 1.2rem;
+}
+
+/* ---------------------------------------------------------------- 折叠块 */
+
+.fold {
+  margin: 0.2rem 0 0.6rem;
+
+  > summary {
+    cursor: pointer;
+    color: $gray;
+    font-size: $small-font-size;
+    list-style: none;
+
+    &::marker,
+    &::-webkit-details-marker {
+      content: none;
+      display: none;
+    }
+
+    &::after {
+      content: " ▸";
+      font-size: 0.7em;
+    }
+  }
+
+  &[open] > summary::after {
+    content: " ▴";
+  }
+
+  .fold-close {
+    display: none;
+  }
+
+  &[open] > summary .fold-open {
+    display: none;
+  }
+
+  &[open] > summary .fold-close {
+    display: inline;
+  }
+}
+
+/* 年份折叠等：打开后按钮沉底 */
+.fold:not(.year-big):not(.board-fold) {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-start;
+  gap: 0.15rem;
+}
+
+/* 歌曲/专辑榜：同一列表，用 :has 控制第 11 条起的显隐 */
+.board:not(:has(> .board-fold[open])) .board-more {
+  display: none;
+}
+
+.board-fold {
+  margin-top: 0.15rem;
+}
+
+/* ------------------------------------------------------------------ 分类页签 */
+
+.tab-radio,
+.period-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  margin: 0.4rem 0 1.4rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid $rule;
+
+  @include media-query($on-mobile) {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+    .tab-label {
+      flex: none;
+      white-space: nowrap;
+    }
+  }
+}
+
+.tab-label {
+  cursor: pointer;
+  color: $gray;
+  font-size: $small-font-size;
+  font-weight: $normal-weight;
+
+  &:hover {
+    color: $text-base-color;
+  }
+}
+
+.tab-count {
+  margin-left: 0.35em;
+  font-size: 0.78em;
+  opacity: 0.65;
+}
+
+.tab-panel {
+  display: none;
+}
+
+/* 选中态：radio 与面板容器同级，用 #id:checked ~ 选到对应面板。
+   必须绑到具体 id，否则任意选中的 radio 会同时打开所有面板。 */
+$media-tabs: "music", "book", "movie", "tv", "game", "podcast", "performance";
+
+@each $tab in $media-tabs {
+  #media-tab-#{$tab}:checked ~ .tab-panels > .tab-panel.panel-#{$tab} {
+    display: block;
+  }
+
+  #media-tab-#{$tab}:checked ~ .tabs > .tab-label[for="media-tab-#{$tab}"] {
+    color: $text-base-color;
+    font-weight: $bold-weight;
+  }
+}
+
+.period-panel {
+  display: none;
+}
+
+$music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
+
+@each $period in $music-periods {
+  #period-#{$period}:checked ~ .period-panels > .period-panel.period-#{$period} {
+    display: block;
+  }
+
+  #period-#{$period}:checked ~ .tabs > .tab-label[for="period-#{$period}"] {
+    color: $text-base-color;
+    font-weight: $bold-weight;
+  }
+}
+
+/* ------------------------------------------------------------------ 深色共用 */
+
+@mixin data-muted {
+  .data-label,
+  .data-meta,
+  .data-note,
+  .year-num,
+  .year-count,
+  .card-date,
+  .card-when,
+  .card-note,
+  .card-note-fold .note-mark,
+  .timeline-time,
+  .rank-no,
+  .rank-sub,
+  .rank-count,
+  .grade-num,
+  .tab-label,
+  .run-sub,
+  .stv-label,
+  .stv-cap,
+  .stv-time,
+  .stv-n .unit,
+  .wd,
+  .legend,
+  .sec > h2,
+  .chips label,
+  .kv .k,
+  .kc,
+  .kd,
+  .kt,
+  .rl,
+  .ry,
+  .run-card time,
+  .run-card .unit,
+  .run-card .extra,
+  .hm-label,
+  .year-dd summary,
+  .year-dd-list label {
+    color: $dark-gray;
+  }
+
+  .stv-n {
+    color: $dark-text;
+  }
+
+  .cd::before {
+    background: $rule-dark;
+  }
+
+  .cd.on::before {
+    background: $dark-text;
+  }
+
+  .tabs,
+  .card,
+  .timeline-item,
+  .wants > li,
+  .run-card,
+  .year-dd-list {
+    border-color: $rule-dark;
+  }
+
+  .run-card:hover,
+  .run-card:focus-within {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .year-dd-list {
+    background: #1a1d24;
+  }
+
+  .year-rule,
+  .rank-bar,
+  .timeline-cover-blank,
+  .timeline-cover.cover-broken,
+  .rank-cover-blank,
+  .rank-cover.cover-broken,
+  .scroll-fade {
+    background: $rule-dark;
+  }
+
+  .scroll-clip::after {
+    background: linear-gradient(to top, rgba(26, 29, 36, 0.85), transparent);
+  }
+
+  .hm:not(.on) {
+    background: $rule-dark;
+  }
+
+  .cd.today b {
+    color: $dark-text;
+  }
+
+  .cd[data-tip]::after,
+  .hm[data-tip]::after {
+    background: #1a1d24;
+    border-color: $rule-dark;
+    color: $dark-text;
+  }
+
+  .sec > h2::after,
+  .records,
+  .rec {
+    border-color: $rule-dark;
+  }
+
+  .rec {
+    border-bottom-color: $rule-dark;
+  }
+
+  .chips label {
+    border-color: transparent;
+  }
+
+  .act-bar .chips label {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .block h4,
+  .rv,
+  .year-dd-list label:hover {
+    color: $dark-text;
+  }
+
+  .card-note-fold[open] .note-mark {
+    color: $dark-text;
+  }
+
+  .page-content a.card-title,
+  .page-content .rank-title a,
+  .page-content .timeline-title a,
+  .page-content a.want-title,
+  .page-content a.run-page {
+    &:hover,
+    &:focus {
+      color: $dark-text-link-blue;
+    }
+  }
+
+  @for $i from 1 through $switcher-slots {
+    .act-switcher:has(.sw-#{$i}:checked) .act-bar .chips > label:nth-of-type(#{$i}) {
+      color: #1a1d24;
+      background: $dark-text;
+    }
+
+    .sport-switcher:has(.sw-#{$i}:checked) > .chips > label:nth-of-type(#{$i}) {
+      color: $dark-text;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .sec:has(.ak-#{$i}-all:checked) .yk-#{$i} .year-dd-list label[for="ak-#{$i}-all"] {
+      color: $dark-text;
+    }
+
+    @each $name, $colour in $workout-kinds {
+      .sec:has(.ak-#{$i}-#{$name}:checked) .yk-#{$i} .year-dd-list label[for="ak-#{$i}-#{$name}"] {
+        color: $dark-text;
+      }
+    }
+  }
+}
+
+@mixin data-tab-active-dark {
+  @each $tab in $media-tabs {
+    #media-tab-#{$tab}:checked ~ .tabs > .tab-label[for="media-tab-#{$tab}"] {
+      color: $dark-text;
+    }
+  }
+
+  @each $period in $music-periods {
+    #period-#{$period}:checked ~ .tabs > .tab-label[for="period-#{$period}"] {
+      color: $dark-text;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) {
+    @include data-muted;
+    @include data-tab-active-dark;
+  }
+}
+
+html.dark {
+  @include data-muted;
+  @include data-tab-active-dark;
+}

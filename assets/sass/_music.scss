@@ -1,0 +1,178 @@
+/* ------------------------------------------------------------ 音乐 · 时间线 */
+
+.timeline {
+  margin: 0 0 0.6rem;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline-item {
+  display: grid;
+  /* 封面 · 标题（含红心） · 歌手专辑 · 时间 */
+  grid-template-columns: 28px minmax(0, 1fr) minmax(0, 1.1fr) 6.2rem;
+  align-items: center;
+  gap: 0.2rem 0.75rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid $rule;
+
+  @include media-query($on-mobile) {
+    grid-template-columns: 28px minmax(0, 1fr) 6rem;
+  }
+}
+
+.timeline-cover {
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.timeline-cover-blank,
+.timeline-cover.cover-broken,
+.rank-cover-blank,
+.rank-cover.cover-broken {
+  display: block;
+  background: $rule;
+  border-radius: 2px;
+}
+
+.timeline-cover.cover-broken,
+.rank-cover.cover-broken {
+  object-fit: none;
+}
+
+.timeline-title,
+.rank-title {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.title-text {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.loved {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.55rem;
+  height: 0.55rem;
+  color: #c45c6a;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.timeline-item .data-meta {
+  min-width: 0;
+  overflow: hidden;
+  margin: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  @include media-query($on-mobile) {
+    grid-column: 2;
+  }
+}
+
+.timeline-time {
+  color: $gray;
+  font-size: 0.78rem;
+  text-align: right;
+  white-space: nowrap;
+
+  @include media-query($on-mobile) {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}
+
+/* -------------------------------------------------------------- 音乐 · 榜单 */
+
+.board {
+  margin-bottom: 1.2rem;
+}
+
+.board-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.board-list li {
+  display: grid;
+  /* 序号 · 封面 · 标题（含红心） · 副行 · 条 · 次数；副行列宽固定，上下段才齐 */
+  grid-template-columns: 1.5rem 28px minmax(0, 1fr) 8rem 2.4rem 3rem;
+  align-items: center;
+  column-gap: 0.6rem;
+  padding: 0.3rem 0;
+}
+
+.rank-no {
+  color: $gray;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.rank-cover {
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
+.rank-cover-blank {
+  display: block;
+}
+
+.rank-sub {
+  min-width: 0;
+  overflow: hidden;
+  color: $gray;
+  font-size: 0.78rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rank-bar {
+  display: block;
+  height: 5px;
+  background: $rule;
+  border-radius: 3px;
+
+  > i {
+    display: block;
+    height: 100%;
+    background: currentColor;
+    border-radius: 3px;
+    opacity: 0.45;
+  }
+}
+
+.rank-count {
+  color: $gray;
+  font-size: 0.78rem;
+  text-align: right;
+}
+
+@include media-query($on-mobile) {
+  .board-list li {
+    grid-template-columns: 1.5rem 28px minmax(0, 1fr) 2.2rem;
+  }
+
+  .rank-bar,
+  .rank-sub {
+    display: none;
+  }
+}

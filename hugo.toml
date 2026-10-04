@@ -10,9 +10,6 @@ defaultContentLanguage = "zh-cn"
 # 全局启用 emoji 支持
 enableEmoji = true
 
-# 忽略加载额外脚本时的错误
-ignoreErrors = ["additional-script-loading-error"]
-
 # 传统方式：主题组件位于 `themes` 目录
 theme = "hugo-blog-awesome"
 
@@ -60,10 +57,20 @@ theme = "hugo-blog-awesome"
       url = "/posts/"
       weight = 20
     [[Languages.zh-cn.menu.main]]
+      pageRef="/workouts"
+      name = "运动"
+      url = "/workouts/"
+      weight = 30
+    [[Languages.zh-cn.menu.main]]
+      pageRef="/media"
+      name = "书影音"
+      url = "/media/"
+      weight = 40
+    [[Languages.zh-cn.menu.main]]
       pageRef="about"
       name = "关于"
       url = "/about/"
-      weight = 30
+      weight = 50
 
   [Languages.zh-cn.params]
     sitename = "viazure"
@@ -76,11 +83,6 @@ theme = "hugo-blog-awesome"
     toc = false # 设置为 false 可全局禁用目录
     tocOpen = false # 设置为 true 可默认展开目录
     goToTop = true # 设置为 false 可禁用"返回顶部"按钮
-     additionalScripts = ["js/custom.js", "js/custom-2.js"]
-    # 将尝试加载 "assets/js/custom.js" 和 "assets/js/custom-2.js"
-    # 你的自定义脚本将被合并到一个 "custom.js" 文件中
-    # 生产环境构建时会进行压缩
-    # "custom.js" 文件会在每个页面的 body 标签结束前加载
     dateFormat = "2006-01-02" # 用于在各个页面显示日期的格式。如果未指定，则使用 "2 Jan 2006" 格式
     # 查看 https://gohugo.io/functions/format/#hugo-date-and-time-templating-reference 获取可用的日期格式
     rssFeedDescription = "full" # 可选项：1) summary（摘要）2) full（全文）

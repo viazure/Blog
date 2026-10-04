@@ -1,0 +1,244 @@
+{{ define "main" }}
+<div class="wrapper post data-page data-wide">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title">{{ .Title }}</h1>
+            </header>
+            <div class="page-content">
+                {{ with hugo.Data.workouts }}
+                {{ with .heatmap }}
+                <div class="switcher heat-switcher">
+                    {{ range $i, $y := .years }}
+                    <input class="sw-radio sw-{{ add $i 1 }}" type="radio" name="heatyear" id="heat-{{ $y.year }}" {{ if eq $i 0 }}checked{{ end }} aria-hidden="true" tabindex="-1">
+                    {{ end }}
+                    <div class="stv-row">
+                        {{ range $i, $y := .years }}
+                        <div class="stv-year sy-{{ add $i 1 }}">
+                            <p class="stv-label">{{ $y.year }} 年</p>
+                            <p class="stv-n">{{ printf "%.0f" $y.km }}<span class="unit">km</span></p>
+                            <p class="stv-cap">{{ $y.hours }} 小时 · {{ $y.n }} 次</p>
+                        </div>
+                        {{ end }}
+                        {{ with .last4 }}
+                        <div class="stv-recent">
+                            <div class="stv-recent-count">
+                                <p class="stv-label">过去 4 周</p>
+                                <p class="stv-n">{{ .recent_n }}<span class="unit">次</span></p>
+                            </div>
+                            <div class="calbox">
+                                <div class="wgrid">
+                                    <div class="whead">
+                                        {{ range slice "一" "二" "三" "四" "五" "六" "日" }}<span class="wd">{{ . }}</span>{{ end }}
+                                    </div>
+                                    {{ range .calendar }}
+                                    <div class="wk">
+                                        {{ range . }}
+                                        <span class="{{ .class }}"{{ if .size }} style="--s:{{ .size }}px"{{ end }}{{ if .title }} data-tip="{{ .date }} · {{ .title }}"{{ end }}><b>{{ .day }}</b></span>
+                                        {{ end }}
+                                    </div>
+                                    {{ end }}
+                                </div>
+                            </div>
+                            <div class="stv-kinds">
+                                {{ with .week_kinds }}
+                                <div class="stv-icons">
+                                    {{ range . }}
+                                    <span class="stv-ico"><i class="dot" style="background:{{ .colour }}"></i><span aria-hidden="true">{{ .icon }}</span></span>
+                                    {{ end }}
+                                </div>
+                                {{ end }}
+                                {{ range .week_bars }}
+                                <div class="stv-kind">
+                                    <span class="stv-bar" style="--w:{{ .pct }}%">
+                                        {{ range .segments }}<i style="width:{{ .pct }}%;background:{{ .colour }}"></i>{{ end }}
+                                    </span>
+                                    <span class="stv-time">{{ .hm }}</span>
+                                </div>
+                                {{ end }}
+                            </div>
+                        </div>
+                        {{ end }}
+                    </div>
+
+                    <div class="heatwrap">
+                        <div class="heat-head">
+                            <p class="hm-label">热力图</p>
+                        </div>
+                        <nav class="heat-chips">
+                            {{ range .years }}<label for="heat-{{ .year }}">{{ .year }}</label>{{ end }}
+                        </nav>
+                        {{ range $i, $y := .years }}
+                        <div class="heat-panel heat-panel-{{ add $i 1 }}">
+                            <div class="hm-months" aria-hidden="true">
+                                {{ range $y.months }}
+                                <span class="hm-month" style="left:{{ .pct }}%">{{ .label }}</span>
+                                {{ end }}
+                            </div>
+                            <div class="heatmap" role="img" aria-label="{{ $y.year }} 年热力图">
+                                {{ range $y.weeks }}
+                                <div class="hm-week">
+                                    {{ range . }}
+                                    <span class="{{ .class }}"{{ with .title }} data-tip="{{ . }}"{{ end }}{{ if .colour }} style="--c:{{ .colour }}{{ with .pie }};--pie:{{ . }}{{ end }}"{{ end }}></span>
+                                    {{ end }}
+                                </div>
+                                {{ end }}
+                            </div>
+                            {{ with $y.legend }}
+                            <div class="legend">
+                                {{ range . }}
+                                <span>
+                                    <span class="ramp" aria-hidden="true">
+                                        {{ range .colours }}<i class="dot" style="background:{{ . }}"></i>{{ end }}
+                                    </span>
+                                    {{ .name }}
+                                </span>
+                                {{ end }}
+                            </div>
+                            {{ end }}
+                        </div>
+                        {{ end }}
+                    </div>
+                </div>
+                {{ end }}
+
+                {{/* 活动：一年一个页签。radio 与 .sw-panel 同级，靠 SCSS 里的 :has() 规则显隐。
+                     类名用下标（sw-1、sw-panel-1）而不是年份值，这样 SCSS 能用 @for 覆盖。 */}}
+                <section class="sec">
+                    <h2>记录</h2>
+                    <div class="switcher act-switcher">
+                        {{ range $i, $g := .groups }}
+                        {{ $yi := add $i 1 }}
+                        <input class="sw-radio ak-{{ $yi }}-all" type="radio" name="actkind-{{ $g.year }}" id="ak-{{ $yi }}-all" checked aria-hidden="true" tabindex="-1">
+                        {{ range $g.kinds }}
+                        <input class="sw-radio ak-{{ $yi }}-{{ .name }}" type="radio" name="actkind-{{ $g.year }}" id="ak-{{ $yi }}-{{ .name }}" aria-hidden="true" tabindex="-1">
+                        {{ end }}
+                        {{ end }}
+                        {{ range $i, $g := .groups }}
+                        <input class="sw-radio sw-{{ add $i 1 }}" type="radio" name="actyear" id="act-{{ $g.year }}" value="{{ $g.year }}" {{ if eq $i 0 }}checked{{ end }} aria-hidden="true" tabindex="-1">
+                        {{ end }}
+                        <div class="act-bar">
+                            <nav class="chips">
+                                {{ range .groups }}<label for="act-{{ .year }}">{{ .year }}</label>{{ end }}
+                            </nav>
+                            {{ range $i, $g := .groups }}
+                            {{ $yi := add $i 1 }}
+                            <div class="kind-tools yk-{{ $yi }}">
+                                <details class="year-dd kind-dd">
+                                    <summary>
+                                        <span class="ak-show ak-show-all">全部</span>
+                                        {{ range $g.kinds }}
+                                        <span class="ak-show ak-show-{{ .name }}">{{ .icon }} {{ .name }}</span>
+                                        {{ end }}
+                                    </summary>
+                                    <div class="year-dd-list">
+                                        <label for="ak-{{ $yi }}-all">全部</label>
+                                        {{ range $g.kinds }}
+                                        <label for="ak-{{ $yi }}-{{ .name }}">{{ .icon }} {{ .name }}</label>
+                                        {{ end }}
+                                    </div>
+                                </details>
+                            </div>
+                            {{ end }}
+                        </div>
+                        {{ range $i, $g := .groups }}
+                        <div class="sw-panel sw-panel-{{ add $i 1 }}">
+                            <div class="run-cards">
+                                {{ range $g.items }}{{ partial "workout-card.html" . }}{{ end }}
+                            </div>
+                        </div>
+                        {{ end }}
+                    </div>
+                </section>
+
+                {{/* 统计：先选运动；中间列年份做成内联下拉 */}}
+                <section class="sec">
+                    <h2>统计</h2>
+                    <div class="switcher sport-switcher">
+                        {{ range $i, $p := .panels }}
+                        <input class="sw-radio sw-{{ add $i 1 }}" type="radio" name="sport" id="sport-{{ $i }}" {{ if eq $i 0 }}checked{{ end }} aria-hidden="true" tabindex="-1">
+                        {{ end }}
+                        <nav class="chips">
+                            {{ range $i, $p := .panels }}<label for="sport-{{ $i }}"><span aria-hidden="true">{{ $p.icon }}</span>{{ $p.bucket }}</label>{{ end }}
+                        </nav>
+                        {{ range $i, $p := .panels }}
+                        {{ $hide_km := eq $p.bucket "其他" }}
+                        <div class="sw-panel sw-panel-{{ add $i 1 }}">
+                            <div class="yearbar">
+                                {{ range $j, $y := $p.yearly }}
+                                <input class="sw-radio yr-{{ add $j 1 }}" type="radio" name="statyear-{{ $i }}" id="statyear-{{ $i }}-{{ $j }}" {{ if eq $j 0 }}checked{{ end }} aria-hidden="true" tabindex="-1">
+                                {{ end }}
+                                <div class="stats{{ if $p.breakdown }} stats-kinds{{ end }}">
+                                    {{ if $p.breakdown }}
+                                    <div class="block">
+                                        <h4>过去 4 周</h4>
+                                        {{ range $p.breakdown }}{{ partial "kind-stat-row.html" (dict "name" .name "icon" .icon "s" .recent) }}{{ end }}
+                                    </div>
+                                    <div class="ymid">
+                                        <details class="year-dd">
+                                            <summary>
+                                                {{ range $j, $y := $p.yearly }}
+                                                <span class="yr-show yr-show-{{ add $j 1 }}">{{ $y.year }} 年</span>
+                                                {{ end }}
+                                            </summary>
+                                            <div class="year-dd-list">
+                                                {{ range $j, $y := $p.yearly }}
+                                                <label for="statyear-{{ $i }}-{{ $j }}">{{ $y.year }}</label>
+                                                {{ end }}
+                                            </div>
+                                        </details>
+                                        {{ range $j, $y := $p.yearly }}
+                                        <div class="yblk yb-{{ add $j 1 }}">
+                                            {{ range $p.breakdown }}
+                                            {{ $ys := index .yearly $j }}
+                                            {{ partial "kind-stat-row.html" (dict "name" .name "icon" .icon "s" $ys) }}
+                                            {{ end }}
+                                        </div>
+                                        {{ end }}
+                                    </div>
+                                    <div class="block">
+                                        <h4>历史总榜</h4>
+                                        {{ range $p.breakdown }}{{ partial "kind-stat-row.html" (dict "name" .name "icon" .icon "s" .all) }}{{ end }}
+                                    </div>
+                                    {{ else }}
+                                    {{ partial "stat-block.html" (dict "title" "过去 4 周" "s" $p.recent "hide_km" $hide_km) }}
+                                    <div class="ymid">
+                                        <details class="year-dd">
+                                            <summary>
+                                                {{ range $j, $y := $p.yearly }}
+                                                <span class="yr-show yr-show-{{ add $j 1 }}">{{ $y.year }} 年</span>
+                                                {{ end }}
+                                            </summary>
+                                            <div class="year-dd-list">
+                                                {{ range $j, $y := $p.yearly }}
+                                                <label for="statyear-{{ $i }}-{{ $j }}">{{ $y.year }}</label>
+                                                {{ end }}
+                                            </div>
+                                        </details>
+                                        {{ range $j, $y := $p.yearly }}
+                                        <div class="yblk yb-{{ add $j 1 }}">{{ partial "stat-block.html" (dict "title" "" "s" $y "hide_km" $hide_km) }}</div>
+                                        {{ end }}
+                                    </div>
+                                    {{ partial "stat-block.html" (dict "title" "历史总榜" "s" $p.all "hide_km" $hide_km) }}
+                                    {{ end }}
+                                </div>
+                            </div>
+                            {{ with $p.records }}
+                            <div class="records">
+                                {{ range . }}
+                                <div class="rec"><span class="rl">{{ .label }}</span><span class="rv">{{ .value }}</span><span class="ry">{{ .year }}</span></div>
+                                {{ end }}
+                            </div>
+                            {{ end }}
+                        </div>
+                        {{ end }}
+                    </div>
+                </section>
+
+                {{ partial "track-script.html" . }}
+                {{ end }}
+            </div>
+        </article>
+    </main>
+</div>
+{{ end }}

@@ -1,0 +1,38 @@
+/* 主题没有边框色变量，本地补两个（浅色用 #e6e8ea，深色用 #262932） */
+$rule: #e6e8ea;
+$rule-dark: #262932;
+$dark-text: #babdc4;
+
+/* 年份 / 运动切换用下标类名（sw-1 …），SCSS 按这个上限生成 :has 规则 */
+$switcher-slots: 20;
+
+/* 按活动名强调色（轨迹 / 卡片 / 热力图），不是四个 bucket */
+$workout-kinds: (
+  "跑步": #f97316,
+  "骑行": #3b82f6,
+  "徒步": #22c55e,
+  "游泳": #14b8a6,
+  "力量训练": #ec4899,
+  "HIIT": #f43f5e,
+  "普拉提": #a855f7,
+  "呼吸": #8b5cf6,
+  "其他": #8b5cf6
+);
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe\ UI\ Variable\ Text, Segoe\ UI, PingFang\ SC, HarmonyOS\ Sans\ SC, MiSans, Source\ Han\ Sans\ SC, Noto\ Sans\ CJK\ SC, Microsoft\ YaHei\ UI, Microsoft\ YaHei, sans-serif;
+  font-optical-sizing: auto;
+}
+
+code,
+kbd,
+pre,
+.highlight,
+.post-updated-at {
+  font-family: ui-monospace, Cascadia\ Code, Cascadia\ Mono, Segoe\ UI\ Mono, Consolas, monospace;
+}
+
+@import "data-shared";
+@import "media";
+@import "music";
+@import "workouts";
