@@ -1,0 +1,277 @@
+/* ------------------------------------------------------------------ 年份 */
+
+.year-head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 1.5rem 0 0.6rem;
+  font-size: 0.82rem;
+  font-weight: $normal-weight;
+  color: $gray;
+}
+
+.year-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.year-rule {
+  flex: 1;
+  height: 1px;
+  background: $rule;
+}
+
+.year-count {
+  color: $gray;
+  font-size: 0.9em;
+}
+
+.year-big {
+  margin-bottom: 0.4rem;
+
+  > summary {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.82rem;
+
+    .year-rule {
+      flex: 1;
+    }
+  }
+}
+
+/* ------------------------------------------------------------ 条目卡网格 */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 1.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @include media-query($on-mobile) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  min-width: 0;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid $rule;
+}
+
+.card-top {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.card-title {
+  flex: 1 1 8rem;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card-date {
+  flex: none;
+  color: $gray;
+  font-size: 0.78rem;
+}
+
+.card-when {
+  display: inline-flex;
+  flex: none;
+  align-items: baseline;
+  gap: 0.35em;
+  color: $gray;
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.card-year {
+  opacity: 0.55;
+  font-size: 0.92em;
+  letter-spacing: 0.02em;
+}
+
+.card-when .card-date {
+  color: inherit;
+  font-size: inherit;
+}
+
+/* 有短评时整行是 summary：收起只占一行（标题旁一个「评」），点开短评落在下方。 */
+.card-note-fold {
+  margin: 0;
+
+  > summary.card-top {
+    cursor: pointer;
+    list-style: none;
+
+    &::marker,
+    &::-webkit-details-marker {
+      content: none;
+      display: none;
+    }
+  }
+
+  .note-mark {
+    flex: none;
+    color: $gray;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+  }
+
+  &[open] .note-mark {
+    color: $text-base-color;
+    opacity: 1;
+  }
+}
+
+.card-note {
+  margin: 0.35rem 0 0;
+  color: $gray;
+  font-size: 0.82rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+
+  a {
+    color: $text-link-blue;
+    text-decoration: none;
+
+    /* 主题给 target=_blank 加了 ↗，短评里多余 */
+    &[target="_blank"]::after {
+      content: none;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ 想看 */
+
+.tabs-sub {
+  margin-top: 1.2rem;
+}
+
+.wants {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem 1.6rem;
+  margin: 0 0 0.6rem;
+  padding: 0;
+  font-size: 0.88rem;
+  list-style: none;
+
+  @include media-query($on-mobile) {
+    grid-template-columns: 1fr;
+  }
+
+  > li {
+    display: flex;
+    min-width: 0;
+    align-items: baseline;
+    gap: 0.45rem;
+    padding: 0.22rem 0;
+    border-bottom: 1px solid $rule;
+  }
+
+  .want-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    color: inherit;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  a.want-title {
+    color: inherit;
+
+    &:link,
+    &:visited {
+      color: inherit;
+    }
+
+    &:hover,
+    &:focus {
+      color: $text-link-blue;
+    }
+  }
+}
+
+/* -------------------------------------------------------------- 长列表限高 */
+
+/* 「在看」和「想看」条目多时限高内部滚动。
+   Windows「始终显示滚动条」会强制经典粗条，::-webkit-scrollbar 细不了。
+   做法：外层 .scroll-clip 裁切，内层把系统滚动条挤出可视区；滚轮仍可用。 */
+.scroll-clip {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 1.6rem;
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.9), transparent);
+  }
+}
+
+.scroll-list {
+  max-height: 26rem;
+  overflow-y: auto;
+  padding-right: 24px;
+  margin-right: -24px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
+/* ------------------------------------------------------------------ 评分点 */
+
+.grade {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.grade-dot {
+  display: inline-flex;
+  gap: 1px;
+}
+
+.grade-dot i {
+  width: 4px;
+  height: 4px;
+  background: currentColor;
+  border-radius: 1px;
+
+  &.on {
+    opacity: 0.9;
+  }
+
+  &.off {
+    opacity: 0.18;
+  }
+}
+
+.grade-num {
+  color: $gray;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}

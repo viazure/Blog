@@ -1,0 +1,23 @@
+<article class="run-card kind-{{ .name }}"{{ with .extra }} title="{{ . }}"{{ end }}>
+    <div class="mark">
+        {{ if .has_trail }}
+        <svg class="rmap" data-i="{{ .idx }}" data-icon="{{ .icon }}" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"></svg>
+        {{ else }}
+        <span class="ico" aria-hidden="true">{{ .icon }}</span>
+        {{ end }}
+    </div>
+    <div class="body">
+        <div class="line1">
+            <span class="name">{{ .label }}</span>
+            <time>{{ substr .date 5 }}{{ with .clock }} {{ . }}{{ end }}</time>
+        </div>
+        <div class="line2">
+            {{ if .km }}
+            <span class="num">{{ printf "%.2f" .km }}</span><span class="unit">km</span>
+            {{ else }}
+            <span class="num">{{ .clock }}</span>
+            {{ end }}
+            {{ with .extra }}<span class="extra">{{ . }}</span>{{ end }}
+        </div>
+    </div>
+</article>

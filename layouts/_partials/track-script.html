@@ -1,0 +1,86 @@
+{{/* Track outlines are drawn on demand.
+
+     static/trails.json holds "index -> normalized point pairs" for every activity
+     that has a usable trace (about 65 KB). Rendering 394 SVG polylines up front
+     costs the same bytes but stalls layout, so each card ships an empty <svg>
+     and      the outline is built once the card comes near the viewport. Cards whose
+     index is missing (or whose JSON never loads) fall back to data-icon.
+
+     Panels start hidden (display:none), so their cards never intersect: a change
+     on any switcher radio redraws whatever became visible. */}}
+<script>
+(function () {
+  var URL = {{ "trails.json" | relURL }};
+  var data = {};
+
+  document.addEventListener('change', function (ev) {
+    var radio = ev.target;
+    if (!radio.matches || !radio.matches('input.sw-radio')) return;
+    var wrap = radio.closest('.yearbar, .act-switcher');
+    if (wrap) wrap.querySelectorAll('.year-dd[open]').forEach(function (dd) {
+      dd.removeAttribute('open');
+    });
+  });
+
+  function draw(svg) {
+    if (svg.firstChild) return;
+    var pts = data[svg.getAttribute('data-i')];
+    if (!pts) {
+      var ico = document.createElement('span');
+      ico.className = 'ico';
+      ico.setAttribute('aria-hidden', 'true');
+      ico.textContent = svg.getAttribute('data-icon') || '•';
+      svg.replaceWith(ico);
+      return;
+    }
+    var pl = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    pl.setAttribute('points', pts);
+    pl.setAttribute('fill', 'none');
+    pl.setAttribute('stroke', 'currentColor');
+    pl.setAttribute('stroke-width', '2.4');
+    pl.setAttribute('stroke-linecap', 'round');
+    pl.setAttribute('stroke-linejoin', 'round');
+    pl.setAttribute('vector-effect', 'non-scaling-stroke');
+    svg.appendChild(pl);
+  }
+
+  function inView(svg) {
+    var box = svg.getBoundingClientRect();
+    return box.width > 0 && box.top < window.innerHeight + 300 && box.bottom > -300;
+  }
+
+  function refresh(scope) {
+    (scope || document).querySelectorAll('svg.rmap[data-i]').forEach(function (svg) {
+      if (inView(svg)) draw(svg);
+    });
+  }
+
+  function start() {
+    var cards = [].slice.call(document.querySelectorAll('svg.rmap[data-i]'));
+    if (!('IntersectionObserver' in window)) { cards.forEach(draw); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        draw(entry.target);
+        io.unobserve(entry.target);
+      });
+    }, { rootMargin: '200px' });
+    cards.forEach(function (card) { io.observe(card); });
+    document.addEventListener('change', function (ev) {
+      var radio = ev.target;
+      if (!radio.matches || !radio.matches('input.sw-radio')) return;
+      var scope = radio.closest('.switcher');
+      if (scope) setTimeout(function () { refresh(scope); }, 0);
+    });
+  }
+
+  function ready(json) {
+    data = (json && json.points) || {};
+    start();
+  }
+  fetch(URL)
+    .then(function (res) { return res.ok ? res.json() : null; })
+    .then(ready)
+    .catch(function () { ready(null); });
+})();
+</script>

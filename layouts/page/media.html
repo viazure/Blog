@@ -1,0 +1,248 @@
+{{ define "main" }}
+{{ $active := .Params.tab | default "" }}
+<div class="wrapper post data-page">
+    <main class="page-content" aria-label="Content">
+        <article>
+            <header class="header">
+                <h1 class="header-title">{{ .Title }}</h1>
+            </header>
+            <div class="page-content">
+                {{ with .Content }}{{ . }}{{ end }}
+
+                {{ $categories := hugo.Data.neodb.categories }}
+                {{ $lastfm := hugo.Data.lastfm }}
+                {{ if or $categories $lastfm }}
+                {{/* 页签用 radio + label：radio 必须与 .tab-panels 同级且在前。
+                     音乐与 NeoDB 分类共用一组 media-tab。 */}}
+                {{ if $lastfm }}
+                <input class="tab-radio" type="radio" name="media-tab" id="media-tab-music" value="music" {{ if eq $active "music" }}checked{{ end }} aria-hidden="true" tabindex="-1">
+                {{ end }}
+                {{ $first := true }}
+                {{ range $categories }}
+                <input class="tab-radio" type="radio" name="media-tab" id="media-tab-{{ .id }}" value="{{ .id }}" {{ if and (ne $active "music") $first }}checked{{ end }} aria-hidden="true" tabindex="-1">
+                {{ $first = false }}
+                {{ end }}
+
+                <nav class="tabs" aria-label="书影音分类">
+                    {{ if $lastfm }}
+                    <label class="tab-label" for="media-tab-music">音乐</label>
+                    {{ end }}
+                    {{ range $categories }}
+                    <label class="tab-label" for="media-tab-{{ .id }}">{{ .label }}</label>
+                    {{ end }}
+                </nav>
+
+                <div class="tab-panels">
+                    {{ if $lastfm }}
+                    <section class="tab-panel panel-music" role="tabpanel" aria-label="音乐">
+                        {{ template "music-panel" $lastfm }}
+                    </section>
+                    {{ end }}
+
+                    {{ range $categories }}
+                    <section class="tab-panel panel-{{ .id }}" role="tabpanel" aria-label="{{ .label }}">
+                        {{ range .groups }}
+
+                        {{ if eq .id "wishlist" }}
+                        <h3 class="year-head">
+                            <span class="year-num">{{ .label }}</span>
+                            <span class="year-rule"></span>
+                            <span class="year-count">{{ .count }}</span>
+                        </h3>
+                        <div class="{{ if gt .count 16 }}scroll-clip{{ end }}">
+                        <ul class="wants{{ if gt .count 16 }} scroll-list{{ end }}">
+                            {{ range .items }}{{ template "media-want" . }}{{ end }}
+                        </ul>
+                        </div>
+
+                        {{ else if .years }}
+                        {{ range .years }}
+                        {{ if .collapsed }}
+                        <details class="fold year-big">
+                            <summary>
+                                <span class="year-num">{{ .label }}</span>
+                                <span class="year-rule"></span>
+                                <span class="year-count">{{ .count }}</span>
+                            </summary>
+                            <ul class="cards">
+                                {{ range .items }}{{ template "media-card" . }}{{ end }}
+                            </ul>
+                        </details>
+                        {{ else }}
+                        <h3 class="year-head">
+                            <span class="year-num">{{ .label }}</span>
+                            <span class="year-rule"></span>
+                            <span class="year-count">{{ .count }}</span>
+                        </h3>
+                        <ul class="cards">
+                            {{ range .items }}{{ template "media-card" . }}{{ end }}
+                        </ul>
+                        {{ end }}
+                        {{ end }}
+
+                        {{ else }}
+                        <h3 class="year-head">
+                            <span class="year-num">{{ .heading }}</span>
+                            <span class="year-rule"></span>
+                            <span class="year-count">{{ .count }}</span>
+                        </h3>
+                        <div class="{{ if gt .count 16 }}scroll-clip{{ end }}">
+                        <ul class="cards{{ if gt .count 16 }} scroll-list{{ end }}">
+                            {{ range .items }}{{ template "media-card" . }}{{ end }}
+                        </ul>
+                        </div>
+                        {{ end }}
+
+                        {{ end }}
+                    </section>
+                    {{ end }}
+                </div>
+                {{ else }}
+                <p>书影音数据还没有同步过来。</p>
+                {{ end }}
+            </div>
+        </article>
+    </main>
+</div>
+{{ end }}
+
+{{ define "music-panel" }}
+{{ with .recent }}
+<h2 class="data-label">最近在听{{ with hugo.Data.lastfm.scrobbled_to }}<span class="data-note"> · 记录至 {{ . }}</span>{{ end }}</h2>
+<ol class="timeline">
+    {{ range . }}
+    <li class="timeline-item">
+        {{ with .image }}
+        <img class="timeline-cover" src="{{ . }}" alt="" width="28" height="28" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.classList.add('cover-broken');this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'">
+        {{ else }}
+        <span class="timeline-cover timeline-cover-blank" aria-hidden="true"></span>
+        {{ end }}
+        <span class="timeline-title">
+            <span class="title-text">{{ if .url }}<a href="{{ .url }}">{{ .track }}</a>{{ else }}{{ .track }}{{ end }}</span>
+            {{ template "loved-mark" .loved }}
+        </span>
+        <span class="data-meta">{{ .artist }}{{ with .album }} · {{ . }}{{ end }}</span>
+        <time class="timeline-time">{{ substr .date 5 }} {{ .time }}</time>
+    </li>
+    {{ end }}
+</ol>
+{{ end }}
+
+{{ with .periods }}
+{{/* 时段 radio 与 .period-panels 同级，放在音乐面板内。 */}}
+{{ $first := true }}
+{{ range . }}
+<input class="period-radio" type="radio" name="music-period" id="period-{{ .id }}" value="{{ .id }}" {{ if $first }}checked{{ end }} aria-hidden="true" tabindex="-1">
+{{ $first = false }}
+{{ end }}
+
+<nav class="tabs tabs-sub" aria-label="统计时段">
+    {{ range . }}
+    <label class="tab-label" for="period-{{ .id }}">{{ .label }}</label>
+    {{ end }}
+</nav>
+
+<div class="period-panels">
+    {{ range . }}
+    <section class="period-panel period-{{ .id }}" aria-label="{{ .label }}">
+        {{ range .boards }}
+        <section class="board">
+            <h2 class="data-label">{{ .label }}</h2>
+            {{/* 同一份列表，展开只切换后半段显隐，避免两套 grid 列宽各算各的。 */}}
+            <ol class="board-list">
+                {{ range $index, $item := .items }}
+                <li{{ if ge $index 10 }} class="board-more"{{ end }}>{{ template "music-row" (dict "index" $index "item" $item) }}</li>
+                {{ end }}
+            </ol>
+            {{ if gt (len .items) 10 }}
+            <details class="fold board-fold">
+                <summary>
+                    <span class="fold-open">展开</span>
+                    <span class="fold-close">收起</span>
+                </summary>
+            </details>
+            {{ end }}
+        </section>
+        {{ end }}
+    </section>
+    {{ end }}
+</div>
+{{ else }}
+<p>音乐榜单还没有同步过来。</p>
+{{ end }}
+{{ end }}
+
+{{ define "music-row" }}
+{{ $item := .item }}
+<span class="rank-no">{{ printf "%02d" (add .index 1) }}</span>
+{{ with $item.cover }}
+<img class="rank-cover" src="{{ . }}" alt="" width="28" height="28" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.classList.add('cover-broken');this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'">
+{{ else }}
+<span class="rank-cover rank-cover-blank" aria-hidden="true"></span>
+{{ end }}
+<span class="rank-title">
+<span class="title-text">{{ if $item.url }}<a href="{{ $item.url }}">{{ $item.title }}</a>{{ else }}{{ $item.title }}{{ end }}</span>
+{{ template "loved-mark" $item.loved }}
+</span>
+{{ with $item.artist }}<span class="rank-sub">{{ . }}</span>{{ end }}
+<span class="rank-bar" aria-hidden="true"><i style="width: {{ $item.share }}%"></i></span>
+<span class="rank-count">{{ $item.playcount }}</span>
+{{ end }}
+
+{{ define "loved-mark" }}
+{{/* 贴在歌名右侧；无红心时不占位。 */}}
+{{- if . -}}
+<span class="loved" title="已标记红心" aria-label="已标记红心">
+<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-6.7-4.35-9.33-8.1C.7 9.7 1.6 5.9 5.05 4.55A5.1 5.1 0 0 1 12 7.1a5.1 5.1 0 0 1 6.95-2.55c3.45 1.35 4.35 5.15 2.38 8.35C18.7 16.65 12 21 12 21z"/></svg>
+</span>
+{{- end -}}
+{{ end }}
+
+{{ define "media-grade" }}
+<span class="grade" title="我的评分 {{ .rating_grade }}/10">
+    <span class="grade-dot" aria-hidden="true">{{ range seq 5 }}<i class="{{ if le . $.rating_filled }}on{{ else }}off{{ end }}"></i>{{ end }}</span>
+    <span class="grade-num">{{ .rating_grade }}</span>
+</span>
+{{ end }}
+
+{{ define "media-date" }}
+{{/* 月日为主；跨年时在左侧加小号年份，避免 YY-MM-DD 挤成一串。 */}}
+{{ with . }}
+{{ $year := substr . 0 4 }}
+<span class="card-when">
+{{- if ne $year (now.Format "2006") -}}
+<span class="card-year">{{ $year }}</span>
+{{- end -}}
+<span class="card-date">{{ substr . 5 }}</span>
+</span>
+{{ end }}
+{{ end }}
+
+{{ define "media-card" }}
+<li class="card">
+    {{ with .note_html }}
+    <details class="card-note-fold">
+        <summary class="card-top">
+            {{ if $.url }}<a class="card-title" href="https://neodb.social{{ $.url }}">{{ $.title }}</a>{{ else }}<span class="card-title">{{ $.title }}</span>{{ end }}
+            <span class="note-mark" aria-hidden="true">评</span>
+            {{ if $.rating_grade }}{{ template "media-grade" $ }}{{ end }}
+            {{ template "media-date" $.created_time }}
+        </summary>
+        <p class="card-note">{{ . | safeHTML }}</p>
+    </details>
+    {{ else }}
+    <div class="card-top">
+        {{ if .url }}<a class="card-title" href="https://neodb.social{{ .url }}">{{ .title }}</a>{{ else }}<span class="card-title">{{ .title }}</span>{{ end }}
+        {{ if .rating_grade }}{{ template "media-grade" . }}{{ end }}
+        {{ template "media-date" .created_time }}
+    </div>
+    {{ end }}
+</li>
+{{ end }}
+
+{{ define "media-want" }}
+<li>
+    {{ if .url }}<a class="want-title" href="https://neodb.social{{ .url }}">{{ .title }}</a>{{ else }}<span class="want-title">{{ .title }}</span>{{ end }}
+    {{ template "media-date" .created_time }}
+</li>
+{{ end }}
