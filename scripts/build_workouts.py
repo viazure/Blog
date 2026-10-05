@@ -38,39 +38,54 @@ TRAIL_BUDGET = 120000  # bytes; keep the whole trail file bounded
 KIND = {
     "running": ("跑步", "跑步", "🏃"),
     "Run": ("跑步", "跑步", "🏃"),
-    # Garmin 把 walking / hiking 记成两种 type，展示都归「徒步」
-    "walking": ("徒步", "其他", "🥾"),
+    "walking": ("走路", "其他", "🚶"),
     "hiking": ("徒步", "其他", "🥾"),
     "swimming": ("游泳", "游泳", "🏊"),
-    "training": ("力量训练", "其他", "💪"),
+    "training": ("自由训练", "其他", "🎽"),
     "Ride": ("骑行", "骑行", "🚴"),
     "cycling": ("骑行", "骑行", "🚴"),
     "biking": ("骑行", "骑行", "🚴"),
-    "fitness_equipment": ("普拉提", "其他", "🤸"),
+    "fitness_equipment": ("健身器械", "其他", "🏋️"),
     "hiit": ("HIIT", "其他", "🔥"),
+    "skateboarding": ("滑板", "其他", "🛹"),
 }
+# Subtype wins over type so training/jump_rope is 跳绳, not 训练.
 SUBTYPE_NAME = {
     "strength_training": "力量训练",
     "pilates": "普拉提",
     "lap_swimming": "游泳",
     "breathing": "呼吸",
+    "jump_rope": "跳绳",
+    "yoga": "瑜伽",
+    "stair_climbing": "爬楼",
 }
 SUBTYPE_ICON = {
     "strength_training": "💪",
     "pilates": "🤸",
     "lap_swimming": "🏊",
-    "breathing": "🧘",
+    "breathing": "🌬️",
+    "jump_rope": "🪢",
+    "yoga": "🧘",
+    "stair_climbing": "🪜",
 }
 # Per-activity colours for tracks / heatmap (bucket chart keeps BUCKETS colours).
 SPORT_COLOURS = {
     "跑步": "#f97316",
     "骑行": "#3b82f6",
-    "徒步": "#22c55e",
+    "徒步": "#16a34a",
+    "走路": "#84cc16",
     "游泳": "#14b8a6",
     "力量训练": "#ec4899",
+    "自由训练": "#db2777",
+    "体感游戏": "#e11d48",
     "HIIT": "#f43f5e",
     "普拉提": "#a855f7",
     "呼吸": "#8b5cf6",
+    "跳绳": "#f59e0b",
+    "瑜伽": "#c026d3",
+    "爬楼": "#78716c",
+    "滑板": "#0ea5e9",
+    "健身器械": "#64748b",
 }
 DEFAULT_SPORT_COLOUR = "#8b5cf6"
 # GitHub-style 4-step palettes (pale → solid), same steps as
@@ -79,16 +94,43 @@ HEAT_PALETTES = {
     "跑步": ("#fed7aa", "#fb923c", "#f97316", "#ea580c"),
     "骑行": ("#bfdbfe", "#60a5fa", "#3b82f6", "#2563eb"),
     "徒步": ("#bbf7d0", "#4ade80", "#22c55e", "#16a34a"),
+    "走路": ("#d9f99d", "#a3e635", "#84cc16", "#65a30d"),
     "游泳": ("#cffafe", "#22d3ee", "#06b6d4", "#0891b2"),
     "力量训练": ("#fce7f3", "#f9a8d4", "#ec4899", "#db2777"),
+    "自由训练": ("#fbcfe8", "#f472b6", "#db2777", "#be185d"),
+    "体感游戏": ("#fecdd3", "#fb7185", "#e11d48", "#be123c"),
     "HIIT": ("#fecdd3", "#fb7185", "#f43f5e", "#e11d48"),
     "普拉提": ("#e9d5ff", "#c084fc", "#a855f7", "#7c3aed"),
     "呼吸": ("#ddd6fe", "#a78bfa", "#8b5cf6", "#7c3aed"),
+    "跳绳": ("#fde68a", "#fbbf24", "#f59e0b", "#d97706"),
+    "瑜伽": ("#f5d0fe", "#e879f9", "#c026d3", "#a21caf"),
+    "爬楼": ("#e7e5e4", "#a8a29e", "#78716c", "#57534e"),
+    "滑板": ("#bae6fd", "#38bdf8", "#0ea5e9", "#0284c7"),
+    "健身器械": ("#e2e8f0", "#94a3b8", "#64748b", "#475569"),
     "其他": ("#e9d5ff", "#c084fc", "#a855f7", "#7c3aed"),
 }
 # Four core buckets + one catch-all, in display order.
 BUCKETS = [("跑步", "🏃", "#f97316"), ("骑行", "🚴", "#3b82f6"),
            ("游泳", "🏊", "#14b8a6"), ("其他", "✨", "#8b5cf6")]
+
+
+def kind_of(activity_type: str, subtype: str, raw_name: str = "") -> tuple[str, str, str]:
+    """Display name, stats bucket, emoji. Subtype is more specific than type."""
+    if subtype in SUBTYPE_NAME:
+        name = SUBTYPE_NAME[subtype]
+        icon = SUBTYPE_ICON.get(subtype, "•")
+        bucket = KIND[activity_type][1] if activity_type in KIND else "其他"
+        if name == "游泳":
+            bucket = "游泳"
+        return name, bucket, icon
+    if activity_type == "training" and subtype in ("", "generic"):
+        lower = raw_name.lower()
+        if "somatosensory" in lower:
+            return "体感游戏", "其他", "🎮"
+        return "自由训练", "其他", "🎽"
+    if activity_type in KIND:
+        return KIND[activity_type]
+    return (activity_type or "运动", "其他", "•")
 
 
 def sport_colour(name: str) -> str:
@@ -529,12 +571,7 @@ def main() -> None:
                 continue
         activity_type = str(entry.get("type") or "")
         subtype = str(entry.get("subtype") or "")
-        if activity_type in KIND:
-            name, bucket, icon = KIND[activity_type]
-        else:
-            name = SUBTYPE_NAME.get(subtype) or activity_type or "运动"
-            bucket = "其他"
-            icon = SUBTYPE_ICON.get(subtype, "•")
+        name, bucket, icon = kind_of(activity_type, subtype, str(entry.get("name") or ""))
         meters = float(entry.get("distance") or 0)
         moving = int(seconds_of(str(entry.get("moving_time") or "")))
         pace = None
@@ -624,7 +661,7 @@ def main() -> None:
         panels.append(panel)
 
     # one activity list per year ("day" is a date object used for grouping only)
-    head_kinds = ("跑步", "骑行", "游泳")
+    head_kinds = ("跑步", "骑行", "游泳", "徒步", "走路")
 
     def kinds_in(items: list[dict]) -> list[dict]:
         seen: dict[str, str] = {}
