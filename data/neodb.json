@@ -1,7 +1,7 @@
 {
   "categories": [
     {
-      "count": 74,
+      "count": 71,
       "groups": [
         {
           "count": 11,
@@ -102,7 +102,7 @@
           "label": ""
         },
         {
-          "count": 16,
+          "count": 15,
           "id": "wishlist",
           "items": [
             {
@@ -128,14 +128,6 @@
               "rating_grade": null,
               "title": "思考, 快与慢",
               "url": "/book/7YR4TBmrSkzTGhiG5IJ3IS"
-            },
-            {
-              "created_time": "2024-12-27",
-              "note": "",
-              "note_html": "",
-              "rating_grade": null,
-              "title": "当我谈跑步时我谈些什么",
-              "url": "/book/4JzM8WZGY0JiUmaSkwx99Y"
             },
             {
               "created_time": "2024-12-27",
@@ -237,17 +229,9 @@
           "label": "想读"
         },
         {
-          "count": 47,
+          "count": 45,
           "id": "complete",
           "items": [
-            {
-              "created_time": "2026-10-02",
-              "note": "",
-              "note_html": "",
-              "rating_grade": null,
-              "title": "花男",
-              "url": "/book/5QPAiEonehdVQNHcOU9upx"
-            },
             {
               "created_time": "2026-09-27",
               "note": "",
@@ -291,15 +275,6 @@
               "rating_grade": 10,
               "title": "乒乓",
               "url": "/book/2oXSJN1dDBdvgwjP1L0NhE"
-            },
-            {
-              "created_time": "2026-08-15",
-              "note": "火出圈之后将其加入了待看，在一次百无聊赖的出差路上一口气看完了，不长，应该不到一个小时，但看完之后兴奋了好久，真的绝了，确实神作，给朋友疯狂安利中",
-              "note_html": "火出圈之后将其加入了待看，在一次百无聊赖的出差路上一口气看完了，不长，应该不到一个小时，但看完之后兴奋了好久，真的绝了，确实神作，给朋友疯狂安利中",
-              "rating_filled": 5,
-              "rating_grade": 10,
-              "title": "さよなら絵梨 [Sayonara Eri]",
-              "url": "/book/1b1CFLGCbXnY067GPMplNE"
             },
             {
               "created_time": "2026-08-14",
@@ -651,16 +626,8 @@
           "years": [
             {
               "collapsed": false,
-              "count": 10,
+              "count": 8,
               "items": [
-                {
-                  "created_time": "2026-10-02",
-                  "note": "",
-                  "note_html": "",
-                  "rating_grade": null,
-                  "title": "花男",
-                  "url": "/book/5QPAiEonehdVQNHcOU9upx"
-                },
                 {
                   "created_time": "2026-09-27",
                   "note": "",
@@ -704,15 +671,6 @@
                   "rating_grade": 10,
                   "title": "乒乓",
                   "url": "/book/2oXSJN1dDBdvgwjP1L0NhE"
-                },
-                {
-                  "created_time": "2026-08-15",
-                  "note": "火出圈之后将其加入了待看，在一次百无聊赖的出差路上一口气看完了，不长，应该不到一个小时，但看完之后兴奋了好久，真的绝了，确实神作，给朋友疯狂安利中",
-                  "note_html": "火出圈之后将其加入了待看，在一次百无聊赖的出差路上一口气看完了，不长，应该不到一个小时，但看完之后兴奋了好久，真的绝了，确实神作，给朋友疯狂安利中",
-                  "rating_filled": 5,
-                  "rating_grade": 10,
-                  "title": "さよなら絵梨 [Sayonara Eri]",
-                  "url": "/book/1b1CFLGCbXnY067GPMplNE"
                 },
                 {
                   "created_time": "2026-08-14",
