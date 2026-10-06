@@ -118,10 +118,10 @@
         <span class="timeline-cover timeline-cover-blank" aria-hidden="true"></span>
         {{ end }}
         <span class="timeline-title">
-            <span class="title-text">{{ if .url }}<a href="{{ .url }}">{{ .track }}</a>{{ else }}{{ .track }}{{ end }}</span>
+            <span class="title-text" title="{{ .track }}">{{ if .url }}<a href="{{ .url }}">{{ .track }}</a>{{ else }}{{ .track }}{{ end }}</span>
             {{ template "loved-mark" .loved }}
         </span>
-        <span class="data-meta">{{ .artist }}{{ with .album }} · {{ . }}{{ end }}</span>
+        <span class="data-meta" title="{{ .artist }}{{ with .album }} · {{ . }}{{ end }}">{{ .artist }}{{ with .album }} · {{ . }}{{ end }}</span>
         <time class="timeline-time">{{ substr .date 5 }} {{ .time }}</time>
     </li>
     {{ end }}
@@ -181,10 +181,10 @@
 <span class="rank-cover rank-cover-blank" aria-hidden="true"></span>
 {{ end }}
 <span class="rank-title">
-<span class="title-text">{{ if $item.url }}<a href="{{ $item.url }}">{{ $item.title }}</a>{{ else }}{{ $item.title }}{{ end }}</span>
+<span class="title-text" title="{{ $item.title }}">{{ if $item.url }}<a href="{{ $item.url }}">{{ $item.title }}</a>{{ else }}{{ $item.title }}{{ end }}</span>
 {{ template "loved-mark" $item.loved }}
 </span>
-{{ with $item.artist }}<span class="rank-sub">{{ . }}</span>{{ end }}
+{{ with $item.artist }}<span class="rank-sub" title="{{ . }}">{{ . }}</span>{{ end }}
 <span class="rank-bar" aria-hidden="true"><i style="width: {{ $item.share }}%"></i></span>
 <span class="rank-count">{{ $item.playcount }}</span>
 {{ end }}
@@ -223,7 +223,7 @@
     {{ with .note_html }}
     <details class="card-note-fold">
         <summary class="card-top">
-            {{ if $.url }}<a class="card-title" href="https://neodb.social{{ $.url }}">{{ $.title }}</a>{{ else }}<span class="card-title">{{ $.title }}</span>{{ end }}
+            {{ if $.url }}<a class="card-title" href="https://neodb.social{{ $.url }}" title="{{ $.title }}">{{ $.title }}</a>{{ else }}<span class="card-title" title="{{ $.title }}">{{ $.title }}</span>{{ end }}
             <span class="note-mark" aria-hidden="true">评</span>
             {{ if $.rating_grade }}{{ template "media-grade" $ }}{{ end }}
             {{ template "media-date" $.created_time }}
@@ -232,7 +232,7 @@
     </details>
     {{ else }}
     <div class="card-top">
-        {{ if .url }}<a class="card-title" href="https://neodb.social{{ .url }}">{{ .title }}</a>{{ else }}<span class="card-title">{{ .title }}</span>{{ end }}
+        {{ if .url }}<a class="card-title" href="https://neodb.social{{ .url }}" title="{{ .title }}">{{ .title }}</a>{{ else }}<span class="card-title" title="{{ .title }}">{{ .title }}</span>{{ end }}
         {{ if .rating_grade }}{{ template "media-grade" . }}{{ end }}
         {{ template "media-date" .created_time }}
     </div>
@@ -242,7 +242,7 @@
 
 {{ define "media-want" }}
 <li>
-    {{ if .url }}<a class="want-title" href="https://neodb.social{{ .url }}">{{ .title }}</a>{{ else }}<span class="want-title">{{ .title }}</span>{{ end }}
+    {{ if .url }}<a class="want-title" href="https://neodb.social{{ .url }}" title="{{ .title }}">{{ .title }}</a>{{ else }}<span class="want-title" title="{{ .title }}">{{ .title }}</span>{{ end }}
     {{ template "media-date" .created_time }}
 </li>
 {{ end }}
