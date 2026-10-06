@@ -1,31 +1,6 @@
-/* 主题没有边框色变量，本地补两个（浅色用 #e6e8ea，深色用 #262932） */
-$rule: #e6e8ea;
-$rule-dark: #262932;
-$dark-text: #babdc4;
-
-/* 年份 / 运动切换用下标类名（sw-1 …），SCSS 按这个上限生成 :has 规则 */
-$switcher-slots: 20;
-
-/* 按活动名强调色（轨迹 / 卡片 / 热力图），不是四个 bucket */
-$workout-kinds: (
-  "跑步": #f97316,
-  "骑行": #3b82f6,
-  "徒步": #16a34a,
-  "走路": #84cc16,
-  "游泳": #14b8a6,
-  "力量训练": #ec4899,
-  "自由训练": #db2777,
-  "体感游戏": #e11d48,
-  "HIIT": #f43f5e,
-  "普拉提": #a855f7,
-  "呼吸": #8b5cf6,
-  "跳绳": #f59e0b,
-  "瑜伽": #c026d3,
-  "爬楼": #78716c,
-  "滑板": #0ea5e9,
-  "健身器械": #64748b,
-  "其他": #8b5cf6
-);
+.header {
+  margin-top: 4em;
+}
 
 body {
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe\ UI\ Variable\ Text, Segoe\ UI, PingFang\ SC, HarmonyOS\ Sans\ SC, MiSans, Source\ Han\ Sans\ SC, Noto\ Sans\ CJK\ SC, Microsoft\ YaHei\ UI, Microsoft\ YaHei, sans-serif;
@@ -39,8 +14,3 @@ pre,
 .post-updated-at {
   font-family: ui-monospace, Cascadia\ Code, Cascadia\ Mono, Segoe\ UI\ Mono, Consolas, monospace;
 }
-
-@import "data-shared";
-@import "media";
-@import "music";
-@import "workouts";

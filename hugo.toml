@@ -13,6 +13,9 @@ enableEmoji = true
 # 传统方式：主题组件位于 `themes` 目录
 theme = "hugo-blog-awesome"
 
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
 [services]
 
   # 要启用 Google Analytics 4 (gtag.js)，请在下面提供 G-MEASUREMENT_ID
@@ -81,8 +84,8 @@ theme = "hugo-blog-awesome"
     description = "生活是体验，拍照是情绪，写作是思考，折腾是？"
     mainSections = ["posts"]
     toc = false # 设置为 false 可全局禁用目录
-    tocOpen = false # 设置为 true 可默认展开目录
     goToTop = true # 设置为 false 可禁用"返回顶部"按钮
+    search = true # 导航栏 Fuse.js 搜索
     dateFormat = "2006-01-02" # 用于在各个页面显示日期的格式。如果未指定，则使用 "2 Jan 2006" 格式
     # 查看 https://gohugo.io/functions/format/#hugo-date-and-time-templating-reference 获取可用的日期格式
     rssFeedDescription = "full" # 可选项：1) summary（摘要）2) full（全文）
