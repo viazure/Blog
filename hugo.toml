@@ -50,30 +50,25 @@ theme = "hugo-blog-awesome"
     [[Languages.zh-cn.menu.main]]
       # pageRef 用于菜单高亮
       # 设置 pageRef 后，设置 url 是可选的；如果找不到页面，它将作为后备选项
-      pageRef="/"
-      name = "首页"
-      url = "/"
-      weight = 10
-    [[Languages.zh-cn.menu.main]]
       pageRef="posts"
       name = "文章"
       url = "/posts/"
-      weight = 20
+      weight = 10
     [[Languages.zh-cn.menu.main]]
       pageRef="/workouts"
       name = "运动"
       url = "/workouts/"
-      weight = 30
+      weight = 20
     [[Languages.zh-cn.menu.main]]
       pageRef="/media"
       name = "书影音"
       url = "/media/"
-      weight = 40
+      weight = 30
     [[Languages.zh-cn.menu.main]]
       pageRef="about"
       name = "关于"
       url = "/about/"
-      weight = 50
+      weight = 40
 
   [Languages.zh-cn.params]
     sitename = "viazure"
