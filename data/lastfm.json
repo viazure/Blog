@@ -2588,55 +2588,63 @@
             {
               "artist": "Various Artists",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
-              "playcount": 33,
+              "playcount": 29,
               "share": 100,
               "title": "古树旋律 Deemo",
               "url": "https://www.last.fm/music/Various+Artists/%E5%8F%A4%E6%A0%91%E6%97%8B%E5%BE%8B+Deemo"
             },
             {
-              "artist": "Various Artists",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/7fcbd3341d2248338794ef7d92a582d6.png",
-              "playcount": 31,
-              "share": 98,
-              "title": "BRIT Awards 2013",
-              "url": "https://www.last.fm/music/Various+Artists/BRIT+Awards+2013"
-            },
-            {
               "artist": "Gareth Coker",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/02dec048f6d118cfcfb6dba694d366df.jpg",
-              "playcount": 29,
-              "share": 96,
+              "playcount": 28,
+              "share": 99,
               "title": "Ori and the Will of the Wisps (Original Soundtrack Recording)",
               "url": "https://www.last.fm/music/Gareth+Coker/Ori+and+the+Will+of+the+Wisps+(Original+Soundtrack+Recording)"
             },
             {
+              "artist": "Various Artists",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/7fcbd3341d2248338794ef7d92a582d6.png",
+              "playcount": 28,
+              "share": 99,
+              "title": "BRIT Awards 2013",
+              "url": "https://www.last.fm/music/Various+Artists/BRIT+Awards+2013"
+            },
+            {
               "artist": "Haruka Nakamura",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/8466771182154b4ff5c1da2bd2a68308.jpg",
-              "playcount": 24,
-              "share": 91,
+              "playcount": 23,
+              "share": 93,
               "title": "劇場アニメ ルックバック オリジナルサウンドトラック",
               "url": "https://www.last.fm/music/Haruka+Nakamura/%E5%8A%87%E5%A0%B4%E3%82%A2%E3%83%8B%E3%83%A1+%E3%83%AB%E3%83%83%E3%82%AF%E3%83%90%E3%83%83%E3%82%AF+%E3%82%AA%E3%83%AA%E3%82%B8%E3%83%8A%E3%83%AB%E3%82%B5%E3%82%A6%E3%83%B3%E3%83%89%E3%83%88%E3%83%A9%E3%83%83%E3%82%AF"
             },
             {
-              "artist": "立山秋航",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/e62bf1c0992cb7ad140aa0a54d2b29ae.jpg",
-              "playcount": 24,
-              "share": 91,
-              "title": "TVアニメ『ゆるキャン△ SEASON２』オリジナル・サウンドトラック",
-              "url": "https://www.last.fm/music/%E7%AB%8B%E5%B1%B1%E7%A7%8B%E8%88%AA/TV%E3%82%A2%E3%83%8B%E3%83%A1%E3%80%8E%E3%82%86%E3%82%8B%E3%82%AD%E3%83%A3%E3%83%B3%E2%96%B3+SEASON%EF%BC%92%E3%80%8F%E3%82%AA%E3%83%AA%E3%82%B8%E3%83%8A%E3%83%AB%E3%83%BB%E3%82%B5%E3%82%A6%E3%83%B3%E3%83%89%E3%83%88%E3%83%A9%E3%83%83%E3%82%AF"
-            },
-            {
               "artist": "王力宏",
               "cover": "https://coverartarchive.org/release/c684adb3-272e-4dc7-b7fc-833c17b60458/front-250",
-              "playcount": 22,
-              "share": 88,
+              "playcount": 20,
+              "share": 89,
               "title": "2006王力宏盖世英雄Live Concert演唱会全纪录",
               "url": "https://www.last.fm/music/%E7%8E%8B%E5%8A%9B%E5%AE%8F/2006%E7%8E%8B%E5%8A%9B%E5%AE%8F%E7%9B%96%E4%B8%96%E8%8B%B1%E9%9B%84Live+Concert%E6%BC%94%E5%94%B1%E4%BC%9A%E5%85%A8%E7%BA%AA%E5%BD%95"
             },
             {
               "artist": "立山秋航",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/e62bf1c0992cb7ad140aa0a54d2b29ae.jpg",
+              "playcount": 20,
+              "share": 89,
+              "title": "TVアニメ『ゆるキャン△ SEASON２』オリジナル・サウンドトラック",
+              "url": "https://www.last.fm/music/%E7%AB%8B%E5%B1%B1%E7%A7%8B%E8%88%AA/TV%E3%82%A2%E3%83%8B%E3%83%A1%E3%80%8E%E3%82%86%E3%82%8B%E3%82%AD%E3%83%A3%E3%83%B3%E2%96%B3+SEASON%EF%BC%92%E3%80%8F%E3%82%AA%E3%83%AA%E3%82%B8%E3%83%8A%E3%83%AB%E3%83%BB%E3%82%B5%E3%82%A6%E3%83%B3%E3%83%89%E3%83%88%E3%83%A9%E3%83%83%E3%82%AF"
+            },
+            {
+              "artist": "RADWIMPS",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/82fbe9452117ea67512e385ee9c2bc65.jpg",
+              "playcount": 19,
+              "share": 87,
+              "title": "天気の子",
+              "url": "https://www.last.fm/music/RADWIMPS/%E5%A4%A9%E6%B0%97%E3%81%AE%E5%AD%90"
+            },
+            {
+              "artist": "立山秋航",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/1f100665b208dd6a6a4667366f381abf.jpg",
-              "playcount": 21,
+              "playcount": 19,
               "share": 87,
               "title": "TVアニメ「ゆるキャン△」オリジナル・サウンドトラック",
               "url": "https://www.last.fm/music/%E7%AB%8B%E5%B1%B1%E7%A7%8B%E8%88%AA/TV%E3%82%A2%E3%83%8B%E3%83%A1%E3%80%8C%E3%82%86%E3%82%8B%E3%82%AD%E3%83%A3%E3%83%B3%E2%96%B3%E3%80%8D%E3%82%AA%E3%83%AA%E3%82%B8%E3%83%8A%E3%83%AB%E3%83%BB%E3%82%B5%E3%82%A6%E3%83%B3%E3%83%89%E3%83%88%E3%83%A9%E3%83%83%E3%82%AF"
@@ -2644,135 +2652,127 @@
             {
               "artist": "蔡健雅",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/50be9bc45791449e9b5427258ffdc371.jpg",
-              "playcount": 21,
+              "playcount": 19,
               "share": 87,
               "title": "T-time 新歌+精选",
               "url": "https://www.last.fm/music/%E8%94%A1%E5%81%A5%E9%9B%85/T-time+%E6%96%B0%E6%AD%8C%252B%E7%B2%BE%E9%80%89"
             },
             {
-              "artist": "RADWIMPS",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/82fbe9452117ea67512e385ee9c2bc65.jpg",
-              "playcount": 20,
-              "share": 86,
-              "title": "天気の子",
-              "url": "https://www.last.fm/music/RADWIMPS/%E5%A4%A9%E6%B0%97%E3%81%AE%E5%AD%90"
-            },
-            {
               "artist": "Jun Sung",
               "cover": "https://coverartarchive.org/release/96e5b32f-91d7-4642-89e9-2274ffbd29df/front-250",
-              "playcount": 19,
+              "playcount": 17,
               "share": 84,
               "title": "Violin Cover",
               "url": "https://www.last.fm/music/Jun+Sung/Violin+Cover"
             },
             {
+              "artist": "张震岳",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/a09ea9913a1a4e37ac031497a4501ad4.jpg",
+              "playcount": 17,
+              "share": 84,
+              "title": "Ok",
+              "url": "https://www.last.fm/music/%E5%BC%A0%E9%9C%87%E5%B2%B3/Ok"
+            },
+            {
               "artist": "The Witcher 3",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
-              "playcount": 19,
-              "share": 84,
+              "playcount": 16,
+              "share": 82,
               "title": "The Witcher 3: Wild Hunt - Official Soundtrack",
               "url": "https://www.last.fm/music/The+Witcher+3/The+Witcher+3:+Wild+Hunt+-+Official+Soundtrack"
             },
             {
+              "artist": "Various Artists",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "playcount": 15,
+              "share": 80,
+              "title": "IN YA MELLOW TONE official bootleg vol.3",
+              "url": "https://www.last.fm/music/Various+Artists/IN+YA+MELLOW+TONE+official+bootleg+vol.3"
+            },
+            {
+              "artist": "RADWIMPS",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/8bf2a579c67a77861d6e04dc13d354b3.jpg",
+              "playcount": 14,
+              "share": 78,
+              "title": "君の名は。",
+              "url": "https://www.last.fm/music/RADWIMPS/%E5%90%9B%E3%81%AE%E5%90%8D%E3%81%AF%E3%80%82"
+            },
+            {
+              "artist": "孫燕姿",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/94855b8910dc5dffbb4395ecb0372101.png",
+              "playcount": 14,
+              "share": 78,
+              "title": "My Story,Your Song 经典全记录",
+              "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/My+Story,Your+Song+%E7%BB%8F%E5%85%B8%E5%85%A8%E8%AE%B0%E5%BD%95"
+            },
+            {
+              "artist": "Christopher Larkin",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/2d3d5ca22d4059374b3edcb5f319bd53.jpg",
+              "playcount": 13,
+              "share": 76,
+              "title": "Hollow Knight (Original Soundtrack)",
+              "url": "https://www.last.fm/music/Christopher+Larkin/Hollow+Knight+(Original+Soundtrack)"
+            },
+            {
               "artist": "周杰倫",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/bdd6dfb0dc4f4233c2abea47ec2aebd0.jpg",
-              "playcount": 17,
-              "share": 81,
+              "playcount": 13,
+              "share": 76,
               "title": "不能说的秘密 电影原声带",
               "url": "https://www.last.fm/music/%E5%91%A8%E6%9D%B0%E5%80%AB/%E4%B8%8D%E8%83%BD%E8%AF%B4%E7%9A%84%E7%A7%98%E5%AF%86+%E7%94%B5%E5%BD%B1%E5%8E%9F%E5%A3%B0%E5%B8%A6"
             },
             {
               "artist": "孫燕姿",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/94855b8910dc5dffbb4395ecb0372101.png",
-              "playcount": 17,
-              "share": 81,
-              "title": "My Story,Your Song 经典全记录",
-              "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/My+Story,Your+Song+%E7%BB%8F%E5%85%B8%E5%85%A8%E8%AE%B0%E5%BD%95"
-            },
-            {
-              "artist": "张震岳",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/a09ea9913a1a4e37ac031497a4501ad4.jpg",
-              "playcount": 17,
-              "share": 81,
-              "title": "Ok",
-              "url": "https://www.last.fm/music/%E5%BC%A0%E9%9C%87%E5%B2%B3/Ok"
-            },
-            {
-              "artist": "RADWIMPS",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/8bf2a579c67a77861d6e04dc13d354b3.jpg",
-              "playcount": 16,
-              "share": 79,
-              "title": "君の名は。",
-              "url": "https://www.last.fm/music/RADWIMPS/%E5%90%9B%E3%81%AE%E5%90%8D%E3%81%AF%E3%80%82"
-            },
-            {
-              "artist": "Various Artists",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
-              "playcount": 16,
-              "share": 79,
-              "title": "IN YA MELLOW TONE official bootleg vol.3",
-              "url": "https://www.last.fm/music/Various+Artists/IN+YA+MELLOW+TONE+official+bootleg+vol.3"
-            },
-            {
-              "artist": "孫燕姿",
               "cover": "https://coverartarchive.org/release/6a30c7cb-0ede-47bf-aae1-c65d0d2b32ca/front-250",
-              "playcount": 16,
-              "share": 79,
+              "playcount": 13,
+              "share": 76,
               "title": "经典全纪录(主打精华版)",
               "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/%E7%BB%8F%E5%85%B8%E5%85%A8%E7%BA%AA%E5%BD%95(%E4%B8%BB%E6%89%93%E7%B2%BE%E5%8D%8E%E7%89%88)"
-            },
-            {
-              "artist": "Christopher Larkin",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/2d3d5ca22d4059374b3edcb5f319bd53.jpg",
-              "playcount": 14,
-              "share": 75,
-              "title": "Hollow Knight (Original Soundtrack)",
-              "url": "https://www.last.fm/music/Christopher+Larkin/Hollow+Knight+(Original+Soundtrack)"
-            },
-            {
-              "artist": "Coldplay",
-              "cover": "https://coverartarchive.org/release/f8a0aa00-02dd-4dc6-899f-a95344d469fe/front-250",
-              "playcount": 14,
-              "share": 75,
-              "title": "The Singles 1999-2006 Boxset",
-              "url": "https://www.last.fm/music/Coldplay/The+Singles+1999-2006+Boxset"
-            },
-            {
-              "artist": "五月天",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/a9cde7dd35c74d90a26208615f4f5042.jpg",
-              "playcount": 14,
-              "share": 75,
-              "title": "知足 最真杰作选",
-              "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/%E7%9F%A5%E8%B6%B3+%E6%9C%80%E7%9C%9F%E6%9D%B0%E4%BD%9C%E9%80%89"
-            },
-            {
-              "artist": "Various Artists",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
-              "playcount": 13,
-              "share": 73,
-              "title": "In Ya Mellow Tone Official Bootleg Vol.2 Mixed by Robert de Boron",
-              "url": "https://www.last.fm/music/Various+Artists/In+Ya+Mellow+Tone+Official+Bootleg+Vol.2+Mixed+by+Robert+de+Boron"
             },
             {
               "artist": "张震岳",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/0730ea5c25bf2d4dea3f1d279ad7dbb4.jpg",
               "playcount": 13,
-              "share": 73,
+              "share": 76,
               "title": "跟着感觉走",
               "url": "https://www.last.fm/music/%E5%BC%A0%E9%9C%87%E5%B2%B3/%E8%B7%9F%E7%9D%80%E6%84%9F%E8%A7%89%E8%B5%B0"
             },
             {
-              "artist": "八三夭",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
-              "playcount": 12,
+              "artist": "Coldplay",
+              "cover": "https://coverartarchive.org/release/f8a0aa00-02dd-4dc6-899f-a95344d469fe/front-250",
+              "playcount": 11,
               "share": 71,
-              "title": "颠倒世界",
-              "url": "https://www.last.fm/music/%E5%85%AB%E4%B8%89%E5%A4%AD/%E9%A2%A0%E5%80%92%E4%B8%96%E7%95%8C"
+              "title": "The Singles 1999-2006 Boxset",
+              "url": "https://www.last.fm/music/Coldplay/The+Singles+1999-2006+Boxset"
+            },
+            {
+              "artist": "Various Artists",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "playcount": 11,
+              "share": 71,
+              "title": "In Ya Mellow Tone Official Bootleg Vol.2 Mixed by Robert de Boron",
+              "url": "https://www.last.fm/music/Various+Artists/In+Ya+Mellow+Tone+Official+Bootleg+Vol.2+Mixed+by+Robert+de+Boron"
+            },
+            {
+              "artist": "告五人",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/cf9538d4b4dc657ed0ca629c818a486d.jpg",
+              "playcount": 11,
+              "share": 71,
+              "title": "我肯定在几百年前就说过爱你",
+              "url": "https://www.last.fm/music/%E5%91%8A%E4%BA%94%E4%BA%BA/%E6%88%91%E8%82%AF%E5%AE%9A%E5%9C%A8%E5%87%A0%E7%99%BE%E5%B9%B4%E5%89%8D%E5%B0%B1%E8%AF%B4%E8%BF%87%E7%88%B1%E4%BD%A0"
+            },
+            {
+              "artist": "方大同",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/50818398ced81b5ac067c7636e305fb0.jpg",
+              "playcount": 11,
+              "share": 71,
+              "title": "危险世界",
+              "url": "https://www.last.fm/music/%E6%96%B9%E5%A4%A7%E5%90%8C/%E5%8D%B1%E9%99%A9%E4%B8%96%E7%95%8C"
             },
             {
               "artist": "方大同",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/d5c21208b640496aa38e2688b8a85622.jpg",
-              "playcount": 12,
+              "playcount": 11,
               "share": 71,
               "title": "爱 爱 爱",
               "url": "https://www.last.fm/music/%E6%96%B9%E5%A4%A7%E5%90%8C/%E7%88%B1+%E7%88%B1+%E7%88%B1"
@@ -2780,210 +2780,210 @@
             {
               "artist": "陶喆",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/e6860a8e46eef90c0293735120280a8d.jpg",
-              "playcount": 12,
+              "playcount": 11,
               "share": 71,
               "title": "黑色柳丁",
               "url": "https://www.last.fm/music/%E9%99%B6%E5%96%86/%E9%BB%91%E8%89%B2%E6%9F%B3%E4%B8%81"
             },
             {
-              "artist": "Gareth Coker",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/d6bcaf1ee4cf4726c771d463ff3e9206.png",
-              "playcount": 11,
-              "share": 69,
-              "title": "Ori and the Blind Forest (Original Soundtrack)",
-              "url": "https://www.last.fm/music/Gareth+Coker/Ori+and+the+Blind+Forest+(Original+Soundtrack)"
-            },
-            {
               "artist": "Hans Zimmer;Richard Harvey",
               "cover": "https://coverartarchive.org/release/2b3742e2-5a5d-43da-b7bb-cfb9641dc5d5/front-250",
-              "playcount": 11,
-              "share": 69,
+              "playcount": 10,
+              "share": 68,
               "title": "Le Petit Prince (la Bande Originale du Film)",
               "url": "https://www.last.fm/music/Hans+Zimmer;Richard+Harvey/Le+Petit+Prince+(la+Bande+Originale+du+Film)"
             },
             {
               "artist": "July",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/261f5ad2efb87383ecc76f1cfb11d3f4.jpg",
-              "playcount": 11,
-              "share": 69,
+              "playcount": 10,
+              "share": 68,
               "title": "Beyond The Memory",
               "url": "https://www.last.fm/music/July/Beyond+The+Memory"
             },
             {
               "artist": "The Witcher 3",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
-              "playcount": 11,
-              "share": 69,
+              "playcount": 10,
+              "share": 68,
               "title": "The Witcher 3: Wild Hunt - Blood and Wine (Official Soundtrack)",
               "url": "https://www.last.fm/music/The+Witcher+3/The+Witcher+3:+Wild+Hunt+-+Blood+and+Wine+(Official+Soundtrack)"
             },
             {
               "artist": "Voez",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/ec389a0f7d4ff68a95f34dfa7cfd2f6a.jpg",
-              "playcount": 11,
-              "share": 69,
+              "playcount": 10,
+              "share": 68,
               "title": "Voez (Original Soundtrack), Vol.1",
               "url": "https://www.last.fm/music/Voez/Voez+(Original+Soundtrack),+Vol.1"
             },
             {
               "artist": "五月天",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/1a767157586fab35e31e72370b0d3957.jpg",
-              "playcount": 11,
-              "share": 69,
-              "title": "爱情万岁",
-              "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/%E7%88%B1%E6%83%85%E4%B8%87%E5%B2%81"
-            },
-            {
-              "artist": "五月天",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/34ca2f2f224a4da3b4b98b4f60eb7db3.jpg",
-              "playcount": 11,
-              "share": 69,
-              "title": "神的孩子都在跳舞",
-              "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/%E7%A5%9E%E7%9A%84%E5%AD%A9%E5%AD%90%E9%83%BD%E5%9C%A8%E8%B7%B3%E8%88%9E"
-            },
-            {
-              "artist": "告五人",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/cf9538d4b4dc657ed0ca629c818a486d.jpg",
-              "playcount": 11,
-              "share": 69,
-              "title": "我肯定在几百年前就说过爱你",
-              "url": "https://www.last.fm/music/%E5%91%8A%E4%BA%94%E4%BA%BA/%E6%88%91%E8%82%AF%E5%AE%9A%E5%9C%A8%E5%87%A0%E7%99%BE%E5%B9%B4%E5%89%8D%E5%B0%B1%E8%AF%B4%E8%BF%87%E7%88%B1%E4%BD%A0"
-            },
-            {
-              "artist": "孫燕姿",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/54b6ec3dada2a9ffbeecc49ce60eddd7.jpg",
-              "playcount": 11,
-              "share": 69,
-              "title": "Start 世界巡回演唱会",
-              "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/Start+%E4%B8%96%E7%95%8C%E5%B7%A1%E5%9B%9E%E6%BC%94%E5%94%B1%E4%BC%9A"
-            },
-            {
-              "artist": "方大同",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/50818398ced81b5ac067c7636e305fb0.jpg",
-              "playcount": 11,
-              "share": 69,
-              "title": "危险世界",
-              "url": "https://www.last.fm/music/%E6%96%B9%E5%A4%A7%E5%90%8C/%E5%8D%B1%E9%99%A9%E4%B8%96%E7%95%8C"
-            },
-            {
-              "artist": "五月天",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/9ba02e3321f84931be6bdf180f80b227.jpg",
               "playcount": 10,
-              "share": 66,
+              "share": 68,
               "title": "为爱而生",
               "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/%E4%B8%BA%E7%88%B1%E8%80%8C%E7%94%9F"
             },
             {
               "artist": "五月天",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/c2f6f4b8781c4c9c9cb6d70d6d4e3930.jpg",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/a9cde7dd35c74d90a26208615f4f5042.jpg",
               "playcount": 10,
-              "share": 66,
+              "share": 68,
+              "title": "知足 最真杰作选",
+              "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/%E7%9F%A5%E8%B6%B3+%E6%9C%80%E7%9C%9F%E6%9D%B0%E4%BD%9C%E9%80%89"
+            },
+            {
+              "artist": "八三夭",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "playcount": 10,
+              "share": 68,
+              "title": "颠倒世界",
+              "url": "https://www.last.fm/music/%E5%85%AB%E4%B8%89%E5%A4%AD/%E9%A2%A0%E5%80%92%E4%B8%96%E7%95%8C"
+            },
+            {
+              "artist": "孫燕姿",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/54b6ec3dada2a9ffbeecc49ce60eddd7.jpg",
+              "playcount": 10,
+              "share": 68,
+              "title": "Start 世界巡回演唱会",
+              "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/Start+%E4%B8%96%E7%95%8C%E5%B7%A1%E5%9B%9E%E6%BC%94%E5%94%B1%E4%BC%9A"
+            },
+            {
+              "artist": "郭顶",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/50fe4b5a9e88df4a296854de8e3083ec.jpg",
+              "playcount": 10,
+              "share": 68,
+              "title": "飞行器的执行周期",
+              "url": "https://www.last.fm/music/%E9%83%AD%E9%A1%B6/%E9%A3%9E%E8%A1%8C%E5%99%A8%E7%9A%84%E6%89%A7%E8%A1%8C%E5%91%A8%E6%9C%9F"
+            },
+            {
+              "artist": "Gareth Coker",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/d6bcaf1ee4cf4726c771d463ff3e9206.png",
+              "playcount": 9,
+              "share": 65,
+              "title": "Ori and the Blind Forest (Original Soundtrack)",
+              "url": "https://www.last.fm/music/Gareth+Coker/Ori+and+the+Blind+Forest+(Original+Soundtrack)"
+            },
+            {
+              "artist": "五月天",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/6ff3f4a750da41c893e4ee6bb0eb641a.jpg",
+              "playcount": 9,
+              "share": 65,
+              "title": "后青春期的诗",
+              "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/%E5%90%8E%E9%9D%92%E6%98%A5%E6%9C%9F%E7%9A%84%E8%AF%97"
+            },
+            {
+              "artist": "五月天",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/c2f6f4b8781c4c9c9cb6d70d6d4e3930.jpg",
+              "playcount": 9,
+              "share": 65,
               "title": "我们是五月天",
               "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/%E6%88%91%E4%BB%AC%E6%98%AF%E4%BA%94%E6%9C%88%E5%A4%A9"
             },
             {
               "artist": "五月天",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/1a767157586fab35e31e72370b0d3957.jpg",
+              "playcount": 9,
+              "share": 65,
+              "title": "爱情万岁",
+              "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/%E7%88%B1%E6%83%85%E4%B8%87%E5%B2%81"
+            },
+            {
+              "artist": "五月天",
               "cover": "https://coverartarchive.org/release/c921a8d7-227d-4bf9-8f5d-b67560d08952/front-250",
-              "playcount": 10,
-              "share": 66,
+              "playcount": 9,
+              "share": 65,
               "title": "追梦3DNA 电影原声音乐",
               "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/%E8%BF%BD%E6%A2%A63DNA+%E7%94%B5%E5%BD%B1%E5%8E%9F%E5%A3%B0%E9%9F%B3%E4%B9%90"
             },
             {
               "artist": "孫燕姿",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/9c532f68457bea94190530f06935bd1a.png",
-              "playcount": 10,
-              "share": 66,
+              "playcount": 9,
+              "share": 65,
               "title": "The moment",
               "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/The+moment"
             },
             {
-              "artist": "蔡健雅",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/c0c62c7f260a42d69b955c67827841ef.jpg",
-              "playcount": 10,
-              "share": 66,
-              "title": "记念",
-              "url": "https://www.last.fm/music/%E8%94%A1%E5%81%A5%E9%9B%85/%E8%AE%B0%E5%BF%B5"
-            },
-            {
-              "artist": "郭顶",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/50fe4b5a9e88df4a296854de8e3083ec.jpg",
-              "playcount": 10,
-              "share": 66,
-              "title": "飞行器的执行周期",
-              "url": "https://www.last.fm/music/%E9%83%AD%E9%A1%B6/%E9%A3%9E%E8%A1%8C%E5%99%A8%E7%9A%84%E6%89%A7%E8%A1%8C%E5%91%A8%E6%9C%9F"
-            },
-            {
               "artist": "Adele",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/6284ff0b115c46d1b28ae96e6d5b4099.jpg",
-              "playcount": 9,
-              "share": 63,
+              "playcount": 8,
+              "share": 62,
               "title": "25",
               "url": "https://www.last.fm/music/Adele/25"
             },
             {
-              "artist": "Coldplay",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/38761f082a1b02ac535785fafc7964cc.jpg",
-              "playcount": 9,
-              "share": 63,
-              "title": "X&Y",
-              "url": "https://www.last.fm/music/Coldplay/X&Y"
-            },
-            {
               "artist": "Molotov Cocktail Piano",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/f6588d60c5db41eec15b267d9133ffa1.jpg",
-              "playcount": 9,
-              "share": 63,
+              "playcount": 8,
+              "share": 62,
               "title": "Tribute to Taylor Swift: 1989",
               "url": "https://www.last.fm/music/Molotov+Cocktail+Piano/Tribute+to+Taylor+Swift:+1989"
-            },
-            {
-              "artist": "Taylor Swift",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/0f9273de2f24b56e0de171d9192c2434.jpg",
-              "playcount": 9,
-              "share": 63,
-              "title": "Taylor Swift",
-              "url": "https://www.last.fm/music/Taylor+Swift/Taylor+Swift"
-            },
-            {
-              "artist": "五月天",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/6ff3f4a750da41c893e4ee6bb0eb641a.jpg",
-              "playcount": 9,
-              "share": 63,
-              "title": "后青春期的诗",
-              "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/%E5%90%8E%E9%9D%92%E6%98%A5%E6%9C%9F%E7%9A%84%E8%AF%97"
-            },
-            {
-              "artist": "林俊傑",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/51baad1b0e863319aeb99010e1efcec3.jpg",
-              "playcount": 9,
-              "share": 63,
-              "title": "乐行者",
-              "url": "https://www.last.fm/music/%E6%9E%97%E4%BF%8A%E5%82%91/%E4%B9%90%E8%A1%8C%E8%80%85"
-            },
-            {
-              "artist": "AC娘本体",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
-              "playcount": 8,
-              "share": 59,
-              "title": "首届AC梦想演唱会",
-              "url": "https://www.last.fm/music/AC%E5%A8%98%E6%9C%AC%E4%BD%93/%E9%A6%96%E5%B1%8AAC%E6%A2%A6%E6%83%B3%E6%BC%94%E5%94%B1%E4%BC%9A"
-            },
-            {
-              "artist": "Lana Del Rey",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/577a16cbdd48ecf3e520f2f005c40e5e.jpg",
-              "playcount": 8,
-              "share": 59,
-              "title": "Born to Die (Deluxe Version)",
-              "url": "https://www.last.fm/music/Lana+Del+Rey/Born+to+Die+(Deluxe+Version)"
             },
             {
               "artist": "Tank",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/0b291b8b3fcb4c3ba12cd233998f90a8.jpg",
               "playcount": 8,
-              "share": 59,
+              "share": 62,
               "title": "Fighting!生存之道",
               "url": "https://www.last.fm/music/Tank/Fighting!%E7%94%9F%E5%AD%98%E4%B9%8B%E9%81%93"
+            },
+            {
+              "artist": "Taylor Swift",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/26231d970024c9fc9256af185959b0d6.jpg",
+              "playcount": 8,
+              "share": 62,
+              "title": "Red (Deluxe Edition)",
+              "url": "https://www.last.fm/music/Taylor+Swift/Red+(Deluxe+Edition)"
+            },
+            {
+              "artist": "五月天",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/bef5cab3443b42848a6b2b4cd7362bca.jpg",
+              "playcount": 8,
+              "share": 62,
+              "title": "时光机",
+              "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/%E6%97%B6%E5%85%89%E6%9C%BA"
+            },
+            {
+              "artist": "五月天",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/2e521f0ca3154f07afc0554f4f95cd60.jpg",
+              "playcount": 8,
+              "share": 62,
+              "title": "离开地球表面 Jump!",
+              "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/%E7%A6%BB%E5%BC%80%E5%9C%B0%E7%90%83%E8%A1%A8%E9%9D%A2+Jump!"
+            },
+            {
+              "artist": "林俊傑",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/51baad1b0e863319aeb99010e1efcec3.jpg",
+              "playcount": 8,
+              "share": 62,
+              "title": "乐行者",
+              "url": "https://www.last.fm/music/%E6%9E%97%E4%BF%8A%E5%82%91/%E4%B9%90%E8%A1%8C%E8%80%85"
+            },
+            {
+              "artist": "林俊杰",
+              "cover": "https://coverartarchive.org/release/5e72c674-df5c-42b4-adc5-0d9fb5e9a04a/front-250",
+              "playcount": 8,
+              "share": 62,
+              "title": "和自己对话 From M.E. To Myself",
+              "url": "https://www.last.fm/music/%E6%9E%97%E4%BF%8A%E6%9D%B0/%E5%92%8C%E8%87%AA%E5%B7%B1%E5%AF%B9%E8%AF%9D+From+M.E.+To+Myself"
+            },
+            {
+              "artist": "林宥嘉",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/236bdb8471e2d6fb21ddcdfe305155ba.jpg",
+              "playcount": 8,
+              "share": 62,
+              "title": "神秘嘉宾",
+              "url": "https://www.last.fm/music/%E6%9E%97%E5%AE%A5%E5%98%89/%E7%A5%9E%E7%A7%98%E5%98%89%E5%AE%BE"
+            },
+            {
+              "artist": "蔡健雅",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/c0c62c7f260a42d69b955c67827841ef.jpg",
+              "playcount": 8,
+              "share": 62,
+              "title": "记念",
+              "url": "https://www.last.fm/music/%E8%94%A1%E5%81%A5%E9%9B%85/%E8%AE%B0%E5%BF%B5"
             }
           ],
           "label": "专辑"
@@ -2991,15 +2991,6 @@
         {
           "id": "tracks",
           "items": [
-            {
-              "artist": "蔡健雅",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/50be9bc45791449e9b5427258ffdc371.jpg",
-              "loved": false,
-              "playcount": 5,
-              "share": 100,
-              "title": "可以爱你真好",
-              "url": "https://www.last.fm/music/%E8%94%A1%E5%81%A5%E9%9B%85/_/%E5%8F%AF%E4%BB%A5%E7%88%B1%E4%BD%A0%E7%9C%9F%E5%A5%BD"
-            },
             {
               "artist": "陶喆",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/7d138f697957886fcb656b204c75b1d9.jpg",
@@ -3028,24 +3019,6 @@
               "url": "https://www.last.fm/music/Haruka+Nakamura/_/%E7%A9%BA%E6%83%B3%E3%81%AE%E5%BD%BC%E6%96%B9%E3%81%A7"
             },
             {
-              "artist": "Rabpit",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/1a11ef730f6d4695c6064a9bc105c6f8.jpg",
-              "loved": false,
-              "playcount": 4,
-              "share": 86,
-              "title": "Saika",
-              "url": "https://www.last.fm/music/Rabpit/_/Saika"
-            },
-            {
-              "artist": "五月天",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/1a767157586fab35e31e72370b0d3957.jpg",
-              "loved": true,
-              "playcount": 4,
-              "share": 86,
-              "title": "温柔",
-              "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/_/%E6%B8%A9%E6%9F%94"
-            },
-            {
               "artist": "五月天",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/c2f6f4b8781c4c9c9cb6d70d6d4e3930.jpg",
               "loved": false,
@@ -3053,15 +3026,6 @@
               "share": 86,
               "title": "爱情的模样",
               "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/_/%E7%88%B1%E6%83%85%E7%9A%84%E6%A8%A1%E6%A0%B7"
-            },
-            {
-              "artist": "卢广仲",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
-              "loved": true,
-              "playcount": 4,
-              "share": 86,
-              "title": "几分之几",
-              "url": "https://www.last.fm/music/%E5%8D%A2%E5%B9%BF%E4%BB%B2/_/%E5%87%A0%E5%88%86%E4%B9%8B%E5%87%A0"
             },
             {
               "artist": "卢广仲",
@@ -3109,6 +3073,15 @@
               "url": "https://www.last.fm/music/%E5%AE%87%E5%A4%9A%E7%94%B0%E3%83%92%E3%82%AB%E3%83%AB/_/First+Love"
             },
             {
+              "artist": "蔡健雅",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/50be9bc45791449e9b5427258ffdc371.jpg",
+              "loved": false,
+              "playcount": 4,
+              "share": 86,
+              "title": "可以爱你真好",
+              "url": "https://www.last.fm/music/%E8%94%A1%E5%81%A5%E9%9B%85/_/%E5%8F%AF%E4%BB%A5%E7%88%B1%E4%BD%A0%E7%9C%9F%E5%A5%BD"
+            },
+            {
               "artist": "郭顶",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/50fe4b5a9e88df4a296854de8e3083ec.jpg",
               "loved": true,
@@ -3125,15 +3098,6 @@
               "share": 68,
               "title": "Just Like You",
               "url": "https://www.last.fm/music/acro+jazz+laboratories/_/Just+Like+You"
-            },
-            {
-              "artist": "Baker",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/8558766f132a496786983cbb7a95a10f.png",
-              "loved": false,
-              "playcount": 3,
-              "share": 68,
-              "title": "Waiting for Love",
-              "url": "https://www.last.fm/music/Baker/_/Waiting+for+Love"
             },
             {
               "artist": "Birdy",
@@ -3190,15 +3154,6 @@
               "url": "https://www.last.fm/music/Haruka+Nakamura/_/%E3%82%B9%E3%82%B1%E3%83%83%E3%83%81%E3%83%96%E3%83%83%E3%82%AF"
             },
             {
-              "artist": "Haruka Nakamura",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/8466771182154b4ff5c1da2bd2a68308.jpg",
-              "loved": false,
-              "playcount": 3,
-              "share": 68,
-              "title": "流れゆく季節",
-              "url": "https://www.last.fm/music/Haruka+Nakamura/_/%E6%B5%81%E3%82%8C%E3%82%86%E3%81%8F%E5%AD%A3%E7%AF%80"
-            },
-            {
               "artist": "Iris",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/b26b958aace04e5dba00d92e7fa0bb79.jpg",
               "loved": false,
@@ -3224,15 +3179,6 @@
               "share": 68,
               "title": "Stronger (What Doesn't Kill You)",
               "url": "https://www.last.fm/music/Kelly+Clarkson/_/Stronger+(What+Doesn%27t+Kill+You)"
-            },
-            {
-              "artist": "Lana Del Rey",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/577a16cbdd48ecf3e520f2f005c40e5e.jpg",
-              "loved": false,
-              "playcount": 3,
-              "share": 68,
-              "title": "Million Dollar Man",
-              "url": "https://www.last.fm/music/Lana+Del+Rey/_/Million+Dollar+Man"
             },
             {
               "artist": "Marcin Przybyłowicz",
@@ -3262,6 +3208,15 @@
               "url": "https://www.last.fm/music/Nico+&+Vinz/_/Am+I+Wrong"
             },
             {
+              "artist": "Rabpit",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/1a11ef730f6d4695c6064a9bc105c6f8.jpg",
+              "loved": false,
+              "playcount": 3,
+              "share": 68,
+              "title": "Saika",
+              "url": "https://www.last.fm/music/Rabpit/_/Saika"
+            },
+            {
               "artist": "Radiohead",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/ab1f41d1988899ed1398a2819d17c3fd.png",
               "loved": true,
@@ -3287,15 +3242,6 @@
               "share": 68,
               "title": "御宅訪問",
               "url": "https://www.last.fm/music/RADWIMPS/_/%E5%BE%A1%E5%AE%85%E8%A8%AA%E5%95%8F"
-            },
-            {
-              "artist": "Rökkurró",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/444aa1f7e3c14a17abf66e5a6dc8051e.jpg",
-              "loved": false,
-              "playcount": 3,
-              "share": 68,
-              "title": "Svanur",
-              "url": "https://www.last.fm/music/R%C3%B6kkurr%C3%B3/_/Svanur"
             },
             {
               "artist": "Tank",
@@ -3326,21 +3272,21 @@
             },
             {
               "artist": "五月天",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/a9cde7dd35c74d90a26208615f4f5042.jpg",
-              "loved": false,
-              "playcount": 3,
-              "share": 68,
-              "title": "听不到",
-              "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/_/%E5%90%AC%E4%B8%8D%E5%88%B0"
-            },
-            {
-              "artist": "五月天",
               "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/34ca2f2f224a4da3b4b98b4f60eb7db3.jpg",
               "loved": false,
               "playcount": 3,
               "share": 68,
               "title": "孙悟空",
               "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/_/%E5%AD%99%E6%82%9F%E7%A9%BA"
+            },
+            {
+              "artist": "五月天",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/1a767157586fab35e31e72370b0d3957.jpg",
+              "loved": true,
+              "playcount": 3,
+              "share": 68,
+              "title": "温柔",
+              "url": "https://www.last.fm/music/%E4%BA%94%E6%9C%88%E5%A4%A9/_/%E6%B8%A9%E6%9F%94"
             },
             {
               "artist": "五月天",
@@ -3379,22 +3325,13 @@
               "url": "https://www.last.fm/music/%E5%85%AB%E4%B8%89%E5%A4%AD/_/%E8%80%81%E5%A6%88%E6%9C%80%E5%B8%B8%E8%AF%B4%E7%9A%84%E5%8D%81%E5%8F%A5%E8%AF%9D"
             },
             {
-              "artist": "八三夭",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/7b17dce15f6878ae17bbd4fb078092cd.jpg",
-              "loved": false,
+              "artist": "卢广仲",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "loved": true,
               "playcount": 3,
               "share": 68,
-              "title": "钢铁人",
-              "url": "https://www.last.fm/music/%E5%85%AB%E4%B8%89%E5%A4%AD/_/%E9%92%A2%E9%93%81%E4%BA%BA"
-            },
-            {
-              "artist": "南拳媽媽",
-              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/34449106b9fb445aa4650dcbecec692d.jpg",
-              "loved": false,
-              "playcount": 3,
-              "share": 68,
-              "title": "笑着流泪",
-              "url": "https://www.last.fm/music/%E5%8D%97%E6%8B%B3%E5%AA%BD%E5%AA%BD/_/%E7%AC%91%E7%9D%80%E6%B5%81%E6%B3%AA"
+              "title": "几分之几",
+              "url": "https://www.last.fm/music/%E5%8D%A2%E5%B9%BF%E4%BB%B2/_/%E5%87%A0%E5%88%86%E4%B9%8B%E5%87%A0"
             },
             {
               "artist": "吉森信",
@@ -3440,6 +3377,69 @@
               "share": 68,
               "title": "新世界",
               "url": "https://www.last.fm/music/%E5%91%8A%E4%BA%94%E4%BA%BA;%E9%98%BF%E7%88%86/_/%E6%96%B0%E4%B8%96%E7%95%8C"
+            },
+            {
+              "artist": "孫燕姿",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/840ddbedc5485a28dd569dee7f48daf8.jpg",
+              "loved": false,
+              "playcount": 3,
+              "share": 68,
+              "title": "尚好的青春",
+              "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/_/%E5%B0%9A%E5%A5%BD%E7%9A%84%E9%9D%92%E6%98%A5"
+            },
+            {
+              "artist": "孫燕姿",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/a71fd7af79f40a2b2bc7d3c199ea1505.jpg",
+              "loved": false,
+              "playcount": 3,
+              "share": 68,
+              "title": "我不难过",
+              "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/_/%E6%88%91%E4%B8%8D%E9%9A%BE%E8%BF%87"
+            },
+            {
+              "artist": "孫燕姿",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/63f20ddc9eca262c110393df550385ea.jpg",
+              "loved": false,
+              "playcount": 3,
+              "share": 68,
+              "title": "绿光",
+              "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/_/%E7%BB%BF%E5%85%89"
+            },
+            {
+              "artist": "孫燕姿",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/94855b8910dc5dffbb4395ecb0372101.png",
+              "loved": true,
+              "playcount": 3,
+              "share": 68,
+              "title": "遇见",
+              "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/_/%E9%81%87%E8%A7%81"
+            },
+            {
+              "artist": "孫燕姿",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/300x300/94855b8910dc5dffbb4395ecb0372101.png",
+              "loved": false,
+              "playcount": 3,
+              "share": 68,
+              "title": "雨天",
+              "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/_/%E9%9B%A8%E5%A4%A9"
+            },
+            {
+              "artist": "家家",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "loved": true,
+              "playcount": 3,
+              "share": 68,
+              "title": "知足(3DNA 追梦版)",
+              "url": "https://www.last.fm/music/%E5%AE%B6%E5%AE%B6/_/%E7%9F%A5%E8%B6%B3(3DNA+%E8%BF%BD%E6%A2%A6%E7%89%88)"
+            },
+            {
+              "artist": "小林信一",
+              "cover": "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "loved": false,
+              "playcount": 3,
+              "share": 68,
+              "title": "Sairai",
+              "url": "https://www.last.fm/music/%E5%B0%8F%E6%9E%97%E4%BF%A1%E4%B8%80/_/Sairai"
             }
           ],
           "label": "歌曲"

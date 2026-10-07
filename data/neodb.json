@@ -1,7 +1,7 @@
 {
   "categories": [
     {
-      "count": 71,
+      "count": 72,
       "groups": [
         {
           "count": 11,
@@ -229,9 +229,17 @@
           "label": "想读"
         },
         {
-          "count": 45,
+          "count": 46,
           "id": "complete",
           "items": [
+            {
+              "created_time": "2026-10-06",
+              "note": "",
+              "note_html": "",
+              "rating_grade": null,
+              "title": "花男",
+              "url": "/book/5QPAiEonehdVQNHcOU9upx"
+            },
             {
               "created_time": "2026-09-27",
               "note": "",
@@ -626,8 +634,16 @@
           "years": [
             {
               "collapsed": false,
-              "count": 8,
+              "count": 9,
               "items": [
+                {
+                  "created_time": "2026-10-06",
+                  "note": "",
+                  "note_html": "",
+                  "rating_grade": null,
+                  "title": "花男",
+                  "url": "/book/5QPAiEonehdVQNHcOU9upx"
+                },
                 {
                   "created_time": "2026-09-27",
                   "note": "",
@@ -1074,7 +1090,7 @@
           "label": ""
         },
         {
-          "count": 74,
+          "count": 73,
           "id": "wishlist",
           "items": [
             {
@@ -1084,14 +1100,6 @@
               "rating_grade": null,
               "title": "欢迎来龙餐馆",
               "url": "/movie/1XoBZ5O9oQ9AWkdguAbKs5"
-            },
-            {
-              "created_time": "2026-05-27",
-              "note": "",
-              "note_html": "",
-              "rating_grade": null,
-              "title": "给阿嬷的情书",
-              "url": "/movie/5JNEBpERf9S91oDZcnipiz"
             },
             {
               "created_time": "2026-02-10",
@@ -1673,9 +1681,18 @@
           "label": "想看"
         },
         {
-          "count": 255,
+          "count": 256,
           "id": "complete",
           "items": [
+            {
+              "created_time": "2026-10-07",
+              "note": "情绪像坐在公园草坪上不时拂来的微风，缓缓的。眼泪似风裹挟着沙子，一阵一阵迷了眼睛。",
+              "note_html": "情绪像坐在公园草坪上不时拂来的微风，缓缓的。眼泪似风裹挟着沙子，一阵一阵迷了眼睛。",
+              "rating_filled": 5,
+              "rating_grade": 10,
+              "title": "给阿嬷的情书",
+              "url": "/movie/5JNEBpERf9S91oDZcnipiz"
+            },
             {
               "created_time": "2026-09-06",
               "note": "燃！",
@@ -3763,8 +3780,17 @@
           "years": [
             {
               "collapsed": false,
-              "count": 8,
+              "count": 9,
               "items": [
+                {
+                  "created_time": "2026-10-07",
+                  "note": "情绪像坐在公园草坪上不时拂来的微风，缓缓的。眼泪似风裹挟着沙子，一阵一阵迷了眼睛。",
+                  "note_html": "情绪像坐在公园草坪上不时拂来的微风，缓缓的。眼泪似风裹挟着沙子，一阵一阵迷了眼睛。",
+                  "rating_filled": 5,
+                  "rating_grade": 10,
+                  "title": "给阿嬷的情书",
+                  "url": "/movie/5JNEBpERf9S91oDZcnipiz"
+                },
                 {
                   "created_time": "2026-09-06",
                   "note": "燃！",
