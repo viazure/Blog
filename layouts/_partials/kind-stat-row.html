@@ -1,8 +1,0 @@
-{{/* One row in the 「其他」 per-kind stats list. Expects name, icon, s. */}}
-{{ $s := .s }}
-<div class="krow">
-    <span class="kn"><span aria-hidden="true">{{ .icon }}</span>{{ .name }}</span>
-    <span class="kc">{{ $s.n }} 次</span>
-    {{ if gt $s.km 0.05 }}<span class="kd">{{ printf "%.1f km" $s.km }}</span>{{ end }}
-    <span class="kt">{{ $s.hours }} 小时</span>
-</div>

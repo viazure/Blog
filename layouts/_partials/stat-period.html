@@ -1,0 +1,26 @@
+{{/* Three stat columns: 过去 4 周 / year dropdown / 历史总榜.
+     Expects i (panel index for year radio ids), p (recent, yearly, all), hide_km. */}}
+{{ $i := .i }}
+{{ $p := .p }}
+{{ $hide_km := .hide_km }}
+<div class="stats">
+    {{ partial "stat-block.html" (dict "title" "过去 4 周" "s" $p.recent "hide_km" $hide_km) }}
+    <div class="ymid">
+        <details class="year-dd">
+            <summary>
+                {{ range $j, $y := $p.yearly }}
+                <span class="yr-show yr-show-{{ add $j 1 }}">{{ $y.year }} 年</span>
+                {{ end }}
+            </summary>
+            <div class="year-dd-list">
+                {{ range $j, $y := $p.yearly }}
+                <label for="statyear-{{ $i }}-{{ $j }}" tabindex="0">{{ $y.year }}</label>
+                {{ end }}
+            </div>
+        </details>
+        {{ range $j, $y := $p.yearly }}
+        <div class="yblk yb-{{ add $j 1 }}">{{ partial "stat-block.html" (dict "title" "" "s" $y "hide_km" $hide_km) }}</div>
+        {{ end }}
+    </div>
+    {{ partial "stat-block.html" (dict "title" "历史总榜" "s" $p.all "hide_km" $hide_km) }}
+</div>

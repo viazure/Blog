@@ -158,8 +158,14 @@
   font-size: $small-font-size;
   font-weight: $normal-weight;
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     color: $text-base-color;
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
   }
 }
 
@@ -233,9 +239,6 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
   .sec > h2,
   .chips label,
   .kv .k,
-  .kc,
-  .kd,
-  .kt,
   .rl,
   .ry,
   .run-card time,
@@ -268,8 +271,7 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
     border-color: $rule-dark;
   }
 
-  .run-card:hover,
-  .run-card:focus-within {
+  .run-card:hover {
     background: rgba(255, 255, 255, 0.04);
   }
 
@@ -330,8 +332,19 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
     border-bottom-color: $rule-dark;
   }
 
-  .chips label {
+  .chips label,
+  .sport-more > summary {
     border-color: transparent;
+    color: $dark-gray;
+  }
+
+  .sport-more > summary:hover {
+    color: $dark-text;
+  }
+
+  .sport-switcher:has(.rest:checked) > .chips > .sport-more > summary {
+    color: $dark-text;
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .act-bar .chips label {
@@ -365,9 +378,13 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
       background: $dark-text;
     }
 
-    .sport-switcher:has(.sw-#{$i}:checked) > .chips > label:nth-of-type(#{$i}) {
+    .sport-switcher:has(.sw-#{$i}:checked) > .chips > .chip-#{$i} {
       color: $dark-text;
       background: rgba(255, 255, 255, 0.08);
+    }
+
+    .sport-switcher:has(.sw-#{$i}:checked) .sport-more .year-dd-list label[for="sport-#{$i - 1}"] {
+      color: $dark-text;
     }
 
     .sec:has(.ak-#{$i}-all:checked) .yk-#{$i} .year-dd-list label[for="ak-#{$i}-all"] {

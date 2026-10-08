@@ -8,7 +8,7 @@
     {{ if not $hide_km }}
     <div class="kv"><span class="k">距离</span><span class="v">{{ printf "%.1f km" $s.km }}</span></div>
     {{ end }}
-    <div class="kv"><span class="k">时间</span><span class="v">{{ $s.hours }} 小时</span></div>
+    <div class="kv"><span class="k">时间</span><span class="v">{{ $s.hours }}</span></div>
     {{ if or (not $hide_km) (gt $s.elev 0) }}
     <div class="kv"><span class="k">累计爬升</span><span class="v">{{ printf "%.0f m" $s.elev }}</span></div>
     {{ end }}

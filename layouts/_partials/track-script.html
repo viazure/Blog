@@ -4,7 +4,7 @@
      that has a usable trace (about 65 KB). Rendering 394 SVG polylines up front
      costs the same bytes but stalls layout, so each card ships an empty <svg>
      and      the outline is built once the card comes near the viewport. Cards whose
-     index is missing (or whose JSON never loads) fall back to data-icon.
+     index is missing (or whose JSON never loads) fall back to data-glyph.
 
      Panels start hidden (display:none), so their cards never intersect: a change
      on any switcher radio redraws whatever became visible. */}}
@@ -16,10 +16,25 @@
   document.addEventListener('change', function (ev) {
     var radio = ev.target;
     if (!radio.matches || !radio.matches('input.sw-radio')) return;
-    var wrap = radio.closest('.yearbar, .act-switcher');
-    if (wrap) wrap.querySelectorAll('.year-dd[open]').forEach(function (dd) {
+    var wrap = radio.closest('.yearbar, .act-switcher, .sport-switcher');
+    if (wrap) wrap.querySelectorAll('.year-dd[open], .sport-more[open]').forEach(function (dd) {
       dd.removeAttribute('open');
     });
+  });
+
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    document.querySelectorAll('details.year-dd[open], details.sport-more[open]').forEach(function (dd) {
+      if (!dd.contains(t)) dd.removeAttribute('open');
+    });
+    var sum = t.closest && t.closest('.sport-more > summary');
+    if (!sum) return;
+    var dd = sum.parentElement;
+    if (dd.open) return;
+    var switcher = dd.closest('.sport-switcher');
+    if (!switcher || switcher.querySelector('.rest:checked')) return;
+    var idle = switcher.querySelector('input.rest');
+    if (idle) idle.checked = true;
   });
 
   function draw(svg) {
@@ -29,7 +44,7 @@
       var ico = document.createElement('span');
       ico.className = 'ico';
       ico.setAttribute('aria-hidden', 'true');
-      ico.textContent = svg.getAttribute('data-icon') || '•';
+      ico.textContent = svg.getAttribute('data-glyph') || '•';
       svg.replaceWith(ico);
       return;
     }

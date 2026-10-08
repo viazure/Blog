@@ -1,0 +1,15 @@
+{{/* Radios stay aria-hidden; visible labels get tabindex=0 in the templates.
+     Enter/Space activate the associated radio the same way a mouse click does. */}}
+<script>
+(function () {
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'Enter' && ev.key !== ' ') return;
+    var el = ev.target;
+    if (!el || el.tagName !== 'LABEL') return;
+    if (!el.matches('.tab-label, .chips label, .heat-chips label, .year-dd-list label')) return;
+    ev.preventDefault();
+    el.click();
+    el.focus();
+  });
+})();
+</script>
