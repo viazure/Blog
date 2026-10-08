@@ -1,26 +1,46 @@
-<article class="run-card kind-{{ .name }}"{{ with .tip_rows }} tabindex="0"{{ end }}>
+{{ $c := . }}
+{{ $tips := slice }}
+{{ if gt $c.km 0 }}
+{{ $tips = $tips | append (dict "k" "距离" "v" (printf "%.2f km" $c.km)) }}
+{{ end }}
+{{ with $c.clock }}
+{{ $dur := . }}
+{{ with $c.clock_unit }}{{ $dur = printf "%s %s" $dur . }}{{ end }}
+{{ $tips = $tips | append (dict "k" "时长" "v" $dur) }}
+{{ end }}
+{{ if $c.pace }}
+{{ $total := int $c.pace }}
+{{ $tips = $tips | append (dict "k" "配速" "v" (printf "%d:%02d /km" (div $total 60) (mod $total 60))) }}
+{{ end }}
+{{ if $c.hr }}
+{{ $tips = $tips | append (dict "k" "心率" "v" (printf "%.0f bpm" $c.hr)) }}
+{{ end }}
+{{ if $c.elev }}
+{{ $tips = $tips | append (dict "k" "爬升" "v" (printf "%.0f m" $c.elev)) }}
+{{ end }}
+<article class="run-card kind-{{ $c.name }}">
     <div class="mark">
-        {{ if .has_trail }}
-        <svg class="rmap" data-i="{{ .idx }}" data-icon="{{ .icon }}" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"></svg>
+        {{ if $c.has_trail }}
+        <svg class="rmap" data-i="{{ $c.idx }}" data-glyph="{{ $c.icon }}" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"></svg>
         {{ else }}
-        <span class="ico" aria-hidden="true">{{ .icon }}</span>
+        <span class="ico" aria-hidden="true">{{ $c.icon }}</span>
         {{ end }}
     </div>
     <div class="body">
         <div class="line1">
-            <span class="name">{{ .label }}</span>
-            <time>{{ substr .date 5 }}</time>
+            <span class="name">{{ $c.label }}</span>
+            <time>{{ substr $c.date 5 }}</time>
         </div>
         <div class="line2">
-            {{ if .km }}
-            <span class="num">{{ printf "%.2f" .km }}</span><span class="unit">km</span>
+            {{ if $c.km }}
+            <span class="num">{{ printf "%.2f" $c.km }}</span><span class="unit">km</span>
             {{ else }}
-            <span class="num">{{ .clock }}</span>{{ with .clock_unit }}<span class="unit">{{ . }}</span>{{ end }}
+            <span class="num">{{ $c.clock }}</span>{{ with $c.clock_unit }}<span class="unit">{{ . }}</span>{{ end }}
             {{ end }}
-            {{ with .extra }}<span class="extra">{{ . }}</span>{{ end }}
+            {{ with $c.extra }}<span class="extra">{{ . }}</span>{{ end }}
         </div>
     </div>
-    {{ with .tip_rows }}
+    {{ with $tips }}
     <div class="card-tip" aria-hidden="true">
         {{ range . }}
         <span class="card-tip-k">{{ .k }}</span><span class="card-tip-v">{{ .v }}</span>

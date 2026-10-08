@@ -322,6 +322,11 @@
 
 .heatwrap {
   margin-top: 2rem;
+
+  @include media-query($on-mobile) {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 .heat-head {
@@ -358,8 +363,14 @@
     font-variant-numeric: tabular-nums;
     cursor: pointer;
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
       color: $text-base-color;
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
     }
   }
 }
@@ -588,8 +599,14 @@
     font-size: 0.8rem;
     cursor: pointer;
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
       color: $text-base-color;
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
     }
   }
 
@@ -607,6 +624,75 @@
 }
 
 .sw-panel {
+  display: none;
+}
+
+.sport-more {
+  position: relative;
+
+  > summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    color: $gray;
+    font-size: 0.8rem;
+    font-weight: $normal-weight;
+    cursor: pointer;
+    list-style: none;
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+
+    &::marker,
+    &::-webkit-details-marker {
+      content: none;
+      display: none;
+    }
+
+    &:hover {
+      color: $text-base-color;
+    }
+  }
+
+  .more-idle,
+  .more-on {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .more-on {
+    display: none;
+  }
+
+  .year-dd-list {
+    min-width: 8rem;
+    max-height: 16rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 0;
+      border-radius: 0;
+      font-size: 0.78rem;
+    }
+  }
+}
+
+.sport-switcher:has(.rest:checked) > .chips > .sport-more > summary {
+  color: $text-base-color;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.sport-switcher:has(.rest:checked) .more-idle {
   display: none;
 }
 
@@ -635,9 +721,18 @@
     background: $text-base-color;
   }
 
-  .sport-switcher:has(.sw-#{$i}:checked) > .chips > label:nth-of-type(#{$i}) {
+  .sport-switcher:has(.sw-#{$i}:checked) > .chips > .chip-#{$i} {
     color: $text-base-color;
     background: rgba(0, 0, 0, 0.06);
+  }
+
+  .sport-switcher:has(.sw-#{$i}:checked) .more-on-#{$i} {
+    display: inline-flex;
+  }
+
+  .sport-switcher:has(.sw-#{$i}:checked) .sport-more .year-dd-list label[for="sport-#{$i - 1}"] {
+    color: $text-base-color;
+    font-weight: $bold-weight;
   }
 
   .yearbar:has(.yr-#{$i}:checked) .year-dd-list label:nth-of-type(#{$i}) {
@@ -749,9 +844,15 @@
     font-variant-numeric: tabular-nums;
     cursor: pointer;
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
       color: $text-base-color;
       background: rgba(0, 0, 0, 0.03);
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: -2px;
     }
   }
 }
@@ -787,34 +888,6 @@
   .v {
     font-variant-numeric: tabular-nums;
   }
-}
-
-.krow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto auto;
-  align-items: baseline;
-  gap: 0.35rem 0.55rem;
-  padding: 0.18rem 0;
-  font-size: 0.78rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.kn {
-  min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-
-  span {
-    margin-right: 0.3em;
-  }
-}
-
-.kc,
-.kd,
-.kt {
-  color: $gray;
-  white-space: nowrap;
 }
 
 .records {
@@ -879,16 +952,13 @@
   border-radius: 12px;
   --workout-accent: #{$gray};
   box-sizing: border-box;
-  outline: none;
   transition: background-color 0.16s ease-out;
 
-  &:hover,
-  &:focus-within {
+  &:hover {
     background: rgba(0, 0, 0, 0.035);
   }
 
-  &:hover > .card-tip,
-  &:focus-visible > .card-tip {
+  &:hover > .card-tip {
     opacity: 1;
   }
 

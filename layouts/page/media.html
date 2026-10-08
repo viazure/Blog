@@ -25,10 +25,10 @@
 
                 <nav class="tabs" aria-label="书影音分类">
                     {{ if $lastfm }}
-                    <label class="tab-label" for="media-tab-music">音乐</label>
+                    <label class="tab-label" for="media-tab-music" tabindex="0">音乐</label>
                     {{ end }}
                     {{ range $categories }}
-                    <label class="tab-label" for="media-tab-{{ .id }}">{{ .label }}</label>
+                    <label class="tab-label" for="media-tab-{{ .id }}" tabindex="0">{{ .label }}</label>
                     {{ end }}
                 </nav>
 
@@ -100,6 +100,7 @@
                 {{ else }}
                 <p>书影音数据还没有同步过来。</p>
                 {{ end }}
+                {{ partial "chip-keys.html" . }}
             </div>
         </article>
     </main>
@@ -138,7 +139,7 @@
 
 <nav class="tabs tabs-sub" aria-label="统计时段">
     {{ range . }}
-    <label class="tab-label" for="period-{{ .id }}">{{ .label }}</label>
+    <label class="tab-label" for="period-{{ .id }}" tabindex="0">{{ .label }}</label>
     {{ end }}
 </nav>
 
