@@ -68,7 +68,7 @@ SUBTYPE_ICON = {
     "yoga": "🧘",
     "stair_climbing": "🪜",
 }
-# Per-activity colours for tracks / heatmap (bucket chart keeps BUCKETS colours).
+# Per-activity colours for tracks / heatmap.
 SPORT_COLOURS = {
     "跑步": "#f97316",
     "骑行": "#3b82f6",
@@ -109,9 +109,9 @@ HEAT_PALETTES = {
     "健身器械": ("#e2e8f0", "#94a3b8", "#64748b", "#475569"),
     "其他": ("#e9d5ff", "#c084fc", "#a855f7", "#7c3aed"),
 }
-# Four core buckets + one catch-all, in display order.
-BUCKETS = [("跑步", "🏃", "#f97316"), ("骑行", "🚴", "#3b82f6"),
-           ("游泳", "🏊", "#14b8a6"), ("其他", "✨", "#8b5cf6")]
+# Stats catch-all panel (top sports are chosen dynamically by activity count).
+OTHER_PANEL = ("其他", "✨")
+TOP_PANEL_COUNT = 3
 
 
 def kind_of(activity_type: str, subtype: str, raw_name: str = "") -> tuple[str, str, str]:
@@ -164,26 +164,84 @@ def clock_of(seconds: float) -> str:
     return f"{minutes}:{secs:02d}"
 
 
-def card_clock(seconds: int) -> str:
-    """Duration on a workout card: H:MM past one hour, else M:SS."""
+def hm_of(seconds: int) -> str:
+    """Strava-style duration: 1h 7m / 30m."""
+    if seconds <= 0:
+        return "0m"
+    minutes, _secs = divmod(int(seconds), 60)
+    hours, minutes = divmod(minutes, 60)
+    if hours and minutes:
+        return "%dh %dm" % (hours, minutes)
+    if hours:
+        return "%dh" % hours
+    return "%dm" % minutes
+
+
+def card_clock_parts(seconds: int) -> tuple[str, str]:
+    """Hero duration as (num, unit), same layout as km + unit.
+
+    en ICU short: 40 + min, 1 + hr, compound "1 hr 18 min".
+    """
+    if seconds <= 0:
+        return "", ""
+    minutes, _secs = divmod(int(seconds), 60)
+    hours, minutes = divmod(minutes, 60)
+    if hours and minutes:
+        return "%d hr %d min" % (hours, minutes), ""
+    if hours:
+        return str(hours), "hr"
+    return str(minutes), "min"
+
+
+def card_duration_label(seconds: int) -> str:
+    """en ICU short duration: 40 min / 1 hr / 1 hr 18 min."""
     if seconds <= 0:
         return ""
-    hours = seconds // 3600
+    minutes, _secs = divmod(int(seconds), 60)
+    hours, minutes = divmod(minutes, 60)
+    if hours and minutes:
+        return "%d hr %d min" % (hours, minutes)
     if hours:
-        return f"{hours}:{(seconds % 3600) // 60:02d}"
-    return f"{seconds // 60}:{seconds % 60:02d}"
+        return "%d hr" % hours
+    return "%d min" % minutes
 
 
-def card_extra(pace: float, hr: float, elev: float) -> str:
-    parts = []
+def card_extra(moving: int, pace: float, hr: float, elev: float,
+               *, km: float = 0) -> tuple[str, list[dict]]:
+    """Return (inline primary, tip rows [{k, v}, ...] for hover panel).
+
+    Duration uses en short (min/hr with spaces). Distance/elev/HR keep SI
+    spacing (5.74 km, 59 m, 145 bpm). Week bars still use narrow hm_of.
+    """
+    duration = card_duration_label(moving) if moving > 0 else ""
+    pace_s = ""
     if pace:
         total = int(pace)
-        parts.append(f"{total // 60}:{total % 60:02d} /km")
+        pace_s = f"{total // 60}:{total % 60:02d} /km"
+
+    # Inline stays compact (duration already in hero when km=0).
+    if pace_s:
+        primary = [p for p in ((duration if km > 0 else ""), pace_s) if p]
+    elif km > 0 and duration:
+        primary = [duration]
+    elif hr:
+        primary = ["%.0f bpm" % hr]
+    else:
+        primary = []
+
+    tip_rows: list[dict] = []
+    if km > 0:
+        tip_rows.append({"k": "距离", "v": "%.2f km" % km})
+    if duration:
+        tip_rows.append({"k": "时长", "v": duration})
+    if pace_s:
+        tip_rows.append({"k": "配速", "v": pace_s})
     if hr:
-        parts.append(f"{hr:.0f} bpm")
+        tip_rows.append({"k": "心率", "v": "%.0f bpm" % hr})
     if elev:
-        parts.append(f"{elev:.0f} m")
-    return " · ".join(parts)
+        tip_rows.append({"k": "爬升", "v": "%.0f m" % elev})
+
+    return " · ".join(primary), tip_rows
 
 
 def title_for(hour: int, name: str, km: float) -> str:
@@ -323,33 +381,20 @@ def records_for(bucket: str, rows: list[dict]) -> list[dict]:
             out.append({"label": "最长连续跑步", "value": "%d 天" % best,
                         "year": str(end.year)})
     if rows:
-        # 「其他」以时长/次数为主，不强调距离
-        if bucket != "其他":
-            longest = max(rows, key=lambda r: r["km"])
-            if longest["km"] >= 0.1:
-                out.append({"label": "最长距离", "value": "%.2f 公里" % longest["km"],
-                            "year": longest["date"][:4]})
+        longest = max(rows, key=lambda r: r["km"])
+        if longest["km"] >= 0.1:
+            out.append({"label": "最长距离", "value": "%.2f 公里" % longest["km"],
+                        "year": longest["date"][:4]})
         longest_t = max(rows, key=lambda r: r["moving"])
         out.append({"label": "最长单次", "value": clock_of(longest_t["moving"]),
                     "year": longest_t["date"][:4]})
-        top_elev = max(rows, key=lambda r: r["elev"])
-        if top_elev["elev"]:
-            out.append({"label": "单次最大爬升", "value": "%.0f 米" % top_elev["elev"],
-                        "year": top_elev["date"][:4]})
+        # 「其他」用距离/时长即可，不强调单次爬升
+        if bucket != "其他":
+            top_elev = max(rows, key=lambda r: r["elev"])
+            if top_elev["elev"]:
+                out.append({"label": "单次最大爬升", "value": "%.0f 米" % top_elev["elev"],
+                            "year": top_elev["date"][:4]})
     return out
-
-
-def hm_of(seconds: int) -> str:
-    """Strava-style duration: 1h 7m / 30m."""
-    if seconds <= 0:
-        return "0m"
-    minutes, _secs = divmod(int(seconds), 60)
-    hours, minutes = divmod(minutes, 60)
-    if hours and minutes:
-        return "%dh %dm" % (hours, minutes)
-    if hours:
-        return "%dh" % hours
-    return "%dm" % minutes
 
 
 def four_week_view(by_day: dict[date, list[dict]],
@@ -595,8 +640,14 @@ def main() -> None:
             "pace": round(pace, 1) if pace else 0,
             "has_trail": False,
         }
-        row["clock"] = card_clock(moving)
-        row["extra"] = card_extra(row["pace"], row["hr"], row["elev"])
+        clock_num, clock_unit = card_clock_parts(moving)
+        row["clock"] = clock_num
+        row["clock_unit"] = clock_unit
+        short, tip_rows = card_extra(
+            moving, row["pace"], row["hr"], row["elev"], km=row["km"],
+        )
+        row["extra"] = short
+        row["tip_rows"] = tip_rows
         rows.append(row)
         points = trail_points(str(entry.get("summary_polyline") or ""))
         if points:
@@ -606,8 +657,8 @@ def main() -> None:
         return
 
     rows.sort(key=lambda r: r["date"], reverse=True)
-    runs = [r for r in rows if r["bucket"] == "跑步"]
-    today = max(r["day"] for r in rows)
+    runs = [r for r in rows if r["name"] == "跑步"]
+    today = date.today()
     year = today.year
     last4 = today - timedelta(days=28)
     recent_rows = [r for r in rows if r["day"] > last4]
@@ -629,36 +680,63 @@ def main() -> None:
         encoding="utf-8",
     )
 
-    # per-sport panels: 4 weeks / one block per year / all time / records
+    # per-sport panels: top N by count in the latest calendar year, rest in 其他
     years = sorted({r["day"].year for r in rows}, reverse=True)
+    by_name: dict[str, list[dict]] = defaultdict(list)
+    for row in rows:
+        by_name[row["name"]].append(row)
+    rank_year = years[0] if years else today.year
+    year_n = {
+        n: sum(1 for r in rs if r["day"].year == rank_year)
+        for n, rs in by_name.items()
+    }
+    ranked = sorted(
+        by_name,
+        key=lambda n: (-year_n[n], -len(by_name[n]), n),
+    )
+    top_names = ranked[:TOP_PANEL_COUNT]
+    rest_names = ranked[TOP_PANEL_COUNT:]
+
     panels = []
-    for bucket, icon, _colour in BUCKETS:
-        mine = [r for r in rows if r["bucket"] == bucket]
-        panel = {
-            "bucket": bucket,
-            "icon": icon,
+    for name in top_names:
+        mine = by_name[name]
+        all_s = summarise(mine)
+        panels.append({
+            "bucket": name,
+            "icon": next((r["icon"] for r in mine if r.get("icon")), "•"),
+            "hide_km": all_s["km"] < 0.1,
             "recent": summarise([r for r in mine if r["day"] > last4]),
             "yearly": [dict(summarise([r for r in mine if r["day"].year == y]),
                             year=int(y))
                        for y in years],
-            "all": summarise(mine),
-            "records": records_for(bucket, mine),
-        }
-        if bucket == "其他":
-            by_name: dict[str, list[dict]] = defaultdict(list)
-            for row in mine:
-                by_name[row["name"]].append(row)
-            kinds = sorted(by_name, key=lambda n: (-len(by_name[n]), n))
-            panel["breakdown"] = [{
+            "all": all_s,
+            "records": records_for(name, mine),
+        })
+
+    if rest_names:
+        other_name, other_icon = OTHER_PANEL
+        rest = [r for n in rest_names for r in by_name[n]]
+        other_by: dict[str, list[dict]] = {n: by_name[n] for n in rest_names}
+        panels.append({
+            "bucket": other_name,
+            "icon": other_icon,
+            "hide_km": True,
+            "recent": summarise([r for r in rest if r["day"] > last4]),
+            "yearly": [dict(summarise([r for r in rest if r["day"].year == y]),
+                            year=int(y))
+                       for y in years],
+            "all": summarise(rest),
+            "records": records_for(other_name, rest),
+            "breakdown": [{
                 "name": name,
-                "icon": next((r["icon"] for r in by_name[name] if r.get("icon")), "•"),
-                "recent": summarise([r for r in by_name[name] if r["day"] > last4]),
-                "yearly": [dict(summarise([r for r in by_name[name]
+                "icon": next((r["icon"] for r in other_by[name] if r.get("icon")), "•"),
+                "recent": summarise([r for r in other_by[name] if r["day"] > last4]),
+                "yearly": [dict(summarise([r for r in other_by[name]
                                            if r["day"].year == y]), year=int(y))
                            for y in years],
-                "all": summarise(by_name[name]),
-            } for name in kinds]
-        panels.append(panel)
+                "all": summarise(other_by[name]),
+            } for name in rest_names],
+        })
 
     # one activity list per year ("day" is a date object used for grouping only)
     head_kinds = ("跑步", "骑行", "游泳", "徒步", "走路")
