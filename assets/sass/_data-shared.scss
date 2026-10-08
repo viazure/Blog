@@ -306,6 +306,20 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
     color: $dark-text;
   }
 
+  .run-card .card-tip {
+    background: #1a1d24;
+    border-color: $rule-dark;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .run-card .card-tip-k {
+    color: $dark-gray;
+  }
+
+  .run-card .card-tip-v {
+    color: $dark-text;
+  }
+
   .sec > h2::after,
   .records,
   .rec {

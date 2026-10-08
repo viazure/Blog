@@ -162,7 +162,7 @@
                             {{ range $i, $p := .panels }}<label for="sport-{{ $i }}"><span aria-hidden="true">{{ $p.icon }}</span>{{ $p.bucket }}</label>{{ end }}
                         </nav>
                         {{ range $i, $p := .panels }}
-                        {{ $hide_km := eq $p.bucket "其他" }}
+                        {{ $hide_km := or (eq $p.bucket "其他") $p.hide_km }}
                         <div class="sw-panel sw-panel-{{ add $i 1 }}">
                             <div class="yearbar">
                                 {{ range $j, $y := $p.yearly }}
