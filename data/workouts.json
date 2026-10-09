@@ -9406,8 +9406,10 @@
           "segments": [
             {
               "colour": "#fed7aa",
+              "hm": "29m",
               "name": "跑步",
-              "pct": 100.0
+              "pct": 100.0,
+              "tip": "跑步 29m"
             }
           ]
         },
@@ -9418,8 +9420,10 @@
           "segments": [
             {
               "colour": "#fed7aa",
+              "hm": "1h 43m",
               "name": "跑步",
-              "pct": 100.0
+              "pct": 100.0,
+              "tip": "跑步 1h 43m"
             }
           ]
         },
@@ -9430,8 +9434,10 @@
           "segments": [
             {
               "colour": "#fed7aa",
+              "hm": "40m",
               "name": "跑步",
-              "pct": 100.0
+              "pct": 100.0,
+              "tip": "跑步 40m"
             }
           ]
         },
@@ -9442,8 +9448,10 @@
           "segments": [
             {
               "colour": "#fed7aa",
+              "hm": "1h 15m",
               "name": "跑步",
-              "pct": 100.0
+              "pct": 100.0,
+              "tip": "跑步 1h 15m"
             }
           ]
         }
