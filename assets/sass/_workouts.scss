@@ -25,7 +25,11 @@
 }
 
 .stv-year .stv-n {
-  font-size: 3.5rem;
+  font-size: 4.2rem;
+}
+
+.stv-year .stv-cap {
+  margin-top: 0.35rem;
 }
 
 .stv-recent {
@@ -57,11 +61,18 @@
   font-size: 0.78rem;
 }
 
-.stv-year .stv-cap {
-  margin-top: 0.35rem;
+.stv-recent-count .stv-label {
+  margin-bottom: 0;
+  font-size: 0.7rem;
 }
 
-.stv-recent-count .stv-label {
+.stv-recent-count .stv-n {
+  margin-top: 0.45rem;
+  margin-bottom: 0.45rem;
+}
+
+.stv-recent-count .stv-cap {
+  margin-top: 0;
   font-size: 0.7rem;
 }
 
@@ -97,14 +108,26 @@
 
 .stv-icons {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 0.55rem;
+  min-width: 0;
   min-height: 0.72rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
 }
 
 .stv-ico {
   display: inline-flex;
+  flex: none;
   align-items: center;
   gap: 0.28rem;
   font-size: 0.95rem;
@@ -267,6 +290,17 @@
     b {
       opacity: 1;
       font-weight: $bold-weight;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: 1px;
+        width: 0.55em;
+        height: 1.5px;
+        background: currentColor;
+        transform: translateX(-50%);
+      }
     }
   }
 
@@ -954,11 +988,13 @@
   box-sizing: border-box;
   transition: background-color 0.16s ease-out;
 
-  &:hover {
+  &:hover,
+  &:focus-within {
     background: rgba(0, 0, 0, 0.035);
   }
 
-  &:hover > .card-tip {
+  &:hover > .card-tip,
+  &:focus-within > .card-tip {
     opacity: 1;
   }
 
@@ -967,13 +1003,12 @@
     left: 0.75rem;
     bottom: calc(100% + 8px);
     z-index: 5;
-    display: grid;
-    grid-template-columns: auto auto;
-    column-gap: 1.1rem;
-    row-gap: 0.3rem;
-    min-width: 8.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    min-width: 7.5rem;
     margin: 0;
-    padding: 0.6rem 0.75rem;
+    padding: 0.55rem 0.75rem 0.6rem;
     border: 1px solid $rule;
     border-radius: 10px;
     background: #fff;
@@ -983,6 +1018,23 @@
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.16s ease-out;
+  }
+
+  .card-tip-when {
+    color: $text-base-color;
+    font-size: 0.8rem;
+    font-weight: $bold-weight;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+  }
+
+  .card-tip-rows {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 1.1rem;
+    row-gap: 0.28rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid $rule;
   }
 
   .card-tip-k {
@@ -1041,41 +1093,53 @@
     display: flex;
     align-items: baseline;
     flex-wrap: nowrap;
-    gap: 6px;
+    gap: 0.55rem;
     margin-top: 1px;
     min-width: 0;
     overflow: hidden;
   }
 
-  .num {
+  .metric {
+    display: inline-flex;
     flex: none;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+    white-space: nowrap;
+  }
+
+  .num {
     color: var(--workout-accent);
     font-size: 1.35rem;
     letter-spacing: -0.01em;
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
   }
 
   .unit {
-    flex: none;
-    align-self: baseline;
     color: var(--workout-accent);
     font-size: 0.8rem;
     letter-spacing: -0.01em;
-    white-space: nowrap;
     opacity: 0.85;
   }
 
-  .extra {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    margin-left: 6px;
+  .metric.sub {
+    gap: 0.15em;
     color: $gray;
-    font-size: 0.72rem;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-    text-overflow: ellipsis;
+
+    .num {
+      color: inherit;
+      font-size: 0.78rem;
+    }
+
+    .unit {
+      color: inherit;
+      font-size: 0.68rem;
+      opacity: 1;
+    }
+  }
+
+  .metric:not(.sub) + .metric.sub {
+    margin-left: 0.35rem;
   }
 }
 

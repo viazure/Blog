@@ -18,7 +18,7 @@
 {{ if $c.elev }}
 {{ $tips = $tips | append (dict "k" "爬升" "v" (printf "%.0f m" $c.elev)) }}
 {{ end }}
-<article class="run-card kind-{{ $c.name }}">
+<article class="run-card kind-{{ $c.name }}" tabindex="0">
     <div class="mark">
         {{ if $c.has_trail }}
         <svg class="rmap" data-i="{{ $c.idx }}" data-glyph="{{ $c.icon }}" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"></svg>
@@ -29,22 +29,37 @@
     <div class="body">
         <div class="line1">
             <span class="name">{{ $c.label }}</span>
-            <time>{{ substr $c.date 5 }}</time>
+            <time datetime="{{ $c.date }}{{ with $c.time }}T{{ . }}{{ end }}">{{ substr $c.date 5 }}</time>
         </div>
         <div class="line2">
             {{ if $c.km }}
-            <span class="num">{{ printf "%.2f" $c.km }}</span><span class="unit">km</span>
-            {{ else }}
-            <span class="num">{{ $c.clock }}</span>{{ with $c.clock_unit }}<span class="unit">{{ . }}</span>{{ end }}
+            <span class="metric">
+                <span class="num">{{ printf "%.2f" $c.km }}</span><span class="unit">km</span>
+            </span>
             {{ end }}
-            {{ with $c.extra }}<span class="extra">{{ . }}</span>{{ end }}
+            {{ with $c.clock }}
+            <span class="metric{{ if $c.km }} sub{{ end }}">
+                <span class="num">{{ . }}</span>{{ with $c.clock_unit }}<span class="unit">{{ . }}</span>{{ end }}
+            </span>
+            {{ end }}
+            {{ if $c.pace }}
+            {{ $total := int $c.pace }}
+            <span class="metric sub">
+                <span class="num">{{ printf "%d:%02d" (div $total 60) (mod $total 60) }}</span><span class="unit">/km</span>
+            </span>
+            {{ end }}
         </div>
     </div>
-    {{ with $tips }}
     <div class="card-tip" aria-hidden="true">
-        {{ range . }}
-        <span class="card-tip-k">{{ .k }}</span><span class="card-tip-v">{{ .v }}</span>
+        <div class="card-tip-when">
+            {{ substr $c.date 5 }}{{ with $c.time }} {{ . }}{{ end }}
+        </div>
+        {{ with $tips }}
+        <div class="card-tip-rows">
+            {{ range . }}
+            <span class="card-tip-k">{{ .k }}</span><span class="card-tip-v">{{ .v }}</span>
+            {{ end }}
+        </div>
         {{ end }}
     </div>
-    {{ end }}
 </article>
