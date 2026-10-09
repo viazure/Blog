@@ -34,8 +34,8 @@
 
 .stv-recent {
   display: grid;
-  grid-template-columns: auto 13rem minmax(6.5rem, 8.5rem);
-  column-gap: 0.65rem;
+  grid-template-columns: max-content 11.25rem minmax(0, 1fr);
+  column-gap: 0.85rem;
   row-gap: 0.9rem;
   align-items: start;
   min-width: 0;
@@ -48,6 +48,7 @@
 
 .stv-recent-count {
   margin-right: 1.5rem;
+  white-space: nowrap;
 
   @include media-query($on-mobile) {
     margin-right: 0;
@@ -138,6 +139,7 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
+    opacity: 0.65;
   }
 }
 
@@ -146,27 +148,6 @@
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.4rem;
-}
-
-.stv-bar {
-  display: flex;
-  overflow: hidden;
-  height: 12px;
-  max-width: 100%;
-  width: var(--w, 0);
-  border-radius: 2px;
-
-  i {
-    display: block;
-    height: 100%;
-  }
-}
-
-.stv-time {
-  color: $gray;
-  font-size: 0.68rem;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 
 @mixin tip-bubble {
@@ -192,10 +173,62 @@
   transition: opacity 0.16s ease-out;
 }
 
+.stv-bar {
+  display: flex;
+  height: 12px;
+  max-width: 100%;
+  width: var(--w, 0);
+
+  i {
+    position: relative;
+    display: block;
+    height: 100%;
+    min-width: 0;
+    outline: none;
+    cursor: default;
+
+    > span {
+      position: absolute;
+      inset: 0;
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    &:first-child > span {
+      border-radius: 2px 0 0 2px;
+    }
+
+    &:last-child > span {
+      border-radius: 0 2px 2px 0;
+    }
+
+    &:only-child > span {
+      border-radius: 2px;
+    }
+
+    &[data-tip]::after {
+      @include tip-bubble;
+      z-index: 5;
+    }
+
+    &[data-tip]:hover::after,
+    &[data-tip]:focus-visible::after {
+      opacity: 1;
+    }
+  }
+}
+
+.stv-time {
+  color: $gray;
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
 /* 4 周点阵：空日小点、活动日大点；悬停淡出圆点露出日期。 */
 .calbox {
   width: 100%;
-  max-width: 13rem;
+  max-width: 11.25rem;
   user-select: none;
   -webkit-user-select: none;
 
@@ -290,17 +323,6 @@
     b {
       opacity: 1;
       font-weight: $bold-weight;
-
-      &::after {
-        content: "";
-        position: absolute;
-        left: 50%;
-        bottom: 1px;
-        width: 0.55em;
-        height: 1.5px;
-        background: currentColor;
-        transform: translateX(-50%);
-      }
     }
   }
 

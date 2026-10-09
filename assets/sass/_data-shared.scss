@@ -302,7 +302,8 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
   }
 
   .cd[data-tip]::after,
-  .hm[data-tip]::after {
+  .hm[data-tip]::after,
+  .stv-bar i[data-tip]::after {
     background: #1a1d24;
     border-color: $rule-dark;
     color: $dark-text;

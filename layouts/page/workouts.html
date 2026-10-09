@@ -35,7 +35,7 @@
                                     {{ range .calendar }}
                                     <div class="wk">
                                         {{ range . }}
-                                        <span class="{{ .class }}" data-date="{{ .date }}"{{ if .size }} style="--s:{{ .size }}px"{{ end }}{{ if .title }} title="{{ .date }} · {{ .title }}" data-tip="{{ .date }} · {{ .title }}"{{ end }}><b>{{ .day }}</b></span>
+                                        <span class="{{ .class }}" data-date="{{ .date }}"{{ if .size }} style="--s:{{ .size }}px"{{ end }}{{ if .title }} data-tip="{{ .date }} · {{ .title }}"{{ end }}><b>{{ .day }}</b></span>
                                         {{ end }}
                                     </div>
                                     {{ end }}
@@ -52,7 +52,7 @@
                                 {{ range .week_bars }}
                                 <div class="stv-kind">
                                     <span class="stv-bar" style="--w:{{ .pct }}%">
-                                        {{ range .segments }}<i style="width:{{ .pct }}%;background:{{ .colour }}"></i>{{ end }}
+                                        {{ range .segments }}<i style="width:{{ .pct }}%"{{ with .tip }} data-tip="{{ . }}"{{ end }} tabindex="0"><span style="background:{{ .colour }}"></span></i>{{ end }}
                                     </span>
                                     <span class="stv-time">{{ .hm }}</span>
                                 </div>
@@ -80,7 +80,7 @@
                                 {{ range $y.weeks }}
                                 <div class="hm-week">
                                     {{ range . }}
-                                    <span class="{{ .class }}"{{ with .title }} title="{{ . }}" data-tip="{{ . }}"{{ end }}{{ if .colour }} style="--c:{{ .colour }}{{ with .pie }};--pie:{{ . }}{{ end }}"{{ end }}></span>
+                                    <span class="{{ .class }}"{{ with .title }} data-tip="{{ . }}"{{ end }}{{ if .colour }} style="--c:{{ .colour }}{{ with .pie }};--pie:{{ . }}{{ end }}"{{ end }}></span>
                                     {{ end }}
                                 </div>
                                 {{ end }}

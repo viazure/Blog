@@ -408,7 +408,7 @@ def four_week_view(by_day: dict[date, list[dict]],
         weeks_hits.append(week_rows)
         recent_rows.extend(week_rows)
 
-    # One slot per sport. Colours are the heatmap palette's lightest step.
+    # One slot per sport. Lightest palette step so stacked bars stay calm.
     totals: dict[str, dict] = {}
     for hit in recent_rows:
         slot = totals.setdefault(hit["name"], {
@@ -435,10 +435,13 @@ def four_week_view(by_day: dict[date, list[dict]],
             moving = by_name.get(item["name"], 0)
             if moving <= 0:
                 continue
+            hm = hm_of(moving)
             segments.append({
                 "name": item["name"],
                 "colour": item["colour"],
                 "pct": round(100.0 * moving / week_mv, 1),
+                "hm": hm,
+                "tip": "%s %s" % (item["name"], hm),
             })
         week_bars.append({
             "moving": week_mv,
