@@ -65,7 +65,7 @@ theme = "hugo-blog-awesome"
       url = "/media/"
       weight = 30
     [[Languages.zh-cn.menu.main]]
-      pageRef="about"
+      pageRef = "/about"
       name = "关于"
       url = "/about/"
       weight = 40
