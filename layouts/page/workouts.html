@@ -25,6 +25,7 @@
                             <div class="stv-recent-count">
                                 <p class="stv-label">过去 4 周</p>
                                 <p class="stv-n">{{ .recent_n }}<span class="unit">次</span></p>
+                                <p class="stv-cap">活动总数</p>
                             </div>
                             <div class="calbox">
                                 <div class="wgrid">
@@ -34,7 +35,7 @@
                                     {{ range .calendar }}
                                     <div class="wk">
                                         {{ range . }}
-                                        <span class="{{ .class }}"{{ if .size }} style="--s:{{ .size }}px"{{ end }}{{ if .title }} title="{{ .date }} · {{ .title }}" data-tip="{{ .date }} · {{ .title }}"{{ end }}><b>{{ .day }}</b></span>
+                                        <span class="{{ .class }}" data-date="{{ .date }}"{{ if .size }} style="--s:{{ .size }}px"{{ end }}{{ if .title }} title="{{ .date }} · {{ .title }}" data-tip="{{ .date }} · {{ .title }}"{{ end }}><b>{{ .day }}</b></span>
                                         {{ end }}
                                     </div>
                                     {{ end }}
@@ -209,6 +210,33 @@
                 </section>
 
                 {{ partial "track-script.html" . }}
+                <script>
+                (function () {
+                    var parts = new Intl.DateTimeFormat("en-US", {
+                        timeZone: "Asia/Shanghai",
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit"
+                    }).formatToParts(new Date());
+                    var pick = function (type) {
+                        for (var i = 0; i < parts.length; i++) {
+                            if (parts[i].type === type) return parts[i].value;
+                        }
+                        return "";
+                    };
+                    var today = pick("year") + "-" + pick("month") + "-" + pick("day");
+                    var cells = document.querySelectorAll(".wgrid .cd[data-date]");
+                    for (var i = 0; i < cells.length; i++) {
+                        var cell = cells[i];
+                        if (cell.getAttribute("data-date") === today) {
+                            cell.classList.add("today");
+                            cell.classList.remove("future");
+                        } else {
+                            cell.classList.remove("today");
+                        }
+                    }
+                })();
+                </script>
                 {{ else }}
                 <p>运动数据还没有同步过来。</p>
                 {{ end }}

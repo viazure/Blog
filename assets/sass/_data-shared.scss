@@ -243,7 +243,6 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
   .ry,
   .run-card time,
   .run-card .unit,
-  .run-card .extra,
   .hm-label,
   .year-dd summary,
   .year-dd-list label {
@@ -271,7 +270,8 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
     border-color: $rule-dark;
   }
 
-  .run-card:hover {
+  .run-card:hover,
+  .run-card:focus-within {
     background: rgba(255, 255, 255, 0.04);
   }
 
@@ -314,12 +314,24 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   }
 
+  .run-card .card-tip-when {
+    color: $dark-text;
+  }
+
+  .run-card .card-tip-rows {
+    border-top-color: $rule-dark;
+  }
+
   .run-card .card-tip-k {
     color: $dark-gray;
   }
 
   .run-card .card-tip-v {
     color: $dark-text;
+  }
+
+  .run-card .metric.sub {
+    color: $dark-gray;
   }
 
   .sec > h2::after,

@@ -17,7 +17,7 @@ from __future__ import annotations
 import json
 import sys
 from collections import defaultdict
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from math import ceil
 from pathlib import Path
 
@@ -26,6 +26,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from paths import dump_data, life_data_root, load_json
 
 ROOT = Path(__file__).resolve().parents[1]
+# Workouts are dated in local time. China has no DST, so a fixed offset
+# matches build_lastfm.DISPLAY_TZ and does not depend on the runner's zone.
+DISPLAY_TZ = timezone(timedelta(hours=8))
 RUN_PAGE = "https://run.viazure.cc"
 TRACK_TOLERANCE = 3e-4
 TRACK_SIZE = 40
@@ -71,27 +74,8 @@ SUBTYPE_ICON = {
     "yoga": "🧘",
     "stair_climbing": "🪜",
 }
-# Per-activity colours for tracks / heatmap.
-SPORT_COLOURS = {
-    "跑步": "#f97316",
-    "骑行": "#3b82f6",
-    "徒步": "#16a34a",
-    "走路": "#84cc16",
-    "游泳": "#14b8a6",
-    "力量训练": "#ec4899",
-    "自由训练": "#db2777",
-    "体感游戏": "#e11d48",
-    "HIIT": "#f43f5e",
-    "普拉提": "#a855f7",
-    "呼吸": "#8b5cf6",
-    "跳绳": "#f59e0b",
-    "瑜伽": "#c026d3",
-    "爬楼": "#78716c",
-    "滑板": "#0ea5e9",
-    "健身器械": "#64748b",
-}
-DEFAULT_SPORT_COLOUR = "#8b5cf6"
-# GitHub-style 4-step palettes (pale → solid), same steps as
+# GitHub-style 4-step palettes (pale → solid). The only activity colours:
+# heatmap cells, the 4-week bars, and multi-sport day pies all read from here.
 # https://github.com/zhaohongxuan/workouts ContributionHeatmap.
 HEAT_PALETTES = {
     "跑步": ("#fed7aa", "#fb923c", "#f97316", "#ea580c"),
@@ -134,13 +118,17 @@ def kind_of(activity_type: str, subtype: str, raw_name: str = "") -> tuple[str, 
     return (activity_type or "运动", "其他", "•")
 
 
+def heat_palette(name: str) -> tuple[str, str, str, str]:
+    return HEAT_PALETTES.get(name) or HEAT_PALETTES["其他"]
+
+
 def sport_colour(name: str) -> str:
-    return SPORT_COLOURS.get(name, DEFAULT_SPORT_COLOUR)
+    """Solid step of the heatmap palette, for multi-sport day pies."""
+    return heat_palette(name)[2]
 
 
 def heat_colour(name: str, level: int) -> str:
-    pal = HEAT_PALETTES.get(name) or HEAT_PALETTES["其他"]
-    return pal[max(0, min(3, level - 1))]
+    return heat_palette(name)[max(0, min(3, level - 1))]
 
 
 def seconds_of(value: str) -> float:
@@ -194,19 +182,6 @@ def card_clock_parts(seconds: int) -> tuple[str, str]:
     return str(minutes), "min"
 
 
-def card_duration_label(seconds: int) -> str:
-    """en ICU short duration: 40 min / 1 hr / 1 hr 18 min."""
-    if seconds <= 0:
-        return ""
-    minutes, _secs = divmod(int(seconds), 60)
-    hours, minutes = divmod(minutes, 60)
-    if hours and minutes:
-        return "%d hr %d min" % (hours, minutes)
-    if hours:
-        return "%d hr" % hours
-    return "%d min" % minutes
-
-
 def hours_label(seconds: float) -> str:
     """Banner / stats duration. Under 1 hour show minutes, else hours.
 
@@ -221,37 +196,6 @@ def hours_label(seconds: float) -> str:
     if abs(hours - round(hours)) < 0.05:
         return "%d 小时" % int(round(hours))
     return "%.1f 小时" % hours
-
-
-def card_extra(moving: int, pace: float, hr: float, elev: float,
-               *, km: float = 0) -> str:
-    """Inline extras only. Hover labels are assembled in the card template.
-
-    Duration uses en short (min/hr with spaces). Distance/elev/HR keep SI
-    spacing (5.74 km, 59 m, 145 bpm). Week bars still use narrow hm_of.
-    """
-    duration = card_duration_label(moving) if moving > 0 else ""
-    pace_s = ""
-    if pace:
-        total = int(pace)
-        pace_s = f"{total // 60}:{total % 60:02d} /km"
-
-    # Inline stays compact (duration already in hero when km=0).
-    if pace_s:
-        primary = [p for p in ((duration if km > 0 else ""), pace_s) if p]
-    elif km > 0 and duration:
-        primary = [duration]
-    else:
-        primary = []
-
-    if hr:
-        bpm = "%.0f bpm" % hr
-        if bpm not in primary:
-            primary.append(bpm)
-    if elev:
-        primary.append("%.0f m" % elev)
-
-    return " · ".join(primary)
 
 
 def title_for(hour: int, name: str, km: float) -> str:
@@ -414,7 +358,7 @@ def four_week_start(today: date) -> date:
 def four_week_view(by_day: dict[date, list[dict]],
                    today: date) -> tuple[list, list, list, int]:
     """Last 4 weeks relative to today: Monday-first calendar, duration bars
-    for weeks with activity, and a colour+emoji legend of sports that appear."""
+    for weeks with activity, and one legend entry per sport that appears."""
     origin = four_week_start(today)
     peak_mv = 1
     weeks_plan = [origin + timedelta(weeks=w) for w in range(4)]
@@ -427,7 +371,7 @@ def four_week_view(by_day: dict[date, list[dict]],
             if mv > peak_mv:
                 peak_mv = mv
     calendar = []
-    week_bars = []
+    weeks_hits: list[list[dict]] = []
     recent_rows: list[dict] = []
     for start in weeks_plan:
         cells = []
@@ -461,46 +405,49 @@ def four_week_view(by_day: dict[date, list[dict]],
             })
             week_rows.extend(hits)
         calendar.append(cells)
+        weeks_hits.append(week_rows)
         recent_rows.extend(week_rows)
+
+    # One slot per sport. Colours are the heatmap palette's lightest step.
+    totals: dict[str, dict] = {}
+    for hit in recent_rows:
+        slot = totals.setdefault(hit["name"], {
+            "name": hit["name"], "icon": hit["icon"], "moving": 0,
+        })
+        slot["moving"] += hit["moving"]
+        slot["icon"] = hit["icon"]
+    legend = [{
+        "name": s["name"],
+        "icon": s["icon"],
+        "colour": heat_colour(s["name"], 1),
+    } for s in sorted(totals.values(), key=lambda s: (-s["moving"], s["name"]))]
+
+    week_bars = []
+    for week_rows in weeks_hits:
         week_mv = sum(h["moving"] for h in week_rows)
         if week_mv <= 0:
             continue
-        by_name: dict[str, dict] = {}
+        by_name: dict[str, int] = defaultdict(int)
         for hit in week_rows:
-            slot = by_name.setdefault(hit["name"], {
-                "name": hit["name"],
-                "icon": hit["icon"],
-                "colour": sport_colour(hit["name"]),
-                "moving": 0,
+            by_name[hit["name"]] += hit["moving"]
+        segments = []
+        for item in legend:
+            moving = by_name.get(item["name"], 0)
+            if moving <= 0:
+                continue
+            segments.append({
+                "name": item["name"],
+                "colour": item["colour"],
+                "pct": round(100.0 * moving / week_mv, 1),
             })
-            slot["moving"] += hit["moving"]
-            slot["icon"] = hit["icon"]
-        ordered = sorted(by_name.values(), key=lambda x: -x["moving"])
-        segments = [{
-            "name": s["name"],
-            "colour": s["colour"],
-            "pct": round(100.0 * s["moving"] / week_mv, 1),
-        } for s in ordered]
         week_bars.append({
             "moving": week_mv,
             "hm": hm_of(week_mv),
-            "colour": ordered[0]["colour"],
             "segments": segments,
         })
     week_peak = max((b["moving"] for b in week_bars), default=1) or 1
     for bar in week_bars:
         bar["pct"] = round(100.0 * bar["moving"] / week_peak, 1)
-    kind_tot: dict[str, dict] = {}
-    for hit in recent_rows:
-        slot = kind_tot.setdefault(hit["name"], {
-            "name": hit["name"],
-            "icon": hit["icon"],
-            "colour": sport_colour(hit["name"]),
-            "moving": 0,
-        })
-        slot["moving"] += hit["moving"]
-        slot["icon"] = hit["icon"]
-    legend = sorted(kind_tot.values(), key=lambda x: (-x["moving"], x["name"]))
     return calendar, week_bars, legend, len(recent_rows)
 
 
@@ -619,8 +566,10 @@ def main() -> None:
     trails = {}
     for index, entry in enumerate(raw):
         stamp = (entry.get("start_date_local") or "")[:16]
+        started = ""
         try:
             moment = datetime.strptime(stamp, "%Y-%m-%d %H:%M")
+            started = moment.strftime("%H:%M")
         except ValueError:
             try:
                 moment = datetime.strptime(stamp[:10], "%Y-%m-%d")
@@ -652,12 +601,11 @@ def main() -> None:
             "pace": round(pace, 1) if pace else 0,
             "has_trail": False,
         }
+        if started:
+            row["time"] = started
         clock_num, clock_unit = card_clock_parts(moving)
         row["clock"] = clock_num
         row["clock_unit"] = clock_unit
-        row["extra"] = card_extra(
-            moving, row["pace"], row["hr"], row["elev"], km=row["km"],
-        )
         rows.append(row)
         points = trail_points(str(entry.get("summary_polyline") or ""))
         if points:
@@ -666,9 +614,9 @@ def main() -> None:
         print("no activities parsed, skip")
         return
 
-    rows.sort(key=lambda r: r["date"], reverse=True)
+    rows.sort(key=lambda r: (r["date"], r.get("time") or ""), reverse=True)
     runs = [r for r in rows if r["name"] == "跑步"]
-    today = date.today()
+    today = datetime.now(DISPLAY_TZ).date()
     year = today.year
     win_start = four_week_start(today)
     recent_rows = [r for r in rows if win_start <= r["day"] <= today]
