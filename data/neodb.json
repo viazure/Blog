@@ -1,45 +1,13 @@
 {
   "categories": [
     {
-      "count": 72,
+      "count": 71,
       "groups": [
         {
-          "count": 11,
+          "count": 10,
           "heading": "在读",
           "id": "progress",
           "items": [
-            {
-              "created_time": "2026-10-02",
-              "note": "",
-              "note_html": "",
-              "rating_grade": null,
-              "title": "西行纪",
-              "url": "/book/2Lih8JzkNuwo0nWKWYwIYO"
-            },
-            {
-              "created_time": "2026-10-02",
-              "note": "",
-              "note_html": "",
-              "rating_grade": null,
-              "title": "孤独的美食家",
-              "url": "/book/7Qs6VW7ENlkCIs2e78HVgS"
-            },
-            {
-              "created_time": "2026-08-14",
-              "note": "第二部是真没意思。那由多回转寿司是吧，呵呵，去***",
-              "note_html": "第二部是真没意思。那由多回转寿司是吧，呵呵，去***",
-              "rating_grade": null,
-              "title": "链锯人",
-              "url": "/book/2N8lqAkeNPGdw2vzkL2fXV"
-            },
-            {
-              "created_time": "2026-08-14",
-              "note": "",
-              "note_html": "",
-              "rating_grade": null,
-              "title": "钢之炼金术师",
-              "url": "/book/0en0Ef8ToDKBZl9725Frs3"
-            },
             {
               "created_time": "2025-01-26",
               "note": "",
@@ -91,6 +59,30 @@
               "url": "/book/6p7OCP5HHtUqMuTLqSuMOf"
             },
             {
+              "created_time": "2023-12-26",
+              "note": "",
+              "note_html": "",
+              "rating_grade": null,
+              "title": "西行纪",
+              "url": "/book/2Lih8JzkNuwo0nWKWYwIYO"
+            },
+            {
+              "created_time": "2023-02-25",
+              "note": "",
+              "note_html": "",
+              "rating_grade": null,
+              "title": "钢之炼金术师",
+              "url": "/book/0en0Ef8ToDKBZl9725Frs3"
+            },
+            {
+              "created_time": "2023-01-19",
+              "note": "",
+              "note_html": "",
+              "rating_grade": null,
+              "title": "孤独的美食家",
+              "url": "/book/7Qs6VW7ENlkCIs2e78HVgS"
+            },
+            {
               "created_time": "2022-02-24",
               "note": "",
               "note_html": "",
@@ -138,20 +130,20 @@
               "url": "/book/51IbirSeoipNI9QiDfZEVc"
             },
             {
+              "created_time": "2024-04-28",
+              "note": "",
+              "note_html": "",
+              "rating_grade": null,
+              "title": "虫师",
+              "url": "/book/0OCZzRosgHM0P7D97r29f7"
+            },
+            {
               "created_time": "2024-02-05",
               "note": "",
               "note_html": "",
               "rating_grade": null,
               "title": "竹光侍",
               "url": "/book/6smSsQ2RxDs5IKjL8ruc6z"
-            },
-            {
-              "created_time": "2023-04-28",
-              "note": "",
-              "note_html": "",
-              "rating_grade": null,
-              "title": "虫师",
-              "url": "/book/0OCZzRosgHM0P7D97r29f7"
             },
             {
               "created_time": "2023-04-28",
@@ -233,14 +225,6 @@
           "id": "complete",
           "items": [
             {
-              "created_time": "2026-10-06",
-              "note": "",
-              "note_html": "",
-              "rating_grade": null,
-              "title": "花男",
-              "url": "/book/5QPAiEonehdVQNHcOU9upx"
-            },
-            {
               "created_time": "2026-09-27",
               "note": "",
               "note_html": "",
@@ -262,27 +246,9 @@
               "created_time": "2026-08-15",
               "note": "",
               "note_html": "",
-              "rating_filled": 4,
-              "rating_grade": 8,
-              "title": "炎拳",
-              "url": "/book/50TIwTCjd3UR1X5IEaB2Th"
-            },
-            {
-              "created_time": "2026-08-15",
-              "note": "",
-              "note_html": "",
               "rating_grade": null,
               "title": "哆啦a梦（松本大洋版）",
               "url": "/book/3os8BRGKmJDkZwQywrdGM9"
-            },
-            {
-              "created_time": "2026-08-15",
-              "note": "非常喜欢，建议看完漫画的朋友去听听机核这期播客原来世界上真的有天才！松本大洋《乒乓》深度解析",
-              "note_html": "非常喜欢，建议看完漫画的朋友去听听机核这期播客<a href=\"https://www.gcores.com/radios/140931\" rel=\"nofollow noopener\" target=\"_blank\">原来世界上真的有天才！松本大洋《乒乓》深度解析</a>",
-              "rating_filled": 5,
-              "rating_grade": 10,
-              "title": "乒乓",
-              "url": "/book/2oXSJN1dDBdvgwjP1L0NhE"
             },
             {
               "created_time": "2026-08-14",
@@ -524,6 +490,14 @@
               "created_time": "2024-01-13",
               "note": "",
               "note_html": "",
+              "rating_grade": null,
+              "title": "花男",
+              "url": "/book/5QPAiEonehdVQNHcOU9upx"
+            },
+            {
+              "created_time": "2024-01-03",
+              "note": "",
+              "note_html": "",
               "rating_filled": 4,
               "rating_grade": 8,
               "title": "花男",
@@ -537,6 +511,24 @@
               "rating_grade": 10,
               "title": "小狗钱钱",
               "url": "/book/5P1bSNRAYdKNkKC8FSAaiZ"
+            },
+            {
+              "created_time": "2023-02-17",
+              "note": "非常喜欢，如电影般的分镜。建议看完漫画的朋友去听听机核这期播客：原来世界上真的有天才！松本大洋《乒乓》深度解析",
+              "note_html": "非常喜欢，如电影般的分镜。建议看完漫画的朋友去听听机核这期播客：<a href=\"https://www.gcores.com/radios/140931\" rel=\"nofollow noopener\" target=\"_blank\">原来世界上真的有天才！松本大洋《乒乓》深度解析</a>",
+              "rating_filled": 5,
+              "rating_grade": 10,
+              "title": "乒乓",
+              "url": "/book/2oXSJN1dDBdvgwjP1L0NhE"
+            },
+            {
+              "created_time": "2023-01-17",
+              "note": "",
+              "note_html": "",
+              "rating_filled": 4,
+              "rating_grade": 8,
+              "title": "炎拳",
+              "url": "/book/50TIwTCjd3UR1X5IEaB2Th"
             },
             {
               "created_time": "2023-01-06",
@@ -634,16 +626,8 @@
           "years": [
             {
               "collapsed": false,
-              "count": 9,
+              "count": 6,
               "items": [
-                {
-                  "created_time": "2026-10-06",
-                  "note": "",
-                  "note_html": "",
-                  "rating_grade": null,
-                  "title": "花男",
-                  "url": "/book/5QPAiEonehdVQNHcOU9upx"
-                },
                 {
                   "created_time": "2026-09-27",
                   "note": "",
@@ -666,27 +650,9 @@
                   "created_time": "2026-08-15",
                   "note": "",
                   "note_html": "",
-                  "rating_filled": 4,
-                  "rating_grade": 8,
-                  "title": "炎拳",
-                  "url": "/book/50TIwTCjd3UR1X5IEaB2Th"
-                },
-                {
-                  "created_time": "2026-08-15",
-                  "note": "",
-                  "note_html": "",
                   "rating_grade": null,
                   "title": "哆啦a梦（松本大洋版）",
                   "url": "/book/3os8BRGKmJDkZwQywrdGM9"
-                },
-                {
-                  "created_time": "2026-08-15",
-                  "note": "非常喜欢，建议看完漫画的朋友去听听机核这期播客原来世界上真的有天才！松本大洋《乒乓》深度解析",
-                  "note_html": "非常喜欢，建议看完漫画的朋友去听听机核这期播客<a href=\"https://www.gcores.com/radios/140931\" rel=\"nofollow noopener\" target=\"_blank\">原来世界上真的有天才！松本大洋《乒乓》深度解析</a>",
-                  "rating_filled": 5,
-                  "rating_grade": 10,
-                  "title": "乒乓",
-                  "url": "/book/2oXSJN1dDBdvgwjP1L0NhE"
                 },
                 {
                   "created_time": "2026-08-14",
@@ -813,7 +779,7 @@
             },
             {
               "collapsed": false,
-              "count": 15,
+              "count": 16,
               "items": [
                 {
                   "created_time": "2024-12-27",
@@ -942,6 +908,14 @@
                   "created_time": "2024-01-13",
                   "note": "",
                   "note_html": "",
+                  "rating_grade": null,
+                  "title": "花男",
+                  "url": "/book/5QPAiEonehdVQNHcOU9upx"
+                },
+                {
+                  "created_time": "2024-01-03",
+                  "note": "",
+                  "note_html": "",
                   "rating_filled": 4,
                   "rating_grade": 8,
                   "title": "花男",
@@ -952,7 +926,7 @@
             },
             {
               "collapsed": false,
-              "count": 4,
+              "count": 6,
               "items": [
                 {
                   "created_time": "2023-06-03",
@@ -962,6 +936,24 @@
                   "rating_grade": 10,
                   "title": "小狗钱钱",
                   "url": "/book/5P1bSNRAYdKNkKC8FSAaiZ"
+                },
+                {
+                  "created_time": "2023-02-17",
+                  "note": "非常喜欢，如电影般的分镜。建议看完漫画的朋友去听听机核这期播客：原来世界上真的有天才！松本大洋《乒乓》深度解析",
+                  "note_html": "非常喜欢，如电影般的分镜。建议看完漫画的朋友去听听机核这期播客：<a href=\"https://www.gcores.com/radios/140931\" rel=\"nofollow noopener\" target=\"_blank\">原来世界上真的有天才！松本大洋《乒乓》深度解析</a>",
+                  "rating_filled": 5,
+                  "rating_grade": 10,
+                  "title": "乒乓",
+                  "url": "/book/2oXSJN1dDBdvgwjP1L0NhE"
+                },
+                {
+                  "created_time": "2023-01-17",
+                  "note": "",
+                  "note_html": "",
+                  "rating_filled": 4,
+                  "rating_grade": 8,
+                  "title": "炎拳",
+                  "url": "/book/50TIwTCjd3UR1X5IEaB2Th"
                 },
                 {
                   "created_time": "2023-01-06",

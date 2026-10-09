@@ -9360,22 +9360,22 @@
             "today": false
           },
           {
-            "class": "cd on today",
+            "class": "cd on",
             "date": "2026-10-08",
             "day": 8,
             "km": 5.0,
             "size": 13,
             "title": "晨间跑步 5.02 km",
-            "today": true
+            "today": false
           },
           {
-            "class": "cd future",
+            "class": "cd today",
             "date": "2026-10-09",
             "day": 9,
             "km": 0,
             "size": 0,
             "title": "",
-            "today": false
+            "today": true
           },
           {
             "class": "cd future",
