@@ -9369,22 +9369,22 @@
             "today": false
           },
           {
-            "class": "cd today",
+            "class": "cd",
             "date": "2026-10-09",
             "day": 9,
             "km": 0,
             "size": 0,
             "title": "",
-            "today": true
+            "today": false
           },
           {
-            "class": "cd future",
+            "class": "cd today",
             "date": "2026-10-10",
             "day": 10,
             "km": 0,
             "size": 0,
             "title": "",
-            "today": false
+            "today": true
           },
           {
             "class": "cd future",

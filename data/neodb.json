@@ -1,13 +1,21 @@
 {
   "categories": [
     {
-      "count": 71,
+      "count": 72,
       "groups": [
         {
-          "count": 10,
+          "count": 11,
           "heading": "在读",
           "id": "progress",
           "items": [
+            {
+              "created_time": "2026-10-10",
+              "note": "第二部是真没意思。那由多回转寿司是吧，呵呵，去***",
+              "note_html": "第二部是真没意思。那由多回转寿司是吧，呵呵，去***",
+              "rating_grade": null,
+              "title": "链锯人",
+              "url": "/book/2N8lqAkeNPGdw2vzkL2fXV"
+            },
             {
               "created_time": "2025-01-26",
               "note": "",
@@ -479,8 +487,8 @@
             },
             {
               "created_time": "2024-01-21",
-              "note": "吃了 A 站 UP 主「渣丸子」的安利后在周末一口气看完了。前半部分看得欲罢不能，差点看通宵。后面不知道是熬夜后遗症还是后期剧情差点意思，看完没有意犹未尽，反而觉得终于看完了。所以只能打个 9 分了。",
-              "note_html": "吃了 A 站 UP 主「渣丸子」的安利后在周末一口气看完了。前半部分看得欲罢不能，差点看通宵。后面不知道是熬夜后遗症还是后期剧情差点意思，看完没有意犹未尽，反而觉得终于看完了。所以只能打个 9 分了。",
+              "note": "这才是真正的正向导向漫画！哪有什么外挂，良好的饮食习惯 + 正常的生活作息 + 适量强度的运动才是真正的勇士之路。",
+              "note_html": "这才是真正的正向导向漫画！哪有什么外挂，良好的饮食习惯 + 正常的生活作息 + 适量强度的运动才是真正的勇士之路。",
               "rating_filled": 5,
               "rating_grade": 9,
               "title": "迷宫饭",
@@ -897,8 +905,8 @@
                 },
                 {
                   "created_time": "2024-01-21",
-                  "note": "吃了 A 站 UP 主「渣丸子」的安利后在周末一口气看完了。前半部分看得欲罢不能，差点看通宵。后面不知道是熬夜后遗症还是后期剧情差点意思，看完没有意犹未尽，反而觉得终于看完了。所以只能打个 9 分了。",
-                  "note_html": "吃了 A 站 UP 主「渣丸子」的安利后在周末一口气看完了。前半部分看得欲罢不能，差点看通宵。后面不知道是熬夜后遗症还是后期剧情差点意思，看完没有意犹未尽，反而觉得终于看完了。所以只能打个 9 分了。",
+                  "note": "这才是真正的正向导向漫画！哪有什么外挂，良好的饮食习惯 + 正常的生活作息 + 适量强度的运动才是真正的勇士之路。",
+                  "note_html": "这才是真正的正向导向漫画！哪有什么外挂，良好的饮食习惯 + 正常的生活作息 + 适量强度的运动才是真正的勇士之路。",
                   "rating_filled": 5,
                   "rating_grade": 9,
                   "title": "迷宫饭",
@@ -5903,10 +5911,10 @@
       "label": "电影"
     },
     {
-      "count": 68,
+      "count": 67,
       "groups": [
         {
-          "count": 16,
+          "count": 15,
           "heading": "在看",
           "id": "progress",
           "items": [
@@ -5998,14 +6006,6 @@
               "rating_grade": null,
               "title": "三体",
               "url": "/tv/season/3IZfpVCON5B3RQj4aoALIp"
-            },
-            {
-              "created_time": "2023-02-25",
-              "note": "",
-              "note_html": "",
-              "rating_grade": null,
-              "title": "钢之炼金术师",
-              "url": "/tv/season/1L7r6181GPsm5riCu7K2HH"
             },
             {
               "created_time": "2023-01-19",
@@ -6161,15 +6161,6 @@
               "rating_grade": 8,
               "title": "小城日常",
               "url": "/tv/season/6Ktrgl52ITmkNHZgVdRN5M"
-            },
-            {
-              "created_time": "2026-08-15",
-              "note": "",
-              "note_html": "",
-              "rating_filled": 4,
-              "rating_grade": 8,
-              "title": "迷宫饭",
-              "url": "/tv/season/5r6zBcSaLY8Z08Zwc6gqMV"
             },
             {
               "created_time": "2026-08-15",
@@ -6444,6 +6435,15 @@
               "url": "/tv/season/00kl6r6zI0nSCiMzjQe2Ue"
             },
             {
+              "created_time": "2024-06-23",
+              "note": "意外的改编的还不错，期待第二部。",
+              "note_html": "意外的改编的还不错，期待第二部。",
+              "rating_filled": 4,
+              "rating_grade": 8,
+              "title": "迷宫饭",
+              "url": "/tv/season/5r6zBcSaLY8Z08Zwc6gqMV"
+            },
+            {
               "created_time": "2023-05-21",
               "note": "",
               "note_html": "",
@@ -6508,7 +6508,7 @@
           "years": [
             {
               "collapsed": false,
-              "count": 29,
+              "count": 28,
               "items": [
                 {
                   "created_time": "2026-10-02",
@@ -6562,15 +6562,6 @@
                   "rating_grade": 8,
                   "title": "小城日常",
                   "url": "/tv/season/6Ktrgl52ITmkNHZgVdRN5M"
-                },
-                {
-                  "created_time": "2026-08-15",
-                  "note": "",
-                  "note_html": "",
-                  "rating_filled": 4,
-                  "rating_grade": 8,
-                  "title": "迷宫饭",
-                  "url": "/tv/season/5r6zBcSaLY8Z08Zwc6gqMV"
                 },
                 {
                   "created_time": "2026-08-15",
@@ -6829,7 +6820,7 @@
             },
             {
               "collapsed": false,
-              "count": 3,
+              "count": 4,
               "items": [
                 {
                   "created_time": "2024-12-27",
@@ -6857,6 +6848,15 @@
                   "rating_grade": 9,
                   "title": "一人之下 第一季",
                   "url": "/tv/season/00kl6r6zI0nSCiMzjQe2Ue"
+                },
+                {
+                  "created_time": "2024-06-23",
+                  "note": "意外的改编的还不错，期待第二部。",
+                  "note_html": "意外的改编的还不错，期待第二部。",
+                  "rating_filled": 4,
+                  "rating_grade": 8,
+                  "title": "迷宫饭",
+                  "url": "/tv/season/5r6zBcSaLY8Z08Zwc6gqMV"
                 }
               ],
               "label": "2024"
