@@ -9139,71 +9139,6 @@
         [
           {
             "class": "cd",
-            "date": "2026-09-14",
-            "day": 14,
-            "km": 0,
-            "size": 0,
-            "title": "",
-            "today": false
-          },
-          {
-            "class": "cd",
-            "date": "2026-09-15",
-            "day": 15,
-            "km": 0,
-            "size": 0,
-            "title": "",
-            "today": false
-          },
-          {
-            "class": "cd",
-            "date": "2026-09-16",
-            "day": 16,
-            "km": 0,
-            "size": 0,
-            "title": "",
-            "today": false
-          },
-          {
-            "class": "cd",
-            "date": "2026-09-17",
-            "day": 17,
-            "km": 0,
-            "size": 0,
-            "title": "",
-            "today": false
-          },
-          {
-            "class": "cd",
-            "date": "2026-09-18",
-            "day": 18,
-            "km": 0,
-            "size": 0,
-            "title": "",
-            "today": false
-          },
-          {
-            "class": "cd on",
-            "date": "2026-09-19",
-            "day": 19,
-            "km": 4.1,
-            "size": 12,
-            "title": "午后跑步 4.14 km",
-            "today": false
-          },
-          {
-            "class": "cd",
-            "date": "2026-09-20",
-            "day": 20,
-            "km": 0,
-            "size": 0,
-            "title": "",
-            "today": false
-          }
-        ],
-        [
-          {
-            "class": "cd",
             "date": "2026-09-21",
             "day": 21,
             "km": 0,
@@ -9387,32 +9322,83 @@
             "today": false
           },
           {
-            "class": "cd today",
+            "class": "cd",
             "date": "2026-10-11",
             "day": 11,
             "km": 0,
             "size": 0,
             "title": "",
+            "today": false
+          }
+        ],
+        [
+          {
+            "class": "cd today",
+            "date": "2026-10-12",
+            "day": 12,
+            "km": 0,
+            "size": 0,
+            "title": "",
             "today": true
+          },
+          {
+            "class": "cd future",
+            "date": "2026-10-13",
+            "day": 13,
+            "km": 0,
+            "size": 0,
+            "title": "",
+            "today": false
+          },
+          {
+            "class": "cd future",
+            "date": "2026-10-14",
+            "day": 14,
+            "km": 0,
+            "size": 0,
+            "title": "",
+            "today": false
+          },
+          {
+            "class": "cd future",
+            "date": "2026-10-15",
+            "day": 15,
+            "km": 0,
+            "size": 0,
+            "title": "",
+            "today": false
+          },
+          {
+            "class": "cd future",
+            "date": "2026-10-16",
+            "day": 16,
+            "km": 0,
+            "size": 0,
+            "title": "",
+            "today": false
+          },
+          {
+            "class": "cd future",
+            "date": "2026-10-17",
+            "day": 17,
+            "km": 0,
+            "size": 0,
+            "title": "",
+            "today": false
+          },
+          {
+            "class": "cd future",
+            "date": "2026-10-18",
+            "day": 18,
+            "km": 0,
+            "size": 0,
+            "title": "",
+            "today": false
           }
         ]
       ],
-      "recent_n": 7,
+      "recent_n": 6,
       "week_bars": [
-        {
-          "hm": "29m",
-          "moving": 1799,
-          "pct": 29.1,
-          "segments": [
-            {
-              "colour": "#fed7aa",
-              "hm": "29m",
-              "name": "跑步",
-              "pct": 100.0,
-              "tip": "跑步 29m"
-            }
-          ]
-        },
         {
           "hm": "1h 43m",
           "moving": 6191,
@@ -37864,11 +37850,11 @@
     ]
   },
   "last4": {
-    "elev": 271,
-    "hours": "4.1 小时",
-    "km": 34.6,
-    "moving": 14890,
-    "n": 7
+    "elev": 238,
+    "hours": "3.6 小时",
+    "km": 30.4,
+    "moving": 13091,
+    "n": 6
   },
   "latest": "2026-10-08",
   "panels": [
@@ -37884,11 +37870,11 @@
       "hide_km": false,
       "icon": "🏃",
       "recent": {
-        "elev": 271,
-        "hours": "4.1 小时",
-        "km": 34.6,
-        "moving": 14890,
-        "n": 7
+        "elev": 238,
+        "hours": "3.6 小时",
+        "km": 30.4,
+        "moving": 13091,
+        "n": 6
       },
       "records": [
         {
