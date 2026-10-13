@@ -2,8 +2,42 @@
   "generated_from": "life-data/workouts/activities.json",
   "groups": [
     {
-      "count": 67,
+      "count": 69,
       "items": [
+        {
+          "bucket": "跑步",
+          "clock": "35",
+          "clock_unit": "min",
+          "date": "2026-10-13",
+          "elev": 133.0,
+          "has_trail": true,
+          "hr": 149.0,
+          "icon": "🏃",
+          "idx": 524,
+          "km": 5.01,
+          "label": "晨间跑步",
+          "moving": 2129,
+          "name": "跑步",
+          "pace": 425.3,
+          "time": "06:57"
+        },
+        {
+          "bucket": "其他",
+          "clock": "50",
+          "clock_unit": "min",
+          "date": "2026-10-12",
+          "elev": 88.0,
+          "has_trail": true,
+          "hr": 102.0,
+          "icon": "🚶",
+          "idx": 523,
+          "km": 2.94,
+          "label": "午后走路",
+          "moving": 3048,
+          "name": "走路",
+          "pace": 0,
+          "time": "17:45"
+        },
         {
           "bucket": "跑步",
           "clock": "35",
@@ -9178,7 +9212,7 @@
             "date": "2026-09-25",
             "day": 25,
             "km": 5.0,
-            "size": 13,
+            "size": 12,
             "title": "晨间跑步 5.00 km",
             "today": false
           },
@@ -9196,7 +9230,7 @@
             "date": "2026-09-27",
             "day": 27,
             "km": 5.0,
-            "size": 13,
+            "size": 12,
             "title": "午后跑步 5.01 km",
             "today": false
           }
@@ -9261,7 +9295,7 @@
             "date": "2026-10-04",
             "day": 4,
             "km": 5.8,
-            "size": 14,
+            "size": 13,
             "title": "晨间跑步 5.75 km",
             "today": false
           }
@@ -9281,7 +9315,7 @@
             "date": "2026-10-06",
             "day": 6,
             "km": 5.7,
-            "size": 14,
+            "size": 13,
             "title": "晨间跑步 5.74 km",
             "today": false
           },
@@ -9299,7 +9333,7 @@
             "date": "2026-10-08",
             "day": 8,
             "km": 5.0,
-            "size": 13,
+            "size": 12,
             "title": "晨间跑步 5.02 km",
             "today": false
           },
@@ -9333,22 +9367,22 @@
         ],
         [
           {
-            "class": "cd today",
+            "class": "cd on",
             "date": "2026-10-12",
             "day": 12,
-            "km": 0,
-            "size": 0,
-            "title": "",
-            "today": true
+            "km": 2.9,
+            "size": 14,
+            "title": "午后走路 2.94 km",
+            "today": false
           },
           {
-            "class": "cd future",
+            "class": "cd on today",
             "date": "2026-10-13",
             "day": 13,
-            "km": 0,
-            "size": 0,
-            "title": "",
-            "today": false
+            "km": 5.0,
+            "size": 12,
+            "title": "晨间跑步 5.01 km",
+            "today": true
           },
           {
             "class": "cd future",
@@ -9397,7 +9431,7 @@
           }
         ]
       ],
-      "recent_n": 6,
+      "recent_n": 8,
       "week_bars": [
         {
           "hm": "1h 43m",
@@ -9440,6 +9474,27 @@
               "tip": "跑步 1h 15m"
             }
           ]
+        },
+        {
+          "hm": "1h 26m",
+          "moving": 5177,
+          "pct": 83.6,
+          "segments": [
+            {
+              "colour": "#fed7aa",
+              "hm": "35m",
+              "name": "跑步",
+              "pct": 41.1,
+              "tip": "跑步 35m"
+            },
+            {
+              "colour": "#d9f99d",
+              "hm": "50m",
+              "name": "走路",
+              "pct": 58.9,
+              "tip": "走路 50m"
+            }
+          ]
         }
       ],
       "week_kinds": [
@@ -9447,13 +9502,18 @@
           "colour": "#fed7aa",
           "icon": "🏃",
           "name": "跑步"
+        },
+        {
+          "colour": "#d9f99d",
+          "icon": "🚶",
+          "name": "走路"
         }
       ]
     },
     "years": [
       {
-        "hours": "32.3 小时",
-        "km": 250.7,
+        "hours": "33.7 小时",
+        "km": 258.6,
         "legend": [
           {
             "colours": [
@@ -9551,7 +9611,7 @@
             "pct": 91.667
           }
         ],
-        "n": 67,
+        "n": 69,
         "weeks": [
           [
             {
@@ -11891,16 +11951,32 @@
           ],
           [
             {
-              "class": "hm",
-              "colour": "",
-              "segments": [],
-              "title": "2026-10-12"
+              "class": "hm on",
+              "colour": "#84cc16",
+              "pie": "",
+              "segments": [
+                {
+                  "colour": "#84cc16",
+                  "name": "走路",
+                  "pct": 100.0,
+                  "start": 0.0
+                }
+              ],
+              "title": "2026-10-12 · 午后走路 2.94 km"
             },
             {
-              "class": "hm",
-              "colour": "",
-              "segments": [],
-              "title": "2026-10-13"
+              "class": "hm on",
+              "colour": "#ea580c",
+              "pie": "",
+              "segments": [
+                {
+                  "colour": "#f97316",
+                  "name": "跑步",
+                  "pct": 100.0,
+                  "start": 0.0
+                }
+              ],
+              "title": "2026-10-13 · 晨间跑步 5.01 km"
             },
             {
               "class": "hm",
@@ -37850,31 +37926,31 @@
     ]
   },
   "last4": {
-    "elev": 238,
-    "hours": "3.6 小时",
-    "km": 30.4,
-    "moving": 13091,
-    "n": 6
+    "elev": 459,
+    "hours": "5.1 小时",
+    "km": 38.4,
+    "moving": 18268,
+    "n": 8
   },
-  "latest": "2026-10-08",
+  "latest": "2026-10-13",
   "panels": [
     {
       "all": {
-        "elev": 9007,
-        "hours": "289.7 小时",
-        "km": 2768.0,
-        "moving": 1042741,
-        "n": 412
+        "elev": 9140,
+        "hours": "290.2 小时",
+        "km": 2773.0,
+        "moving": 1044870,
+        "n": 413
       },
       "bucket": "跑步",
       "hide_km": false,
       "icon": "🏃",
       "recent": {
-        "elev": 238,
-        "hours": "3.6 小时",
-        "km": 30.4,
-        "moving": 13091,
-        "n": 6
+        "elev": 371,
+        "hours": "4.2 小时",
+        "km": 35.5,
+        "moving": 15220,
+        "n": 7
       },
       "records": [
         {
@@ -37915,11 +37991,11 @@
       ],
       "yearly": [
         {
-          "elev": 1743,
-          "hours": "27.9 小时",
-          "km": 233.8,
-          "moving": 100419,
-          "n": 61,
+          "elev": 1876,
+          "hours": "28.5 小时",
+          "km": 238.8,
+          "moving": 102548,
+          "n": 62,
           "year": 2026
         },
         {
@@ -37992,6 +38068,124 @@
           "km": 0,
           "moving": 0,
           "n": 0,
+          "year": 2017
+        }
+      ]
+    },
+    {
+      "all": {
+        "elev": 222,
+        "hours": "13.6 小时",
+        "km": 64.2,
+        "moving": 48907,
+        "n": 22
+      },
+      "bucket": "走路",
+      "hide_km": false,
+      "icon": "🚶",
+      "recent": {
+        "elev": 88,
+        "hours": "51 分钟",
+        "km": 2.9,
+        "moving": 3048,
+        "n": 1
+      },
+      "records": [
+        {
+          "label": "最长距离",
+          "value": "7.73 公里",
+          "year": "2026"
+        },
+        {
+          "label": "最长单次",
+          "value": "1:28:25",
+          "year": "2026"
+        },
+        {
+          "label": "单次最大爬升",
+          "value": "88 米",
+          "year": "2026"
+        }
+      ],
+      "yearly": [
+        {
+          "elev": 222,
+          "hours": "3.6 小时",
+          "km": 17.3,
+          "moving": 13077,
+          "n": 3,
+          "year": 2026
+        },
+        {
+          "elev": 0,
+          "hours": "0 分钟",
+          "km": 0,
+          "moving": 0,
+          "n": 0,
+          "year": 2025
+        },
+        {
+          "elev": 0,
+          "hours": "0 分钟",
+          "km": 0,
+          "moving": 0,
+          "n": 0,
+          "year": 2024
+        },
+        {
+          "elev": 0,
+          "hours": "0 分钟",
+          "km": 0,
+          "moving": 0,
+          "n": 0,
+          "year": 2023
+        },
+        {
+          "elev": 0,
+          "hours": "0 分钟",
+          "km": 0,
+          "moving": 0,
+          "n": 0,
+          "year": 2022
+        },
+        {
+          "elev": 0,
+          "hours": "1.1 小时",
+          "km": 4.7,
+          "moving": 3810,
+          "n": 2,
+          "year": 2021
+        },
+        {
+          "elev": 0,
+          "hours": "11 分钟",
+          "km": 1.0,
+          "moving": 642,
+          "n": 1,
+          "year": 2020
+        },
+        {
+          "elev": 0,
+          "hours": "1.4 小时",
+          "km": 9.0,
+          "moving": 5174,
+          "n": 2,
+          "year": 2019
+        },
+        {
+          "elev": 0,
+          "hours": "7.1 小时",
+          "km": 31.2,
+          "moving": 25526,
+          "n": 13,
+          "year": 2018
+        },
+        {
+          "elev": 0,
+          "hours": "11 分钟",
+          "km": 1.0,
+          "moving": 678,
+          "n": 1,
           "year": 2017
         }
       ]
@@ -38100,124 +38294,6 @@
           "km": 0,
           "moving": 0,
           "n": 0,
-          "year": 2017
-        }
-      ]
-    },
-    {
-      "all": {
-        "elev": 134,
-        "hours": "12.7 小时",
-        "km": 61.2,
-        "moving": 45859,
-        "n": 21
-      },
-      "bucket": "走路",
-      "hide_km": false,
-      "icon": "🚶",
-      "recent": {
-        "elev": 0,
-        "hours": "0 分钟",
-        "km": 0,
-        "moving": 0,
-        "n": 0
-      },
-      "records": [
-        {
-          "label": "最长距离",
-          "value": "7.73 公里",
-          "year": "2026"
-        },
-        {
-          "label": "最长单次",
-          "value": "1:28:25",
-          "year": "2026"
-        },
-        {
-          "label": "单次最大爬升",
-          "value": "73 米",
-          "year": "2026"
-        }
-      ],
-      "yearly": [
-        {
-          "elev": 134,
-          "hours": "2.8 小时",
-          "km": 14.3,
-          "moving": 10029,
-          "n": 2,
-          "year": 2026
-        },
-        {
-          "elev": 0,
-          "hours": "0 分钟",
-          "km": 0,
-          "moving": 0,
-          "n": 0,
-          "year": 2025
-        },
-        {
-          "elev": 0,
-          "hours": "0 分钟",
-          "km": 0,
-          "moving": 0,
-          "n": 0,
-          "year": 2024
-        },
-        {
-          "elev": 0,
-          "hours": "0 分钟",
-          "km": 0,
-          "moving": 0,
-          "n": 0,
-          "year": 2023
-        },
-        {
-          "elev": 0,
-          "hours": "0 分钟",
-          "km": 0,
-          "moving": 0,
-          "n": 0,
-          "year": 2022
-        },
-        {
-          "elev": 0,
-          "hours": "1.1 小时",
-          "km": 4.7,
-          "moving": 3810,
-          "n": 2,
-          "year": 2021
-        },
-        {
-          "elev": 0,
-          "hours": "11 分钟",
-          "km": 1.0,
-          "moving": 642,
-          "n": 1,
-          "year": 2020
-        },
-        {
-          "elev": 0,
-          "hours": "1.4 小时",
-          "km": 9.0,
-          "moving": 5174,
-          "n": 2,
-          "year": 2019
-        },
-        {
-          "elev": 0,
-          "hours": "7.1 小时",
-          "km": 31.2,
-          "moving": 25526,
-          "n": 13,
-          "year": 2018
-        },
-        {
-          "elev": 0,
-          "hours": "11 分钟",
-          "km": 1.0,
-          "moving": 678,
-          "n": 1,
           "year": 2017
         }
       ]
@@ -39434,10 +39510,10 @@
   "run_page": "https://run.viazure.cc",
   "stopgap": false,
   "totals": {
-    "km": 3061.6,
-    "moving": 1298672,
-    "runs": 412,
-    "sessions": 523
+    "km": 3069.5,
+    "moving": 1303849,
+    "runs": 413,
+    "sessions": 525
   },
   "year": 2026
 }
