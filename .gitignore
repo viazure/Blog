@@ -7,3 +7,9 @@ __pycache__/
 *.py[cod]
 .venv/
 venv/
+
+worker/node_modules/
+worker/.wrangler/
+worker/dist/
+worker/.dev.vars
+.dev.vars
