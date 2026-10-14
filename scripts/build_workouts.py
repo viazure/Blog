@@ -220,7 +220,7 @@ def title_for(hour: int, name: str, km: float) -> str:
 
 def decode_polyline(encoded: str, precision: int = 5) -> list[tuple[float, float]]:
     coords, index, lat, lng = [], 0, 0, 0
-    factor = float(10 ** precision)
+    factor = float(10**precision)
     while index < len(encoded):
         for _axis in range(2):
             shift, result = 0, 0
@@ -264,7 +264,7 @@ def simplify(points: list[tuple[float, float]], tolerance: float) -> list[tuple[
             keep[best_i] = True
             stack.append((first, best_i))
             stack.append((best_i, last))
-    return [p for p, k in zip(points, keep) if k]
+    return [p for p, k in zip(points, keep, strict=False) if k]
 
 
 def trail_points(polyline: str) -> str:
@@ -293,8 +293,8 @@ def trail_points(polyline: str) -> str:
     off_x = (TRACK_SIZE - lng_range * scale) / 2
     off_y = (TRACK_SIZE - lat_range * scale) / 2
     return " ".join(
-        "%.0f %.0f" % ((lng - min_lng) * scale + off_x,
-                       TRACK_SIZE - ((lat - min_lat) * scale + off_y))
+        "%.0f %.0f"
+        % ((lng - min_lng) * scale + off_x, TRACK_SIZE - ((lat - min_lat) * scale + off_y))
         for lat, lng in pts
     )
 
@@ -314,38 +314,51 @@ def records_for(bucket: str, rows: list[dict]) -> list[dict]:
     out = []
     if bucket == "跑步":
         paced = [r for r in rows if r["pace"]]
-        for label, lo, hi in (("5K", 4.90, 5.20), ("10K", 9.80, 10.30),
-                              ("半程马拉松", 21.0, 21.5)):
+        for label, lo, hi in (("5K", 4.90, 5.20), ("10K", 9.80, 10.30), ("半程马拉松", 21.0, 21.5)):
             found = [r for r in paced if lo <= r["km"] <= hi]
             if found:
                 best = min(found, key=lambda r: r["moving"])
-                out.append({"label": label,
-                            "value": clock_of(best["moving"]),
-                            "year": best["date"][:4]})
+                out.append(
+                    {"label": label, "value": clock_of(best["moving"]), "year": best["date"][:4]}
+                )
         days = sorted({r["day"] for r in rows})
         if days:
             best, cur, end = 1, 1, days[0]
-            for prev, current in zip(days, days[1:]):
+            for prev, current in zip(days, days[1:], strict=False):
                 if (current - prev).days == 1:
                     cur += 1
                     if cur > best:
                         best, end = cur, current
                 else:
                     cur = 1
-            out.append({"label": "最长连续跑步", "value": "%d 天" % best,
-                        "year": str(end.year)})
+            out.append({"label": "最长连续跑步", "value": "%d 天" % best, "year": str(end.year)})
     if rows:
         longest = max(rows, key=lambda r: r["km"])
         if longest["km"] >= 0.1:
-            out.append({"label": "最长距离", "value": "%.2f 公里" % longest["km"],
-                        "year": longest["date"][:4]})
+            out.append(
+                {
+                    "label": "最长距离",
+                    "value": "%.2f 公里" % longest["km"],
+                    "year": longest["date"][:4],
+                }
+            )
         longest_t = max(rows, key=lambda r: r["moving"])
-        out.append({"label": "最长单次", "value": clock_of(longest_t["moving"]),
-                    "year": longest_t["date"][:4]})
+        out.append(
+            {
+                "label": "最长单次",
+                "value": clock_of(longest_t["moving"]),
+                "year": longest_t["date"][:4],
+            }
+        )
         top_elev = max(rows, key=lambda r: r["elev"])
         if top_elev["elev"]:
-            out.append({"label": "单次最大爬升", "value": "%.0f 米" % top_elev["elev"],
-                        "year": top_elev["date"][:4]})
+            out.append(
+                {
+                    "label": "单次最大爬升",
+                    "value": "%.0f 米" % top_elev["elev"],
+                    "year": top_elev["date"][:4],
+                }
+            )
     return out
 
 
@@ -355,8 +368,7 @@ def four_week_start(today: date) -> date:
     return monday - timedelta(weeks=3)
 
 
-def four_week_view(by_day: dict[date, list[dict]],
-                   today: date) -> tuple[list, list, list, int]:
+def four_week_view(by_day: dict[date, list[dict]], today: date) -> tuple[list, list, list, int]:
     """Last 4 weeks relative to today: Monday-first calendar, duration bars
     for weeks with activity, and one legend entry per sport that appears."""
     origin = four_week_start(today)
@@ -388,21 +400,24 @@ def four_week_view(by_day: dict[date, list[dict]],
             if day == today:
                 classes.append("today")
             detail = " · ".join(
-                ("%s %.2f km" % (h["label"], h["km"])) if h["km"] >= 0.1
+                ("%s %.2f km" % (h["label"], h["km"]))
+                if h["km"] >= 0.1
                 else ("%s %s" % (h["label"], clock_of(h["moving"])))
                 for h in hits
             )
             mv = sum(h["moving"] for h in hits)
             size = 6 + int(8 * ((mv / peak_mv) ** 0.5)) if hits else 0
-            cells.append({
-                "class": " ".join(classes),
-                "date": day.isoformat(),
-                "day": day.day,
-                "title": detail,
-                "today": day == today,
-                "size": size,
-                "km": round(sum(h["km"] for h in hits), 1),
-            })
+            cells.append(
+                {
+                    "class": " ".join(classes),
+                    "date": day.isoformat(),
+                    "day": day.day,
+                    "title": detail,
+                    "today": day == today,
+                    "size": size,
+                    "km": round(sum(h["km"] for h in hits), 1),
+                }
+            )
             week_rows.extend(hits)
         calendar.append(cells)
         weeks_hits.append(week_rows)
@@ -411,16 +426,24 @@ def four_week_view(by_day: dict[date, list[dict]],
     # One slot per sport. Lightest palette step so stacked bars stay calm.
     totals: dict[str, dict] = {}
     for hit in recent_rows:
-        slot = totals.setdefault(hit["name"], {
-            "name": hit["name"], "icon": hit["icon"], "moving": 0,
-        })
+        slot = totals.setdefault(
+            hit["name"],
+            {
+                "name": hit["name"],
+                "icon": hit["icon"],
+                "moving": 0,
+            },
+        )
         slot["moving"] += hit["moving"]
         slot["icon"] = hit["icon"]
-    legend = [{
-        "name": s["name"],
-        "icon": s["icon"],
-        "colour": heat_colour(s["name"], 1),
-    } for s in sorted(totals.values(), key=lambda s: (-s["moving"], s["name"]))]
+    legend = [
+        {
+            "name": s["name"],
+            "icon": s["icon"],
+            "colour": heat_colour(s["name"], 1),
+        }
+        for s in sorted(totals.values(), key=lambda s: (-s["moving"], s["name"]))
+    ]
 
     week_bars = []
     for week_rows in weeks_hits:
@@ -436,26 +459,29 @@ def four_week_view(by_day: dict[date, list[dict]],
             if moving <= 0:
                 continue
             hm = hm_of(moving)
-            segments.append({
-                "name": item["name"],
-                "colour": item["colour"],
-                "pct": round(100.0 * moving / week_mv, 1),
-                "hm": hm,
-                "tip": "%s %s" % (item["name"], hm),
-            })
-        week_bars.append({
-            "moving": week_mv,
-            "hm": hm_of(week_mv),
-            "segments": segments,
-        })
+            segments.append(
+                {
+                    "name": item["name"],
+                    "colour": item["colour"],
+                    "pct": round(100.0 * moving / week_mv, 1),
+                    "hm": hm,
+                    "tip": "%s %s" % (item["name"], hm),
+                }
+            )
+        week_bars.append(
+            {
+                "moving": week_mv,
+                "hm": hm_of(week_mv),
+                "segments": segments,
+            }
+        )
     week_peak = max((b["moving"] for b in week_bars), default=1) or 1
     for bar in week_bars:
         bar["pct"] = round(100.0 * bar["moving"] / week_peak, 1)
     return calendar, week_bars, legend, len(recent_rows)
 
 
-def build_heatmap(rows: list[dict], years: list[int],
-                  by_day: dict[date, list[dict]]) -> dict:
+def build_heatmap(rows: list[dict], years: list[int], by_day: dict[date, list[dict]]) -> dict:
     """GitHub-style year heatmaps; cells coloured by activity name."""
     year_panels = []
     for year in years:
@@ -489,12 +515,12 @@ def build_heatmap(rows: list[dict], years: list[int],
                 in_year = day.year == year
                 hits = by_day.get(day, []) if in_year else []
                 if not in_year:
-                    cells.append({"class": "hm out", "title": "", "colour": "",
-                                  "segments": []})
+                    cells.append({"class": "hm out", "title": "", "colour": "", "segments": []})
                     continue
                 if not hits:
-                    cells.append({"class": "hm", "title": day.isoformat(),
-                                  "colour": "", "segments": []})
+                    cells.append(
+                        {"class": "hm", "title": day.isoformat(), "colour": "", "segments": []}
+                    )
                     continue
                 # Aggregate km (or count) per activity name for pie segments
                 by_name: dict[str, float] = defaultdict(float)
@@ -508,11 +534,18 @@ def build_heatmap(rows: list[dict], years: list[int],
                 angle = 0.0
                 for name in names:
                     pct = 100 * by_name[name] / total_w
-                    segments.append({"name": name, "colour": sport_colour(name),
-                                     "pct": round(pct, 1), "start": round(angle, 1)})
+                    segments.append(
+                        {
+                            "name": name,
+                            "colour": sport_colour(name),
+                            "pct": round(pct, 1),
+                            "start": round(angle, 1),
+                        }
+                    )
                     angle += pct
                 detail = " · ".join(
-                    ("%s %.2f km" % (h["label"], h["km"])) if h["km"] >= 0.1
+                    ("%s %.2f km" % (h["label"], h["km"]))
+                    if h["km"] >= 0.1
                     else ("%s %s" % (h["label"], clock_of(h["moving"])))
                     for h in hits
                 )
@@ -521,38 +554,44 @@ def build_heatmap(rows: list[dict], years: list[int],
                     stops = []
                     for seg in segments:
                         end_a = seg["start"] + seg["pct"]
-                        stops.append("%s %.1f%% %.1f%%" % (
-                            seg["colour"], seg["start"], end_a))
+                        stops.append("%s %.1f%% %.1f%%" % (seg["colour"], seg["start"], end_a))
                     pie = "conic-gradient(%s)" % ", ".join(stops)
                 cls = "hm on" + (" multi" if pie else "")
                 prim_load = sum(hit_load(h) for h in hits if h["name"] == primary)
                 peak = type_peak[primary]
                 level = max(1, min(4, int(ceil(min(prim_load / peak, 1.0) * 4))))
-                cells.append({
-                    "class": cls,
-                    "title": "%s · %s" % (day.isoformat(), detail),
-                    "colour": heat_colour(primary, level),
-                    "pie": pie,
-                    "segments": segments,
-                })
+                cells.append(
+                    {
+                        "class": cls,
+                        "title": "%s · %s" % (day.isoformat(), detail),
+                        "colour": heat_colour(primary, level),
+                        "pie": pie,
+                        "segments": segments,
+                    }
+                )
             weeks.append(cells)
             cursor += timedelta(days=7)
             week_index += 1
         # 月份按 12 等分钉死，不跟「1 号所在周」走，换年标签不会挪。
-        month_marks = [{"label": "%d月" % m, "pct": round(100.0 * (m - 1) / 12, 3)}
-                       for m in range(1, 13)]
-        names_used = sorted({
-            h["name"] for day, hits in by_day.items()
-            if day.year == year for h in hits
-        }, key=lambda n: (0 if n == "跑步" else 1, n))
-        legend = [{"name": n, "colours": list(HEAT_PALETTES.get(n) or HEAT_PALETTES["其他"])}
-                  for n in names_used]
-        year_panels.append({
-            "year": year,
-            "weeks": weeks,
-            "months": month_marks,
-            "legend": legend,
-        })
+        month_marks = [
+            {"label": "%d月" % m, "pct": round(100.0 * (m - 1) / 12, 3)} for m in range(1, 13)
+        ]
+        names_used = sorted(
+            {h["name"] for day, hits in by_day.items() if day.year == year for h in hits},
+            key=lambda n: (0 if n == "跑步" else 1, n),
+        )
+        legend = [
+            {"name": n, "colours": list(HEAT_PALETTES.get(n) or HEAT_PALETTES["其他"])}
+            for n in names_used
+        ]
+        year_panels.append(
+            {
+                "year": year,
+                "weeks": weeks,
+                "months": month_marks,
+                "legend": legend,
+            }
+        )
     return {"years": year_panels}
 
 
@@ -647,34 +686,37 @@ def main() -> None:
     for row in rows:
         by_name[row["name"]].append(row)
     rank_year = years[0] if years else today.year
-    year_n = {
-        n: sum(1 for r in rs if r["day"].year == rank_year)
-        for n, rs in by_name.items()
-    }
+    year_n = {n: sum(1 for r in rs if r["day"].year == rank_year) for n, rs in by_name.items()}
     ranked = sorted(
         by_name,
         key=lambda n: (-year_n[n], -len(by_name[n]), n),
     )
     if len(ranked) > SWITCHER_SLOTS:
-        print("warning: %d sports exceed %d switcher slots; truncating"
-              % (len(ranked), SWITCHER_SLOTS), file=sys.stderr)
+        print(
+            "warning: %d sports exceed %d switcher slots; truncating"
+            % (len(ranked), SWITCHER_SLOTS),
+            file=sys.stderr,
+        )
         ranked = ranked[:SWITCHER_SLOTS]
 
     panels = []
     for name in ranked:
         mine = by_name[name]
         all_s = summarise(mine)
-        panels.append({
-            "bucket": name,
-            "icon": next((r["icon"] for r in mine if r.get("icon")), "•"),
-            "hide_km": all_s["km"] < 0.1,
-            "recent": summarise([r for r in mine if win_start <= r["day"] <= today]),
-            "yearly": [dict(summarise([r for r in mine if r["day"].year == y]),
-                            year=int(y))
-                       for y in years],
-            "all": all_s,
-            "records": records_for(name, mine),
-        })
+        panels.append(
+            {
+                "bucket": name,
+                "icon": next((r["icon"] for r in mine if r.get("icon")), "•"),
+                "hide_km": all_s["km"] < 0.1,
+                "recent": summarise([r for r in mine if win_start <= r["day"] <= today]),
+                "yearly": [
+                    dict(summarise([r for r in mine if r["day"].year == y]), year=int(y))
+                    for y in years
+                ],
+                "all": all_s,
+                "records": records_for(name, mine),
+            }
+        )
 
     # one activity list per year ("day" is a date object used for grouping only)
     head_kinds = ("跑步", "骑行", "游泳", "徒步", "走路")
@@ -689,14 +731,15 @@ def main() -> None:
 
     groups = []
     for y in years:
-        items = [{k: v for k, v in r.items() if k != "day"}
-                 for r in rows if r["day"].year == y]
-        groups.append({
-            "year": y,
-            "count": len(items),
-            "items": items,
-            "kinds": kinds_in(items),
-        })
+        items = [{k: v for k, v in r.items() if k != "day"} for r in rows if r["day"].year == y]
+        groups.append(
+            {
+                "year": y,
+                "count": len(items),
+                "items": items,
+                "kinds": kinds_in(items),
+            }
+        )
 
     # 4-week dot calendar, Monday-first, newest week last. Rows are precomputed
     # here so the template only loops.
@@ -718,25 +761,30 @@ def main() -> None:
         panel["hours"] = hours_label(sum(r["moving"] for r in mine))
         panel["n"] = len(mine)
 
-    dump_data("workouts.json", {
-        "generated_from": "life-data/workouts/activities.json",
-        "stopgap": False,
-        "totals": {
-            "km": round(sum(r["km"] for r in rows), 1),
-            "moving": sum(r["moving"] for r in rows),
-            "runs": len(runs),
-            "sessions": len(rows),
+    dump_data(
+        "workouts.json",
+        {
+            "generated_from": "life-data/workouts/activities.json",
+            "stopgap": False,
+            "totals": {
+                "km": round(sum(r["km"] for r in rows), 1),
+                "moving": sum(r["moving"] for r in rows),
+                "runs": len(runs),
+                "sessions": len(rows),
+            },
+            "latest": max(r["date"] for r in rows),
+            "year": year,
+            "last4": summarise(recent_rows),
+            "heatmap": heatmap,
+            "groups": groups,
+            "panels": panels,
+            "run_page": RUN_PAGE,
         },
-        "latest": max(r["date"] for r in rows),
-        "year": year,
-        "last4": summarise(recent_rows),
-        "heatmap": heatmap,
-        "groups": groups,
-        "panels": panels,
-        "run_page": RUN_PAGE,
-    })
-    print("workouts ok (%d activities, %d trails, %.0f KB of track data)"
-          % (len(rows), len(trimmed), used / 1024))
+    )
+    print(
+        "workouts ok (%d activities, %d trails, %.0f KB of track data)"
+        % (len(rows), len(trimmed), used / 1024)
+    )
 
 
 if __name__ == "__main__":
