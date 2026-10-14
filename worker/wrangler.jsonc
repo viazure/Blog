@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "blog-cache",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-14",
+  "workers_dev": false,
+  "preview_urls": false,
+  "upload_source_maps": false,
+  "observability": {
+    "enabled": true,
+    "traces": {
+      "enabled": true
+    }
+  },
+  "r2_buckets": [
+    {
+      "binding": "CACHE",
+      "bucket_name": "cache"
+    }
+  ],
+  "routes": [
+    {
+      "pattern": "cache.viazure.cc",
+      "custom_domain": true
+    }
+  ]
+}

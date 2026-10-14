@@ -9,12 +9,14 @@ Display data stays on Last.fm (scrobbles, top charts, loved). Artwork:
 
 CAA is only used when Last.fm has no art. The page lazy-loads covers and
 falls back on error, so a failed CAA request does not block the document.
-Nothing is downloaded into the site; every URL is a hotlink.
+Cover URLs are rewritten to the cache Worker proxy (Last.fm and CAA).
 """
 
 from __future__ import annotations
 
 import math
+import os
+import re
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -43,6 +45,10 @@ PLACEHOLDER = "2a96cbd8b46e442fc41c2b86b821562f"
 # Last.fm's own "no artwork" image for music, hotlinked from their CDN.
 NO_MUSIC_ART = "https://lastfm-img.freetls.fastly.net/i/u/64s/4128a6eb29f94943c9d206c08e625904.jpg"
 CAA_FRONT = "https://coverartarchive.org/release/{mbid}/front-250"
+# Cover proxy origin; override with COVER_PROXY_ORIGIN for local testing.
+COVER_PROXY_ORIGIN = os.environ.get("COVER_PROXY_ORIGIN", "https://cache.viazure.cc").rstrip("/")
+LASTFM_IMG_PREFIX = "https://lastfm-img.freetls.fastly.net/i/u/"
+CAA_RELEASE_PREFIX = "https://coverartarchive.org/release/"
 RECENT_LIMIT = 10
 # Cap the artwork lookup so an unexpected archive cannot blow up the run.
 ART_SCAN_LIMIT = 20000
@@ -128,12 +134,39 @@ def lb_art_indexes(listens: list) -> tuple[dict[tuple[str, str], str], dict[tupl
     return tracks, albums
 
 
+def proxy_cover(url: str) -> str:
+    """Rewrite Last.fm / CAA hotlinks to the Worker proxy; leave others alone."""
+    if not url:
+        return url
+    if url.startswith(LASTFM_IMG_PREFIX):
+        rest = url[len(LASTFM_IMG_PREFIX) :]
+        if "/" in rest:
+            size, file = rest.split("/", 1)
+            # Keep in sync with worker LASTFM_SIZE whitelist.
+            if size in {"64s", "300x300"} and re.fullmatch(
+                r"[a-f0-9]+\.(jpg|png|gif)", file, re.I
+            ):
+                return f"{COVER_PROXY_ORIGIN}/cover/lastfm/{size}/{file}"
+        return url
+    if url.startswith(CAA_RELEASE_PREFIX):
+        rest = url[len(CAA_RELEASE_PREFIX) :]
+        match = re.fullmatch(
+            r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/front-250",
+            rest,
+            re.I,
+        )
+        if match:
+            return f"{COVER_PROXY_ORIGIN}/cover/caa/{match.group(1)}/front-250"
+        return url
+    return url
+
+
 def pick_cover(*candidates: str) -> str:
     """First usable Last.fm or CAA image, else the shared no-art placeholder."""
     for url in candidates:
         if url and PLACEHOLDER not in url:
-            return url
-    return NO_MUSIC_ART
+            return proxy_cover(url)
+    return proxy_cover(NO_MUSIC_ART)
 
 
 def playcount_of(row: dict) -> int:
@@ -198,24 +231,32 @@ def main() -> None:
         stamped.append((int(uts), row))
     stamped.sort(key=lambda item: item[0], reverse=True)
 
+    # Collapse consecutive identical (artist, track) runs, keep the newest stamp,
+    # and scan further so the panel still has RECENT_LIMIT rows.
     recent = []
-    for uts, row in stamped[:RECENT_LIMIT]:
-        day, clock = local_stamp(uts)
+    last_key: tuple[str, str] | None = None
+    for uts, row in stamped:
         artist = field_text(row.get("artist"))
         track = field_text(row.get("name"))
         key = track_key(artist, track)
-        recent.append(
-            {
-                "album": field_text(row.get("album")),
-                "artist": artist,
-                "date": day,
-                "image": pick_cover(image_of(row.get("image")), lb_tracks.get(key, "")),
-                "loved": is_loved(artist, track, hearts, row.get("loved")),
-                "time": clock,
-                "track": track,
-                "url": field_text(row.get("url")),
-            }
-        )
+        if key == last_key and recent:
+            recent[-1]["plays"] = int(recent[-1].get("plays") or 1) + 1
+            continue
+        if len(recent) >= RECENT_LIMIT:
+            break
+        last_key = key
+        day, clock = local_stamp(uts)
+        entry = {
+            "album": field_text(row.get("album")),
+            "artist": artist,
+            "date": day,
+            "image": pick_cover(image_of(row.get("image")), lb_tracks.get(key, "")),
+            "loved": is_loved(artist, track, hearts, row.get("loved")),
+            "time": clock,
+            "track": track,
+            "url": field_text(row.get("url")),
+        }
+        recent.append(entry)
 
     # One board set per period, so the page can switch between them. Charts are
     # albums and tracks only: no reachable Last.fm endpoint returns artist
