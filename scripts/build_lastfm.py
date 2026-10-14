@@ -18,7 +18,7 @@ import math
 import os
 import re
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -55,7 +55,7 @@ ART_SCAN_LIMIT = 20000
 
 
 def local_stamp(uts: int) -> tuple[str, str]:
-    moment = datetime.fromtimestamp(int(uts), timezone.utc).astimezone(DISPLAY_TZ)
+    moment = datetime.fromtimestamp(int(uts), UTC).astimezone(DISPLAY_TZ)
     return moment.strftime("%Y-%m-%d"), moment.strftime("%H:%M")
 
 
@@ -143,9 +143,7 @@ def proxy_cover(url: str) -> str:
         if "/" in rest:
             size, file = rest.split("/", 1)
             # Keep in sync with worker LASTFM_SIZE whitelist.
-            if size in {"64s", "300x300"} and re.fullmatch(
-                r"[a-f0-9]+\.(jpg|png|gif)", file, re.I
-            ):
+            if size in {"64s", "300x300"} and re.fullmatch(r"[a-f0-9]+\.(jpg|png|gif)", file, re.I):
                 return f"{COVER_PROXY_ORIGIN}/cover/lastfm/{size}/{file}"
         return url
     if url.startswith(CAA_RELEASE_PREFIX):

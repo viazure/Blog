@@ -13,8 +13,10 @@ npm install
 npx wrangler login                     # 本机首次需要
 npx wrangler r2 bucket create cache    # 若尚未创建
 npm run deploy
+npm run typecheck                      # tsc --noEmit
 npm run types                          # 生成 worker-configuration.d.ts（含 Env + runtime）
 ```
+
 
 若在 Windows 上 `wrangler types` 因 workerd 无法在仓库盘创建目录而失败，可在可写临时目录生成后拷回 `worker-configuration.d.ts`。
 
