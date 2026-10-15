@@ -6,14 +6,6 @@
           "id": "albums",
           "items": [
             {
-              "artist": "Fall Out Boy",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/9df53662061e4f30924723d65b42935c.png",
-              "playcount": 2,
-              "share": 100,
-              "title": "Save Rock and Roll",
-              "url": "https://www.last.fm/music/Fall+Out+Boy/Save+Rock+and+Roll"
-            },
-            {
               "artist": "梁靜茹",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/c343c92137a6f5fbb7878fa28f1e29de.jpg",
               "playcount": 2,
@@ -28,6 +20,14 @@
               "share": 0,
               "title": "丝路",
               "url": "https://www.last.fm/music/AI%E5%8A%9B%E5%AE%8F/%E4%B8%9D%E8%B7%AF"
+            },
+            {
+              "artist": "椎名林檎",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/d5df186bd388a9de2e9543b7138406d2.jpg",
+              "playcount": 1,
+              "share": 0,
+              "title": "Best Singles Collection",
+              "url": "https://www.last.fm/music/%E6%A4%8E%E5%90%8D%E6%9E%97%E6%AA%8E/Best+Singles+Collection"
             }
           ],
           "label": "专辑"
@@ -35,15 +35,6 @@
         {
           "id": "tracks",
           "items": [
-            {
-              "artist": "Fall Out Boy",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/9df53662061e4f30924723d65b42935c.png",
-              "loved": false,
-              "playcount": 2,
-              "share": 100,
-              "title": "My Songs Know What You Did in the Dark (Light Em Up)",
-              "url": "https://www.last.fm/music/Fall+Out+Boy/_/My+Songs+Know+What+You+Did+in+the+Dark+(Light+Em+Up)"
-            },
             {
               "artist": "梁靜茹",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/c343c92137a6f5fbb7878fa28f1e29de.jpg",
@@ -61,6 +52,15 @@
               "share": 0,
               "title": "丝路",
               "url": "https://www.last.fm/music/AI%E5%8A%9B%E5%AE%8F/_/%E4%B8%9D%E8%B7%AF"
+            },
+            {
+              "artist": "椎名林檎",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/d5df186bd388a9de2e9543b7138406d2.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "17",
+              "url": "https://www.last.fm/music/%E6%A4%8E%E5%90%8D%E6%9E%97%E6%AA%8E/_/17"
             }
           ],
           "label": "歌曲"
@@ -467,12 +467,12 @@
               "url": "https://www.last.fm/music/%E5%BC%A0%E5%8F%B6%E8%95%BE/%E9%93%B6%E6%B2%B3%E9%A3%9E%E8%BD%A6"
             },
             {
-              "artist": "苏诗丁",
-              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "artist": "椎名林檎",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/d5df186bd388a9de2e9543b7138406d2.jpg",
               "playcount": 1,
               "share": 0,
-              "title": "瓦尔登湖",
-              "url": "https://www.last.fm/music/%E8%8B%8F%E8%AF%97%E4%B8%81/%E7%93%A6%E5%B0%94%E7%99%BB%E6%B9%96"
+              "title": "Best Singles Collection",
+              "url": "https://www.last.fm/music/%E6%A4%8E%E5%90%8D%E6%9E%97%E6%AA%8E/Best+Singles+Collection"
             }
           ],
           "label": "专辑"
@@ -607,6 +607,15 @@
               "url": "https://www.last.fm/music/Akua+Naru/_/the+world+is+listening"
             },
             {
+              "artist": "Angus Stone",
+              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "Wooden Chair (feat. Marion Mayer) [Duo Version]",
+              "url": "https://www.last.fm/music/Angus+Stone/_/Wooden+Chair+(feat.+Marion+Mayer)+%5BDuo+Version%5D"
+            },
+            {
               "artist": "Augustana",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/17d7b574d1394ff69ac5a29fe5ef11ad.jpg",
               "loved": false,
@@ -623,6 +632,15 @@
               "share": 0,
               "title": "The Beat Goes On",
               "url": "https://www.last.fm/music/Beady+Eye/_/The+Beat+Goes+On"
+            },
+            {
+              "artist": "Bianca Merkley",
+              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "Time Rolls On By",
+              "url": "https://www.last.fm/music/Bianca+Merkley/_/Time+Rolls+On+By"
             },
             {
               "artist": "Billie Eilish",
@@ -733,6 +751,15 @@
               "url": "https://www.last.fm/music/Frente!/_/Bizarre+Love+Triangle"
             },
             {
+              "artist": "Green Day",
+              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "Brutal Love",
+              "url": "https://www.last.fm/music/Green+Day/_/Brutal+Love"
+            },
+            {
               "artist": "Guns N' Roses",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/fe3783f447dca320d9ea3c8042ee7db4.png",
               "loved": false,
@@ -785,6 +812,15 @@
               "share": 0,
               "title": "Nobody Loves You (When You're Down and Out)",
               "url": "https://www.last.fm/music/John+Lennon/_/Nobody+Loves+You+(When+You%27re+Down+and+Out)"
+            },
+            {
+              "artist": "Kendrick Lamar",
+              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "luther",
+              "url": "https://www.last.fm/music/Kendrick+Lamar/_/luther"
             },
             {
               "artist": "Kiri T",
@@ -841,6 +877,15 @@
               "url": "https://www.last.fm/music/Metallica/_/Fade+to+Black"
             },
             {
+              "artist": "Mili",
+              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "Rendezvous",
+              "url": "https://www.last.fm/music/Mili/_/Rendezvous"
+            },
+            {
               "artist": "Oasis",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/1b217359e775a8b6a7bc443abe5b08c2.jpg",
               "loved": true,
@@ -884,51 +929,6 @@
               "share": 0,
               "title": "ULALA (feat. Pröz)",
               "url": "https://www.last.fm/music/pink+luu,Pro%CC%88z/_/ULALA+(feat.+Pr%C3%B6z)"
-            },
-            {
-              "artist": "Reynard Silva",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/3c8422d8bab371ab3432de0b42cda1fd.jpg",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "The Way I Still Love You",
-              "url": "https://www.last.fm/music/Reynard+Silva/_/The+Way+I+Still+Love+You"
-            },
-            {
-              "artist": "Sarah Kang",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/f49bee5a4738785284de05f86be56907.jpg",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "goodbye and godspeed",
-              "url": "https://www.last.fm/music/Sarah+Kang/_/goodbye+and+godspeed"
-            },
-            {
-              "artist": "silent anthem,heart embrace",
-              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "passion",
-              "url": "https://www.last.fm/music/silent+anthem,heart+embrace/_/passion"
-            },
-            {
-              "artist": "Sophie Zelmani",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/e251ffc0d4c563a44968e8cb4fd478be.jpg",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "Vintage Love",
-              "url": "https://www.last.fm/music/Sophie+Zelmani/_/Vintage+Love"
-            },
-            {
-              "artist": "Tal Richards,Hahlweg,sheepy",
-              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "Rest",
-              "url": "https://www.last.fm/music/Tal+Richards,Hahlweg,sheepy/_/Rest"
             }
           ],
           "label": "歌曲"
@@ -1763,6 +1763,15 @@
               "url": "https://www.last.fm/music/Alyson+Stoner;MAX;Kurt+Hugo+Schneider/_/Maps"
             },
             {
+              "artist": "Angus Stone",
+              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "Wooden Chair (feat. Marion Mayer) [Duo Version]",
+              "url": "https://www.last.fm/music/Angus+Stone/_/Wooden+Chair+(feat.+Marion+Mayer)+%5BDuo+Version%5D"
+            },
+            {
               "artist": "ArtOfficial - Too Nasty - kagero Remix -",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/23396f3bfe2852503106bd9f58f9090e.jpg",
               "loved": false,
@@ -1788,15 +1797,6 @@
               "share": 0,
               "title": "The Beat Goes On",
               "url": "https://www.last.fm/music/Beady+Eye/_/The+Beat+Goes+On"
-            },
-            {
-              "artist": "Billie Eilish",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/69628d7606c8e3916141050c32505a9e.jpg",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "What Was I Made For? [From the Motion Picture \"Barbie\"]",
-              "url": "https://www.last.fm/music/Billie+Eilish/_/What+Was+I+Made+For%3F+%5BFrom+the+Motion+Picture+%22Barbie%22%5D"
             }
           ],
           "label": "歌曲"
@@ -4412,6 +4412,16 @@
   ],
   "recent": [
     {
+      "album": "Best Singles Collection",
+      "artist": "椎名林檎",
+      "date": "2026-10-14",
+      "image": "https://cache.viazure.cc/cover/lastfm/300x300/d5df186bd388a9de2e9543b7138406d2.jpg",
+      "loved": false,
+      "time": "19:32",
+      "track": "17",
+      "url": "https://www.last.fm/music/%E6%A4%8E%E5%90%8D%E6%9E%97%E6%AA%8E/_/17"
+    },
+    {
       "album": "丝路",
       "artist": "AI力宏",
       "date": "2026-10-10",
@@ -4502,18 +4512,8 @@
       "time": "16:13",
       "track": "The Beat Goes On",
       "url": "https://www.last.fm/music/Beady+Eye/_/The+Beat+Goes+On"
-    },
-    {
-      "album": "Walls and Bridges",
-      "artist": "John Lennon",
-      "date": "2026-10-04",
-      "image": "https://cache.viazure.cc/cover/lastfm/300x300/eee6b6f8b79b480aadb8db94031000b8.jpg",
-      "loved": false,
-      "time": "16:08",
-      "track": "Nobody Loves You (When You're Down and Out)",
-      "url": "https://www.last.fm/music/John+Lennon/_/Nobody+Loves+You+(When+You%27re+Down+and+Out)"
     }
   ],
-  "scrobbled_to": "2026-10-10",
+  "scrobbled_to": "2026-10-14",
   "user": "viazure"
 }
