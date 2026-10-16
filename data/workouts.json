@@ -9411,22 +9411,22 @@
             "today": false
           },
           {
-            "class": "cd on today",
+            "class": "cd on",
             "date": "2026-10-15",
             "day": 15,
             "km": 5.0,
             "size": 12,
             "title": "晨间跑步 5.01 km",
-            "today": true
+            "today": false
           },
           {
-            "class": "cd future",
+            "class": "cd today",
             "date": "2026-10-16",
             "day": 16,
             "km": 0,
             "size": 0,
             "title": "",
-            "today": false
+            "today": true
           },
           {
             "class": "cd future",
