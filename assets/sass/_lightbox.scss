@@ -1,0 +1,165 @@
+// 图片灯箱，视觉对齐 moment.upstairs.cn 的 .lb-*（黑底、6px 圆角、白色玻璃圆钮、底部队计数）
+
+article .page-content img {
+  cursor: zoom-in;
+}
+
+article .page-content a img {
+  cursor: inherit;
+}
+
+.lb-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  animation: lb-fade 0.18s ease;
+}
+
+@keyframes lb-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lb-img {
+  max-width: 92vw;
+  max-height: 92vh;
+  object-fit: contain;
+  border-radius: 6px;
+  user-select: none;
+}
+
+.lb-img.lb-anim {
+  animation: lb-in 0.22s ease;
+}
+
+@keyframes lb-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.lb-arrow,
+.lb-close {
+  position: absolute;
+  z-index: 10;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background 0.15s;
+}
+
+.lb-arrow:hover,
+.lb-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.lb-arrow[hidden] {
+  display: none;
+}
+
+.lb-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.lb-prev {
+  left: 20px;
+}
+
+.lb-next {
+  right: 20px;
+}
+
+.lb-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  top: 18px;
+  right: 18px;
+}
+
+.lb-meta {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.lb-title {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 80vw;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 15px;
+  line-height: 1.45;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lb-title[hidden] {
+  display: none;
+}
+
+.lb-counter {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 4px 14px;
+  border-radius: 999px;
+}
+
+.lb-counter[hidden] {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .lb-arrow {
+    width: 36px;
+    height: 36px;
+    top: auto;
+    bottom: 18%;
+    transform: none;
+  }
+
+  .lb-prev {
+    left: 8px;
+  }
+
+  .lb-next {
+    right: 8px;
+  }
+}

@@ -87,6 +87,7 @@ theme = "hugo-blog-awesome"
     # summary - 在 RSS 源中包含博文的简短摘要。使用 Hugo .Summary 生成
     # full - 在 RSS 源中包含完整博文。使用 Hugo .Content 生成
     # 默认（或未指定）情况下使用 summary
+    additionalScripts = ["js/lightbox-init.js"] # 正文图片灯箱（自写，点击打开全屏查看）
 
     [Languages.zh-cn.params.author]
       avatar = "avatar.png" # 将文件放在 assets 文件夹中；确保图片具有相同的高度和宽度
