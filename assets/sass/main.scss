@@ -1,0 +1,21 @@
+@import "variables";
+
+//////////////// Import all sass files /////////////////
+
+@import "fonts";
+@import "base";
+@import "navbar";
+@import "layout";
+@import "post";
+@import "code";
+
+@import "tableOfContent";
+@import "search";
+@import "miscellaneous";
+@import "dark";
+@import "listpage";
+@import "custom";
+
+{{ with .Site.Params.goToTop }}
+@import "goToTop";
+{{ end }}

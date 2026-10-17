@@ -55,17 +55,17 @@ theme = "hugo-blog-awesome"
       url = "/posts/"
       weight = 10
     [[Languages.zh-cn.menu.main]]
-      pageRef="/workouts"
+      pageRef="pages/workouts"
       name = "运动"
       url = "/workouts/"
       weight = 20
     [[Languages.zh-cn.menu.main]]
-      pageRef="/media"
+      pageRef="pages/media"
       name = "书影音"
       url = "/media/"
       weight = 30
     [[Languages.zh-cn.menu.main]]
-      pageRef = "/about"
+      pageRef="pages/about"
       name = "关于"
       url = "/about/"
       weight = 40
