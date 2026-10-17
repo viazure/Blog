@@ -1,0 +1,62 @@
+<!-- Taken from Hugo default RSS template: https://github.com/gohugoio/hugo/blob/master/tpl/tplimpl/embedded/templates/_default/rss.xml -->
+{{- $pctx := . -}}
+{{- if .IsHome -}}{{ $pctx = .Site }}{{- end -}}
+{{- $pages := slice -}}
+{{- $mainSections := .Site.Params.mainSections | default (slice "posts") -}}
+{{- if or $.IsHome $.IsSection -}}
+{{- $pages = where $pctx.RegularPages "Section" "in" $mainSections -}}
+{{- else -}}
+{{- $pages = where $pctx.Pages "Section" "in" $mainSections -}}
+{{- end -}}
+{{- $pages = where $pages "Params.exclude_from_rss" "!=" true -}}
+{{- $limit := .Site.Config.Services.RSS.Limit -}}
+{{- if ge $limit 1 -}}
+{{- $pages = $pages | first $limit -}}
+{{- end -}}
+{{- $rssFeedDescription := .Site.Params.rssFeedDescription | default "summary" -}}
+{{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:webfeeds="http://webfeeds.org/rss/1.0">
+  <channel>
+    <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ with .Title }}{{.}} on {{ end }}{{ .Site.Title }}{{ end }}</title>
+    <link>{{ .Permalink }}</link>
+    <description>Recent content {{ if .IsHome }}on {{ .Site.Title }}{{ else }}in {{ .Title }} on {{ .Site.Title }}{{ end }}</description>
+    {{- with .Site.Params.follow -}}
+    <follow_challenge>
+    <feedId>{{ .feedId }}</feedId>
+    <userId>{{ .userId }}</userId>
+    </follow_challenge>
+    {{- end -}}
+    <generator>Hugo -- gohugo.io</generator>
+    <language>{{ site.Language.Locale }}</language>
+    <webfeeds:icon>{{ "icons/favicon.svg" | absURL }}</webfeeds:icon>
+    <webfeeds:logo>{{ "icons/favicon.svg" | absURL }}</webfeeds:logo>
+    <image>
+      <url>{{ "icons/favicon.svg" | absURL }}</url>
+      <title>{{ .Site.Title }}</title>
+      <link>{{ .Site.BaseURL }}</link>
+    </image>
+    {{ with site.Params.author.email }}
+    <managingEditor>{{.}}{{ with site.Params.author.name }} ({{.}}){{end}}</managingEditor>{{end}}{{ with site.Params.author.email }}
+    <webMaster>{{.}}{{ with site.Params.author.name }} ({{.}}){{end}}</webMaster>{{end}}{{ with site.Params.copyright }}
+    <copyright>{{.}}</copyright>{{end}}{{ if not .Date.IsZero }}
+    <lastBuildDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>{{ end }}
+    {{- with .OutputFormats.Get "RSS" -}}
+    {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
+    {{- end -}}
+    {{ range $pages }}
+    <item>
+      <title>{{ .Title }}</title>
+      <link>{{ .Permalink }}</link>
+      <pubDate>{{ .Date.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+      {{ with site.Params.author.email }}<author>{{.}}{{ with site.Params.author.name }} ({{.}}){{end}}</author>{{end}}
+      <guid>{{ .Permalink }}</guid>
+      {{ if eq $rssFeedDescription "summary"}}
+      <description>{{ .Summary | html }}</description>
+      {{ else if (eq $rssFeedDescription "full")}}
+      <description>{{ .Content | html }}</description>
+      {{ else }} {{ errorf "Error in RSS feed generation %q" .Path }}
+      {{ end }}
+    </item>
+    {{ end }}
+  </channel>
+</rss>

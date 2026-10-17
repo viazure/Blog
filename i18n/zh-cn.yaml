@@ -1,6 +1,65 @@
+## SINGLE ##
+- id: "single.toc_open"
+  translation: "打开目录"
+
+- id: "single.toc_close"
+  translation: "关闭目录"
+
+## SEARCH ##
+- id: "search.label"
+  translation: "搜索"
+
+- id: "search.placeholder"
+  translation: "搜索标题、标签或正文"
+
+- id: "search.hint_navigate"
+  translation: "切换"
+
+- id: "search.hint_select"
+  translation: "打开"
+
+- id: "search.hint_dismiss"
+  translation: "关闭"
+
+- id: "search.tips_label"
+  translation: "搜索语法"
+
+- id: "search.syntax_space"
+  translation: "空格"
+
+- id: "search.syntax_token"
+  translation: "词"
+
+- id: "search.syntax_and"
+  translation: "同时包含"
+
+- id: "search.syntax_or"
+  translation: "匹配任一"
+
+- id: "search.syntax_exact"
+  translation: "精确"
+
+- id: "search.syntax_prefix"
+  translation: "前缀"
+
+- id: "search.syntax_suffix"
+  translation: "后缀"
+
+- id: "search.syntax_exclude"
+  translation: "排除"
+
+- id: "search.no_results"
+  translation: "没有匹配的文章"
+
+- id: "search.error"
+  translation: "搜索暂时不可用，请稍后重试"
+
+- id: "search.close"
+  translation: "关闭"
+
 ## FOOTER ##
 - id: "footer.disclaimer"
-  translation: "Powered by <a href=\"https://github.com/viazure/hugo-blog-awesome\" target=\"_blank\" rel=\"noopener\">Hugo blog awesome</a>."
+  translation: "Powered by <a href=\"https://github.com/hugo-sid/hugo-blog-awesome\" target=\"_blank\" rel=\"noopener\">Hugo blog awesome</a>."
 
 ## ERRORS ##
 - id: "errors.404"
