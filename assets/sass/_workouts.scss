@@ -378,11 +378,8 @@
 
 .heatwrap {
   margin-top: 2rem;
-
-  @include media-query($on-mobile) {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+  max-width: 100%;
+  min-width: 0;
 }
 
 .heat-head {
@@ -454,8 +451,8 @@
   display: flex;
   gap: 2px;
   width: 100%;
+  max-width: 100%;
   min-width: 0;
-  overflow: visible;
 }
 
 .hm-week {
@@ -526,6 +523,7 @@
   position: relative;
   height: 1.05rem;
   margin: 0 0 0.35rem;
+  overflow: hidden;
   color: $gray;
   font-size: 0.6rem;
   font-variant-numeric: tabular-nums;
@@ -731,6 +729,23 @@
     max-height: 16rem;
     overflow-y: auto;
     overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba($text-base-color, 0.35) transparent;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border: 2px solid #fff;
+      border-radius: 999px;
+      background: rgba($text-base-color, 0.35);
+      background-clip: padding-box;
+    }
 
     label {
       display: flex;

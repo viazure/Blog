@@ -1,0 +1,47 @@
+{{- if .Site.Params.search -}}
+{{- $fuse := resources.Get "js/fuse.min.js" -}}
+{{- if not $fuse -}}
+{{- errorf "search: missing assets/js/fuse.min.js" -}}
+{{- end -}}
+<div class="search-dialog" id="search-dialog" hidden data-fuse="{{ $fuse.RelPermalink }}" data-index="{{ "index.json" | relLangURL }}">
+    <div class="search-dialog-panel" role="dialog" aria-modal="true" aria-labelledby="search-title">
+        <h2 id="search-title" class="visually-hidden">{{ T "search.label" }}</h2>
+        <div class="search-dialog-bar">
+            <button type="button" class="search-dialog-icon-btn" data-search-tips aria-expanded="false" aria-controls="search-syntax-tip" aria-label="{{ T "search.tips_label" }}">
+                <svg class="search-dialog-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+            <label class="search-dialog-field">
+                <span class="visually-hidden">{{ T "search.placeholder" }}</span>
+                <input type="search" id="search-input" name="q" autocomplete="off" spellcheck="false" placeholder="{{ T "search.placeholder" }}" data-search-input>
+            </label>
+            <button type="button" class="search-dialog-close" data-search-close aria-label="{{ T "search.close" }}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="search-dialog-syntax" id="search-syntax-tip" hidden>
+            <ul>
+                <li><kbd class="search-dialog-kbd">{{ T "search.syntax_space" }}</kbd><span>{{ T "search.syntax_and" }}</span></li>
+                <li><kbd class="search-dialog-kbd">|</kbd><span>{{ T "search.syntax_or" }}</span></li>
+                <li><kbd class="search-dialog-kbd">'{{ T "search.syntax_token" }}</kbd><span>{{ T "search.syntax_exact" }}</span></li>
+                <li><kbd class="search-dialog-kbd">^{{ T "search.syntax_token" }}</kbd><span>{{ T "search.syntax_prefix" }}</span></li>
+                <li><kbd class="search-dialog-kbd">{{ T "search.syntax_token" }}$</kbd><span>{{ T "search.syntax_suffix" }}</span></li>
+                <li><kbd class="search-dialog-kbd">!{{ T "search.syntax_token" }}</kbd><span>{{ T "search.syntax_exclude" }}</span></li>
+            </ul>
+        </div>
+        <p class="search-dialog-hint" data-search-hint>
+            <span class="search-dialog-hint-item"><kbd class="search-dialog-kbd">↑</kbd> <kbd class="search-dialog-kbd">↓</kbd> {{ T "search.hint_navigate" }}</span>
+            <span class="search-dialog-hint-item"><kbd class="search-dialog-kbd">↵</kbd> {{ T "search.hint_select" }}</span>
+            <span class="search-dialog-hint-item"><kbd class="search-dialog-kbd">Esc</kbd> {{ T "search.hint_dismiss" }}</span>
+        </p>
+        <p class="search-dialog-empty" data-search-empty hidden>{{ T "search.no_results" }}</p>
+        <p class="search-dialog-empty" data-search-error hidden>{{ T "search.error" }}</p>
+        <ul class="search-dialog-results" data-search-results></ul>
+    </div>
+</div>
+{{- end -}}
