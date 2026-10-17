@@ -34,37 +34,90 @@
     );
   }
 
+  // 看过的图留在页面里，关掉灯箱也不销毁。再次打开直接用已经解码的那张。
+  var POOL_LIMIT = 32;
+  var poolRoot = null;
+  var pool = Object.create(null);
+  var poolOrder = [];
+
+  function ensurePool() {
+    if (poolRoot) return;
+    poolRoot = document.createElement("div");
+    poolRoot.className = "lb-pool";
+    poolRoot.setAttribute("aria-hidden", "true");
+    document.body.appendChild(poolRoot);
+  }
+
+  function remember(src) {
+    var at = poolOrder.indexOf(src);
+    if (at >= 0) poolOrder.splice(at, 1);
+    poolOrder.push(src);
+    while (poolOrder.length > POOL_LIMIT) {
+      var old = poolOrder[0];
+      var victim = pool[old];
+      if (!victim || !poolRoot.contains(victim)) break;
+      poolOrder.shift();
+      victim.onload = null;
+      victim.onerror = null;
+      victim.remove();
+      delete pool[old];
+    }
+  }
+
+  function take(src) {
+    ensurePool();
+    var el = pool[src];
+    if (!el) {
+      el = document.createElement("img");
+      el.className = "lb-img";
+      el.decoding = "async";
+      el.alt = "";
+      el.setAttribute("aria-hidden", "true");
+      pool[src] = el;
+      poolRoot.appendChild(el);
+      el.src = src;
+    }
+    remember(src);
+    return el;
+  }
+
+  function park(el) {
+    if (!el || !poolRoot) return;
+    el.onload = null;
+    el.onerror = null;
+    el.classList.remove("is-front");
+    el.alt = "";
+    el.setAttribute("aria-hidden", "true");
+    poolRoot.appendChild(el);
+  }
+
   function open(images, index) {
     if (!images.length || document.querySelector(".lb-overlay")) return;
 
     var cur = index;
-    var trigger = images[index];
-    var prevOverflow = document.body.style.overflow;
-    var prevPosition = document.body.style.position;
-    var prevTop = document.body.style.top;
-    var prevWidth = document.body.style.width;
-    var scrollY = window.scrollY || window.pageYOffset;
+    var root = document.documentElement;
+    var prevOverflow = root.style.overflow;
+    var prevPad = root.style.paddingRight;
+    var scrollbar = window.innerWidth - root.clientWidth;
 
-    var ov = document.createElement("div");
+    var ov = document.createElement("dialog");
     ov.className = "lb-overlay";
-    ov.setAttribute("role", "dialog");
-    ov.setAttribute("aria-modal", "true");
     ov.setAttribute("aria-label", "图片查看");
+    ov.tabIndex = -1;
     ov.innerHTML =
       '<button type="button" class="lb-close" aria-label="关闭">' + ICON_CLOSE + "</button>" +
       '<button type="button" class="lb-arrow lb-prev" aria-label="上一张">' + ICON_PREV + "</button>" +
-      '<img class="lb-img" alt="">' +
+      '<div class="lb-spinner" hidden aria-hidden="true"></div>' +
       '<button type="button" class="lb-arrow lb-next" aria-label="下一张">' + ICON_NEXT + "</button>" +
       '<div class="lb-meta"><div class="lb-title"></div><div class="lb-counter"></div></div>';
     document.body.appendChild(ov);
 
-    // 锁滚动：overflow + fixed，兼顾桌面与 iOS Safari
-    document.body.style.overflow = "hidden";
-    document.body.style.position = "fixed";
-    document.body.style.top = "-" + scrollY + "px";
-    document.body.style.width = "100%";
+    // 模态对话框自己锁住背后的滚动。这里只补上滚动条宽度，避免滚动条消失时页面横移。
+    root.style.overflow = "hidden";
+    if (scrollbar > 0) root.style.paddingRight = scrollbar + "px";
 
-    var imgEl = ov.querySelector(".lb-img");
+    var front = null;
+    var spinner = ov.querySelector(".lb-spinner");
     var titleEl = ov.querySelector(".lb-title");
     var counter = ov.querySelector(".lb-counter");
     var prevBtn = ov.querySelector(".lb-prev");
@@ -74,84 +127,125 @@
     prevBtn.hidden = nextBtn.hidden = !many;
     counter.hidden = !many;
 
-    function preload(i) {
-      var el = new Image();
-      el.src = images[(i + images.length) % images.length].src;
+    var token = 0;
+    var shown = -1;
+    var pending = -1;
+    var spinnerTimer = 0;
+
+    function hideSpinner() {
+      clearTimeout(spinnerTimer);
+      spinner.hidden = true;
     }
 
-    function render(i, animate) {
-      cur = (i + images.length) % images.length;
-      var item = images[cur];
-      if (animate) {
-        imgEl.classList.remove("lb-anim");
-        void imgEl.offsetWidth;
-      }
-      imgEl.src = item.src;
+    function preload(i) {
+      var item = images[(i + images.length) % images.length];
+      if (item) take(item.currentSrc || item.src);
+    }
+
+    function reveal(index, el) {
+      var item = images[index];
       var title = item.getAttribute("title") || item.alt || "";
-      imgEl.alt = title;
+      el.onload = null;
+      el.onerror = null;
+      el.alt = title;
+      el.setAttribute("aria-hidden", "false");
       titleEl.textContent = title;
       titleEl.hidden = !title;
-      if (animate) imgEl.classList.add("lb-anim");
-      counter.textContent = cur + 1 + " / " + images.length;
-      preload(cur + 1);
-      preload(cur - 1);
+      counter.textContent = index + 1 + " / " + images.length;
+      if (front && front !== el) park(front);
+      el.classList.add("is-front");
+      ov.insertBefore(el, spinner);
+      front = el;
+      shown = index;
+      cur = index;
+      pending = -1;
+      hideSpinner();
+      preload(index + 1);
+      preload(index - 1);
     }
 
-    function close() {
-      document.removeEventListener("keydown", onKey);
-      ov.remove();
-      document.body.style.overflow = prevOverflow;
-      document.body.style.position = prevPosition;
-      document.body.style.top = prevTop;
-      document.body.style.width = prevWidth;
-      window.scrollTo(0, scrollY);
-      if (trigger) {
-        if (!trigger.hasAttribute("tabindex")) trigger.setAttribute("tabindex", "-1");
-        try {
-          trigger.focus({ preventScroll: true });
-        } catch (err) {
-          trigger.focus();
-        }
+    function render(i) {
+      var index = (i + images.length) % images.length;
+      if (index === shown) {
+        cur = shown;
+        pending = -1;
+        token++;
+        hideSpinner();
+        return;
       }
+      if (index === pending) return;
+      cur = index;
+      pending = index;
+      var item = images[index];
+      var src = item.currentSrc || item.src;
+      var seq = ++token;
+      var el = take(src);
+      hideSpinner();
+
+      function go() {
+        if (seq !== token || closed) return;
+        reveal(index, el);
+      }
+
+      // 这张元素已经解码过，直接拿出来。不要再等一次加载。
+      if (el.complete && el.naturalWidth > 0) {
+        go();
+        return;
+      }
+
+      var settled = false;
+      function ready() {
+        if (settled) return;
+        settled = true;
+        go();
+      }
+      el.onload = ready;
+      el.onerror = ready;
+      if (el.complete) ready();
+      if (shown === index || seq !== token) return;
+      if (shown < 0) spinner.hidden = false;
+      else spinnerTimer = setTimeout(function () {
+        if (seq === token) spinner.hidden = false;
+      }, 160);
+    }
+
+    var closed = false;
+    function unlock() {
+      root.style.overflow = prevOverflow;
+      root.style.paddingRight = prevPad;
+    }
+    function finish() {
+      if (closed) return;
+      closed = true;
+      clearTimeout(spinnerTimer);
+      if (front) park(front);
+      front = null;
+      document.removeEventListener("keydown", onKey);
+      unlock();
+      if (ov.isConnected) ov.remove();
+    }
+    function close() {
+      if (ov.open) ov.close();
+      else finish();
     }
 
     function onKey(e) {
-      if (e.key === "Escape") {
+      if (e.key === "ArrowLeft" && many) {
         e.preventDefault();
-        close();
-      } else if (e.key === "ArrowLeft" && many) {
-        e.preventDefault();
-        render(cur - 1, true);
+        render(cur - 1);
       } else if (e.key === "ArrowRight" && many) {
         e.preventDefault();
-        render(cur + 1, true);
-      } else if (e.key === "Tab") {
-        // 简易焦点陷阱：Tab 只在关闭 / 左右箭头之间循环
-        var focusables = [closeBtn];
-        if (many) {
-          focusables.push(prevBtn, nextBtn);
-        }
-        var idx = focusables.indexOf(document.activeElement);
-        if (idx < 0) {
-          e.preventDefault();
-          closeBtn.focus();
-          return;
-        }
-        e.preventDefault();
-        var next = e.shiftKey
-          ? focusables[(idx - 1 + focusables.length) % focusables.length]
-          : focusables[(idx + 1) % focusables.length];
-        next.focus();
+        render(cur + 1);
       }
     }
 
     prevBtn.addEventListener("click", function (e) {
       e.stopPropagation();
-      render(cur - 1, true);
+      render(cur - 1);
     });
     nextBtn.addEventListener("click", function (e) {
       e.stopPropagation();
-      render(cur + 1, true);
+      render(cur + 1);
     });
     closeBtn.addEventListener("click", function (e) {
       e.stopPropagation();
@@ -173,7 +267,7 @@
       var dy = e.changedTouches[0].clientY - startY;
       if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dy) > Math.abs(dx)) return;
       swiped = true;
-      render(dx > 0 ? cur - 1 : cur + 1, true);
+      render(dx > 0 ? cur - 1 : cur + 1);
     }, { passive: true });
 
     ov.addEventListener("click", function (e) {
@@ -184,9 +278,12 @@
       if (!e.target.closest(".lb-arrow, .lb-close")) close();
     });
 
+    ov.addEventListener("close", finish);
+
     document.addEventListener("keydown", onKey);
-    render(cur, false);
-    closeBtn.focus();
+    render(cur);
+    ov.showModal();
+    ov.focus({ preventScroll: true, focusVisible: false });
   }
 
   document.addEventListener("click", function (e) {

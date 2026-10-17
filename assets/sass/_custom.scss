@@ -6,7 +6,10 @@
 
 body {
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe\ UI\ Variable\ Text, Segoe\ UI, PingFang\ SC, HarmonyOS\ Sans\ SC, MiSans, Source\ Han\ Sans\ SC, Noto\ Sans\ CJK\ SC, Microsoft\ YaHei\ UI, Microsoft\ YaHei, sans-serif;
+  font-weight: 450;
   font-optical-sizing: auto;
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
 }
 
 code,
