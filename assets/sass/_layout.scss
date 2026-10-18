@@ -211,3 +211,10 @@ mark {
   color: #000;
   border-radius: 3px;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .author-avatar {
+    animation: none;
+    -webkit-animation: none;
+  }
+}

@@ -6,7 +6,7 @@
     align-items: flex-start;
     justify-content: center;
     padding: 12vh 0.75rem 1rem;
-    background: rgba(13, 18, 43, 0.32);
+    background: rgba($black, 0.32);
 }
 
 @media screen and (min-width: 769px) {
@@ -218,7 +218,7 @@
 .search-dialog-results mark {
     padding: 0 0.12em;
     color: inherit;
-    background: rgba(0, 63, 255, 0.22);
+    background: rgba($text-link-blue, 0.22);
     border-radius: 2px;
 }
 
