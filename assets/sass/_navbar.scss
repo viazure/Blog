@@ -257,8 +257,15 @@
       .menu-link:focus-visible,
       .menu-search:focus-visible,
       a#mode:focus-visible {
-        outline: 3px solid rgba(0, 54, 199, 0.6);
+        outline: 3px solid rgba($text-link-blue-active, 0.6);
         outline-offset: 2px;
       }
     }
   }
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar .menu input[type="checkbox"]:checked ~ .trigger {
+    animation: none;
+    -webkit-animation: none;
+  }
+}

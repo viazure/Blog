@@ -276,11 +276,11 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
   }
 
   .year-dd-list {
-    background: #1a1d24;
+    background: $surface-dark;
     scrollbar-color: rgba(255, 255, 255, 0.35) transparent;
 
     &::-webkit-scrollbar-thumb {
-      border-color: #1a1d24;
+      border-color: $surface-dark;
       background: rgba(255, 255, 255, 0.35);
     }
   }
@@ -296,7 +296,7 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
   }
 
   .scroll-clip::after {
-    background: linear-gradient(to top, rgba(26, 29, 36, 0.85), transparent);
+    background: linear-gradient(to top, rgba($surface-dark, 0.85), transparent);
   }
 
   .hm:not(.on) {
@@ -310,13 +310,13 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
   .cd[data-tip]::after,
   .hm[data-tip]::after,
   .stv-bar i[data-tip]::after {
-    background: #1a1d24;
+    background: $surface-dark;
     border-color: $rule-dark;
     color: $dark-text;
   }
 
   .run-card .card-tip {
-    background: #1a1d24;
+    background: $surface-dark;
     border-color: $rule-dark;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
   }
@@ -393,7 +393,7 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
 
   @for $i from 1 through $switcher-slots {
     .act-switcher:has(.sw-#{$i}:checked) .act-bar .chips > label:nth-of-type(#{$i}) {
-      color: #1a1d24;
+      color: $surface-dark;
       background: $dark-text;
     }
 

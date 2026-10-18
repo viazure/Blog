@@ -130,7 +130,7 @@
     padding: 0;
     border: 0;
     border-radius: 10%;
-    color: $text-base-color;
+    color: rgba($chrome-ink, 0.55);
     background-color: $go-top-bg;
     cursor: pointer;
     opacity: 0;
@@ -151,6 +151,7 @@
 
     &:hover,
     &:focus-visible {
+        color: rgba($chrome-ink, 0.88);
         background-color: $go-top-bg-hover;
     }
 }

@@ -70,11 +70,12 @@
   }
 
   .toc-fab {
-    color: $dark-text-base-color;
+    color: rgba($white, 0.62);
     background-color: $dark-go-top-bg;
 
     &:hover,
     &:focus-visible {
+      color: $white;
       background-color: $dark-go-top-bg-hover;
     }
   }
@@ -86,10 +87,12 @@
 
   // Go to top
   #totop {
-    color: $dark-text-base-color;
+    color: rgba($white, 0.62);
     background-color: $dark-go-top-bg;
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
+      color: $white;
       background-color: $dark-go-top-bg-hover;
     }
   }
@@ -206,7 +209,7 @@
         .menu-link:focus-visible,
         .menu-search:focus-visible,
         a#mode:focus-visible {
-          outline-color: rgba(119, 168, 253, 0.75);
+          outline-color: rgba($dark-text-link-blue, 0.75);
         }
       }
     }
@@ -334,7 +337,7 @@
   }
 
   .search-dialog-results mark {
-    background: rgba(119, 168, 253, 0.38);
+    background: rgba($dark-text-link-blue, 0.38);
   }
 }
 
