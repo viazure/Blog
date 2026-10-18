@@ -146,8 +146,8 @@
     var fitMode = "fit";
     var rot = 0;
 
-    // 原图横向最多 1080px。适应模式按窗口尽量铺满，可放大。
-    var ORIGINAL_MAX_W = 1080;
+    // 适应：按视口宽高尽量铺满（可放大）。
+    // 原图：不超过 1:1；横向限到视口宽（无左右滚动），过高则上下滚。
     function placeTitle() {
       if (!titleEl) return;
       if (titleEl.hidden || !front) {
@@ -183,8 +183,8 @@
         var visH = sideways ? nw : nh;
         var scale;
         if (fitMode === "original") {
-          var cap = Math.min(ORIGINAL_MAX_W, Math.max(280, ov.clientWidth - 96));
-          scale = Math.min(1, cap / visW);
+          var capW = Math.max(240, ov.clientWidth - 32);
+          scale = Math.min(1, capW / visW);
           frame.style.width = (sideways ? nh * scale : nw * scale) + "px";
           frame.style.height = (sideways ? nw * scale : nh * scale) + "px";
         } else {
