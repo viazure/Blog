@@ -99,7 +99,7 @@ article .page-content a img {
   max-height: 96vw;
 }
 
-// 原图最宽撑满窗口，更高的部分在图片层里上下滚。控件留在窗口上。
+// 原图横向已限到视口宽；过高时在 stage 内上下滚，控件留在窗口上。
 .lb-overlay.is-original .lb-stage {
   position: absolute;
   inset: 0;
@@ -184,14 +184,11 @@ article .page-content a img {
   padding: 0;
 }
 
-.lb-arrow {
+.lb-arrow,
+.lb-tool {
   background: $go-top-bg;
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
-}
-
-.lb-tool {
-  background: transparent;
 }
 
 .lb-arrow:hover,
@@ -236,8 +233,6 @@ article .page-content a img {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
 
   svg {
     width: 22px;
@@ -330,12 +325,9 @@ article .page-content a img {
     color: rgba($white, 0.62);
   }
 
-  .lb-arrow {
-    background: $dark-go-top-bg;
-  }
-
+  .lb-arrow,
   .lb-tool {
-    background: transparent;
+    background: $dark-go-top-bg;
   }
 
   .lb-arrow:hover,
@@ -343,12 +335,6 @@ article .page-content a img {
   .lb-arrow:focus-visible,
   .lb-tool:focus-visible {
     color: $white;
-  }
-
-  .lb-arrow:hover,
-  .lb-arrow:focus-visible,
-  .lb-tool:hover,
-  .lb-tool:focus-visible {
     background: $dark-go-top-bg-hover;
   }
 
