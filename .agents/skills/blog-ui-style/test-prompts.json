@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "prompt": "在运动页给每张跑步卡片下面加一句备注文字，显示天气",
+    "expected": "备注用 $gray 小字（0.7–0.8rem）加 tabular-nums，深色模式同步映射到 $dark-gray，不引入新颜色"
+  },
+  {
+    "id": 2,
+    "prompt": "书影音页想加一个'本月回顾'的切换页签，和现有音乐周期切换类似",
+    "expected": "复用隐藏 radio + :has() 的纯 CSS 页签模式，label 灰字、选中深色加粗，深色模式走 mixin"
+  },
+  {
+    "id": 3,
+    "prompt": "新做一个'友链'页面，展示友情链接卡片",
+    "expected": "新建 page-friends.scss 入口 + _friends.scss，类名加 fl- 前缀，卡片 1px $rule 边 12px 圆角，移动端单列，链接样式遵循标题链规则"
+  }
+]

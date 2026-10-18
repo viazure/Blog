@@ -5,7 +5,7 @@ html {
 
 #totop {
     visibility: hidden;
-    color: rgba(28, 28, 30, 0.55);
+    color: rgba($chrome-ink, 0.55);
     position: fixed;
     bottom: 60px;
     right: 30px;
@@ -13,10 +13,11 @@ html {
     border-radius: 10%;
     background-color: $go-top-bg;
     opacity: 0;
-    transition: visibility .5s,opacity .8s linear;
+    transition: opacity 0.2s ease-out, visibility 0.2s ease-out;
 
-    &:hover {
-        color: rgba(28, 28, 30, 0.88);
+    &:hover,
+    &:focus-visible {
+        color: rgba($chrome-ink, 0.88);
         background-color: $go-top-bg-hover;
     }
 
@@ -25,5 +26,15 @@ html {
         display: block;
         height: 40px;
         width: 40px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    #totop {
+        transition: none;
     }
 }
