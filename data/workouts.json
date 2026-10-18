@@ -9446,22 +9446,22 @@
             "today": false
           },
           {
-            "class": "cd on today",
+            "class": "cd on",
             "date": "2026-10-17",
             "day": 17,
             "km": 5.2,
             "size": 13,
             "title": "晨间跑步 5.18 km",
-            "today": true
+            "today": false
           },
           {
-            "class": "cd future",
+            "class": "cd today",
             "date": "2026-10-18",
             "day": 18,
             "km": 0,
             "size": 0,
             "title": "",
-            "today": false
+            "today": true
           }
         ]
       ],
