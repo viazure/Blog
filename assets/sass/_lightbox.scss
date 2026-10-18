@@ -1,4 +1,4 @@
-// 图片灯箱，视觉对齐 moment.upstairs.cn 的 .lb-*（黑底、6px 圆角、白色玻璃圆钮、底部队计数）
+// 图片灯箱。罩层跟站点亮/暗，照片本身不着色。
 
 article .page-content img {
   cursor: zoom-in;
@@ -19,12 +19,12 @@ article .page-content a img {
   margin: 0;
   padding: 0;
   border: none;
-  background: rgba(0, 0, 0, 0.9);
-  color: #fff;
+  background: #f4f4f5;
+  color: #1c1c1e;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: zoom-out;
+  cursor: default;
   overscroll-behavior: none;
   animation: lb-fade 0.18s ease;
 }
@@ -39,8 +39,8 @@ article .page-content a img {
 }
 
 .lb-arrow:focus-visible,
-.lb-close:focus-visible {
-  outline: 2px solid #fff;
+.lb-tool:focus-visible {
+  outline: 2px solid #1c1c1e;
   outline-offset: 2px;
 }
 
@@ -64,22 +64,61 @@ article .page-content a img {
   pointer-events: none;
 }
 
+.lb-stage {
+  pointer-events: none;
+}
+
+.lb-frame {
+  pointer-events: none;
+}
+
 .lb-img {
+  --lb-rot: 0deg;
   position: absolute;
   top: 50%;
   left: 50%;
-  max-width: 92vw;
-  max-height: 92vh;
+  max-width: 96vw;
+  max-height: 96vh;
   object-fit: contain;
-  border-radius: 6px;
+  border-radius: 0;
   user-select: none;
   opacity: 0;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) rotate(var(--lb-rot));
   pointer-events: none;
 }
 
 .lb-img.is-front {
   opacity: 1;
+  pointer-events: auto;
+}
+
+// 旋转 90/270 后，限制的是旋转前的盒子，所以对调宽高。
+.lb-overlay.is-rot-90 .lb-img,
+.lb-overlay.is-rot-270 .lb-img {
+  max-width: 96vh;
+  max-height: 96vw;
+}
+
+// 原图最宽撑满窗口，更高的部分在图片层里上下滚。控件留在窗口上。
+.lb-overlay.is-original .lb-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  overflow-x: hidden;
+  overflow-y: auto;
+  pointer-events: auto;
+}
+
+.lb-overlay.is-original .lb-frame {
+  position: relative;
+  flex: none;
+  margin: auto;
+}
+
+.lb-overlay.is-original .lb-img {
+  max-width: none;
+  max-height: none;
 }
 
 .lb-spinner {
@@ -93,10 +132,10 @@ article .page-content a img {
   margin-left: -22px;
   box-sizing: border-box;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.55);
-  border: 3px solid rgba(255, 255, 255, 0.28);
-  border-top-color: #fff;
-  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.72);
+  border: 3px solid rgba(0, 0, 0, 0.16);
+  border-top-color: #1c1c1e;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.12);
   animation: lb-spin 0.7s linear infinite;
 }
 
@@ -111,25 +150,62 @@ article .page-content a img {
 }
 
 .lb-arrow,
-.lb-close {
-  position: absolute;
+.lb-tool,
+.lb-title,
+.lb-counter {
+  transition: opacity 0.2s ease-out, background 0.15s ease-out, color 0.15s ease-out;
+}
+
+.lb-overlay.is-idle .lb-arrow,
+.lb-overlay.is-idle .lb-tools,
+.lb-overlay.is-idle .lb-title,
+.lb-overlay.is-idle .lb-counter {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lb-title {
+  opacity: 0;
+}
+
+.lb-overlay.is-title-on:not(.is-idle) .lb-title {
+  opacity: 1;
+}
+
+.lb-arrow,
+.lb-tool {
   z-index: 10;
   border: none;
   cursor: pointer;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.16);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
+  color: rgba(28, 28, 30, 0.55);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
-  transition: background 0.15s;
+}
+
+.lb-arrow {
+  background: $go-top-bg;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.lb-tool {
+  background: transparent;
 }
 
 .lb-arrow:hover,
-.lb-close:hover {
-  background: rgba(255, 255, 255, 0.3);
+.lb-tool:hover,
+.lb-arrow:focus-visible,
+.lb-tool:focus-visible {
+  color: rgba(28, 28, 30, 0.88);
+}
+
+.lb-arrow:hover,
+.lb-arrow:focus-visible,
+.lb-tool:hover,
+.lb-tool:focus-visible {
+  background: $go-top-bg-hover;
 }
 
 .lb-arrow[hidden] {
@@ -137,11 +213,43 @@ article .page-content a img {
 }
 
 .lb-arrow {
+  position: absolute;
   width: 44px;
   height: 44px;
   border-radius: 50%;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.lb-tools {
+  position: absolute;
+  z-index: 10;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lb-tool {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+
+  svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.lb-fit {
+  font-size: 13px;
+  font-weight: 450;
+  letter-spacing: -0.03em;
+  line-height: 1;
 }
 
 .lb-prev {
@@ -153,11 +261,8 @@ article .page-content a img {
 }
 
 .lb-close {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  top: 18px;
-  right: 18px;
+  width: 44px;
+  height: 44px;
 }
 
 .lb-meta {
@@ -167,47 +272,116 @@ article .page-content a img {
   pointer-events: none;
 }
 
-.lb-title {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: 80vw;
-  padding: 6px 16px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.45);
-  color: #fff;
-  font-size: 15px;
-  line-height: 1.45;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.lb-title[hidden] {
-  display: none;
-}
-
 .lb-counter {
   position: absolute;
   top: 18px;
   left: 18px;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(28, 28, 30, 0.55);
   font-size: 13px;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(255, 255, 255, 0.38);
   padding: 4px 14px;
   border-radius: 999px;
 }
 
+.lb-title {
+  position: absolute;
+  left: 50%;
+  top: auto;
+  bottom: 18px;
+  max-width: 70vw;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  color: rgba(28, 28, 30, 0.8);
+  font-weight: 450;
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform: translateX(-50%);
+}
+
+.lb-title[hidden],
 .lb-counter[hidden] {
   display: none;
 }
 
-@media (max-width: 600px) {
+@mixin lb-on-dark {
+  .lb-overlay {
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+  }
+
+  .lb-arrow:focus-visible,
+  .lb-tool:focus-visible {
+    outline-color: #fff;
+  }
+
+  .lb-spinner {
+    background: rgba(0, 0, 0, 0.55);
+    border-color: rgba(255, 255, 255, 0.28);
+    border-top-color: #fff;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
+  }
+
+  .lb-arrow,
+  .lb-tool {
+    color: rgba(255, 255, 255, 0.62);
+  }
+
   .lb-arrow {
+    background: $dark-go-top-bg;
+  }
+
+  .lb-tool {
+    background: transparent;
+  }
+
+  .lb-arrow:hover,
+  .lb-tool:hover,
+  .lb-arrow:focus-visible,
+  .lb-tool:focus-visible {
+    color: #fff;
+  }
+
+  .lb-arrow:hover,
+  .lb-arrow:focus-visible,
+  .lb-tool:hover,
+  .lb-tool:focus-visible {
+    background: $dark-go-top-bg-hover;
+  }
+
+  .lb-counter {
+    background: rgba(0, 0, 0, 0.28);
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .lb-title {
+    background: rgba(0, 0, 0, 0.52);
+    color: rgba(255, 255, 255, 0.92);
+  }
+}
+
+html.dark {
+  @include lb-on-dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) {
+    @include lb-on-dark;
+  }
+}
+
+@media (max-width: 600px) {
+  .lb-arrow,
+  .lb-tool,
+  .lb-close {
     width: 36px;
     height: 36px;
+  }
+
+  .lb-arrow {
     top: auto;
     bottom: 18%;
     transform: none;
