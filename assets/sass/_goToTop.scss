@@ -5,7 +5,7 @@ html {
 
 #totop {
     visibility: hidden;
-    color: $text-base-color;
+    color: rgba(28, 28, 30, 0.55);
     position: fixed;
     bottom: 60px;
     right: 30px;
@@ -16,6 +16,7 @@ html {
     transition: visibility .5s,opacity .8s linear;
 
     &:hover {
+        color: rgba(28, 28, 30, 0.88);
         background-color: $go-top-bg-hover;
     }
 
