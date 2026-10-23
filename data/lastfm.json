@@ -1594,14 +1594,6 @@
               "url": "https://www.last.fm/music/Various+Artists/%E5%8F%A4%E6%A0%91%E6%97%8B%E5%BE%8B+Deemo"
             },
             {
-              "artist": "卢广仲",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8a6a1ae2563f4befcb430c1b7f87e555.jpg",
-              "playcount": 2,
-              "share": 63,
-              "title": "大人中",
-              "url": "https://www.last.fm/music/%E5%8D%A2%E5%B9%BF%E4%BB%B2/%E5%A4%A7%E4%BA%BA%E4%B8%AD"
-            },
-            {
               "artist": "告五人",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/cf9538d4b4dc657ed0ca629c818a486d.jpg",
               "playcount": 2,
@@ -1904,6 +1896,14 @@
               "share": 0,
               "title": "Suddenly",
               "url": "https://www.last.fm/music/Ina/Suddenly"
+            },
+            {
+              "artist": "Isaac Gracie",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/fa4a42ac19bd303c78e0fec52a473888.jpg",
+              "playcount": 1,
+              "share": 0,
+              "title": "Songs From My Bedroom",
+              "url": "https://www.last.fm/music/Isaac+Gracie/Songs+From+My+Bedroom"
             }
           ],
           "label": "专辑"
@@ -1964,15 +1964,6 @@
               "share": 63,
               "title": "A Journey's Pace",
               "url": "https://www.last.fm/music/Tal+Richards,sheepy,Hahlweg/_/A+Journey%27s+Pace"
-            },
-            {
-              "artist": "卢广仲",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8a6a1ae2563f4befcb430c1b7f87e555.jpg",
-              "loved": true,
-              "playcount": 2,
-              "share": 63,
-              "title": "大人中",
-              "url": "https://www.last.fm/music/%E5%8D%A2%E5%B9%BF%E4%BB%B2/_/%E5%A4%A7%E4%BA%BA%E4%B8%AD"
             },
             {
               "artist": "告五人",
@@ -2360,6 +2351,15 @@
               "share": 0,
               "title": "Bizarre Love Triangle",
               "url": "https://www.last.fm/music/Frente!/_/Bizarre+Love+Triangle"
+            },
+            {
+              "artist": "fun.",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/c643374762104e128456da5edfc12e5e.png",
+              "loved": true,
+              "playcount": 1,
+              "share": 0,
+              "title": "We Are Young(feat. Janelle Monaé)",
+              "url": "https://www.last.fm/music/fun./_/We+Are+Young(feat.+Janelle+Mona%C3%A9)"
             }
           ],
           "label": "歌曲"
