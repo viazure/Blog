@@ -9469,22 +9469,22 @@
         ],
         [
           {
-            "class": "cd on today",
+            "class": "cd on",
             "date": "2026-10-26",
             "day": 26,
             "km": 5.0,
             "size": 12,
             "title": "晨间跑步 5.01 km",
-            "today": true
+            "today": false
           },
           {
-            "class": "cd future",
+            "class": "cd today",
             "date": "2026-10-27",
             "day": 27,
             "km": 0,
             "size": 0,
             "title": "",
-            "today": false
+            "today": true
           },
           {
             "class": "cd future",
