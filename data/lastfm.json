@@ -167,7 +167,7 @@
             },
             {
               "artist": "Oasis",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/29e567e3ec017d384460792c5c43ebed.jpg",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/1b217359e775a8b6a7bc443abe5b08c2.jpg",
               "playcount": 1,
               "share": 0,
               "title": "(What's the Story) Morning Glory?",
@@ -962,14 +962,6 @@
               "url": "https://www.last.fm/music/Man%2FWoman%2FChainsaw/Only+Girl"
             },
             {
-              "artist": "Oasis",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/29e567e3ec017d384460792c5c43ebed.jpg",
-              "playcount": 2,
-              "share": 30,
-              "title": "(What's the Story) Morning Glory?",
-              "url": "https://www.last.fm/music/Oasis/(What%27s+the+Story)+Morning+Glory%3F"
-            },
-            {
               "artist": "re:plus",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/b69bb04dd311caa5b5d7623a664641af.jpg",
               "playcount": 2,
@@ -1066,22 +1058,6 @@
               "url": "https://www.last.fm/music/AI%E5%8A%9B%E5%AE%8F/%E4%B8%9D%E8%B7%AF"
             },
             {
-              "artist": "Akua Naru",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/829664bef58a49d5865a83741fb1e6b5.jpg",
-              "playcount": 1,
-              "share": 0,
-              "title": "The Journay Aflame",
-              "url": "https://www.last.fm/music/Akua+Naru/The+Journay+Aflame"
-            },
-            {
-              "artist": "Augustana",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/17d7b574d1394ff69ac5a29fe5ef11ad.jpg",
-              "playcount": 1,
-              "share": 0,
-              "title": "Can't Love, Can't Hurt EP",
-              "url": "https://www.last.fm/music/Augustana/Can%27t+Love,+Can%27t+Hurt+EP"
-            },
-            {
               "artist": "Augustana",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/daf43db716b44f1ab4cca5dcf4fe8f63.jpg",
               "playcount": 1,
@@ -1122,14 +1098,6 @@
               "url": "https://www.last.fm/music/b%C3%B4a/Race+Of+A+Thousand+Camels"
             },
             {
-              "artist": "Bob Dylan",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/531c17bc256597b56c3082780f8c0b00.jpg",
-              "playcount": 1,
-              "share": 0,
-              "title": "Modern Times",
-              "url": "https://www.last.fm/music/Bob+Dylan/Modern+Times"
-            },
-            {
               "artist": "Chance Peña",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/1fb5e3b54eff447d8109a3a089445557.png",
               "playcount": 1,
@@ -1160,14 +1128,6 @@
               "share": 0,
               "title": "Cigarettes After Sex",
               "url": "https://www.last.fm/music/Cigarettes+After+Sex/Cigarettes+After+Sex"
-            },
-            {
-              "artist": "Coldplay",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/a61e3c7b85303555ebac49fa460a17c3.png",
-              "playcount": 1,
-              "share": 0,
-              "title": "A Rush of Blood to the Head",
-              "url": "https://www.last.fm/music/Coldplay/A+Rush+of+Blood+to+the+Head"
             },
             {
               "artist": "Coldplay",
@@ -1266,12 +1226,52 @@
               "url": "https://www.last.fm/music/Ina/Suddenly"
             },
             {
-              "artist": "Isaac Gracie",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/fa4a42ac19bd303c78e0fec52a473888.jpg",
+              "artist": "Jason Walker",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/c8102bfe28924ce79606ba88cf3ba5f8.png",
               "playcount": 1,
               "share": 0,
-              "title": "Songs From My Bedroom",
-              "url": "https://www.last.fm/music/Isaac+Gracie/Songs+From+My+Bedroom"
+              "title": "Jason Walker",
+              "url": "https://www.last.fm/music/Jason+Walker/Jason+Walker"
+            },
+            {
+              "artist": "Jax",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/1152aa3b1cd3fac895056acb9e5b61f7.jpg",
+              "playcount": 1,
+              "share": 0,
+              "title": "La La Land",
+              "url": "https://www.last.fm/music/Jax/La+La+Land"
+            },
+            {
+              "artist": "Jennifer March",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/80ba9be7c4518ed2b0438704336333d1.png",
+              "playcount": 1,
+              "share": 0,
+              "title": "Enemy",
+              "url": "https://www.last.fm/music/Jennifer+March/Enemy"
+            },
+            {
+              "artist": "John Lennon",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/eee6b6f8b79b480aadb8db94031000b8.jpg",
+              "playcount": 1,
+              "share": 0,
+              "title": "Walls and Bridges",
+              "url": "https://www.last.fm/music/John+Lennon/Walls+and+Bridges"
+            },
+            {
+              "artist": "July",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/261f5ad2efb87383ecc76f1cfb11d3f4.jpg",
+              "playcount": 1,
+              "share": 0,
+              "title": "Beyond The Memory",
+              "url": "https://www.last.fm/music/July/Beyond+The+Memory"
+            },
+            {
+              "artist": "Kodaline",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/33348e925e0f408eac64c272f5e24fce.png",
+              "playcount": 1,
+              "share": 0,
+              "title": "In a Perfect World",
+              "url": "https://www.last.fm/music/Kodaline/In+a+Perfect+World"
             }
           ],
           "label": "专辑"
@@ -1334,15 +1334,6 @@
               "url": "https://www.last.fm/music/Man%2FWoman%2FChainsaw/_/Only+Girl"
             },
             {
-              "artist": "Oasis",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/29e567e3ec017d384460792c5c43ebed.jpg",
-              "loved": true,
-              "playcount": 2,
-              "share": 63,
-              "title": "Don't Look Back in Anger",
-              "url": "https://www.last.fm/music/Oasis/_/Don%27t+Look+Back+in+Anger"
-            },
-            {
               "artist": "re:plus",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/b69bb04dd311caa5b5d7623a664641af.jpg",
               "loved": false,
@@ -1350,15 +1341,6 @@
               "share": 63,
               "title": "Everlasting Truth",
               "url": "https://www.last.fm/music/re:plus/_/Everlasting+Truth"
-            },
-            {
-              "artist": "Tal Richards,sheepy,Hahlweg",
-              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
-              "loved": false,
-              "playcount": 2,
-              "share": 63,
-              "title": "A Journey's Pace",
-              "url": "https://www.last.fm/music/Tal+Richards,sheepy,Hahlweg/_/A+Journey%27s+Pace"
             },
             {
               "artist": "告五人",
@@ -1442,15 +1424,6 @@
               "url": "https://www.last.fm/music/AI%E5%8A%9B%E5%AE%8F/_/%E4%B8%9D%E8%B7%AF"
             },
             {
-              "artist": "Akua Naru",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/829664bef58a49d5865a83741fb1e6b5.jpg",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "the world is listening",
-              "url": "https://www.last.fm/music/Akua+Naru/_/the+world+is+listening"
-            },
-            {
               "artist": "Angus Stone",
               "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
               "loved": false,
@@ -1467,15 +1440,6 @@
               "share": 0,
               "title": "Boston",
               "url": "https://www.last.fm/music/Augustana/_/Boston"
-            },
-            {
-              "artist": "Augustana",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/17d7b574d1394ff69ac5a29fe5ef11ad.jpg",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "Sweet and Low (new album version)",
-              "url": "https://www.last.fm/music/Augustana/_/Sweet+and+Low+(new+album+version)"
             },
             {
               "artist": "Bea Miller",
@@ -1523,15 +1487,6 @@
               "url": "https://www.last.fm/music/b%C3%B4a/_/Duvet"
             },
             {
-              "artist": "Bob Dylan",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/531c17bc256597b56c3082780f8c0b00.jpg",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "Workingman's Blues #2",
-              "url": "https://www.last.fm/music/Bob+Dylan/_/Workingman%27s+Blues+%232"
-            },
-            {
               "artist": "Chance Peña",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/1fb5e3b54eff447d8109a3a089445557.png",
               "loved": false,
@@ -1575,15 +1530,6 @@
               "share": 0,
               "title": "Things You Said",
               "url": "https://www.last.fm/music/Cody+Fry,Abby+Cates/_/Things+You+Said"
-            },
-            {
-              "artist": "Coldplay",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/a61e3c7b85303555ebac49fa460a17c3.png",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "The Scientist",
-              "url": "https://www.last.fm/music/Coldplay/_/The+Scientist"
             },
             {
               "artist": "Coldplay",
@@ -1721,13 +1667,67 @@
               "url": "https://www.last.fm/music/Ina/_/I+Wanted+You"
             },
             {
-              "artist": "Isaac Gracie",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/fa4a42ac19bd303c78e0fec52a473888.jpg",
+              "artist": "Jason Walker",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/c8102bfe28924ce79606ba88cf3ba5f8.png",
+              "loved": true,
+              "playcount": 1,
+              "share": 0,
+              "title": "Down",
+              "url": "https://www.last.fm/music/Jason+Walker/_/Down"
+            },
+            {
+              "artist": "Jax",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/1152aa3b1cd3fac895056acb9e5b61f7.jpg",
+              "loved": true,
+              "playcount": 1,
+              "share": 0,
+              "title": "La La Land",
+              "url": "https://www.last.fm/music/Jax/_/La+La+Land"
+            },
+            {
+              "artist": "Jennifer March",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/80ba9be7c4518ed2b0438704336333d1.png",
+              "loved": true,
+              "playcount": 1,
+              "share": 0,
+              "title": "Enemy",
+              "url": "https://www.last.fm/music/Jennifer+March/_/Enemy"
+            },
+            {
+              "artist": "John Lennon",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/eee6b6f8b79b480aadb8db94031000b8.jpg",
               "loved": false,
               "playcount": 1,
               "share": 0,
-              "title": "Terrified",
-              "url": "https://www.last.fm/music/Isaac+Gracie/_/Terrified"
+              "title": "Nobody Loves You (When You're Down and Out)",
+              "url": "https://www.last.fm/music/John+Lennon/_/Nobody+Loves+You+(When+You%27re+Down+and+Out)"
+            },
+            {
+              "artist": "July",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/261f5ad2efb87383ecc76f1cfb11d3f4.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "기억하니? (Acoustic ver.) (inst.) - instrumental",
+              "url": "https://www.last.fm/music/July/_/%EA%B8%B0%EC%96%B5%ED%95%98%EB%8B%88%3F+(Acoustic+ver.)+(inst.)+-+instrumental"
+            },
+            {
+              "artist": "Kanye West,Ye",
+              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "THIS ONE HERE",
+              "url": "https://www.last.fm/music/Kanye+West,Ye/_/THIS+ONE+HERE"
+            },
+            {
+              "artist": "Kendrick Lamar",
+              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "luther",
+              "url": "https://www.last.fm/music/Kendrick+Lamar/_/luther"
             }
           ],
           "label": "歌曲"
@@ -1863,7 +1863,7 @@
             },
             {
               "artist": "Oasis",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/29e567e3ec017d384460792c5c43ebed.jpg",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/1b217359e775a8b6a7bc443abe5b08c2.jpg",
               "playcount": 2,
               "share": 30,
               "title": "(What's the Story) Morning Glory?",
