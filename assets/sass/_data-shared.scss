@@ -201,7 +201,8 @@
 
 /* 选中态：radio 与面板容器同级，用 #id:checked ~ 选到对应面板。
    必须绑到具体 id，否则任意选中的 radio 会同时打开所有面板。 */
-$media-tabs: "music", "book", "movie", "tv", "game", "podcast", "performance";
+/* Align with data/neodb categories.id + music tab; no ghost ids (dropped performance). */
+$media-tabs: "music", "book", "movie", "tv", "game", "podcast";
 
 @each $tab in $media-tabs {
   #media-tab-#{$tab}:checked ~ .tab-panels > .tab-panel.panel-#{$tab} {
