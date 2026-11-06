@@ -1388,6 +1388,7 @@
 }
 
 .wk-viz-stage {
+  position: relative;
   aspect-ratio: 1;
   border: 1px solid $rule;
   border-radius: 14px;
@@ -1396,12 +1397,20 @@
 }
 
 .wk-viz-panel {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   display: grid;
   place-items: center;
   padding: 6%;
   box-sizing: border-box;
+}
+
+/* UA [hidden] is display:none; our display:grid/inline-flex would override without this */
+.wk-viz-panel[hidden],
+.wk-viz-tools[hidden] {
+  display: none !important;
 }
 
 .wk-sclock,
