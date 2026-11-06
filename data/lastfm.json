@@ -6,18 +6,10 @@
           "id": "albums",
           "items": [
             {
-              "artist": "Man/Woman/Chainsaw",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/65189921b15043e98621cce50954770a.png",
-              "playcount": 10,
-              "share": 100,
-              "title": "Cannonball",
-              "url": "https://www.last.fm/music/Man%2FWoman%2FChainsaw/Cannonball"
-            },
-            {
               "artist": "Various Artists",
               "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
               "playcount": 4,
-              "share": 60,
+              "share": 100,
               "title": "古树旋律 Deemo",
               "url": "https://www.last.fm/music/Various+Artists/%E5%8F%A4%E6%A0%91%E6%97%8B%E5%BE%8B+Deemo"
             },
@@ -25,7 +17,7 @@
               "artist": "Rie fu",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/275ccfae609b787ef837f85d1fc8bb17.jpg",
               "playcount": 3,
-              "share": 48,
+              "share": 79,
               "title": "Life is Like a Boat",
               "url": "https://www.last.fm/music/Rie+fu/Life+is+Like+a+Boat"
             },
@@ -33,23 +25,15 @@
               "artist": "Daya",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/d59cf99dfae0d99b549efaf32d9ab8b3.jpg",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "Hide Away",
               "url": "https://www.last.fm/music/Daya/Hide+Away"
-            },
-            {
-              "artist": "Man/Woman/Chainsaw",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/e2ba86d1d0891547d864e81f6be47b5c.jpg",
-              "playcount": 2,
-              "share": 30,
-              "title": "Only Girl",
-              "url": "https://www.last.fm/music/Man%2FWoman%2FChainsaw/Only+Girl"
             },
             {
               "artist": "Mili",
               "cover": "https://cache.viazure.cc/cover/caa/3068bbc2-f40b-4bf4-96be-7c12896fcbc8/front-250",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "古树旋律 Deemo",
               "url": "https://www.last.fm/music/Mili/%E5%8F%A4%E6%A0%91%E6%97%8B%E5%BE%8B+Deemo"
             },
@@ -57,7 +41,7 @@
               "artist": "Oh Sunshine",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/1eb7bd3316204ed58deadc3c92f6f6f3.png",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "oh sunshine",
               "url": "https://www.last.fm/music/Oh+Sunshine/oh+sunshine"
             },
@@ -65,7 +49,7 @@
               "artist": "Regina Spektor",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/5c098672a13f25747741b89a7882bbc3.png",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "Begin to Hope",
               "url": "https://www.last.fm/music/Regina+Spektor/Begin+to+Hope"
             },
@@ -73,7 +57,7 @@
               "artist": "Roth Bart Baron",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/4f4ae4d8f195709d4ec28020b05b118a.jpg",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "赤と青",
               "url": "https://www.last.fm/music/Roth+Bart+Baron/%E8%B5%A4%E3%81%A8%E9%9D%92"
             },
@@ -81,7 +65,7 @@
               "artist": "Taylor Swift",
               "cover": "https://cache.viazure.cc/cover/caa/db52e8c9-4fdb-4959-918e-cd8940c47a3f/front-250",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "Unreleased Songs [Bootleg]",
               "url": "https://www.last.fm/music/Taylor+Swift/Unreleased+Songs+%5BBootleg%5D"
             },
@@ -89,7 +73,7 @@
               "artist": "Valentin",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/5dc18d65f6e8e7cedae3145d23834bc7.jpg",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "My View",
               "url": "https://www.last.fm/music/Valentin/My+View"
             },
@@ -97,23 +81,15 @@
               "artist": "Various Artists",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/3ae619c58817c3e85a1dfe3872e5c678.jpg",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "In Ya Mellow Tone 4",
               "url": "https://www.last.fm/music/Various+Artists/In+Ya+Mellow+Tone+4"
-            },
-            {
-              "artist": "万能青年旅店",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/5546a11bbc7dc1c70341440d3fc5129f.jpg",
-              "playcount": 2,
-              "share": 30,
-              "title": "万能青年旅店 同名专辑",
-              "url": "https://www.last.fm/music/%E4%B8%87%E8%83%BD%E9%9D%92%E5%B9%B4%E6%97%85%E5%BA%97/%E4%B8%87%E8%83%BD%E9%9D%92%E5%B9%B4%E6%97%85%E5%BA%97+%E5%90%8C%E5%90%8D%E4%B8%93%E8%BE%91"
             },
             {
               "artist": "卡奇社",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/ee827158776b4f405e90b52d28a58af7.jpg",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "Rainbow Cut",
               "url": "https://www.last.fm/music/%E5%8D%A1%E5%A5%87%E7%A4%BE/Rainbow+Cut"
             },
@@ -121,7 +97,7 @@
               "artist": "反光镜",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/01af2e3f8cdea5127812cc52f6b5f3ec.jpg",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "释你",
               "url": "https://www.last.fm/music/%E5%8F%8D%E5%85%89%E9%95%9C/%E9%87%8A%E4%BD%A0"
             },
@@ -129,7 +105,7 @@
               "artist": "安溥",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/c25ecb34c6cb9c1b228c1465e1080692.jpg",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "9522",
               "url": "https://www.last.fm/music/%E5%AE%89%E6%BA%A5/9522"
             },
@@ -137,7 +113,7 @@
               "artist": "曹于漫",
               "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "会好的",
               "url": "https://www.last.fm/music/%E6%9B%B9%E4%BA%8E%E6%BC%AB/%E4%BC%9A%E5%A5%BD%E7%9A%84"
             },
@@ -145,15 +121,23 @@
               "artist": "朴树",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/9f739696673b57a0bd999a76da6c84fe.jpg",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "猎户星座",
               "url": "https://www.last.fm/music/%E6%9C%B4%E6%A0%91/%E7%8C%8E%E6%88%B7%E6%98%9F%E5%BA%A7"
+            },
+            {
+              "artist": "林宥嘉",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/236bdb8471e2d6fb21ddcdfe305155ba.jpg",
+              "playcount": 2,
+              "share": 50,
+              "title": "神秘嘉宾",
+              "url": "https://www.last.fm/music/%E6%9E%97%E5%AE%A5%E5%98%89/%E7%A5%9E%E7%A7%98%E5%98%89%E5%AE%BE"
             },
             {
               "artist": "玉置浩二",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/b8c8dfe607ed835776d252a764e47474.jpg",
               "playcount": 2,
-              "share": 30,
+              "share": 50,
               "title": "Best Harvest",
               "url": "https://www.last.fm/music/%E7%8E%89%E7%BD%AE%E6%B5%A9%E4%BA%8C/Best+Harvest"
             },
@@ -262,22 +246,6 @@
               "url": "https://www.last.fm/music/Cafun%C3%A9/Running"
             },
             {
-              "artist": "Chance Peña",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/1fb5e3b54eff447d8109a3a089445557.png",
-              "playcount": 1,
-              "share": 0,
-              "title": "I Am Not Who I Was",
-              "url": "https://www.last.fm/music/Chance+Pe%C3%B1a/I+Am+Not+Who+I+Was"
-            },
-            {
-              "artist": "Charlie Puth",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8b103c65a7ac095875cb2960f653e1ad.jpg",
-              "playcount": 1,
-              "share": 0,
-              "title": "Attention",
-              "url": "https://www.last.fm/music/Charlie+Puth/Attention"
-            },
-            {
               "artist": "Christopher Larkin",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/2d3d5ca22d4059374b3edcb5f319bd53.jpg",
               "playcount": 1,
@@ -302,6 +270,22 @@
               "url": "https://www.last.fm/music/C%C5%93ur+de+Pirate/Roses+(Deluxe+Edition)"
             },
             {
+              "artist": "Coldplay",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/5fbcfb7258117e88cb73b45e25c88b01.jpg",
+              "playcount": 1,
+              "share": 0,
+              "title": "Parachutes",
+              "url": "https://www.last.fm/music/Coldplay/Parachutes"
+            },
+            {
+              "artist": "Coldplay",
+              "cover": "https://cache.viazure.cc/cover/caa/be065ef0-a90e-3ce4-a18d-9a45ec7c611b/front-250",
+              "playcount": 1,
+              "share": 0,
+              "title": "Viva la Vida / Prospekt's March (Prospekt's March Edition)",
+              "url": "https://www.last.fm/music/Coldplay/Viva+la+Vida+%2F+Prospekt%27s+March+(Prospekt%27s+March+Edition)"
+            },
+            {
               "artist": "Cona",
               "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
               "playcount": 1,
@@ -324,6 +308,14 @@
               "share": 0,
               "title": "Eskobar",
               "url": "https://www.last.fm/music/Eskobar/Eskobar"
+            },
+            {
+              "artist": "EYE AC",
+              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "playcount": 1,
+              "share": 0,
+              "title": "古树旋律 Deemo",
+              "url": "https://www.last.fm/music/EYE+AC/%E5%8F%A4%E6%A0%91%E6%97%8B%E5%BE%8B+Deemo"
             },
             {
               "artist": "Flora Cash",
@@ -404,6 +396,14 @@
               "share": 0,
               "title": "Habitación En Roma",
               "url": "https://www.last.fm/music/Jocelyn+Pook/Habitaci%C3%B3n+En+Roma"
+            },
+            {
+              "artist": "JOYCE 就以斯",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/3ec224c2715abb6dc08d86169fa177fd.jpg",
+              "playcount": 1,
+              "share": 0,
+              "title": "Julia",
+              "url": "https://www.last.fm/music/JOYCE+%E5%B0%B1%E4%BB%A5%E6%96%AF/Julia"
             }
           ],
           "label": "专辑"
@@ -428,15 +428,6 @@
               "share": 63,
               "title": "Hide Away",
               "url": "https://www.last.fm/music/Daya/_/Hide+Away"
-            },
-            {
-              "artist": "Man/Woman/Chainsaw",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/e2ba86d1d0891547d864e81f6be47b5c.jpg",
-              "loved": false,
-              "playcount": 2,
-              "share": 63,
-              "title": "Only Girl",
-              "url": "https://www.last.fm/music/Man%2FWoman%2FChainsaw/_/Only+Girl"
             },
             {
               "artist": "Oh Sunshine",
@@ -536,15 +527,6 @@
               "share": 63,
               "title": "悲しみにさよなら",
               "url": "https://www.last.fm/music/%E7%8E%89%E7%BD%AE%E6%B5%A9%E4%BA%8C/_/%E6%82%B2%E3%81%97%E3%81%BF%E3%81%AB%E3%81%95%E3%82%88%E3%81%AA%E3%82%89"
-            },
-            {
-              "artist": "贊詩",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/085cd37ca6a8f5a912222482c1b27855.jpg",
-              "loved": false,
-              "playcount": 2,
-              "share": 63,
-              "title": "赞美诗",
-              "url": "https://www.last.fm/music/%E8%B4%8A%E8%A9%A9/_/%E8%B5%9E%E7%BE%8E%E8%AF%97"
             },
             {
               "artist": "9Lana",
@@ -664,24 +646,6 @@
               "url": "https://www.last.fm/music/Cafun%C3%A9/_/Tek+It"
             },
             {
-              "artist": "Chance Peña",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/1fb5e3b54eff447d8109a3a089445557.png",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "I Am Not Who I Was",
-              "url": "https://www.last.fm/music/Chance+Pe%C3%B1a/_/I+Am+Not+Who+I+Was"
-            },
-            {
-              "artist": "Charlie Puth",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8b103c65a7ac095875cb2960f653e1ad.jpg",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "Attention",
-              "url": "https://www.last.fm/music/Charlie+Puth/_/Attention"
-            },
-            {
               "artist": "Christopher Larkin",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/2d3d5ca22d4059374b3edcb5f319bd53.jpg",
               "loved": false,
@@ -709,6 +673,24 @@
               "url": "https://www.last.fm/music/C%C5%93ur+de+Pirate/_/The+Climb"
             },
             {
+              "artist": "Coldplay",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/df7ea51b2826b60175d4c332e0f7b8ca.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "Life in Technicolor",
+              "url": "https://www.last.fm/music/Coldplay/_/Life+in+Technicolor"
+            },
+            {
+              "artist": "Coldplay",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/5fbcfb7258117e88cb73b45e25c88b01.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "Parachutes",
+              "url": "https://www.last.fm/music/Coldplay/_/Parachutes"
+            },
+            {
               "artist": "Cona",
               "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
               "loved": false,
@@ -734,6 +716,15 @@
               "share": 0,
               "title": "Whatever This Town",
               "url": "https://www.last.fm/music/Eskobar/_/Whatever+This+Town"
+            },
+            {
+              "artist": "EYE AC",
+              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "The Sanctuary",
+              "url": "https://www.last.fm/music/EYE+AC/_/The+Sanctuary"
             },
             {
               "artist": "Flora Cash",
@@ -860,6 +851,15 @@
               "share": 0,
               "title": "Running Up That Hill (A Deal with God)",
               "url": "https://www.last.fm/music/Kate+Bush/_/Running+Up+That+Hill+(A+Deal+with+God)"
+            },
+            {
+              "artist": "Lana Del Rey",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/577a16cbdd48ecf3e520f2f005c40e5e.jpg",
+              "loved": false,
+              "playcount": 1,
+              "share": 0,
+              "title": "Dark Paradise",
+              "url": "https://www.last.fm/music/Lana+Del+Rey/_/Dark+Paradise"
             }
           ],
           "label": "歌曲"
@@ -960,6 +960,14 @@
               "share": 30,
               "title": "Illuminated",
               "url": "https://www.last.fm/music/Ally+Rhodes/Illuminated"
+            },
+            {
+              "artist": "Coldplay",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/5fbcfb7258117e88cb73b45e25c88b01.jpg",
+              "playcount": 2,
+              "share": 30,
+              "title": "Parachutes",
+              "url": "https://www.last.fm/music/Coldplay/Parachutes"
             },
             {
               "artist": "Daya",
@@ -1096,6 +1104,14 @@
               "share": 30,
               "title": "感官/世界",
               "url": "https://www.last.fm/music/%E6%9E%97%E5%AE%A5%E5%98%89/%E6%84%9F%E5%AE%98%2F%E4%B8%96%E7%95%8C"
+            },
+            {
+              "artist": "林宥嘉",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/236bdb8471e2d6fb21ddcdfe305155ba.jpg",
+              "playcount": 2,
+              "share": 30,
+              "title": "神秘嘉宾",
+              "url": "https://www.last.fm/music/%E6%9E%97%E5%AE%A5%E5%98%89/%E7%A5%9E%E7%A7%98%E5%98%89%E5%AE%BE"
             },
             {
               "artist": "梁靜茹",
@@ -1256,22 +1272,6 @@
               "share": 0,
               "title": "Today My Life Begins",
               "url": "https://www.last.fm/music/Bruno+Mars/Today+My+Life+Begins"
-            },
-            {
-              "artist": "Cafuné",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/6af18c60020cbfd9e13a0d385a228694.jpg",
-              "playcount": 1,
-              "share": 0,
-              "title": "Running",
-              "url": "https://www.last.fm/music/Cafun%C3%A9/Running"
-            },
-            {
-              "artist": "Chance Peña",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/1fb5e3b54eff447d8109a3a089445557.png",
-              "playcount": 1,
-              "share": 0,
-              "title": "I Am Not Who I Was",
-              "url": "https://www.last.fm/music/Chance+Pe%C3%B1a/I+Am+Not+Who+I+Was"
             }
           ],
           "label": "专辑"
@@ -1790,6 +1790,22 @@
               "url": "https://www.last.fm/music/Ayur/Beautiful+Field"
             },
             {
+              "artist": "Coldplay",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/5fbcfb7258117e88cb73b45e25c88b01.jpg",
+              "playcount": 3,
+              "share": 48,
+              "title": "Parachutes",
+              "url": "https://www.last.fm/music/Coldplay/Parachutes"
+            },
+            {
+              "artist": "RADWIMPS",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8bf2a579c67a77861d6e04dc13d354b3.jpg",
+              "playcount": 3,
+              "share": 48,
+              "title": "君の名は。",
+              "url": "https://www.last.fm/music/RADWIMPS/%E5%90%9B%E3%81%AE%E5%90%8D%E3%81%AF%E3%80%82"
+            },
+            {
               "artist": "Rie fu",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/275ccfae609b787ef837f85d1fc8bb17.jpg",
               "playcount": 3,
@@ -1854,14 +1870,6 @@
               "url": "https://www.last.fm/music/Ally+Rhodes/Illuminated"
             },
             {
-              "artist": "Coldplay",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/5fbcfb7258117e88cb73b45e25c88b01.jpg",
-              "playcount": 2,
-              "share": 30,
-              "title": "Parachutes",
-              "url": "https://www.last.fm/music/Coldplay/Parachutes"
-            },
-            {
               "artist": "Daya",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/d59cf99dfae0d99b549efaf32d9ab8b3.jpg",
               "playcount": 2,
@@ -1924,14 +1932,6 @@
               "share": 30,
               "title": "OK Computer",
               "url": "https://www.last.fm/music/Radiohead/OK+Computer"
-            },
-            {
-              "artist": "RADWIMPS",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8bf2a579c67a77861d6e04dc13d354b3.jpg",
-              "playcount": 2,
-              "share": 30,
-              "title": "君の名は。",
-              "url": "https://www.last.fm/music/RADWIMPS/%E5%90%9B%E3%81%AE%E5%90%8D%E3%81%AF%E3%80%82"
             },
             {
               "artist": "re:plus",
@@ -2070,6 +2070,14 @@
               "url": "https://www.last.fm/music/%E6%9B%B9%E4%BA%8E%E6%BC%AB/%E4%BC%9A%E5%A5%BD%E7%9A%84"
             },
             {
+              "artist": "林俊傑",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/f97c486687e9670c2cc8fe61c66d3958.jpg",
+              "playcount": 2,
+              "share": 30,
+              "title": "编号89757",
+              "url": "https://www.last.fm/music/%E6%9E%97%E4%BF%8A%E5%82%91/%E7%BC%96%E5%8F%B789757"
+            },
+            {
               "artist": "林俊杰",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8781b6a3b6fbc11f8aa2ce6151894632.jpg",
               "playcount": 2,
@@ -2092,6 +2100,14 @@
               "share": 30,
               "title": "感官/世界",
               "url": "https://www.last.fm/music/%E6%9E%97%E5%AE%A5%E5%98%89/%E6%84%9F%E5%AE%98%2F%E4%B8%96%E7%95%8C"
+            },
+            {
+              "artist": "林宥嘉",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/236bdb8471e2d6fb21ddcdfe305155ba.jpg",
+              "playcount": 2,
+              "share": 30,
+              "title": "神秘嘉宾",
+              "url": "https://www.last.fm/music/%E6%9E%97%E5%AE%A5%E5%98%89/%E7%A5%9E%E7%A7%98%E5%98%89%E5%AE%BE"
             },
             {
               "artist": "梁靜茹",
@@ -2124,22 +2140,6 @@
               "share": 30,
               "title": "2006王力宏盖世英雄Live Concert演唱会全纪录",
               "url": "https://www.last.fm/music/%E7%8E%8B%E5%8A%9B%E5%AE%8F/2006%E7%8E%8B%E5%8A%9B%E5%AE%8F%E7%9B%96%E4%B8%96%E8%8B%B1%E9%9B%84Live+Concert%E6%BC%94%E5%94%B1%E4%BC%9A%E5%85%A8%E7%BA%AA%E5%BD%95"
-            },
-            {
-              "artist": "玥霖Gabrielle",
-              "cover": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
-              "playcount": 2,
-              "share": 30,
-              "title": "佳妮",
-              "url": "https://www.last.fm/music/%E7%8E%A5%E9%9C%96Gabrielle/%E4%BD%B3%E5%A6%AE"
-            },
-            {
-              "artist": "莫文蔚",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/fdc6834a5a19d754f1d373bb481e5e19.jpg",
-              "playcount": 2,
-              "share": 30,
-              "title": "含情莫莫.莫文蔚全精選集",
-              "url": "https://www.last.fm/music/%E8%8E%AB%E6%96%87%E8%94%9A/%E5%90%AB%E6%83%85%E8%8E%AB%E8%8E%AB.%E8%8E%AB%E6%96%87%E8%94%9A%E5%85%A8%E7%B2%BE%E9%81%B8%E9%9B%86"
             }
           ],
           "label": "专辑"
@@ -2499,6 +2499,15 @@
               "url": "https://www.last.fm/music/%E6%9C%B4%E6%A0%91/_/%E7%8C%8E%E6%88%B7%E6%98%9F%E5%BA%A7"
             },
             {
+              "artist": "林俊傑",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/f97c486687e9670c2cc8fe61c66d3958.jpg",
+              "loved": false,
+              "playcount": 2,
+              "share": 63,
+              "title": "莎士比亚的天份",
+              "url": "https://www.last.fm/music/%E6%9E%97%E4%BF%8A%E5%82%91/_/%E8%8E%8E%E5%A3%AB%E6%AF%94%E4%BA%9A%E7%9A%84%E5%A4%A9%E4%BB%BD"
+            },
+            {
               "artist": "林俊杰",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8781b6a3b6fbc11f8aa2ce6151894632.jpg",
               "loved": true,
@@ -2587,15 +2596,6 @@
               "share": 63,
               "title": "月光",
               "url": "https://www.last.fm/music/%E9%AC%BC%E6%9D%9F%E3%81%A1%E3%81%B2%E3%82%8D/_/%E6%9C%88%E5%85%89"
-            },
-            {
-              "artist": "9Lana",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/c69ed640d35d01744d8a9f2d5ddae403.jpg",
-              "loved": false,
-              "playcount": 1,
-              "share": 0,
-              "title": "螺旋 - RASEN - Acoustic Ver. -",
-              "url": "https://www.last.fm/music/9Lana/_/%E8%9E%BA%E6%97%8B+-+RASEN+-+Acoustic+Ver.+-"
             }
           ],
           "label": "歌曲"
@@ -2746,12 +2746,28 @@
               "url": "https://www.last.fm/music/%E5%91%A8%E6%9D%B0%E5%80%AB/%E4%B8%8D%E8%83%BD%E8%AF%B4%E7%9A%84%E7%A7%98%E5%AF%86+%E7%94%B5%E5%BD%B1%E5%8E%9F%E5%A3%B0%E5%B8%A6"
             },
             {
+              "artist": "林宥嘉",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/236bdb8471e2d6fb21ddcdfe305155ba.jpg",
+              "playcount": 9,
+              "share": 71,
+              "title": "神秘嘉宾",
+              "url": "https://www.last.fm/music/%E6%9E%97%E5%AE%A5%E5%98%89/%E7%A5%9E%E7%A7%98%E5%98%89%E5%AE%BE"
+            },
+            {
               "artist": "陶喆",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/e6860a8e46eef90c0293735120280a8d.jpg",
               "playcount": 9,
               "share": 71,
               "title": "黑色柳丁",
               "url": "https://www.last.fm/music/%E9%99%B6%E5%96%86/%E9%BB%91%E8%89%B2%E6%9F%B3%E4%B8%81"
+            },
+            {
+              "artist": "RADWIMPS",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8bf2a579c67a77861d6e04dc13d354b3.jpg",
+              "playcount": 8,
+              "share": 67,
+              "title": "君の名は。",
+              "url": "https://www.last.fm/music/RADWIMPS/%E5%90%9B%E3%81%AE%E5%90%8D%E3%81%AF%E3%80%82"
             },
             {
               "artist": "Various Artists",
@@ -2786,28 +2802,12 @@
               "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/%E7%BB%8F%E5%85%B8%E5%85%A8%E7%BA%AA%E5%BD%95(%E4%B8%BB%E6%89%93%E7%B2%BE%E5%8D%8E%E7%89%88)"
             },
             {
-              "artist": "林宥嘉",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/236bdb8471e2d6fb21ddcdfe305155ba.jpg",
-              "playcount": 8,
-              "share": 67,
-              "title": "神秘嘉宾",
-              "url": "https://www.last.fm/music/%E6%9E%97%E5%AE%A5%E5%98%89/%E7%A5%9E%E7%A7%98%E5%98%89%E5%AE%BE"
-            },
-            {
               "artist": "July",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/261f5ad2efb87383ecc76f1cfb11d3f4.jpg",
               "playcount": 7,
               "share": 63,
               "title": "Beyond The Memory",
               "url": "https://www.last.fm/music/July/Beyond+The+Memory"
-            },
-            {
-              "artist": "RADWIMPS",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8bf2a579c67a77861d6e04dc13d354b3.jpg",
-              "playcount": 7,
-              "share": 63,
-              "title": "君の名は。",
-              "url": "https://www.last.fm/music/RADWIMPS/%E5%90%9B%E3%81%AE%E5%90%8D%E3%81%AF%E3%80%82"
             },
             {
               "artist": "Tank",
@@ -3340,6 +3340,15 @@
               "url": "https://www.last.fm/music/%E6%9A%97%E6%9D%A0/_/%E7%AB%A5%E8%AF%9D%E9%95%87Plus"
             },
             {
+              "artist": "林俊傑",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/f97c486687e9670c2cc8fe61c66d3958.jpg",
+              "loved": false,
+              "playcount": 3,
+              "share": 68,
+              "title": "莎士比亚的天份",
+              "url": "https://www.last.fm/music/%E6%9E%97%E4%BF%8A%E5%82%91/_/%E8%8E%8E%E5%A3%AB%E6%AF%94%E4%BA%9A%E7%9A%84%E5%A4%A9%E4%BB%BD"
+            },
+            {
               "artist": "林俊杰",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8781b6a3b6fbc11f8aa2ce6151894632.jpg",
               "loved": true,
@@ -3455,15 +3464,6 @@
               "share": 43,
               "title": "Boston",
               "url": "https://www.last.fm/music/Augustana/_/Boston"
-            },
-            {
-              "artist": "Baker",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8558766f132a496786983cbb7a95a10f.png",
-              "loved": false,
-              "playcount": 2,
-              "share": 43,
-              "title": "Waiting for Love",
-              "url": "https://www.last.fm/music/Baker/_/Waiting+for+Love"
             }
           ],
           "label": "歌曲"
@@ -3632,7 +3632,7 @@
             {
               "artist": "RADWIMPS",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8bf2a579c67a77861d6e04dc13d354b3.jpg",
-              "playcount": 39,
+              "playcount": 40,
               "share": 80,
               "title": "君の名は。",
               "url": "https://www.last.fm/music/RADWIMPS/%E5%90%9B%E3%81%AE%E5%90%8D%E3%81%AF%E3%80%82"
@@ -3758,20 +3758,20 @@
               "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/%E9%80%86%E5%85%89"
             },
             {
+              "artist": "林俊傑",
+              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/f97c486687e9670c2cc8fe61c66d3958.jpg",
+              "playcount": 30,
+              "share": 74,
+              "title": "编号89757",
+              "url": "https://www.last.fm/music/%E6%9E%97%E4%BF%8A%E5%82%91/%E7%BC%96%E5%8F%B789757"
+            },
+            {
               "artist": "孫燕姿",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8c9cb89eb5fafffa65794e884cdca0dc.jpg",
               "playcount": 29,
               "share": 73,
               "title": "Stefanie",
               "url": "https://www.last.fm/music/%E5%AD%AB%E7%87%95%E5%A7%BF/Stefanie"
-            },
-            {
-              "artist": "林俊傑",
-              "cover": "https://cache.viazure.cc/cover/lastfm/300x300/f97c486687e9670c2cc8fe61c66d3958.jpg",
-              "playcount": 29,
-              "share": 73,
-              "title": "编号89757",
-              "url": "https://www.last.fm/music/%E6%9E%97%E4%BF%8A%E5%82%91/%E7%BC%96%E5%8F%B789757"
             },
             {
               "artist": "Hans Zimmer;Richard Harvey",
@@ -4372,7 +4372,7 @@
             {
               "artist": "林宥嘉",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/236bdb8471e2d6fb21ddcdfe305155ba.jpg",
-              "playcount": 428,
+              "playcount": 429,
               "share": 86,
               "title": "神秘嘉宾",
               "url": "https://www.last.fm/music/%E6%9E%97%E5%AE%A5%E5%98%89/%E7%A5%9E%E7%A7%98%E5%98%89%E5%AE%BE"
@@ -4420,7 +4420,7 @@
             {
               "artist": "RADWIMPS",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/8bf2a579c67a77861d6e04dc13d354b3.jpg",
-              "playcount": 347,
+              "playcount": 348,
               "share": 83,
               "title": "君の名は。",
               "url": "https://www.last.fm/music/RADWIMPS/%E5%90%9B%E3%81%AE%E5%90%8D%E3%81%AF%E3%80%82"
@@ -4716,7 +4716,7 @@
             {
               "artist": "Lana Del Rey",
               "cover": "https://cache.viazure.cc/cover/lastfm/300x300/577a16cbdd48ecf3e520f2f005c40e5e.jpg",
-              "playcount": 154,
+              "playcount": 155,
               "share": 72,
               "title": "Born to Die (Deluxe Version)",
               "url": "https://www.last.fm/music/Lana+Del+Rey/Born+to+Die+(Deluxe+Version)"
@@ -5211,106 +5211,106 @@
   ],
   "recent": [
     {
-      "album": "OK Computer",
-      "artist": "Radiohead",
-      "date": "2026-11-05",
-      "image": "https://cache.viazure.cc/cover/lastfm/300x300/62d26c6cb4ac4bdccb8f3a2a0fd55421.png",
-      "loved": true,
-      "time": "15:03",
-      "track": "No Surprises",
-      "url": "https://www.last.fm/music/Radiohead/_/No+Surprises"
-    },
-    {
-      "album": "Habitación En Roma",
-      "artist": "Jocelyn Pook",
-      "date": "2026-11-05",
-      "image": "https://cache.viazure.cc/cover/lastfm/300x300/d36be8f7189e4854980cf3502e6e8cda.png",
+      "album": "王菲",
+      "artist": "王菲",
+      "date": "2026-11-06",
+      "image": "https://cache.viazure.cc/cover/lastfm/300x300/748e8252d8f117eb0039ae15c61ffa8b.jpg",
       "loved": false,
-      "time": "14:59",
-      "track": "Loving Strangers",
-      "url": "https://www.last.fm/music/Jocelyn+Pook/_/Loving+Strangers"
+      "time": "08:14",
+      "track": "我也不想这样",
+      "url": "https://www.last.fm/music/%E7%8E%8B%E8%8F%B2/_/%E6%88%91%E4%B9%9F%E4%B8%8D%E6%83%B3%E8%BF%99%E6%A0%B7"
     },
     {
-      "album": "螺旋 - RASEN - Acoustic Ver. -",
-      "artist": "9Lana",
-      "date": "2026-11-05",
-      "image": "https://cache.viazure.cc/cover/lastfm/300x300/c69ed640d35d01744d8a9f2d5ddae403.jpg",
-      "loved": false,
-      "time": "14:55",
-      "track": "螺旋 - RASEN - Acoustic Ver. -",
-      "url": "https://www.last.fm/music/9Lana/_/%E8%9E%BA%E6%97%8B+-+RASEN+-+Acoustic+Ver.+-"
-    },
-    {
-      "album": "半山",
-      "artist": "二区六楼Moonage",
-      "date": "2026-11-05",
+      "album": "2020",
+      "artist": "陈越龙",
+      "date": "2026-11-06",
       "image": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
       "loved": false,
-      "time": "14:50",
-      "track": "半山",
-      "url": "https://www.last.fm/music/%E4%BA%8C%E5%8C%BA%E5%85%AD%E6%A5%BCMoonage/_/%E5%8D%8A%E5%B1%B1"
+      "time": "08:09",
+      "track": "intro",
+      "url": "https://www.last.fm/music/%E9%99%88%E8%B6%8A%E9%BE%99/_/intro"
     },
     {
-      "album": "Wish To Scream",
-      "artist": "Tribes",
-      "date": "2026-11-05",
-      "image": "https://cache.viazure.cc/cover/lastfm/300x300/8eb344450aff4a5db596ed7b22cab352.png",
+      "album": "编号89757",
+      "artist": "林俊傑",
+      "date": "2026-11-06",
+      "image": "https://cache.viazure.cc/cover/lastfm/300x300/f97c486687e9670c2cc8fe61c66d3958.jpg",
       "loved": false,
-      "time": "14:47",
-      "track": "Dancehall",
-      "url": "https://www.last.fm/music/Tribes/_/Dancehall"
+      "time": "08:08",
+      "track": "莎士比亚的天份",
+      "url": "https://www.last.fm/music/%E6%9E%97%E4%BF%8A%E5%82%91/_/%E8%8E%8E%E5%A3%AB%E6%AF%94%E4%BA%9A%E7%9A%84%E5%A4%A9%E4%BB%BD"
     },
     {
-      "album": "Like A Star",
-      "artist": "Youngso Kim",
-      "date": "2026-11-05",
-      "image": "https://cache.viazure.cc/cover/lastfm/300x300/ca15367cceb5d57975c20545b1e54e66.png",
-      "loved": true,
-      "time": "14:41",
-      "track": "Like A Star",
-      "url": "https://www.last.fm/music/Youngso+Kim/_/Like+A+Star"
-    },
-    {
-      "album": "oh sunshine",
-      "artist": "Oh Sunshine",
-      "date": "2026-11-05",
-      "image": "https://cache.viazure.cc/cover/lastfm/300x300/1eb7bd3316204ed58deadc3c92f6f6f3.png",
+      "album": "古树旋律 Deemo",
+      "artist": "EYE AC",
+      "date": "2026-11-06",
+      "image": "https://cache.viazure.cc/cover/lastfm/64s/4128a6eb29f94943c9d206c08e625904.jpg",
       "loved": false,
-      "time": "14:37",
-      "track": "beautiful",
-      "url": "https://www.last.fm/music/Oh+Sunshine/_/beautiful"
+      "time": "08:04",
+      "track": "The Sanctuary",
+      "url": "https://www.last.fm/music/EYE+AC/_/The+Sanctuary"
     },
     {
-      "album": "Closure",
-      "artist": "Sarcastic Sounds",
-      "date": "2026-11-05",
-      "image": "https://cache.viazure.cc/cover/lastfm/300x300/9e69ba2444f782e407afef0b9caab9d7.jpg",
+      "album": "迷雾之子",
+      "artist": "告五人",
+      "date": "2026-11-06",
+      "image": "https://cache.viazure.cc/cover/caa/28d2994c-375b-471b-8eda-d3ed75ea5b80/front-250",
       "loved": false,
-      "time": "14:33",
-      "track": "Closure",
-      "url": "https://www.last.fm/music/Sarcastic+Sounds/_/Closure"
+      "time": "08:02",
+      "track": "你要不要吃哈密瓜",
+      "url": "https://www.last.fm/music/%E5%91%8A%E4%BA%94%E4%BA%BA/_/%E4%BD%A0%E8%A6%81%E4%B8%8D%E8%A6%81%E5%90%83%E5%93%88%E5%AF%86%E7%93%9C"
     },
     {
-      "album": "The Story Never Ends (Piano Version)",
-      "artist": "Lauv",
-      "date": "2026-11-05",
-      "image": "https://cache.viazure.cc/cover/lastfm/300x300/777c66394a24c6bffc33cf96af6414fb.jpg",
+      "album": "Born to Die (Deluxe Version)",
+      "artist": "Lana Del Rey",
+      "date": "2026-11-06",
+      "image": "https://cache.viazure.cc/cover/lastfm/300x300/577a16cbdd48ecf3e520f2f005c40e5e.jpg",
       "loved": false,
-      "time": "14:20",
-      "track": "The Story Never Ends (Piano Version)",
-      "url": "https://www.last.fm/music/Lauv/_/The+Story+Never+Ends+(Piano+Version)"
+      "time": "07:57",
+      "track": "Dark Paradise",
+      "url": "https://www.last.fm/music/Lana+Del+Rey/_/Dark+Paradise"
     },
     {
-      "album": "Spider-Man: Into the Spider-Verse (Soundtrack From & Inspired by the Motion Picture)",
-      "artist": "Beau Young Prince",
-      "date": "2026-11-05",
-      "image": "https://cache.viazure.cc/cover/lastfm/300x300/5d801c64b6caf572f31ae7354b712567.jpg",
+      "album": "神秘嘉宾",
+      "artist": "林宥嘉",
+      "date": "2026-11-06",
+      "image": "https://cache.viazure.cc/cover/lastfm/300x300/236bdb8471e2d6fb21ddcdfe305155ba.jpg",
       "loved": false,
-      "time": "14:18",
-      "track": "Let Go",
-      "url": "https://www.last.fm/music/Beau+Young+Prince/_/Let+Go"
+      "time": "07:53",
+      "track": "爱情是圆的",
+      "url": "https://www.last.fm/music/%E6%9E%97%E5%AE%A5%E5%98%89/_/%E7%88%B1%E6%83%85%E6%98%AF%E5%9C%86%E7%9A%84"
+    },
+    {
+      "album": "君の名は。",
+      "artist": "RADWIMPS",
+      "date": "2026-11-06",
+      "image": "https://cache.viazure.cc/cover/lastfm/300x300/8bf2a579c67a77861d6e04dc13d354b3.jpg",
+      "loved": false,
+      "time": "07:50",
+      "track": "見えないふたり",
+      "url": "https://www.last.fm/music/RADWIMPS/_/%E8%A6%8B%E3%81%88%E3%81%AA%E3%81%84%E3%81%B5%E3%81%9F%E3%82%8A"
+    },
+    {
+      "album": "Viva la Vida / Prospekt's March (Prospekt's March Edition)",
+      "artist": "Coldplay",
+      "date": "2026-11-06",
+      "image": "https://cache.viazure.cc/cover/caa/be065ef0-a90e-3ce4-a18d-9a45ec7c611b/front-250",
+      "loved": false,
+      "time": "07:49",
+      "track": "Life in Technicolor",
+      "url": "https://www.last.fm/music/Coldplay/_/Life+in+Technicolor"
+    },
+    {
+      "album": "Parachutes",
+      "artist": "Coldplay",
+      "date": "2026-11-06",
+      "image": "https://cache.viazure.cc/cover/lastfm/300x300/5fbcfb7258117e88cb73b45e25c88b01.jpg",
+      "loved": false,
+      "time": "06:51",
+      "track": "Parachutes",
+      "url": "https://www.last.fm/music/Coldplay/_/Parachutes"
     }
   ],
-  "scrobbled_to": "2026-11-05",
+  "scrobbled_to": "2026-11-06",
   "user": "viazure"
 }
