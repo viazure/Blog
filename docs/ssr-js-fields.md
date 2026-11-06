@@ -15,6 +15,8 @@
 | `pace` | mm:ss /km | paceLabel | 秒 |
 | `hr` / `elev` | tip only | tip only | 心率 / 海拔 |
 | `has_trail` / `idx` / `icon` | svg.rmap 或 .ico | 同左 | 轨迹由 track-script IO |
+| `run_id` / `hr_max` / `kcal` / `session` | `data-wk` JSON | renderCard 同左 | Session Clock，见 [session-clock.md](./session-clock.md) |
+| `moving` | 写入 `data-wk` | 同左 | 秒，用于 elapsed / core |
 
 事件：`fillYear` 后派发 `workouts:year-loaded`（`detail.year`）；`track-script` 重新 observe `.rmap`。
 

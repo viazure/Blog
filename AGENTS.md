@@ -17,7 +17,7 @@
 - [docs/lazy-shards.md](docs/lazy-shards.md) — 分片 URL、默认年份/Tab、`workouts:year-loaded`、缓存、双端渲染
 - [docs/ssr-js-fields.md](docs/ssr-js-fields.md) — SSR/JS 字段对照与 `note_html` 安全
 
-其中 `clock` / `clock_unit` 表示运动时长（duration），勿当会话状态。
+其中 `clock` / `clock_unit` 表示运动时长（duration），勿当会话状态。Session Clock 见 [docs/session-clock.md](docs/session-clock.md)。
 
 ## 其他约定
 
