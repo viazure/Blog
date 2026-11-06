@@ -1,6 +1,6 @@
 # Session Clock（博客 /workouts）
 
-Branch: `feat/workouts-session-clock`. Does **not** live on `feat/ux-p0-lazy-render`.
+Branch: `feat/workouts-session-clock` (P0 lazy-render base). Merge after P0 → main.
 
 ## Product
 
@@ -13,7 +13,26 @@ Branch: `feat/workouts-session-clock`. Does **not** live on `feat/ux-p0-lazy-ren
 - Warm paper + purple accents; respect `prefers-reduced-motion` (no growth animation).
 - Field `clock` / `clock_unit` = **duration** only. Session Clock payload is `session`.
 
-## Data
+## ADR · `data-wk` payload (accepted)
+
+**Decision: list slim / detail hydrate from year shard.**
+
+| Layer | Holds |
+|-------|--------|
+| Card attribute `data-wk` | Summary only: idx, label, name, date/time, metrics, `has_trail`, `run_id`, and `session: { has_session, moving, hr_avg, hr_max, kcal, elev }` — **no** `bars` / `hr` arrays |
+| Year shard `/data/workouts/year-YYYY.json` | Full items including `session.bars` (28) + `session.hr` (28) |
+| In-memory `itemsByIdx` | Prefer richer session (bars/hr) when indexing |
+
+**Why:** Embedding `bars`+`hr` on every SSR/lazy card bloated HTML (tens of KB/year). Year JSON is fetched once and shared by Clock detail + mini clocks.
+
+**Runtime:**
+
+1. Lazy `fillYear` calls `__wkIndexItems(fullItems)`.
+2. SSR default year: `workouts-lazy` `indexYearData(actyear)` fetches the shard without re-rendering.
+3. `openDetail` → `ensureFullSession` (uses index or fetches year by `date` prefix).
+4. Mini clocks draw only after a rich session is indexed.
+
+## Data build
 
 `scripts/session_clock.py` reads `life-data/data/workouts/splits/{run_id}.json`:
 
@@ -32,13 +51,22 @@ Branch: `feat/workouts-session-clock`. Does **not** live on `feat/ux-p0-lazy-ren
 | `session.hr` | 28 bpm samples (optional) |
 | `session.hr_avg` / `hr_max` / `kcal` / `elev` | detail metrics |
 
-Year shards (`static/data/workouts/year-YYYY.json`) carry the same fields. Lazy `renderCard` and SSR `workout-card` both emit `data-wk` JSON for the detail shell.
-
 ## Front-end
 
 - `layouts/_partials/session-clock-script.html` — `<dialog>` shell + SVG drawers
-- Cards: `role="button"` + `data-idx` + `data-wk`
-- After lazy fill: `__wkIndexItems(items)` then `workouts:year-loaded` (track IO unchanged)
+- Cards: `role="button"` + `data-idx` + slim `data-wk`
+- After lazy fill / default-year index: `__wkIndexItems(items)` then `workouts:year-loaded`
+
+## Sync rule
+
+Changing **session shape** requires updating **all four**:
+
+1. emit / `build_workouts.py` (+ `session_clock.py`)
+2. SSR `workout-card.html` (slim summary fields)
+3. `workouts-lazy` `renderCard` / `slimSession`
+4. detail shell `session-clock-script.html` (`drawSessionClock` / `fillMeta` / `ensureFullSession`)
+
+Also update [ux-p0-ssr-js-fields.md](./ux-p0-ssr-js-fields.md).
 
 ## Out of scope
 

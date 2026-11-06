@@ -1,7 +1,7 @@
 {{/* Workout card SSR. Keep in sync with workouts-lazy renderCard.
      字段对照：docs/ssr-js-fields.md、docs/session-clock.md
      clock/clock_unit = 运动时长（duration），勿当会话状态。
-     data-wk JSON 供给详情壳和列表 mini Session Clock。 */}}
+     data-wk 只带列表摘要（不含 session.bars/hr）；完整 session 来自年份分片。 */}}
 {{ $c := . }}
 {{ $tips := slice }}
 {{ if gt $c.km 0 }}
@@ -41,7 +41,15 @@
 {{ with $c.run_id }}{{ $wk = merge $wk (dict "run_id" .) }}{{ end }}
 {{ with $c.hr_max }}{{ $wk = merge $wk (dict "hr_max" .) }}{{ end }}
 {{ with $c.kcal }}{{ $wk = merge $wk (dict "kcal" .) }}{{ end }}
-{{ with $c.session }}{{ $wk = merge $wk (dict "session" .) }}{{ end }}
+{{ with $c.session }}
+{{ $sum := dict "has_session" true }}
+{{ with .moving }}{{ $sum = merge $sum (dict "moving" .) }}{{ end }}
+{{ with .hr_avg }}{{ $sum = merge $sum (dict "hr_avg" .) }}{{ end }}
+{{ with .hr_max }}{{ $sum = merge $sum (dict "hr_max" .) }}{{ end }}
+{{ with .kcal }}{{ $sum = merge $sum (dict "kcal" .) }}{{ end }}
+{{ with .elev }}{{ $sum = merge $sum (dict "elev" .) }}{{ end }}
+{{ $wk = merge $wk (dict "session" $sum) }}
+{{ end }}
 <article class="run-card kind-{{ $c.name }}" tabindex="0" role="button" data-idx="{{ $c.idx }}" data-wk="{{ $wk | jsonify }}" aria-label="查看 {{ $c.label }} 详情">
     <div class="mark">
         {{ if $c.has_trail }}

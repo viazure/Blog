@@ -15,10 +15,16 @@
 | `pace` | mm:ss /km | paceLabel | 秒 |
 | `hr` / `elev` | tip only | tip only | 心率 / 海拔 |
 | `has_trail` / `idx` / `icon` | svg.rmap 或 .ico | 同左 | 轨迹由 track-script IO |
-| `run_id` / `hr_max` / `kcal` / `session` | `data-wk` JSON | renderCard 同左 | Session Clock，见 [session-clock.md](./session-clock.md) |
+| `run_id` / `hr_max` / `kcal` | `data-wk` JSON | renderCard 同左 | Session Clock 的 id / 指标 |
+| `session`（精简） | `data-wk`：`has_session`、`moving`、`hr_avg`、`hr_max`、`kcal`、`elev`，**不含 bars/hr** | `slimSession()` | 仅列表摘要 |
+| `session`（完整） | 不在 attribute 里；年份分片 → `__wkIndexItems` | 同左 | Clock 用的 `bars`（28）+ `hr`（28） |
 | `moving` | 写入 `data-wk` | 同左 | 秒，用于 elapsed / core |
 
-事件：`fillYear` 后派发 `workouts:year-loaded`（`detail.year`）；`track-script` 重新 observe `.rmap`。
+事件：`fillYear` 或 SSR `indexYearData` 后派发 `workouts:year-loaded`（`detail.year`）；`track-script` 重新 observe `.rmap`；Clock 会 hydrate mini 时钟。
+
+### Session 结构同步
+
+改 `session` 字段或 markup 须同步：**emit + SSR `workout-card` + `renderCard`/`slimSession` + 详情壳**（`session-clock-script`）。见 [session-clock.md](./session-clock.md)。
 
 ## 书影音 · `media.html` ↔ `media-lazy.html`
 
