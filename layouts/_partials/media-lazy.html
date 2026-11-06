@@ -254,6 +254,17 @@
     if (!el.querySelector(".media-skel")) el.innerHTML = skelHtml();
   }
 
+  function failHtml(kind, id) {
+    return '<div class="lazy-fail" role="alert" data-fail-kind="' + esc(kind) + '" data-fail-id="' + esc(id || "") + '">' +
+      "<p>加载失败，请重试。</p>" +
+      '<button type="button" data-retry-media="' + esc(kind) + '" data-retry-id="' + esc(id || "") + '">重试</button></div>';
+  }
+
+  function showFail(el, kind, id) {
+    if (!el) return;
+    el.innerHTML = failHtml(kind, id);
+  }
+
   function ensureMusicPanel() {
     var panel = document.querySelector('.tab-panel.panel-music[data-pending="music"]');
     if (!panel) return Promise.resolve();
@@ -263,7 +274,10 @@
       ? Promise.resolve(cache.musicMeta)
       : loadJSON(LASTFM_BASE + "meta.json").then(function (m) { cache.musicMeta = m; return m; });
     return metaP.then(function (meta) {
-      if (!meta) return;
+      if (!meta) {
+        showFail(panel, "music", "music");
+        return;
+      }
       var pid = meta.default_period;
       var periodP = cache.period[pid]
         ? Promise.resolve(cache.period[pid])
@@ -272,9 +286,15 @@
             return p;
           });
       return periodP.then(function (period) {
+        if (!period) {
+          showFail(panel, "music", "music");
+          return;
+        }
         panel.innerHTML = renderMusicShell(meta, period);
         panel.removeAttribute("data-pending");
       });
+    }).catch(function () {
+      showFail(panel, "music", "music");
     });
   }
 
@@ -291,9 +311,14 @@
           return json;
         });
     return p.then(function (period) {
-      if (!period) return;
+      if (!period) {
+        showFail(el, "period", id);
+        return;
+      }
       el.innerHTML = renderPeriod(period);
       el.removeAttribute("data-pending");
+    }).catch(function () {
+      showFail(el, "period", id);
     });
   }
 
@@ -310,9 +335,14 @@
           return json;
         });
     return p.then(function (cat) {
-      if (!cat) return;
+      if (!cat) {
+        showFail(el, "neodb", id);
+        return;
+      }
       el.innerHTML = renderNeodbCat(cat);
       el.removeAttribute("data-pending");
+    }).catch(function () {
+      showFail(el, "neodb", id);
     });
   }
 
@@ -345,6 +375,37 @@
       done = (id === "music") ? ensureMusicPanel() : ensureNeodb(id);
     } else if (t.matches('input[name="music-period"]')) {
       done = ensurePeriod(t.getAttribute("data-period") || t.value);
+    } else {
+      return;
+    }
+    Promise.resolve(done).then(function () {
+      requestAnimationFrame(function () { settlePanelsHeight(); });
+    });
+  });
+
+  document.addEventListener("click", function (ev) {
+    var btn = ev.target && ev.target.closest && ev.target.closest("[data-retry-media]");
+    if (!btn) return;
+    var kind = btn.getAttribute("data-retry-media");
+    var id = btn.getAttribute("data-retry-id") || "";
+    var done;
+    if (kind === "music") {
+      var panel = document.querySelector(".tab-panel.panel-music");
+      if (panel) {
+        panel.setAttribute("data-pending", "music");
+        cache.musicMeta = null;
+      }
+      done = ensureMusicPanel();
+    } else if (kind === "period") {
+      var el = document.querySelector('.period-panel[data-period="' + id + '"]');
+      if (el) el.setAttribute("data-pending", "period");
+      delete cache.period[id];
+      done = ensurePeriod(id);
+    } else if (kind === "neodb") {
+      var nel = document.querySelector('.tab-panel[data-media-cat="' + id + '"]');
+      if (nel) nel.setAttribute("data-pending", "neodb");
+      delete cache.cat[id];
+      done = ensureNeodb(id);
     } else {
       return;
     }

@@ -117,41 +117,100 @@
     return html;
   }
 
-  function fillYear(year, payload) {
+  function failHtml(year, where) {
+    return '<div class="lazy-fail" role="alert" data-fail-year="' + esc(year) + '" data-fail-where="' + esc(where) + '">' +
+      "<p>加载失败，请重试。</p>" +
+      '<button type="button" data-retry-year="' + esc(year) + '">重试</button></div>';
+  }
+
+  function markFail(year) {
     var heat = document.querySelector('.heat-panel[data-year="' + year + '"][data-pending]');
-    if (heat) {
-      heat.innerHTML = renderHeat(payload);
-      heat.removeAttribute("data-pending");
-    }
+    if (heat) heat.innerHTML = failHtml(year, "heat");
     var panel = document.querySelector('.act-switcher .sw-panel[data-year="' + year + '"][data-pending]');
     if (panel) {
       var box = panel.querySelector(".run-cards");
+      if (box) box.innerHTML = failHtml(year, "cards");
+    }
+  }
+
+  function needsFill(el) {
+    return !!(el && (el.hasAttribute("data-pending") || el.querySelector(".lazy-fail")));
+  }
+
+  function fillYear(year, payload) {
+    var heat = document.querySelector('.heat-panel[data-year="' + year + '"]');
+    if (needsFill(heat)) {
+      heat.innerHTML = renderHeat(payload);
+      heat.removeAttribute("data-pending");
+    }
+    var panel = document.querySelector('.act-switcher .sw-panel[data-year="' + year + '"]');
+    if (needsFill(panel)) {
+      var box = panel.querySelector(".run-cards");
       var items = (payload.group && payload.group.items) || [];
-      box.innerHTML = items.map(renderCard).join("");
+      if (box) box.innerHTML = items.map(renderCard).join("");
       panel.removeAttribute("data-pending");
       // 通知轨迹脚本重扫新卡片
       document.dispatchEvent(new CustomEvent("workouts:year-loaded", { detail: { year: year } }));
     }
   }
 
-  function loadYear(year) {
+  function resetPending(year) {
+    var heatEl = document.querySelector('.heat-panel[data-year="' + year + '"]');
+    if (heatEl && needsFill(heatEl)) {
+      heatEl.setAttribute("data-pending", "heat");
+      heatEl.innerHTML = "";
+    }
+    var panelEl = document.querySelector('.act-switcher .sw-panel[data-year="' + year + '"]');
+    if (panelEl && needsFill(panelEl)) {
+      panelEl.setAttribute("data-pending", "cards");
+      var box = panelEl.querySelector(".run-cards");
+      if (box) box.innerHTML = "";
+    }
+  }
+
+  function loadYear(year, force) {
     if (!year) return Promise.resolve();
-    var heatPend = document.querySelector('.heat-panel[data-year="' + year + '"][data-pending]');
-    var cardPend = document.querySelector('.act-switcher .sw-panel[data-year="' + year + '"][data-pending]');
-    if (!heatPend && !cardPend) return Promise.resolve();
-    if (cache[year]) {
+    var heatEl = document.querySelector('.heat-panel[data-year="' + year + '"]');
+    var panelEl = document.querySelector('.act-switcher .sw-panel[data-year="' + year + '"]');
+    if (!force && !needsFill(heatEl) && !needsFill(panelEl)) return Promise.resolve();
+    if (!force && cache[year]) {
       fillYear(year, cache[year]);
       return Promise.resolve(cache[year]);
     }
+    if (force) delete cache[year];
+    resetPending(year);
     return fetch(BASE + "year-" + year + ".json")
-      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (res) {
+        if (!res.ok) throw new Error("bad status");
+        return res.json();
+      })
       .then(function (json) {
-        if (!json) return null;
+        if (!json) throw new Error("empty");
         cache[year] = json;
         fillYear(year, json);
         return json;
       })
-      .catch(function () { return null; });
+      .catch(function () {
+        markFail(year);
+        return null;
+      });
+  }
+
+  function prefetchNeighbors(radioName) {
+    var current = document.querySelector('input[name="' + radioName + '"]:checked');
+    if (!current) return;
+    var yi = Number(current.getAttribute("data-yi") || "1");
+    var neighbors = document.querySelectorAll('input[name="' + radioName + '"]');
+    neighbors.forEach(function (r) {
+      var n = Number(r.getAttribute("data-yi") || "0");
+      if (Math.abs(n - yi) !== 1) return;
+      var y = r.getAttribute("data-year");
+      if (!y || cache[y]) return;
+      fetch(BASE + "year-" + y + ".json")
+        .then(function (res) { return res.ok ? res.json() : null; })
+        .then(function (json) { if (json) cache[y] = json; })
+        .catch(function () {});
+    });
   }
 
   document.addEventListener("change", function (ev) {
@@ -159,27 +218,22 @@
     if (!radio || !radio.matches) return;
     if (radio.matches('input[name="heatyear"]') || radio.matches('input[name="actyear"]')) {
       // 热力 / 记录年份各自独立；只懒加载被点到的那年数据，不改另一组 radio
-      loadYear(radio.getAttribute("data-year"));
+      var y = radio.getAttribute("data-year");
+      loadYear(y).then(function () {
+        prefetchNeighbors(radio.name);
+      });
     }
   });
 
-  // 预取相邻年，切年更顺
-  var current = document.querySelector('input[name="heatyear"]:checked');
-  if (current) {
-    var yi = Number(current.getAttribute("data-yi") || "1");
-    var neighbors = document.querySelectorAll("input[name='heatyear']");
-    neighbors.forEach(function (r) {
-      var n = Number(r.getAttribute("data-yi") || "0");
-      if (Math.abs(n - yi) === 1) {
-        var y = r.getAttribute("data-year");
-        if (y && !cache[y]) {
-          fetch(BASE + "year-" + y + ".json")
-            .then(function (res) { return res.ok ? res.json() : null; })
-            .then(function (json) { if (json) cache[y] = json; })
-            .catch(function () {});
-        }
-      }
-    });
-  }
+  document.addEventListener("click", function (ev) {
+    var btn = ev.target && ev.target.closest && ev.target.closest("[data-retry-year]");
+    if (!btn) return;
+    var y = btn.getAttribute("data-retry-year");
+    if (y) loadYear(y, true);
+  });
+
+  // 预取相邻年：热力与记录各自按当前选中 ±1
+  prefetchNeighbors("heatyear");
+  prefetchNeighbors("actyear");
 })();
 </script>

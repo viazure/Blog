@@ -14,7 +14,7 @@
                     {{ end }}
                     <div class="stv-row">
                         {{ range $i, $y := .years }}
-                        <div class="stv-year sy-{{ add $i 1 }}">
+                        <div class="stv-year sy-{{ add $i 1 }}" title="展示用，请用下方热力年份切换" role="status">
                             <p class="stv-label">{{ $y.year }} 年</p>
                             <p class="stv-n">{{ printf "%.0f" $y.km }}<span class="unit">km</span></p>
                             <p class="stv-cap">{{ $y.hours }} · {{ $y.n }} 次</p>
@@ -66,7 +66,7 @@
                         <div class="heat-head">
                             <p class="hm-label">热力图</p>
                         </div>
-                        <nav class="heat-chips">
+                        <nav class="heat-chips" aria-label="热力年份">
                             {{ range .years }}<label for="heat-{{ .year }}" tabindex="0">{{ .year }}</label>{{ end }}
                         </nav>
                         {{ range $i, $y := .years }}
@@ -96,7 +96,7 @@
                         <input class="sw-radio sw-{{ add $i 1 }}" type="radio" name="actyear" id="act-{{ $g.year }}" value="{{ $g.year }}" data-year="{{ $g.year }}" data-yi="{{ add $i 1 }}" {{ if eq $i 0 }}checked{{ end }} aria-hidden="true" tabindex="-1">
                         {{ end }}
                         <div class="act-bar">
-                            <nav class="chips">
+                            <nav class="chips" aria-label="记录年份">
                                 {{ range .groups }}<label for="act-{{ .year }}" tabindex="0">{{ .year }}</label>{{ end }}
                             </nav>
                             {{ range $i, $g := .groups }}
@@ -133,7 +133,7 @@
 
                 {{/* 统计：先选运动；中间列年份做成内联下拉 */}}
                 <section class="sec">
-                    <h2>统计</h2>
+                    <h2>统计 <span class="sec-sub">按运动</span></h2>
                     <div class="switcher sport-switcher">
                         {{ $top := 3 }}
                         {{ $n := len .panels }}
