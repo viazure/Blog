@@ -66,9 +66,12 @@
                         <div class="heat-head">
                             <p class="hm-label">热力图</p>
                         </div>
-                        <nav class="heat-chips" aria-label="热力年份">
-                            {{ range .years }}<label for="heat-{{ .year }}" tabindex="0">{{ .year }}</label>{{ end }}
-                        </nav>
+                        <div class="year-nav heat-year-nav">
+                            <p class="year-nav-label">热力年份</p>
+                            <nav class="heat-chips" aria-label="热力年份">
+                                {{ range .years }}<label for="heat-{{ .year }}" tabindex="0">{{ .year }}</label>{{ end }}
+                            </nav>
+                        </div>
                         {{ range $i, $y := .years }}
                         <div class="heat-panel heat-panel-{{ add $i 1 }}" data-year="{{ $y.year }}" data-yi="{{ add $i 1 }}"{{ if ne $i 0 }} data-pending="heat"{{ end }}>
                             {{ if eq $i 0 }}
@@ -96,9 +99,12 @@
                         <input class="sw-radio sw-{{ add $i 1 }}" type="radio" name="actyear" id="act-{{ $g.year }}" value="{{ $g.year }}" data-year="{{ $g.year }}" data-yi="{{ add $i 1 }}" {{ if eq $i 0 }}checked{{ end }} aria-hidden="true" tabindex="-1">
                         {{ end }}
                         <div class="act-bar">
-                            <nav class="chips" aria-label="记录年份">
-                                {{ range .groups }}<label for="act-{{ .year }}" tabindex="0">{{ .year }}</label>{{ end }}
-                            </nav>
+                            <div class="year-nav act-year-nav">
+                                <p class="year-nav-label">记录年份</p>
+                                <nav class="chips" aria-label="记录年份">
+                                    {{ range .groups }}<label for="act-{{ .year }}" tabindex="0">{{ .year }}</label>{{ end }}
+                                </nav>
+                            </div>
                             {{ range $i, $g := .groups }}
                             {{ $yi := add $i 1 }}
                             <div class="kind-tools yk-{{ $yi }}">

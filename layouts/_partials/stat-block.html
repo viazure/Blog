@@ -1,15 +1,16 @@
 {{/* Stats for one period. Expects dict "title" and "s" with n / km / hours / elev.
-     Optional "hide_km" omits the distance row (used by the 其他 panel). */}}
+     Optional "hide_km" omits the distance row (used by the 其他 panel).
+     Empty / zero metrics render as "—" (not "0.0 km"). */}}
 {{ $s := .s }}
 {{ $hide_km := .hide_km }}
 <div class="block">
     {{ with .title }}<h4>{{ . }}</h4>{{ end }}
-    <div class="kv"><span class="k">活动</span><span class="v">{{ $s.n }} 次</span></div>
+    <div class="kv"><span class="k">活动</span><span class="v">{{ if gt $s.n 0 }}{{ $s.n }} 次{{ else }}—{{ end }}</span></div>
     {{ if not $hide_km }}
-    <div class="kv"><span class="k">距离</span><span class="v">{{ printf "%.1f km" $s.km }}</span></div>
+    <div class="kv"><span class="k">距离</span><span class="v">{{ if gt $s.km 0 }}{{ printf "%.1f km" $s.km }}{{ else }}—{{ end }}</span></div>
     {{ end }}
-    <div class="kv"><span class="k">时间</span><span class="v">{{ $s.hours }}</span></div>
+    <div class="kv"><span class="k">时间</span><span class="v">{{ with $s.hours }}{{ if or (eq . "0") (eq . "0:00") (eq . "0h") }}—{{ else }}{{ . }}{{ end }}{{ else }}—{{ end }}</span></div>
     {{ if or (not $hide_km) (gt $s.elev 0) }}
-    <div class="kv"><span class="k">累计爬升</span><span class="v">{{ printf "%.0f m" $s.elev }}</span></div>
+    <div class="kv"><span class="k">累计爬升</span><span class="v">{{ if gt $s.elev 0 }}{{ printf "%.0f m" $s.elev }}{{ else }}—{{ end }}</span></div>
     {{ end }}
 </div>
