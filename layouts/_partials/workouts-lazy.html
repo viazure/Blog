@@ -1,0 +1,197 @@
+{{/* 运动页：年份懒加载 + 热力/记录年态同步。
+     分片路径：/data/workouts/year-YYYY.json（由 scripts/emit_page_shards.py 产出）。 */}}
+<script>
+(function () {
+  var BASE = {{ "data/workouts/" | relURL }};
+  var cache = Object.create(null);
+  var syncing = false;
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function paceLabel(pace) {
+    var total = Math.floor(Number(pace) || 0);
+    var m = Math.floor(total / 60);
+    var s = total % 60;
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  function renderHeat(yearData) {
+    var y = yearData.heatmap || {};
+    var html = "";
+    html += '<div class="hm-months" aria-hidden="true">';
+    (y.months || []).forEach(function (m) {
+      html += '<span class="hm-month" style="left:' + esc(m.pct) + '%">' + esc(m.label) + "</span>";
+    });
+    html += "</div>";
+    html += '<div class="heatmap" role="img" aria-label="' + esc(y.year) + ' 年热力图">';
+    (y.weeks || []).forEach(function (week) {
+      html += '<div class="hm-week">';
+      (week || []).forEach(function (cell) {
+        var style = "";
+        if (cell.colour) {
+          style = ' style="--c:' + esc(cell.colour);
+          if (cell.pie) style += ";--pie:" + esc(cell.pie);
+          style += '"';
+        }
+        var tip = cell.title ? ' data-tip="' + esc(cell.title) + '"' : "";
+        html += '<span class="' + esc(cell.class || "") + '"' + tip + style + "></span>";
+      });
+      html += "</div>";
+    });
+    html += "</div>";
+    if (y.legend && y.legend.length) {
+      html += '<div class="legend">';
+      y.legend.forEach(function (leg) {
+        html += "<span><span class=\"ramp\" aria-hidden=\"true\">";
+        (leg.colours || []).forEach(function (c) {
+          html += '<i class="dot" style="background:' + esc(c) + '"></i>';
+        });
+        html += "</span>" + esc(leg.name) + "</span>";
+      });
+      html += "</div>";
+    }
+    return html;
+  }
+
+  function renderCard(c) {
+    var tips = [];
+    if (c.km > 0) tips.push({ k: "距离", v: Number(c.km).toFixed(2) + " km" });
+    if (c.clock) {
+      var dur = c.clock + (c.clock_unit ? " " + c.clock_unit : "");
+      tips.push({ k: "时长", v: dur });
+    }
+    if (c.pace) tips.push({ k: "配速", v: paceLabel(c.pace) + " /km" });
+    if (c.hr) tips.push({ k: "心率", v: Math.round(c.hr) + " bpm" });
+    if (c.elev) tips.push({ k: "爬升", v: Math.round(c.elev) + " m" });
+
+    var html = '<article class="run-card kind-' + esc(c.name) + '" tabindex="0">';
+    html += '<div class="mark">';
+    if (c.has_trail) {
+      html += '<svg class="rmap" data-i="' + esc(c.idx) + '" data-glyph="' + esc(c.icon) +
+        '" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"></svg>';
+    } else {
+      html += '<span class="ico" aria-hidden="true">' + esc(c.icon) + "</span>";
+    }
+    html += '</div><div class="body"><div class="line1">';
+    html += '<span class="name">' + esc(c.label) + "</span>";
+    var dt = esc(c.date || "");
+    var time = c.time ? "T" + esc(c.time) : "";
+    html += '<time datetime="' + dt + time + '">' + esc((c.date || "").slice(5)) + "</time>";
+    html += '</div><div class="line2">';
+    if (c.km) {
+      html += '<span class="metric"><span class="num">' + Number(c.km).toFixed(2) +
+        '</span><span class="unit">km</span></span>';
+    }
+    if (c.clock) {
+      html += '<span class="metric' + (c.km ? " sub" : "") + '"><span class="num">' +
+        esc(c.clock) + "</span>";
+      if (c.clock_unit) html += '<span class="unit">' + esc(c.clock_unit) + "</span>";
+      html += "</span>";
+    }
+    if (c.pace) {
+      html += '<span class="metric sub"><span class="num">' + paceLabel(c.pace) +
+        '</span><span class="unit">/km</span></span>';
+    }
+    html += '</div></div><div class="card-tip" aria-hidden="true">';
+    html += '<div class="card-tip-when">' + esc((c.date || "").slice(5));
+    if (c.time) html += " " + esc(c.time);
+    html += "</div>";
+    if (tips.length) {
+      html += '<div class="card-tip-rows">';
+      tips.forEach(function (t) {
+        html += '<span class="card-tip-k">' + esc(t.k) + '</span><span class="card-tip-v">' +
+          esc(t.v) + "</span>";
+      });
+      html += "</div>";
+    }
+    html += "</div></article>";
+    return html;
+  }
+
+  function fillYear(year, payload) {
+    var heat = document.querySelector('.heat-panel[data-year="' + year + '"][data-pending]');
+    if (heat) {
+      heat.innerHTML = renderHeat(payload);
+      heat.removeAttribute("data-pending");
+    }
+    var panel = document.querySelector('.act-switcher .sw-panel[data-year="' + year + '"][data-pending]');
+    if (panel) {
+      var box = panel.querySelector(".run-cards");
+      var items = (payload.group && payload.group.items) || [];
+      box.innerHTML = items.map(renderCard).join("");
+      panel.removeAttribute("data-pending");
+      // 通知轨迹脚本重扫新卡片
+      document.dispatchEvent(new CustomEvent("workouts:year-loaded", { detail: { year: year } }));
+    }
+  }
+
+  function loadYear(year) {
+    if (!year) return Promise.resolve();
+    var heatPend = document.querySelector('.heat-panel[data-year="' + year + '"][data-pending]');
+    var cardPend = document.querySelector('.act-switcher .sw-panel[data-year="' + year + '"][data-pending]');
+    if (!heatPend && !cardPend) return Promise.resolve();
+    if (cache[year]) {
+      fillYear(year, cache[year]);
+      return Promise.resolve(cache[year]);
+    }
+    return fetch(BASE + "year-" + year + ".json")
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (json) {
+        if (!json) return null;
+        cache[year] = json;
+        fillYear(year, json);
+        return json;
+      })
+      .catch(function () { return null; });
+  }
+
+  function setYear(year, source) {
+    if (!year || syncing) return;
+    syncing = true;
+    var heat = document.querySelector('input[name="heatyear"][data-year="' + year + '"]');
+    var act = document.querySelector('input[name="actyear"][data-year="' + year + '"]');
+    if (heat && !heat.checked) heat.checked = true;
+    if (act && !act.checked) act.checked = true;
+    syncing = false;
+    loadYear(year).then(function () {
+      // 勿再 dispatch change，否则会与本监听器互相重入
+      document.dispatchEvent(new CustomEvent("workouts:year-loaded", { detail: { year: year } }));
+    });
+  }
+
+  document.addEventListener("change", function (ev) {
+    var radio = ev.target;
+    if (!radio || !radio.matches) return;
+    if (radio.matches('input[name="heatyear"]')) {
+      setYear(radio.getAttribute("data-year"), "heat");
+    } else if (radio.matches('input[name="actyear"]')) {
+      setYear(radio.getAttribute("data-year"), "act");
+    }
+  });
+
+  // 预取相邻年，切年更顺
+  var current = document.querySelector('input[name="heatyear"]:checked');
+  if (current) {
+    var yi = Number(current.getAttribute("data-yi") || "1");
+    var neighbors = document.querySelectorAll("input[name='heatyear']");
+    neighbors.forEach(function (r) {
+      var n = Number(r.getAttribute("data-yi") || "0");
+      if (Math.abs(n - yi) === 1) {
+        var y = r.getAttribute("data-year");
+        if (y && !cache[y]) {
+          fetch(BASE + "year-" + y + ".json")
+            .then(function (res) { return res.ok ? res.json() : null; })
+            .then(function (json) { if (json) cache[y] = json; })
+            .catch(function () {});
+        }
+      }
+    });
+  }
+})();
+</script>

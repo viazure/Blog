@@ -8,9 +8,9 @@
             <div class="page-content">
                 {{ with hugo.Data.workouts }}
                 {{ with .heatmap }}
-                <div class="switcher heat-switcher">
+                <div class="switcher heat-switcher" data-year-sync="heat">
                     {{ range $i, $y := .years }}
-                    <input class="sw-radio sw-{{ add $i 1 }}" type="radio" name="heatyear" id="heat-{{ $y.year }}" {{ if eq $i 0 }}checked{{ end }} aria-hidden="true" tabindex="-1">
+                    <input class="sw-radio sw-{{ add $i 1 }}" type="radio" name="heatyear" id="heat-{{ $y.year }}" data-year="{{ $y.year }}" data-yi="{{ add $i 1 }}" {{ if eq $i 0 }}checked{{ end }} aria-hidden="true" tabindex="-1">
                     {{ end }}
                     <div class="stv-row">
                         {{ range $i, $y := .years }}
@@ -70,32 +70,9 @@
                             {{ range .years }}<label for="heat-{{ .year }}" tabindex="0">{{ .year }}</label>{{ end }}
                         </nav>
                         {{ range $i, $y := .years }}
-                        <div class="heat-panel heat-panel-{{ add $i 1 }}">
-                            <div class="hm-months" aria-hidden="true">
-                                {{ range $y.months }}
-                                <span class="hm-month" style="left:{{ .pct }}%">{{ .label }}</span>
-                                {{ end }}
-                            </div>
-                            <div class="heatmap" role="img" aria-label="{{ $y.year }} 年热力图">
-                                {{ range $y.weeks }}
-                                <div class="hm-week">
-                                    {{ range . }}
-                                    <span class="{{ .class }}"{{ with .title }} data-tip="{{ . }}"{{ end }}{{ if .colour }} style="--c:{{ .colour }}{{ with .pie }};--pie:{{ . }}{{ end }}"{{ end }}></span>
-                                    {{ end }}
-                                </div>
-                                {{ end }}
-                            </div>
-                            {{ with $y.legend }}
-                            <div class="legend">
-                                {{ range . }}
-                                <span>
-                                    <span class="ramp" aria-hidden="true">
-                                        {{ range .colours }}<i class="dot" style="background:{{ . }}"></i>{{ end }}
-                                    </span>
-                                    {{ .name }}
-                                </span>
-                                {{ end }}
-                            </div>
+                        <div class="heat-panel heat-panel-{{ add $i 1 }}" data-year="{{ $y.year }}" data-yi="{{ add $i 1 }}"{{ if ne $i 0 }} data-pending="heat"{{ end }}>
+                            {{ if eq $i 0 }}
+                            {{ partial "workout-heat-panel.html" $y }}
                             {{ end }}
                         </div>
                         {{ end }}
@@ -107,7 +84,7 @@
                      类名用下标（sw-1、sw-panel-1）而不是年份值，这样 SCSS 能用 @for 覆盖。 */}}
                 <section class="sec">
                     <h2>记录</h2>
-                    <div class="switcher act-switcher">
+                    <div class="switcher act-switcher" data-year-sync="act">
                         {{ range $i, $g := .groups }}
                         {{ $yi := add $i 1 }}
                         <input class="sw-radio ak-{{ $yi }}-all" type="radio" name="actkind-{{ $g.year }}" id="ak-{{ $yi }}-all" checked aria-hidden="true" tabindex="-1">
@@ -116,7 +93,7 @@
                         {{ end }}
                         {{ end }}
                         {{ range $i, $g := .groups }}
-                        <input class="sw-radio sw-{{ add $i 1 }}" type="radio" name="actyear" id="act-{{ $g.year }}" value="{{ $g.year }}" {{ if eq $i 0 }}checked{{ end }} aria-hidden="true" tabindex="-1">
+                        <input class="sw-radio sw-{{ add $i 1 }}" type="radio" name="actyear" id="act-{{ $g.year }}" value="{{ $g.year }}" data-year="{{ $g.year }}" data-yi="{{ add $i 1 }}" {{ if eq $i 0 }}checked{{ end }} aria-hidden="true" tabindex="-1">
                         {{ end }}
                         <div class="act-bar">
                             <nav class="chips">
@@ -143,9 +120,11 @@
                             {{ end }}
                         </div>
                         {{ range $i, $g := .groups }}
-                        <div class="sw-panel sw-panel-{{ add $i 1 }}">
+                        <div class="sw-panel sw-panel-{{ add $i 1 }}" data-year="{{ $g.year }}" data-yi="{{ add $i 1 }}"{{ if ne $i 0 }} data-pending="cards"{{ end }}>
                             <div class="run-cards">
+                                {{ if eq $i 0 }}
                                 {{ range $g.items }}{{ partial "workout-card.html" . }}{{ end }}
+                                {{ end }}
                             </div>
                         </div>
                         {{ end }}
@@ -210,6 +189,7 @@
                 </section>
 
                 {{ partial "track-script.html" . }}
+                {{ partial "workouts-lazy.html" . }}
                 <script>
                 (function () {
                     var parts = new Intl.DateTimeFormat("en-US", {

@@ -87,6 +87,9 @@
       var scope = radio.closest('.switcher');
       if (scope) setTimeout(function () { refresh(scope); }, 0);
     });
+    document.addEventListener('workouts:year-loaded', function () {
+      setTimeout(function () { refresh(document.querySelector('.act-switcher')); }, 0);
+    });
   }
 
   function ready(json) {
