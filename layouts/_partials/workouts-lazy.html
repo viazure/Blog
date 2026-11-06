@@ -63,6 +63,19 @@
     return html;
   }
 
+  /** List data-wk: drop bars/hr arrays; detail resolves from year shard. */
+  function slimSession(s) {
+    if (!s) return null;
+    return {
+      has_session: true,
+      moving: s.moving,
+      hr_avg: s.hr_avg,
+      hr_max: s.hr_max,
+      kcal: s.kcal,
+      elev: s.elev
+    };
+  }
+
   function renderCard(c) {
     var tips = [];
     if (c.km > 0) tips.push({ k: "距离", v: Number(c.km).toFixed(2) + " km" });
@@ -92,7 +105,7 @@
       run_id: c.run_id,
       hr_max: c.hr_max,
       kcal: c.kcal,
-      session: c.session || null
+      session: slimSession(c.session)
     };
 
     var html = '<article class="run-card kind-' + esc(c.name) +
@@ -259,7 +272,36 @@
   });
 
   // 预取相邻年：热力与记录各自按当前选中 ±1
+
+  // SSR 默认年：DOM 已有卡片，但 data-wk 已瘦身；拉年分片写入全量 index 供 Clock / mini
+  function indexYearData(year) {
+    if (!year || cache[year]) {
+      if (year && cache[year] && window.__wkIndexItems) {
+        window.__wkIndexItems((cache[year].group && cache[year].group.items) || []);
+        document.dispatchEvent(new CustomEvent("workouts:year-loaded", { detail: { year: year } }));
+      }
+      return Promise.resolve(cache[year]);
+    }
+    return fetch(BASE + "year-" + year + ".json")
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (json) {
+        if (!json) return null;
+        cache[year] = json;
+        if (window.__wkIndexItems) {
+          window.__wkIndexItems((json.group && json.group.items) || []);
+        }
+        document.dispatchEvent(new CustomEvent("workouts:year-loaded", { detail: { year: year } }));
+        return json;
+      })
+      .catch(function (err) {
+        console.warn("[workouts] indexYearData failed", year, err);
+        return null;
+      });
+  }
+
   prefetchNeighbors("heatyear");
   prefetchNeighbors("actyear");
+  var actChecked = document.querySelector('input[name="actyear"]:checked');
+  if (actChecked) indexYearData(actChecked.getAttribute("data-year"));
 })();
 </script>

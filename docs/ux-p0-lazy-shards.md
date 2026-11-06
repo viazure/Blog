@@ -1,6 +1,12 @@
 # UX P0 · Lazy shard contract (ADR)
 
-Status: accepted (`feat/ux-p0-lazy-render`). Session Clock **does not land on this branch**.
+Status: accepted on `feat/ux-p0-lazy-render`; carried forward on `feat/workouts-session-clock`.
+
+## Merge order
+
+1. **P0** (`feat/ux-p0-lazy-render`) → `main` (local review first; no PR until川川 says so)
+2. **Session Clock** (`feat/workouts-session-clock`, based on P0 tip) → `main` after P0
+3. Do not land Clock onto the P0-only branch; keep Clock as a follow-on branch
 
 ## Goal
 
@@ -11,7 +17,7 @@ First HTML paint = chrome + **default year / default Tab** body; rest `fetch` fr
 | Surface | Path | Producer |
 |---------|------|----------|
 | workouts index | `/data/workouts/index.json` | `emit_workouts` |
-| workouts year | `/data/workouts/year-{YYYY}.json` | heatmap + group.items |
+| workouts year | `/data/workouts/year-{YYYY}.json` | heatmap + group.items (+ full `session`) |
 | Last.fm meta | `/data/media/lastfm/meta.json` | recent + periods |
 | Last.fm period | `/data/media/lastfm/period-{id}.json` | `7day` `1month` `3month` `6month` `12month` `overall` |
 | NeoDB meta | `/data/media/neodb/meta.json` | categories |
@@ -27,18 +33,18 @@ Music tab id is `music` (UI only); data lives in lastfm shards.
 
 ## Events
 
-- `workouts:year-loaded`: fired after year cards are written; `track-script` re-IO-observes trail SVGs.
+- `workouts:year-loaded`: fired after year cards are written **or** after SSR default year is indexed from its shard; `track-script` re-IO-observes trail SVGs; Session Clock hydrates mini clocks.
 
 ## Cache
 
 - In-page JS memory `cache`, no TTL (OK for static site).
 - CDN/browser: `static/_headers` -> `/data/*` short cache (`max-age=300` + SWR). Filenames have no hash; rely on short TTL after rebuild.
 
-## Session Clock boundary
+## Session Clock
 
-- Do **not** implement Session Clock on this branch.
 - Card fields `clock` / `clock_unit` mean **duration**; do not reuse for session state.
-- Clock is a separate branch after P0 merges to main; new fields must sync SSR + emit + `renderCard`.
+- Full `session.bars` / `session.hr` live in year shards; list `data-wk` is slim (see [session-clock.md](./session-clock.md)).
+- Changing session shape must sync: emit + SSR `workout-card` + `renderCard` + detail shell (see field map).
 
 ## Dual render
 

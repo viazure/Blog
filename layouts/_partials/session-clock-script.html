@@ -113,9 +113,29 @@
     return "0:" + (m < 10 ? "0" : "") + m;
   }
 
+  function sessionRichness(s) {
+    if (!s) return 0;
+    var n = 0;
+    if (s.bars && s.bars.length) n += 2;
+    if (s.hr && s.hr.length) n += 1;
+    if (s.has_session || s.moving) n += 0.1;
+    return n;
+  }
+
   function indexItem(c) {
     if (!c || c.idx == null) return;
-    itemsByIdx[String(c.idx)] = c;
+    var key = String(c.idx);
+    var prev = itemsByIdx[key];
+    if (!prev) {
+      itemsByIdx[key] = c;
+      return;
+    }
+    // Prefer payload with bars/hr (year shard) over slim data-wk summary
+    var next = Object.assign({}, prev, c);
+    if (sessionRichness(prev.session) > sessionRichness(c.session)) {
+      next.session = prev.session;
+    }
+    itemsByIdx[key] = next;
   }
 
   function indexMany(items) {
@@ -319,11 +339,45 @@
         window.__wkTrails = { points: trails };
         return trails;
       })
-      .catch(function () {
+      .catch(function (err) {
+        console.warn("[session-clock] trails fetch failed", err);
         trails = {};
         return trails;
       });
     return trailPromise;
+  }
+
+
+  var yearCache = {};
+  function ensureFullSession(item) {
+    if (!item) return Promise.resolve(item);
+    var key = String(item.idx);
+    var cur = itemsByIdx[key] || item;
+    if (cur.session && cur.session.bars && cur.session.bars.length) {
+      return Promise.resolve(cur);
+    }
+    var year = (cur.date || item.date || "").slice(0, 4);
+    if (!year) return Promise.resolve(cur);
+    var hit = yearCache[year];
+    var p = hit || fetch("/data/workouts/year-" + year + ".json")
+      .then(function (res) {
+        if (!res.ok) throw new Error("year " + year);
+        return res.json();
+      })
+      .then(function (json) {
+        yearCache[year] = Promise.resolve(json);
+        indexMany((json.group && json.group.items) || []);
+        return json;
+      })
+      .catch(function (err) {
+        console.warn("[session-clock] year shard fetch failed", year, err);
+        delete yearCache[year];
+        return null;
+      });
+    yearCache[year] = p;
+    return p.then(function () {
+      return itemsByIdx[key] || cur;
+    });
   }
 
   function metricHtml(label, value, unit) {
@@ -389,38 +443,41 @@
 
   function openDetail(item, cardEl) {
     if (!item) return;
-    currentIdx = String(item.idx);
-    var accent = accentOf(cardEl) || "#9085e9";
-    fillMeta(item);
-    var hasTrail = !!item.has_trail;
-    var session = item.session || { moving: item.moving || 0, bars: [] };
+    ensureFullSession(item).then(function (full) {
+      item = full || item;
+      currentIdx = String(item.idx);
+      var accent = accentOf(cardEl) || "#9085e9";
+      fillMeta(item);
+      var hasTrail = !!item.has_trail;
+      var session = item.session || { moving: item.moving || 0, bars: [] };
 
-    legendEl.hidden = hasTrail; // 无 GPS 详情必显三行图例
-    toolsEl.hidden = !hasTrail;
+      legendEl.hidden = hasTrail; // 无 GPS 详情必显三行图例
+      toolsEl.hidden = !hasTrail;
 
-    drawSessionClock(clockSvg, session, accent, false);
+      drawSessionClock(clockSvg, session, accent, false);
 
-    function show() {
-      if (typeof dialog.showModal === "function") dialog.showModal();
-      else dialog.setAttribute("open", "");
-      updatePager(item);
-    }
+      function show() {
+        if (typeof dialog.showModal === "function") dialog.showModal();
+        else dialog.setAttribute("open", "");
+        updatePager(item);
+      }
 
-    if (hasTrail) {
-      setViz("map");
-      ensureTrails().then(function (pts) {
-        var ok = drawMap(mapSvg, pts[String(item.idx)], accent);
-        if (!ok) {
-          toolsEl.hidden = true;
-          setViz("clock");
-          legendEl.hidden = false;
-        }
+      if (hasTrail) {
+        setViz("map");
+        ensureTrails().then(function (pts) {
+          var ok = drawMap(mapSvg, pts[String(item.idx)], accent);
+          if (!ok) {
+            toolsEl.hidden = true;
+            setViz("clock");
+            legendEl.hidden = false;
+          }
+          show();
+        });
+      } else {
+        setViz("clock");
         show();
-      });
-    } else {
-      setViz("clock");
-      show();
-    }
+      }
+    });
   }
 
   function closeDetail() {
@@ -489,13 +546,16 @@
 
   // boot: parse JSON payloads on cards
   function hydrateFromDom() {
-    document.querySelectorAll(".run-card[data-wk]").forEach(function (card) {
+    document.querySelectorAll(".run-card[data-idx]").forEach(function (card) {
       try {
         var raw = card.getAttribute("data-wk");
-        if (!raw) return;
-        var item = JSON.parse(raw);
-        indexItem(item);
-        // mini clock for no-trail
+        if (raw) {
+          indexItem(JSON.parse(raw));
+        }
+        var idx = card.getAttribute("data-idx");
+        var item = itemsByIdx[idx];
+        if (!item) return;
+        // mini clock for no-trail — needs bars from year shard index
         if (!item.has_trail && item.session && item.session.bars && item.session.bars.length) {
           var mark = card.querySelector(".mark");
           if (!mark) return;
@@ -512,7 +572,9 @@
           if (ico) ico.hidden = true;
           drawSessionClock(svg, item.session, accentOf(card), true);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn("[session-clock] hydrate failed", e);
+      }
     });
   }
 

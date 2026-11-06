@@ -15,10 +15,16 @@ Default year/Tab = Hugo SSR; other slices from `static/data` + client templates.
 | `pace` | mm:ss /km | paceLabel | seconds |
 | `hr` / `elev` | tip only | tip only | HR / elev |
 | `has_trail` / `idx` / `icon` | svg.rmap or .ico | same | trail via track-script IO |
-| `run_id` / `hr_max` / `kcal` / `session` | `data-wk` JSON | same in renderCard | Session Clock; see session-clock.md |
+| `run_id` / `hr_max` / `kcal` | `data-wk` JSON | same in renderCard | Session Clock ids / metrics |
+| `session` (slim) | `data-wk`: `has_session`, `moving`, `hr_avg`, `hr_max`, `kcal`, `elev` — **no bars/hr** | `slimSession()` | List summary only |
+| `session` (full) | not in attribute; year shard → `__wkIndexItems` | same | `bars` (28) + `hr` (28) for Clock |
 | `moving` | in `data-wk` | same | seconds for elapsed / core |
 
-Event: after `fillYear`, dispatch `workouts:year-loaded` (`detail.year`); `track-script` re-observes `.rmap`.
+Event: after `fillYear` **or** SSR `indexYearData`, dispatch `workouts:year-loaded` (`detail.year`); `track-script` re-observes `.rmap`; Clock hydrates mini clocks.
+
+### Session shape sync
+
+Changing `session` fields/markup requires **emit + SSR `workout-card` + `renderCard`/`slimSession` + detail shell** (`session-clock-script`). See [session-clock.md](./session-clock.md).
 
 ## Media · `media.html` <-> `media-lazy.html`
 
