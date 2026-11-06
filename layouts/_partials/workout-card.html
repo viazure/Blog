@@ -1,6 +1,7 @@
 {{/* Workout card SSR. Keep in sync with workouts-lazy renderCard.
-     Field map: docs/ux-p0-ssr-js-fields.md
-     clock/clock_unit = duration, not Session Clock. */}}
+     Field map: docs/ux-p0-ssr-js-fields.md + docs/session-clock.md
+     clock/clock_unit = duration, not Session Clock.
+     data-wk JSON feeds the detail shell / mini Session Clock. */}}
 {{ $c := . }}
 {{ $tips := slice }}
 {{ if gt $c.km 0 }}
@@ -21,7 +22,27 @@
 {{ if $c.elev }}
 {{ $tips = $tips | append (dict "k" "爬升" "v" (printf "%.0f m" $c.elev)) }}
 {{ end }}
-<article class="run-card kind-{{ $c.name }}" tabindex="0">
+{{ $wk := dict
+  "idx" $c.idx
+  "label" $c.label
+  "name" $c.name
+  "date" $c.date
+  "icon" $c.icon
+  "has_trail" $c.has_trail
+  "km" $c.km
+  "moving" $c.moving
+  "hr" $c.hr
+  "elev" $c.elev
+  "pace" $c.pace
+  "clock" $c.clock
+  "clock_unit" $c.clock_unit
+}}
+{{ with $c.time }}{{ $wk = merge $wk (dict "time" .) }}{{ end }}
+{{ with $c.run_id }}{{ $wk = merge $wk (dict "run_id" .) }}{{ end }}
+{{ with $c.hr_max }}{{ $wk = merge $wk (dict "hr_max" .) }}{{ end }}
+{{ with $c.kcal }}{{ $wk = merge $wk (dict "kcal" .) }}{{ end }}
+{{ with $c.session }}{{ $wk = merge $wk (dict "session" .) }}{{ end }}
+<article class="run-card kind-{{ $c.name }}" tabindex="0" role="button" data-idx="{{ $c.idx }}" data-wk="{{ $wk | jsonify }}" aria-label="查看 {{ $c.label }} 详情">
     <div class="mark">
         {{ if $c.has_trail }}
         <svg class="rmap" data-i="{{ $c.idx }}" data-glyph="{{ $c.icon }}" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"></svg>

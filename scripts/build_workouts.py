@@ -24,6 +24,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from paths import dump_data, life_data_root, load_json
+from session_clock import build_session
 
 ROOT = Path(__file__).resolve().parents[1]
 # Workouts are dated in local time. China has no DST, so a fixed offset
@@ -648,6 +649,9 @@ def main() -> None:
         clock_num, clock_unit = card_clock_parts(moving)
         row["clock"] = clock_num
         row["clock_unit"] = clock_unit
+        run_id = entry.get("run_id")
+        if run_id is not None:
+            row["run_id"] = run_id
         rows.append(row)
         points = trail_points(str(entry.get("summary_polyline") or ""))
         if points:
@@ -673,6 +677,27 @@ def main() -> None:
         used += len(points)
     for row in rows:
         row["has_trail"] = str(row["idx"]) in trimmed
+
+    splits_dir = life_data_root() / "data" / "workouts" / "splits"
+    if not splits_dir.is_dir():
+        splits_dir = None
+    for row in rows:
+        session = build_session(
+            run_id=row.get("run_id"),
+            moving=int(row.get("moving") or 0),
+            hr_avg=float(row.get("hr") or 0),
+            elev=float(row.get("elev") or 0),
+            splits_dir=splits_dir,
+        )
+        if session:
+            row["session"] = session
+            if session.get("hr_max"):
+                row["hr_max"] = session["hr_max"]
+            if session.get("kcal"):
+                row["kcal"] = session["kcal"]
+            if session.get("elev") and not row.get("elev"):
+                row["elev"] = session["elev"]
+
     static_dir = ROOT / "static"
     static_dir.mkdir(parents=True, exist_ok=True)
     (static_dir / "trails.json").write_text(

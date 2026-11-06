@@ -15,6 +15,8 @@ Default year/Tab = Hugo SSR; other slices from `static/data` + client templates.
 | `pace` | mm:ss /km | paceLabel | seconds |
 | `hr` / `elev` | tip only | tip only | HR / elev |
 | `has_trail` / `idx` / `icon` | svg.rmap or .ico | same | trail via track-script IO |
+| `run_id` / `hr_max` / `kcal` / `session` | `data-wk` JSON | same in renderCard | Session Clock; see session-clock.md |
+| `moving` | in `data-wk` | same | seconds for elapsed / core |
 
 Event: after `fillYear`, dispatch `workouts:year-loaded` (`detail.year`); `track-script` re-observes `.rmap`.
 

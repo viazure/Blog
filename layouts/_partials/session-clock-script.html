@@ -1,0 +1,534 @@
+{{/* Session Clock + unified activity detail shell.
+     clock/clock_unit on cards = duration; this component is sessionClock.
+     Requires trails.json (via window.__wkTrails or fetch) for GPS map slot.
+     Listens workouts:year-loaded to index lazy items. */}}
+<dialog class="wk-detail" id="wk-detail" aria-labelledby="wk-detail-title">
+  <div class="wk-detail-sheet">
+    <button type="button" class="wk-detail-close" aria-label="关闭" data-wk-close>&times;</button>
+    <div class="wk-detail-layout">
+      <section class="wk-detail-viz" aria-label="活动可视化">
+        <div class="wk-viz-tools" hidden>
+          <button type="button" class="wk-viz-tab is-on" data-viz="map">轨迹</button>
+          <button type="button" class="wk-viz-tab" data-viz="clock">心率钟</button>
+        </div>
+        <div class="wk-viz-stage">
+          <div class="wk-viz-panel" data-panel="map" hidden>
+            <svg class="wk-map" viewBox="0 0 400 400" role="img" aria-label="活动轨迹"></svg>
+          </div>
+          <div class="wk-viz-panel" data-panel="clock">
+            <svg class="wk-sclock" viewBox="0 0 400 400" role="img" aria-label="Session Clock"></svg>
+          </div>
+        </div>
+      </section>
+      <section class="wk-detail-meta">
+        <div class="wk-sport-pill"><span class="wk-sport-dot" aria-hidden="true"></span><span class="wk-sport-name"></span></div>
+        <h2 class="wk-detail-title display" id="wk-detail-title"></h2>
+        <p class="wk-detail-when mono"></p>
+        <div class="wk-metrics" role="list"></div>
+        <div class="wk-legend" aria-label="图例" hidden>
+          <div class="wk-legend-row">
+            <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+              <path d="M6 18 A12 12 0 0 1 30 18" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+              <path d="M8 22 A10 10 0 0 1 16 10" fill="none" stroke="currentColor" stroke-width="6" opacity=".5" stroke-linecap="round"/>
+            </svg>
+            <div><strong>外环 · Outer</strong>一整圈 = 整次训练；块高度/亮度 ≈ 心率区间</div>
+          </div>
+          <div class="wk-legend-row">
+            <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+              <polyline points="6,24 12,16 18,20 24,10 30,14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <div><strong>内曲线 · Inner</strong>心率折线；越靠外越高</div>
+          </div>
+          <div class="wk-legend-row">
+            <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+              <circle cx="18" cy="18" r="5" fill="currentColor"/>
+            </svg>
+            <div><strong>核心 · Core</strong>不足 1 小时 = 种子点；满小时则生长环</div>
+          </div>
+        </div>
+        <nav class="wk-pager" aria-label="相邻活动" hidden>
+          <button type="button" class="wk-pager-btn" data-wk-prev>
+            <span class="dir">← prev</span>
+            <span class="ttl" data-prev-title></span>
+          </button>
+          <button type="button" class="wk-pager-btn right" data-wk-next>
+            <span class="dir">next →</span>
+            <span class="ttl" data-next-title></span>
+          </button>
+        </nav>
+      </section>
+    </div>
+  </div>
+</dialog>
+<script>
+(function () {
+  var TRAIL_URL = {{ "trails.json" | relURL }};
+  var itemsByIdx = Object.create(null);
+  var trails = (window.__wkTrails && window.__wkTrails.points) || null;
+  var trailPromise = null;
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var dialog = document.getElementById("wk-detail");
+  if (!dialog) return;
+  var titleEl = dialog.querySelector("#wk-detail-title");
+  var whenEl = dialog.querySelector(".wk-detail-when");
+  var sportName = dialog.querySelector(".wk-sport-name");
+  var sportPill = dialog.querySelector(".wk-sport-pill");
+  var metricsEl = dialog.querySelector(".wk-metrics");
+  var legendEl = dialog.querySelector(".wk-legend");
+  var toolsEl = dialog.querySelector(".wk-viz-tools");
+  var mapPanel = dialog.querySelector('[data-panel="map"]');
+  var clockPanel = dialog.querySelector('[data-panel="clock"]');
+  var mapSvg = dialog.querySelector("svg.wk-map");
+  var clockSvg = dialog.querySelector("svg.wk-sclock");
+  var pager = dialog.querySelector(".wk-pager");
+  var currentIdx = null;
+  var currentList = [];
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function paceLabel(pace) {
+    var total = Math.floor(Number(pace) || 0);
+    if (!total) return "";
+    var m = Math.floor(total / 60);
+    var s = total % 60;
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  function dash(v) {
+    return v == null || v === "" || v === 0 || v === "0" ? "—" : String(v);
+  }
+
+  function elapsedLabel(moving) {
+    var s = Math.max(0, Math.floor(Number(moving) || 0));
+    var h = Math.floor(s / 3600);
+    var m = Math.floor((s % 3600) / 60);
+    if (h > 0) return h + ":" + (m < 10 ? "0" : "") + m;
+    return "0:" + (m < 10 ? "0" : "") + m;
+  }
+
+  function indexItem(c) {
+    if (!c || c.idx == null) return;
+    itemsByIdx[String(c.idx)] = c;
+  }
+
+  function indexMany(items) {
+    (items || []).forEach(indexItem);
+  }
+
+  function visibleCards() {
+    var panel = document.querySelector(".act-switcher .sw-panel:not([hidden])");
+    // panels use CSS :has display, not hidden attr — pick checked year panel
+    var checked = document.querySelector('.act-switcher input[name="actyear"]:checked');
+    if (checked) {
+      var yi = checked.getAttribute("data-yi");
+      panel = document.querySelector(".act-switcher .sw-panel-" + yi);
+    }
+    if (!panel) return [];
+    return [].slice.call(panel.querySelectorAll(".run-card[data-idx]"));
+  }
+
+  function ns(tag) {
+    return document.createElementNS("http://www.w3.org/2000/svg", tag);
+  }
+
+  function clearSvg(svg) {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+  }
+
+  function accentOf(cardOrName) {
+    if (cardOrName && cardOrName.style) {
+      var a = getComputedStyle(cardOrName).getPropertyValue("--workout-accent").trim();
+      if (a) return a;
+    }
+    return "#9085e9";
+  }
+
+  /** Draw Session Clock into svg. session: {bars, hr, moving, ...} */
+  function drawSessionClock(svg, session, accent, mini) {
+    clearSvg(svg);
+    session = session || {};
+    var cx = 200, cy = 200;
+    var bars = session.bars || [];
+    var hr = session.hr || [];
+    var moving = Number(session.moving) || 0;
+    var hours = Math.floor(moving / 3600);
+    var soft = accent || "#9085e9";
+    var ink = "#5b4bdb";
+
+    function rad(d) { return d * Math.PI / 180; }
+    function pt(r, a) {
+      return [cx + r * Math.cos(rad(a)), cy + r * Math.sin(rad(a))];
+    }
+
+    var defs = ns("defs");
+    var grad = ns("radialGradient");
+    grad.setAttribute("id", mini ? "scGlowMini" : "scGlow");
+    grad.setAttribute("cx", "50%"); grad.setAttribute("cy", "50%"); grad.setAttribute("r", "50%");
+    [["0%", "0.18"], ["70%", "0.04"], ["100%", "0"]].forEach(function (pair) {
+      var stop = ns("stop");
+      stop.setAttribute("offset", pair[0]);
+      stop.setAttribute("stop-color", soft);
+      stop.setAttribute("stop-opacity", pair[1]);
+      grad.appendChild(stop);
+    });
+    defs.appendChild(grad);
+    svg.appendChild(defs);
+
+    var glow = ns("circle");
+    glow.setAttribute("cx", cx); glow.setAttribute("cy", cy); glow.setAttribute("r", mini ? 190 : 190);
+    glow.setAttribute("fill", "url(#" + (mini ? "scGlowMini" : "scGlow") + ")");
+    svg.appendChild(glow);
+
+    // 70 bpm reference
+    var ref = ns("circle");
+    ref.setAttribute("cx", cx); ref.setAttribute("cy", cy); ref.setAttribute("r", "70");
+    ref.setAttribute("fill", "none");
+    ref.setAttribute("stroke", "#e8e4de");
+    ref.setAttribute("stroke-width", mini ? "2" : "1");
+    ref.setAttribute("stroke-dasharray", "2 4");
+    svg.appendChild(ref);
+
+    if (!mini) {
+      var lab = ns("text");
+      lab.setAttribute("x", cx); lab.setAttribute("y", 128);
+      lab.setAttribute("text-anchor", "middle");
+      lab.setAttribute("fill", "#8a8680");
+      lab.setAttribute("font-family", "ui-monospace,monospace");
+      lab.setAttribute("font-size", "10");
+      lab.textContent = "70";
+      svg.appendChild(lab);
+    }
+
+    var outer = ns("g");
+    svg.appendChild(outer);
+    var N = bars.length || 0;
+    for (var i = 0; i < N; i++) {
+      var a0 = -90 + i * (360 / N);
+      var a1 = a0 + 360 / N - (mini ? 1.5 : 2.5);
+      var h = Number(bars[i]) || 0;
+      var r1 = 168, r0 = 168 - h;
+      var p0 = pt(r1, a0), p1 = pt(r1, a1), p2 = pt(r0, a1), p3 = pt(r0, a0);
+      var op = 0.35 + (h / 24) * 0.55;
+      var path = ns("path");
+      path.setAttribute("d",
+        "M" + p0[0] + " " + p0[1] +
+        " A" + r1 + " " + r1 + " 0 0 1 " + p1[0] + " " + p1[1] +
+        " L" + p2[0] + " " + p2[1] +
+        " A" + r0 + " " + r0 + " 0 0 0 " + p3[0] + " " + p3[1] + " Z");
+      path.setAttribute("fill", soft);
+      path.setAttribute("opacity", String(op));
+      outer.appendChild(path);
+    }
+
+    if (hr.length) {
+      var n = hr.length;
+      var pts = hr.map(function (bpm, i) {
+        var a = -90 + i * (360 / n);
+        var r = 55 + ((Number(bpm) - 70) / 90) * 95;
+        r = Math.max(40, Math.min(160, r));
+        var p = pt(r, a);
+        return p[0].toFixed(1) + "," + p[1].toFixed(1);
+      });
+      var poly = ns("polyline");
+      poly.setAttribute("points", pts.join(" "));
+      poly.setAttribute("fill", "none");
+      poly.setAttribute("stroke", ink);
+      poly.setAttribute("stroke-width", mini ? "3" : "2.2");
+      poly.setAttribute("stroke-linecap", "round");
+      poly.setAttribute("stroke-linejoin", "round");
+      poly.setAttribute("opacity", "0.9");
+      svg.appendChild(poly);
+    }
+
+    // core
+    if (hours >= 1) {
+      for (var ring = hours; ring >= 1; ring--) {
+        var c = ns("circle");
+        c.setAttribute("cx", cx); c.setAttribute("cy", cy);
+        c.setAttribute("r", String(10 + ring * 7));
+        c.setAttribute("fill", "none");
+        c.setAttribute("stroke", soft);
+        c.setAttribute("stroke-width", "3");
+        c.setAttribute("opacity", String(0.35 + ring * 0.12));
+        if (!reduceMotion) {
+          c.style.transformOrigin = "200px 200px";
+          c.style.animation = "wk-grow 0.45s ease-out both";
+          c.style.animationDelay = (0.04 * (hours - ring)) + "s";
+        }
+        svg.appendChild(c);
+      }
+      var core = ns("circle");
+      core.setAttribute("cx", cx); core.setAttribute("cy", cy); core.setAttribute("r", "6");
+      core.setAttribute("fill", ink);
+      svg.appendChild(core);
+    } else {
+      var seed = ns("circle");
+      seed.setAttribute("cx", cx); seed.setAttribute("cy", cy); seed.setAttribute("r", mini ? "14" : "10");
+      seed.setAttribute("fill", soft);
+      svg.appendChild(seed);
+      var seed2 = ns("circle");
+      seed2.setAttribute("cx", cx); seed2.setAttribute("cy", cy); seed2.setAttribute("r", mini ? "6" : "4");
+      seed2.setAttribute("fill", ink);
+      svg.appendChild(seed2);
+    }
+  }
+
+  function drawMap(svg, pointsStr, accent) {
+    clearSvg(svg);
+    if (!pointsStr) return false;
+    // trails.json stores "x,y x,y ..." in 0..40 space — scale to 400
+    var pairs = String(pointsStr).trim().split(/\s+/);
+    if (pairs.length < 2) return false;
+    var scaled = pairs.map(function (pair) {
+      var xy = pair.split(",");
+      var x = Number(xy[0]), y = Number(xy[1]);
+      // inset padding
+      return ((x / 40) * 340 + 30).toFixed(1) + "," + ((y / 40) * 340 + 30).toFixed(1);
+    });
+    var bg = ns("rect");
+    bg.setAttribute("x", "0"); bg.setAttribute("y", "0");
+    bg.setAttribute("width", "400"); bg.setAttribute("height", "400");
+    bg.setAttribute("rx", "24");
+    bg.setAttribute("fill", "#f7f6f3");
+    svg.appendChild(bg);
+    var pl = ns("polyline");
+    pl.setAttribute("points", scaled.join(" "));
+    pl.setAttribute("fill", "none");
+    pl.setAttribute("stroke", accent || "#f97316");
+    pl.setAttribute("stroke-width", "6");
+    pl.setAttribute("stroke-linecap", "round");
+    pl.setAttribute("stroke-linejoin", "round");
+    svg.appendChild(pl);
+    return true;
+  }
+
+  function ensureTrails() {
+    if (trails) return Promise.resolve(trails);
+    if (trailPromise) return trailPromise;
+    trailPromise = fetch(TRAIL_URL)
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (json) {
+        trails = (json && json.points) || {};
+        window.__wkTrails = { points: trails };
+        return trails;
+      })
+      .catch(function () {
+        trails = {};
+        return trails;
+      });
+    return trailPromise;
+  }
+
+  function metricHtml(label, value, unit) {
+    var isDash = value === "—";
+    return '<div class="wk-metric" role="listitem">' +
+      '<div class="label">' + esc(label) + "</div>" +
+      '<div class="value' + (isDash ? " dash" : "") + '">' + esc(value) +
+      (unit && !isDash ? ' <span class="u">' + esc(unit) + "</span>" : "") +
+      "</div></div>";
+  }
+
+  function fillMeta(item) {
+    var s = item.session || {};
+    sportName.textContent = String(item.name || "").toUpperCase();
+    sportPill.style.color = "";
+    titleEl.textContent = item.label || item.name || "活动";
+    var when = (item.date || "") + (item.time ? " · " + item.time : "");
+    whenEl.textContent = when;
+
+    var km = Number(item.km) || 0;
+    var elev = Number(s.elev != null ? s.elev : item.elev) || 0;
+    var hrAvg = Number(s.hr_avg != null ? s.hr_avg : item.hr) || 0;
+    var hrMax = Number(s.hr_max != null ? s.hr_max : item.hr_max) || 0;
+    var kcal = Number(s.kcal != null ? s.kcal : item.kcal) || 0;
+    var moving = Number(s.moving != null ? s.moving : item.moving) || 0;
+
+    metricsEl.innerHTML =
+      metricHtml("Distance", km > 0 ? km.toFixed(2) : "—", km > 0 ? "km" : "") +
+      metricHtml("Elapsed", moving > 0 ? elapsedLabel(moving) : "—", "") +
+      metricHtml("Climb", elev > 0 ? String(Math.round(elev)) : "—", elev > 0 ? "m" : "") +
+      metricHtml("Avg HR", hrAvg > 0 ? String(Math.round(hrAvg)) : "—", hrAvg > 0 ? "bpm" : "") +
+      metricHtml("Max HR", hrMax > 0 ? String(Math.round(hrMax)) : "—", hrMax > 0 ? "bpm" : "") +
+      metricHtml("Energy", kcal > 0 ? String(Math.round(kcal)) : "—", kcal > 0 ? "kcal" : "");
+  }
+
+  function setViz(mode) {
+    var isMap = mode === "map";
+    mapPanel.hidden = !isMap;
+    clockPanel.hidden = isMap;
+    dialog.querySelectorAll(".wk-viz-tab").forEach(function (btn) {
+      btn.classList.toggle("is-on", btn.getAttribute("data-viz") === mode);
+    });
+  }
+
+  function updatePager(item) {
+    var cards = visibleCards();
+    currentList = cards.map(function (el) { return el.getAttribute("data-idx"); });
+    var i = currentList.indexOf(String(item.idx));
+    var prevIdx = i > 0 ? currentList[i - 1] : null;
+    var nextIdx = i >= 0 && i < currentList.length - 1 ? currentList[i + 1] : null;
+    var prevItem = prevIdx != null ? itemsByIdx[prevIdx] : null;
+    var nextItem = nextIdx != null ? itemsByIdx[nextIdx] : null;
+    pager.hidden = !(prevItem || nextItem);
+    var prevBtn = pager.querySelector("[data-wk-prev]");
+    var nextBtn = pager.querySelector("[data-wk-next]");
+    prevBtn.disabled = !prevItem;
+    nextBtn.disabled = !nextItem;
+    prevBtn.querySelector("[data-prev-title]").textContent = prevItem ? (prevItem.label || "") : "";
+    nextBtn.querySelector("[data-next-title]").textContent = nextItem ? (nextItem.label || "") : "";
+    prevBtn.setAttribute("data-go-idx", prevIdx || "");
+    nextBtn.setAttribute("data-go-idx", nextIdx || "");
+  }
+
+  function openDetail(item, cardEl) {
+    if (!item) return;
+    currentIdx = String(item.idx);
+    var accent = accentOf(cardEl) || "#9085e9";
+    fillMeta(item);
+    var hasTrail = !!item.has_trail;
+    var session = item.session || { moving: item.moving || 0, bars: [] };
+
+    legendEl.hidden = hasTrail; // 无 GPS 详情必显三行图例
+    toolsEl.hidden = !hasTrail;
+
+    drawSessionClock(clockSvg, session, accent, false);
+
+    function show() {
+      if (typeof dialog.showModal === "function") dialog.showModal();
+      else dialog.setAttribute("open", "");
+      updatePager(item);
+    }
+
+    if (hasTrail) {
+      setViz("map");
+      ensureTrails().then(function (pts) {
+        var ok = drawMap(mapSvg, pts[String(item.idx)], accent);
+        if (!ok) {
+          toolsEl.hidden = true;
+          setViz("clock");
+          legendEl.hidden = false;
+        }
+        show();
+      });
+    } else {
+      setViz("clock");
+      show();
+    }
+  }
+
+  function closeDetail() {
+    if (typeof dialog.close === "function") dialog.close();
+    else dialog.removeAttribute("open");
+  }
+
+  function itemFromCard(card) {
+    var idx = card.getAttribute("data-idx");
+    var cached = itemsByIdx[idx];
+    if (cached) return cached;
+    // fallback minimal from DOM
+    return {
+      idx: idx,
+      label: (card.querySelector(".name") || {}).textContent || "",
+      name: (card.className.match(/kind-(\S+)/) || [])[1] || "",
+      date: "",
+      has_trail: !!card.querySelector("svg.rmap"),
+      session: null
+    };
+  }
+
+  document.addEventListener("click", function (ev) {
+    var closeBtn = ev.target.closest && ev.target.closest("[data-wk-close]");
+    if (closeBtn) { closeDetail(); return; }
+    if (ev.target === dialog) { closeDetail(); return; }
+
+    var tab = ev.target.closest && ev.target.closest(".wk-viz-tab");
+    if (tab) {
+      var mode = tab.getAttribute("data-viz");
+      setViz(mode);
+      // 无 GPS：图例常显；有 GPS：切到心率钟时显示
+      var item = itemsByIdx[currentIdx] || {};
+      legendEl.hidden = item.has_trail ? mode !== "clock" : false;
+      return;
+    }
+
+    var go = ev.target.closest && ev.target.closest("[data-go-idx]");
+    if (go && go.getAttribute("data-go-idx")) {
+      var next = itemsByIdx[go.getAttribute("data-go-idx")];
+      if (next) {
+        var card = document.querySelector('.run-card[data-idx="' + next.idx + '"]');
+        openDetail(next, card);
+      }
+      return;
+    }
+
+    var card = ev.target.closest && ev.target.closest(".run-card[data-idx]");
+    if (card && card.closest(".act-switcher")) {
+      openDetail(itemFromCard(card), card);
+    }
+  });
+
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape" && dialog.open) closeDetail();
+    if (ev.key === "Enter" && ev.target.classList && ev.target.classList.contains("run-card")) {
+      openDetail(itemFromCard(ev.target), ev.target);
+    }
+  });
+
+  // expose for SSR/lazy to register items
+  window.__wkIndexItems = indexMany;
+  window.__wkDrawMiniClock = function (svg, session, accent) {
+    drawSessionClock(svg, session, accent, true);
+  };
+
+  // boot: parse JSON payloads on cards
+  function hydrateFromDom() {
+    document.querySelectorAll(".run-card[data-wk]").forEach(function (card) {
+      try {
+        var raw = card.getAttribute("data-wk");
+        if (!raw) return;
+        var item = JSON.parse(raw);
+        indexItem(item);
+        // mini clock for no-trail
+        if (!item.has_trail && item.session && item.session.bars && item.session.bars.length) {
+          var mark = card.querySelector(".mark");
+          if (!mark) return;
+          var existing = mark.querySelector("svg.sclock-mini");
+          if (existing) return;
+          var ico = mark.querySelector(".ico");
+          var svg = ns("svg");
+          svg.setAttribute("class", "sclock-mini");
+          svg.setAttribute("viewBox", "0 0 400 400");
+          svg.setAttribute("width", "40");
+          svg.setAttribute("height", "40");
+          svg.setAttribute("aria-hidden", "true");
+          mark.insertBefore(svg, ico || null);
+          if (ico) ico.hidden = true;
+          drawSessionClock(svg, item.session, accentOf(card), true);
+        }
+      } catch (e) {}
+    });
+  }
+
+  document.addEventListener("workouts:year-loaded", function (ev) {
+    // items are indexed by lazy loader calling __wkIndexItems
+    setTimeout(hydrateFromDom, 0);
+  });
+
+  // initial
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", hydrateFromDom);
+  } else {
+    hydrateFromDom();
+  }
+
+  // share trails with track-script if already fetched later
+  ensureTrails();
+})();
+</script>

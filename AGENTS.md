@@ -17,7 +17,7 @@ See:
 - [docs/ux-p0-lazy-shards.md](docs/ux-p0-lazy-shards.md) — shard URLs, default year/Tab, `workouts:year-loaded`, cache, Session Clock boundary
 - [docs/ux-p0-ssr-js-fields.md](docs/ux-p0-ssr-js-fields.md) — SSR/JS field map and `note_html` safety
 
-Read those before changing card fields or shard ids. Session Clock does not land on the P0 branch; do not reuse `clock`/`clock_unit` for session state.
+Read those before changing card fields or shard ids. Session Clock: see [docs/session-clock.md](docs/session-clock.md) on `feat/workouts-session-clock` (not this P0 contract). `clock`/`clock_unit` stay duration.
 
 ## 其他约定
 
