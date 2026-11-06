@@ -1,10 +1,9 @@
-{{/* 运动页：年份懒加载 + 热力/记录年态同步。
+{{/* 运动页：年份懒加载。热力与记录各自独立筛选，不互相同步。
      分片路径：/data/workouts/year-YYYY.json（由 scripts/emit_page_shards.py 产出）。 */}}
 <script>
 (function () {
   var BASE = {{ "data/workouts/" | relURL }};
   var cache = Object.create(null);
-  var syncing = false;
 
   function esc(s) {
     return String(s == null ? "" : s)
@@ -151,27 +150,12 @@
       .catch(function () { return null; });
   }
 
-  function setYear(year, source) {
-    if (!year || syncing) return;
-    syncing = true;
-    var heat = document.querySelector('input[name="heatyear"][data-year="' + year + '"]');
-    var act = document.querySelector('input[name="actyear"][data-year="' + year + '"]');
-    if (heat && !heat.checked) heat.checked = true;
-    if (act && !act.checked) act.checked = true;
-    syncing = false;
-    loadYear(year).then(function () {
-      // 勿再 dispatch change，否则会与本监听器互相重入
-      document.dispatchEvent(new CustomEvent("workouts:year-loaded", { detail: { year: year } }));
-    });
-  }
-
   document.addEventListener("change", function (ev) {
     var radio = ev.target;
     if (!radio || !radio.matches) return;
-    if (radio.matches('input[name="heatyear"]')) {
-      setYear(radio.getAttribute("data-year"), "heat");
-    } else if (radio.matches('input[name="actyear"]')) {
-      setYear(radio.getAttribute("data-year"), "act");
+    if (radio.matches('input[name="heatyear"]') || radio.matches('input[name="actyear"]')) {
+      // 热力 / 记录年份各自独立；只懒加载被点到的那年数据，不改另一组 radio
+      loadYear(radio.getAttribute("data-year"));
     }
   });
 

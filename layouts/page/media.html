@@ -37,6 +37,17 @@
                     <section class="tab-panel panel-music" role="tabpanel" aria-label="音乐" data-media-cat="music"{{ if ne $active "music" }} data-pending="music"{{ end }}>
                         {{ if eq $active "music" }}
                         {{ template "music-panel" $lastfm }}
+                        {{ else }}
+                        <div class="media-skel" aria-hidden="true">
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                        </div>
                         {{ end }}
                     </section>
                     {{ end }}
@@ -49,6 +60,17 @@
                     <section class="tab-panel panel-{{ .id }}" role="tabpanel" aria-label="{{ .label }}" data-media-cat="{{ .id }}"{{ if ne .id $defaultCat }} data-pending="neodb"{{ end }}>
                         {{ if eq .id $defaultCat }}
                         {{ template "neodb-cat-body" . }}
+                        {{ else }}
+                        <div class="media-skel" aria-hidden="true">
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                            <div class="media-skel-bar"></div>
+                        </div>
                         {{ end }}
                     </section>
                     {{ end }}
@@ -105,6 +127,15 @@
     <section class="period-panel period-{{ $p.id }}" aria-label="{{ $p.label }}" data-period="{{ $p.id }}"{{ if ne $i 0 }} data-pending="period"{{ end }}>
         {{ if eq $i 0 }}
         {{ template "music-period-body" $p }}
+        {{ else }}
+        <div class="media-skel" aria-hidden="true">
+            <div class="media-skel-bar"></div>
+            <div class="media-skel-bar"></div>
+            <div class="media-skel-bar"></div>
+            <div class="media-skel-bar"></div>
+            <div class="media-skel-bar"></div>
+            <div class="media-skel-bar"></div>
+        </div>
         {{ end }}
     </section>
     {{ end }}

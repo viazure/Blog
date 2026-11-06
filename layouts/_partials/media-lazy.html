@@ -1,9 +1,12 @@
-{{/* 书影音：非默认 Tab / 非默认时段按需加载。分片在 /data/media/... */}}
+{{/* 书影音：非默认 Tab / 非默认时段按需加载。分片在 /data/media/...
+     切 Tab 时预留高度 + 骨架，减轻懒加载插入导致的布局抖动。 */}}
 <script>
 (function () {
   var LASTFM_BASE = {{ "data/media/lastfm/" | relURL }};
   var NEODB_BASE = {{ "data/media/neodb/" | relURL }};
   var cache = { period: Object.create(null), cat: Object.create(null), musicMeta: null };
+  var panelsEl = null;
+  var reservedH = 0;
 
   function esc(s) {
     return String(s == null ? "" : s)
@@ -187,9 +190,54 @@
     return fetch(url).then(function (res) { return res.ok ? res.json() : null; });
   }
 
+  function getPanels() {
+    if (!panelsEl) panelsEl = document.querySelector(".tab-panels");
+    return panelsEl;
+  }
+
+  function capturePanelsHeight() {
+    var el = getPanels();
+    if (!el) return;
+    var h = el.getBoundingClientRect().height;
+    if (h > 80) reservedH = h;
+  }
+
+  function reservePanelsHeight() {
+    var el = getPanels();
+    if (!el || reservedH < 80) return;
+    el.style.minHeight = reservedH + "px";
+  }
+
+  function settlePanelsHeight() {
+    var el = getPanels();
+    if (!el) return;
+    // 先清掉预留再量真实内容，避免把骨架高度当成终态
+    el.style.minHeight = "";
+    var h = el.getBoundingClientRect().height;
+    if (h > 80) {
+      reservedH = h;
+      el.style.minHeight = h + "px";
+    } else if (reservedH > 80) {
+      el.style.minHeight = reservedH + "px";
+    }
+  }
+
+  function skelHtml() {
+    var bars = "";
+    for (var i = 0; i < 10; i++) bars += '<div class="media-skel-bar"></div>';
+    return '<div class="media-skel" aria-hidden="true">' + bars + "</div>";
+  }
+
+  function showSkeleton(el) {
+    if (!el) return;
+    if (!el.querySelector(".media-skel")) el.innerHTML = skelHtml();
+  }
+
   function ensureMusicPanel() {
     var panel = document.querySelector('.tab-panel.panel-music[data-pending="music"]');
     if (!panel) return Promise.resolve();
+    showSkeleton(panel);
+    reservePanelsHeight();
     var metaP = cache.musicMeta
       ? Promise.resolve(cache.musicMeta)
       : loadJSON(LASTFM_BASE + "meta.json").then(function (m) { cache.musicMeta = m; return m; });
@@ -213,6 +261,8 @@
     if (!id) return Promise.resolve();
     var el = document.querySelector('.period-panel[data-period="' + id + '"][data-pending]');
     if (!el) return Promise.resolve();
+    showSkeleton(el);
+    reservePanelsHeight();
     var p = cache.period[id]
       ? Promise.resolve(cache.period[id])
       : loadJSON(LASTFM_BASE + "period-" + id + ".json").then(function (json) {
@@ -230,6 +280,8 @@
     if (!id || id === "music") return Promise.resolve();
     var el = document.querySelector('.tab-panel[data-media-cat="' + id + '"][data-pending]');
     if (!el) return Promise.resolve();
+    showSkeleton(el);
+    reservePanelsHeight();
     var p = cache.cat[id]
       ? Promise.resolve(cache.cat[id])
       : loadJSON(NEODB_BASE + "cat-" + id + ".json").then(function (json) {
@@ -243,16 +295,44 @@
     });
   }
 
+  // 在 radio 切换前锁高度，避免空面板先把页面压扁
+  document.addEventListener("pointerdown", function (ev) {
+    var t = ev.target;
+    if (!t || !t.closest) return;
+    if (t.closest(".tabs > .tab-label")) {
+      capturePanelsHeight();
+      reservePanelsHeight();
+    }
+  }, true);
+
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key !== "Enter" && ev.key !== " ") return;
+    var t = ev.target;
+    if (!t || !t.closest) return;
+    if (t.closest(".tabs > .tab-label")) {
+      capturePanelsHeight();
+      reservePanelsHeight();
+    }
+  }, true);
+
   document.addEventListener("change", function (ev) {
     var t = ev.target;
     if (!t || !t.matches) return;
+    var done;
     if (t.matches('input[name="media-tab"]')) {
       var id = t.value;
-      if (id === "music") ensureMusicPanel();
-      else ensureNeodb(id);
+      done = (id === "music") ? ensureMusicPanel() : ensureNeodb(id);
     } else if (t.matches('input[name="music-period"]')) {
-      ensurePeriod(t.getAttribute("data-period") || t.value);
+      done = ensurePeriod(t.getAttribute("data-period") || t.value);
+    } else {
+      return;
     }
+    Promise.resolve(done).then(function () {
+      requestAnimationFrame(function () { settlePanelsHeight(); });
+    });
   });
+
+  // 首屏稳定后记下高度，供第一次切 Tab 使用
+  requestAnimationFrame(function () { capturePanelsHeight(); });
 })();
 </script>

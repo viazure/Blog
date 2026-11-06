@@ -8,7 +8,7 @@
             <div class="page-content">
                 {{ with hugo.Data.workouts }}
                 {{ with .heatmap }}
-                <div class="switcher heat-switcher" data-year-sync="heat">
+                <div class="switcher heat-switcher">
                     {{ range $i, $y := .years }}
                     <input class="sw-radio sw-{{ add $i 1 }}" type="radio" name="heatyear" id="heat-{{ $y.year }}" data-year="{{ $y.year }}" data-yi="{{ add $i 1 }}" {{ if eq $i 0 }}checked{{ end }} aria-hidden="true" tabindex="-1">
                     {{ end }}
@@ -84,7 +84,7 @@
                      类名用下标（sw-1、sw-panel-1）而不是年份值，这样 SCSS 能用 @for 覆盖。 */}}
                 <section class="sec">
                     <h2>记录</h2>
-                    <div class="switcher act-switcher" data-year-sync="act">
+                    <div class="switcher act-switcher">
                         {{ range $i, $g := .groups }}
                         {{ $yi := add $i 1 }}
                         <input class="sw-radio ak-{{ $yi }}-all" type="radio" name="actkind-{{ $g.year }}" id="ak-{{ $yi }}-all" checked aria-hidden="true" tabindex="-1">
