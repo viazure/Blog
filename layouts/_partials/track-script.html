@@ -7,11 +7,15 @@
      index is missing (or whose JSON never loads) fall back to data-glyph.
 
      Panels start hidden (display:none), so their cards never intersect: a change
-     on any switcher radio redraws whatever became visible. */}}
+     on any switcher radio redraws whatever became visible.
+
+     Lazy-loaded years inject .rmap after start(): must re-observe them. A one-shot
+     refresh of the viewport leaves below-fold trails blank forever. */}}
 <script>
 (function () {
   var URL = {{ "trails.json" | relURL }};
   var data = {};
+  var io = null;
 
   document.addEventListener('change', function (ev) {
     var radio = ev.target;
@@ -38,13 +42,13 @@
   });
 
   function draw(svg) {
-    if (svg.firstChild) return;
+    if (!svg || !svg.isConnected || svg.firstChild) return;
     var pts = data[svg.getAttribute('data-i')];
     if (!pts) {
       var ico = document.createElement('span');
       ico.className = 'ico';
       ico.setAttribute('aria-hidden', 'true');
-      ico.textContent = svg.getAttribute('data-glyph') || '•';
+      ico.textContent = svg.getAttribute('data-glyph') || '?';
       svg.replaceWith(ico);
       return;
     }
@@ -64,16 +68,40 @@
     return box.width > 0 && box.top < window.innerHeight + 300 && box.bottom > -300;
   }
 
+  function pendingMaps(scope) {
+    return [].slice.call((scope || document).querySelectorAll('svg.rmap[data-i]'))
+      .filter(function (svg) { return !svg.firstChild; });
+  }
+
   function refresh(scope) {
-    (scope || document).querySelectorAll('svg.rmap[data-i]').forEach(function (svg) {
+    pendingMaps(scope).forEach(function (svg) {
       if (inView(svg)) draw(svg);
     });
   }
 
+  function observe(scope) {
+    var cards = pendingMaps(scope);
+    if (!cards.length) return;
+    if (!io) {
+      cards.forEach(draw);
+      return;
+    }
+    cards.forEach(function (svg) {
+      if (inView(svg)) {
+        draw(svg);
+        return;
+      }
+      io.observe(svg);
+    });
+  }
+
   function start() {
-    var cards = [].slice.call(document.querySelectorAll('svg.rmap[data-i]'));
-    if (!('IntersectionObserver' in window)) { cards.forEach(draw); return; }
-    var io = new IntersectionObserver(function (entries) {
+    var cards = pendingMaps(document);
+    if (!('IntersectionObserver' in window)) {
+      cards.forEach(draw);
+      return;
+    }
+    io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
         draw(entry.target);
@@ -85,10 +113,10 @@
       var radio = ev.target;
       if (!radio.matches || !radio.matches('input.sw-radio')) return;
       var scope = radio.closest('.switcher');
-      if (scope) setTimeout(function () { refresh(scope); }, 0);
+      if (scope) setTimeout(function () { observe(scope); }, 0);
     });
     document.addEventListener('workouts:year-loaded', function () {
-      setTimeout(function () { refresh(document.querySelector('.act-switcher')); }, 0);
+      setTimeout(function () { observe(document.querySelector('.act-switcher')); }, 0);
     });
   }
 
