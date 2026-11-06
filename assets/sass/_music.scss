@@ -29,17 +29,30 @@
 }
 
 .timeline-cover-blank,
-.timeline-cover.cover-broken,
 .rank-cover-blank,
+.timeline-cover.cover-broken,
 .rank-cover.cover-broken {
-  display: block;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
   background: $rule;
   border-radius: 2px;
+  color: $gray;
+  font-size: 0.7rem;
+  line-height: 1;
+  opacity: 0.9;
+
+  &::after {
+    content: "▣";
+    opacity: 0.55;
+  }
 }
 
-.timeline-cover.cover-broken,
-.rank-cover.cover-broken {
-  object-fit: none;
+/* img.cover-broken: ::after 无效，靠 JS 替换为 span.cover-broken */
+img.timeline-cover.cover-broken,
+img.rank-cover.cover-broken {
+  display: none;
 }
 
 .timeline-title,

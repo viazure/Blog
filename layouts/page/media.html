@@ -95,7 +95,7 @@
     {{ range . }}
     <li class="timeline-item">
         {{ with .image }}
-        <img class="timeline-cover" src="{{ . }}" alt="{{ $.track }} — {{ $.artist }} 封面" width="28" height="28" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.classList.add('cover-broken');this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'">
+        <img class="timeline-cover" src="{{ . }}" alt="{{ $.track }} — {{ $.artist }} 封面" width="28" height="28" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'timeline-cover cover-broken','aria-hidden':'true'}))">
         {{ else }}
         <span class="timeline-cover timeline-cover-blank" aria-hidden="true"></span>
         {{ end }}
@@ -151,7 +151,7 @@
 {{ $item := .item }}
 <span class="rank-no">{{ printf "%02d" (add .index 1) }}</span>
 {{ with $item.cover }}
-<img class="rank-cover" src="{{ . }}" alt="{{ $item.title }}{{ with $item.artist }} — {{ . }}{{ end }} 封面" width="28" height="28" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.classList.add('cover-broken');this.src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'">
+<img class="rank-cover" src="{{ . }}" alt="{{ $item.title }}{{ with $item.artist }} — {{ . }}{{ end }} 封面" width="28" height="28" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'rank-cover cover-broken','aria-hidden':'true'}))">
 {{ else }}
 <span class="rank-cover rank-cover-blank" aria-hidden="true"></span>
 {{ end }}
