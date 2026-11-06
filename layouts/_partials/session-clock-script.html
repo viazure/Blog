@@ -31,19 +31,19 @@
               <path d="M6 18 A12 12 0 0 1 30 18" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
               <path d="M8 22 A10 10 0 0 1 16 10" fill="none" stroke="currentColor" stroke-width="6" opacity=".5" stroke-linecap="round"/>
             </svg>
-            <div><strong>外环 · Outer</strong>一整圈 = 整次训练；块高度/亮度 ≈ 心率区间</div>
+            <div><strong>外环</strong>一整圈 = 整次训练；块高度/亮度 ≈ 心率区间</div>
           </div>
-          <div class="wk-legend-row">
+          <div class="wk-legend-row" data-legend="inner">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <polyline points="6,24 12,16 18,20 24,10 30,14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
-            <div><strong>内曲线 · Inner</strong>心率折线；越靠外越高</div>
+            <div data-legend-inner-copy><strong>内曲线</strong>心率折线；越靠外越高</div>
           </div>
           <div class="wk-legend-row">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <circle cx="18" cy="18" r="5" fill="currentColor"/>
             </svg>
-            <div><strong>核心 · Core</strong>不足 1 小时 = 种子点；满小时则生长环</div>
+            <div><strong>核心</strong>不足 1 小时 = 种子点；满小时则生长环</div>
           </div>
         </div>
         <nav class="wk-pager" aria-label="相邻活动" hidden>
@@ -303,15 +303,18 @@
   function drawMap(svg, pointsStr, accent) {
     clearSvg(svg);
     if (!pointsStr) return false;
-    // trails.json stores "x,y x,y ..." in 0..40 space — scale to 400
-    var pairs = String(pointsStr).trim().split(/\s+/);
-    if (pairs.length < 2) return false;
-    var scaled = pairs.map(function (pair) {
-      var xy = pair.split(",");
-      var x = Number(xy[0]), y = Number(xy[1]);
-      // inset padding
-      return ((x / 40) * 340 + 30).toFixed(1) + "," + ((y / 40) * 340 + 30).toFixed(1);
+    // trails.json: "x y x y ..." in 0..40 space (same as track-script list cards)
+    var nums = String(pointsStr).trim().split(/\s+/).map(Number).filter(function (n) {
+      return !isNaN(n);
     });
+    if (nums.length < 4) return false;
+    var scaled = [];
+    for (var i = 0; i + 1 < nums.length; i += 2) {
+      scaled.push(
+        ((nums[i] / 40) * 340 + 30).toFixed(1) + "," +
+        ((nums[i + 1] / 40) * 340 + 30).toFixed(1)
+      );
+    }
     var bg = ns("rect");
     bg.setAttribute("x", "0"); bg.setAttribute("y", "0");
     bg.setAttribute("width", "400"); bg.setAttribute("height", "400");
@@ -389,10 +392,21 @@
       "</div></div>";
   }
 
-  function fillMeta(item) {
+  function updateLegend(session) {
+    var copy = legendEl.querySelector("[data-legend-inner-copy]");
+    if (!copy) return;
+    var hr = (session && session.hr) || [];
+    if (hr.length) {
+      copy.innerHTML = "<strong>内曲线</strong>心率折线；越靠外越高";
+    } else {
+      copy.innerHTML = "<strong>内曲线</strong>无逐点心率（仅区间柱）";
+    }
+  }
+
+  function fillMeta(item, accent) {
     var s = item.session || {};
     sportName.textContent = String(item.name || "").toUpperCase();
-    sportPill.style.color = "";
+    sportPill.style.color = accent || "#9085e9";
     titleEl.textContent = item.label || item.name || "活动";
     var when = (item.date || "") + (item.time ? " · " + item.time : "");
     whenEl.textContent = when;
@@ -405,12 +419,12 @@
     var moving = Number(s.moving != null ? s.moving : item.moving) || 0;
 
     metricsEl.innerHTML =
-      metricHtml("Distance", km > 0 ? km.toFixed(2) : "—", km > 0 ? "km" : "") +
-      metricHtml("Elapsed", moving > 0 ? elapsedLabel(moving) : "—", "") +
-      metricHtml("Climb", elev > 0 ? String(Math.round(elev)) : "—", elev > 0 ? "m" : "") +
-      metricHtml("Avg HR", hrAvg > 0 ? String(Math.round(hrAvg)) : "—", hrAvg > 0 ? "bpm" : "") +
-      metricHtml("Max HR", hrMax > 0 ? String(Math.round(hrMax)) : "—", hrMax > 0 ? "bpm" : "") +
-      metricHtml("Energy", kcal > 0 ? String(Math.round(kcal)) : "—", kcal > 0 ? "kcal" : "");
+      metricHtml("距离", km > 0 ? km.toFixed(2) : "—", km > 0 ? "km" : "") +
+      metricHtml("用时", moving > 0 ? elapsedLabel(moving) : "—", "") +
+      metricHtml("爬升", elev > 0 ? String(Math.round(elev)) : "—", elev > 0 ? "m" : "") +
+      metricHtml("均心率", hrAvg > 0 ? String(Math.round(hrAvg)) : "—", hrAvg > 0 ? "bpm" : "") +
+      metricHtml("最大心率", hrMax > 0 ? String(Math.round(hrMax)) : "—", hrMax > 0 ? "bpm" : "") +
+      metricHtml("能耗", kcal > 0 ? String(Math.round(kcal)) : "—", kcal > 0 ? "kcal" : "");
   }
 
   function setViz(mode) {
@@ -447,9 +461,10 @@
       item = full || item;
       currentIdx = String(item.idx);
       var accent = accentOf(cardEl) || "#9085e9";
-      fillMeta(item);
+      fillMeta(item, accent);
       var hasTrail = !!item.has_trail;
       var session = item.session || { moving: item.moving || 0, bars: [] };
+      updateLegend(session);
 
       legendEl.hidden = hasTrail; // 无 GPS 详情必显三行图例
       toolsEl.hidden = !hasTrail;
@@ -512,6 +527,7 @@
       // 无 GPS：图例常显；有 GPS：切到心率钟时显示
       var item = itemsByIdx[currentIdx] || {};
       legendEl.hidden = item.has_trail ? mode !== "clock" : false;
+      if (!legendEl.hidden) updateLegend(item.session || {});
       return;
     }
 
