@@ -128,16 +128,14 @@
     if (c.km) {
       html += '<span class="metric"><span class="num">' + Number(c.km).toFixed(2) +
         '</span><span class="unit">km</span></span>';
-    } else {
-      html += '<span class="metric"><span class="num">—</span></span>';
     }
     if (c.clock) {
-      html += '<span class="metric sub"><span class="num">' +
+      html += '<span class="metric' + (c.km ? ' sub' : '') + '"><span class="num">' +
         esc(c.clock) + "</span>";
       if (c.clock_unit) html += '<span class="unit">' + esc(c.clock_unit) + "</span>";
       html += "</span>";
     }
-    if (c.pace) {
+    if (c.km && c.pace) {
       html += '<span class="metric sub"><span class="num">' + paceLabel(c.pace) +
         '</span><span class="unit">/km</span></span>';
     }

@@ -68,17 +68,13 @@
             <span class="metric">
                 <span class="num">{{ printf "%.2f" $c.km }}</span><span class="unit">km</span>
             </span>
-            {{ else }}
-            <span class="metric">
-                <span class="num">—</span>
-            </span>
             {{ end }}
             {{ with $c.clock }}
-            <span class="metric sub">
+            <span class="metric{{ if $c.km }} sub{{ end }}">
                 <span class="num">{{ . }}</span>{{ with $c.clock_unit }}<span class="unit">{{ . }}</span>{{ end }}
             </span>
             {{ end }}
-            {{ if $c.pace }}
+            {{ if and $c.km $c.pace }}
             {{ $total := int $c.pace }}
             <span class="metric sub">
                 <span class="num">{{ printf "%d:%02d" (div $total 60) (mod $total 60) }}</span><span class="unit">/km</span>
