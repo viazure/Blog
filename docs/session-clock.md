@@ -4,16 +4,18 @@ Branch: `feat/workouts-session-clock` (P0 lazy-render base). Merge after P0 → 
 
 ## Product
 
-- All activities open a unified detail shell.
-- No GPS: left slot = large Session Clock; 3-line legend required.
-- With GPS: left slot = map by default; toggle 「轨迹 / 心率钟」; Clock secondary.
-- Three layers: outer HR-zone bars (one lap = moving time) + inner HR polyline + core (seed &lt;1h / growth rings ≥1h).
-- List mini clock (no-trail cards) shares the same grammar.
-- Missing distance/climb/HR/kcal → `—` (never `0.00`).
-- Warm paper + purple accents; respect `prefers-reduced-motion` (no growth animation).
+- All activities open a unified **dark** detail shell (blog dialog; not a full Activities wall).
+- No GPS: left slot = large Session Clock; 3-line **clickable** legend (outer / inner / core highlight).
+- With GPS: left slot = **dark silhouette** trail (trails polyline), start→end draw on open, bright start dot. No clock↔map tabs (GPS = silhouette only; trail missing → fall back to clock).
+- Three layers: outer HR-zone bars as an undulating polar rim (one lap = moving time) + inner HR polyline wrapped on a circle + core (seed <1h / growth rings ≥1h) + ~70 bpm guide.
+- List mini clock (no-trail cards) shares the same grammar (light-card friendly strokes).
+- Missing distance/climb/HR/kcal → `—` (never `0.00`). Chinese metric labels; value above label.
+- Sport accent tints clock / trail / pill. Respect `prefers-reduced-motion` (no growth / no trail draw).
 - Field `clock` / `clock_unit` = **duration** only. Session Clock payload is `session`.
 
-## ADR · `data-wk` payload (accepted)
+Visual reference: [activities.geekplux.com](https://activities.geekplux.com/) (site source closed; reimplemented, not scraped). Vert 3D / full wall / Glow slider are out of scope.
+
+## ADR — `data-wk` payload (accepted)
 
 **Decision: list slim / detail hydrate from year shard.**
 
@@ -36,7 +38,7 @@ Branch: `feat/workouts-session-clock` (P0 lazy-render base). Merge after P0 → 
 
 `scripts/session_clock.py` reads `life-data/data/workouts/splits/{run_id}.json`:
 
-- `chart.hr` → inner polyline + outer bar heights
+- `chart.hr` → inner polyline + outer bar heights (gamma-shaped undulation)
 - else `zones.hr.seconds` → outer bars from time-in-zone
 - else flat bars from `average_heartrate`
 
@@ -73,3 +75,5 @@ Also update [ux-p0-ssr-js-fields.md](./ux-p0-ssr-js-fields.md).
 - running_page product surface
 - PR / merge to main (local review first)
 - Glassmorphism / large entrance motion
+- Vert 3D terrain embed
+- Full geekplux Activities wall (Glow, tile size, year chips)

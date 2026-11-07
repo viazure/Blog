@@ -41,11 +41,14 @@ def _resample(values: list[float], n: int) -> list[float]:
 
 
 def _bars_from_hr(hr: list[float]) -> list[int]:
+    """Map bpm → bar height with a soft floor so the rim undulates (polar bar chart)."""
     bars: list[int] = []
     span = float(BPM_CEIL - BPM_FLOOR) or 1.0
     for bpm in hr:
-        h = ((float(bpm) - BPM_FLOOR) / span) * BAR_MAX
-        bars.append(int(round(_clamp(h, 2, BAR_MAX))))
+        # gamma < 1 exaggerates mid/high swings for a more "jagged rim" look
+        norm = _clamp((float(bpm) - BPM_FLOOR) / span, 0.0, 1.0)
+        h = (norm ** 0.85) * BAR_MAX
+        bars.append(int(round(_clamp(h, 3, BAR_MAX))))
     return bars
 
 

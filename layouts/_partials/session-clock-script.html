@@ -1,7 +1,8 @@
 {{/* Session Clock + unified activity detail shell.
      clock/clock_unit on cards = duration; this component is sessionClock.
      Requires trails.json (via window.__wkTrails or fetch) for GPS map slot.
-     Listens workouts:year-loaded to index lazy items. */}}
+     Listens workouts:year-loaded to index lazy items.
+     Visual grammar aligned to activities.geekplux.com (reimplemented, not scraped). */}}
 <dialog class="wk-detail" id="wk-detail" aria-labelledby="wk-detail-title">
   <div class="wk-detail-sheet">
     <button type="button" class="wk-detail-close" aria-label="关闭" data-wk-close>&times;</button>
@@ -26,25 +27,25 @@
         <p class="wk-detail-when mono"></p>
         <div class="wk-metrics" role="list"></div>
         <div class="wk-legend" aria-label="图例" hidden>
-          <div class="wk-legend-row">
+          <button type="button" class="wk-legend-row" data-layer="outer">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <path d="M6 18 A12 12 0 0 1 30 18" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
               <path d="M8 22 A10 10 0 0 1 16 10" fill="none" stroke="currentColor" stroke-width="6" opacity=".5" stroke-linecap="round"/>
             </svg>
-            <div><strong>外环</strong>一整圈 = 整次训练；块高度/亮度 ≈ 心率区间</div>
-          </div>
-          <div class="wk-legend-row" data-legend="inner">
+            <div><strong>外环</strong>一整圈 = 整次训练（顺时针自顶点）；块高度/亮度 ≈ 心率区间 Z1→Z5</div>
+          </button>
+          <button type="button" class="wk-legend-row" data-layer="inner" data-legend="inner">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <polyline points="6,24 12,16 18,20 24,10 30,14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
-            <div data-legend-inner-copy><strong>内曲线</strong>心率折线；越靠外越高</div>
-          </div>
-          <div class="wk-legend-row">
+            <div data-legend-inner-copy><strong>内曲线</strong>心率折线包到圆上；越靠外越高</div>
+          </button>
+          <button type="button" class="wk-legend-row" data-layer="core">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <circle cx="18" cy="18" r="5" fill="currentColor"/>
             </svg>
             <div><strong>核心</strong>不足 1 小时 = 种子点；满小时则生长环</div>
-          </div>
+          </button>
         </div>
         <nav class="wk-pager" aria-label="相邻活动" hidden>
           <button type="button" class="wk-pager-btn" data-wk-prev>
@@ -84,6 +85,7 @@
   var pager = dialog.querySelector(".wk-pager");
   var currentIdx = null;
   var currentList = [];
+  var legendFocus = null;
 
   function esc(s) {
     return String(s == null ? "" : s)
@@ -91,14 +93,6 @@
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
-  }
-
-  function paceLabel(pace) {
-    var total = Math.floor(Number(pace) || 0);
-    if (!total) return "";
-    var m = Math.floor(total / 60);
-    var s = total % 60;
-    return m + ":" + (s < 10 ? "0" : "") + s;
   }
 
   function dash(v) {
@@ -130,7 +124,6 @@
       itemsByIdx[key] = c;
       return;
     }
-    // Prefer payload with bars/hr (year shard) over slim data-wk summary
     var next = Object.assign({}, prev, c);
     if (sessionRichness(prev.session) > sessionRichness(c.session)) {
       next.session = prev.session;
@@ -144,7 +137,6 @@
 
   function visibleCards() {
     var panel = document.querySelector(".act-switcher .sw-panel:not([hidden])");
-    // panels use CSS :has display, not hidden attr — pick checked year panel
     var checked = document.querySelector('.act-switcher input[name="actyear"]:checked');
     if (checked) {
       var yi = checked.getAttribute("data-yi");
@@ -167,10 +159,30 @@
       var a = getComputedStyle(cardOrName).getPropertyValue("--workout-accent").trim();
       if (a) return a;
     }
-    return "#9085e9";
+    return "#a78bfa";
   }
 
-  /** Draw Session Clock into svg. session: {bars, hr, moving, ...} */
+  function applyLegendFocus(svg) {
+    if (!svg) return;
+    ["outer", "inner", "core"].forEach(function (layer) {
+      var g = svg.querySelector(".sc-layer-" + layer);
+      if (!g) return;
+      if (!legendFocus) {
+        g.classList.remove("is-dim", "is-focus");
+      } else if (legendFocus === layer) {
+        g.classList.add("is-focus");
+        g.classList.remove("is-dim");
+      } else {
+        g.classList.add("is-dim");
+        g.classList.remove("is-focus");
+      }
+    });
+    legendEl.querySelectorAll(".wk-legend-row").forEach(function (row) {
+      row.classList.toggle("is-on", legendFocus && row.getAttribute("data-layer") === legendFocus);
+    });
+  }
+
+  /** Polar Session Clock: outer zone bars + inner HR polyline + core seed/rings. */
   function drawSessionClock(svg, session, accent, mini) {
     clearSvg(svg);
     session = session || {};
@@ -179,8 +191,8 @@
     var hr = session.hr || [];
     var moving = Number(session.moving) || 0;
     var hours = Math.floor(moving / 3600);
-    var soft = accent || "#9085e9";
-    var ink = "#5b4bdb";
+    var soft = accent || "#a78bfa";
+    var ink = soft;
 
     function rad(d) { return d * Math.PI / 180; }
     function pt(r, a) {
@@ -188,10 +200,11 @@
     }
 
     var defs = ns("defs");
+    var gid = mini ? "scGlowMini" : "scGlow";
     var grad = ns("radialGradient");
-    grad.setAttribute("id", mini ? "scGlowMini" : "scGlow");
+    grad.setAttribute("id", gid);
     grad.setAttribute("cx", "50%"); grad.setAttribute("cy", "50%"); grad.setAttribute("r", "50%");
-    [["0%", "0.18"], ["70%", "0.04"], ["100%", "0"]].forEach(function (pair) {
+    [["0%", "0.22"], ["55%", "0.08"], ["100%", "0"]].forEach(function (pair) {
       var stop = ns("stop");
       stop.setAttribute("offset", pair[0]);
       stop.setAttribute("stop-color", soft);
@@ -199,43 +212,70 @@
       grad.appendChild(stop);
     });
     defs.appendChild(grad);
+
+    var filt = ns("filter");
+    filt.setAttribute("id", mini ? "scSoftMini" : "scSoft");
+    filt.setAttribute("x", "-40%"); filt.setAttribute("y", "-40%");
+    filt.setAttribute("width", "180%"); filt.setAttribute("height", "180%");
+    var blur = ns("feGaussianBlur");
+    blur.setAttribute("stdDeviation", mini ? "1.2" : "1.8");
+    blur.setAttribute("result", "b");
+    filt.appendChild(blur);
+    var merge = ns("feMerge");
+    var m1 = ns("feMergeNode"); m1.setAttribute("in", "b");
+    var m2 = ns("feMergeNode"); m2.setAttribute("in", "SourceGraphic");
+    merge.appendChild(m1); merge.appendChild(m2);
+    filt.appendChild(merge);
+    defs.appendChild(filt);
     svg.appendChild(defs);
 
     var glow = ns("circle");
-    glow.setAttribute("cx", cx); glow.setAttribute("cy", cy); glow.setAttribute("r", mini ? 190 : 190);
-    glow.setAttribute("fill", "url(#" + (mini ? "scGlowMini" : "scGlow") + ")");
+    glow.setAttribute("cx", cx); glow.setAttribute("cy", cy); glow.setAttribute("r", "190");
+    glow.setAttribute("fill", "url(#" + gid + ")");
     svg.appendChild(glow);
 
-    // 70 bpm reference
+    // ~70 bpm guide ring (mini sits on light list cards; detail is dark)
+    var guide = ns("g");
+    guide.setAttribute("class", "sc-layer-guide");
     var ref = ns("circle");
-    ref.setAttribute("cx", cx); ref.setAttribute("cy", cy); ref.setAttribute("r", "70");
+    ref.setAttribute("cx", cx); ref.setAttribute("cy", cy); ref.setAttribute("r", "78");
     ref.setAttribute("fill", "none");
-    ref.setAttribute("stroke", "#e8e4de");
-    ref.setAttribute("stroke-width", mini ? "2" : "1");
-    ref.setAttribute("stroke-dasharray", "2 4");
-    svg.appendChild(ref);
-
+    ref.setAttribute("stroke", mini ? "#e8e4de" : "rgba(255,255,255,0.16)");
+    ref.setAttribute("stroke-width", mini ? "2" : "1.25");
+    if (mini) ref.setAttribute("stroke-dasharray", "2 4");
+    guide.appendChild(ref);
     if (!mini) {
       var lab = ns("text");
-      lab.setAttribute("x", cx); lab.setAttribute("y", 128);
+      lab.setAttribute("x", cx); lab.setAttribute("y", 118);
       lab.setAttribute("text-anchor", "middle");
-      lab.setAttribute("fill", "#8a8680");
+      lab.setAttribute("fill", "rgba(255,255,255,0.35)");
       lab.setAttribute("font-family", "ui-monospace,monospace");
       lab.setAttribute("font-size", "10");
       lab.textContent = "70";
-      svg.appendChild(lab);
+      guide.appendChild(lab);
     }
+    svg.appendChild(guide);
 
+    // Outer undulating zone bars (polar bar chart)
     var outer = ns("g");
+    outer.setAttribute("class", "sc-layer-outer");
+    if (!mini) outer.setAttribute("filter", "url(#scSoft)");
     svg.appendChild(outer);
     var N = bars.length || 0;
+    var gapDeg = mini ? 1.2 : 1.8;
+    var baseR = 172;
     for (var i = 0; i < N; i++) {
-      var a0 = -90 + i * (360 / N);
-      var a1 = a0 + 360 / N - (mini ? 1.5 : 2.5);
+      var a0 = -90 + i * (360 / N) + gapDeg * 0.5;
+      var a1 = -90 + (i + 1) * (360 / N) - gapDeg * 0.5;
+      if (a1 <= a0) continue;
       var h = Number(bars[i]) || 0;
-      var r1 = 168, r0 = 168 - h;
+      // exaggerate undulation: map 0–24 → 6–36 px outward
+      var barH = 6 + (h / 24) * 30;
+      var r1 = baseR;
+      var r0 = baseR - barH;
       var p0 = pt(r1, a0), p1 = pt(r1, a1), p2 = pt(r0, a1), p3 = pt(r0, a0);
-      var op = 0.35 + (h / 24) * 0.55;
+      var t = h / 24;
+      var op = 0.28 + t * 0.72;
       var path = ns("path");
       path.setAttribute("d",
         "M" + p0[0] + " " + p0[1] +
@@ -247,88 +287,156 @@
       outer.appendChild(path);
     }
 
+    // Inner polar HR line
+    var inner = ns("g");
+    inner.setAttribute("class", "sc-layer-inner");
+    svg.appendChild(inner);
     if (hr.length) {
       var n = hr.length;
       var pts = hr.map(function (bpm, i) {
         var a = -90 + i * (360 / n);
-        var r = 55 + ((Number(bpm) - 70) / 90) * 95;
-        r = Math.max(40, Math.min(160, r));
+        var r = 58 + ((Number(bpm) - 70) / 90) * 100;
+        r = Math.max(42, Math.min(158, r));
         var p = pt(r, a);
         return p[0].toFixed(1) + "," + p[1].toFixed(1);
       });
+      // close almost to start for continuous feel without full loop fill
       var poly = ns("polyline");
       poly.setAttribute("points", pts.join(" "));
       poly.setAttribute("fill", "none");
       poly.setAttribute("stroke", ink);
-      poly.setAttribute("stroke-width", mini ? "3" : "2.2");
+      poly.setAttribute("stroke-width", mini ? "3.2" : "2.4");
       poly.setAttribute("stroke-linecap", "round");
       poly.setAttribute("stroke-linejoin", "round");
-      poly.setAttribute("opacity", "0.9");
-      svg.appendChild(poly);
+      poly.setAttribute("opacity", "0.95");
+      if (!mini) poly.setAttribute("filter", "url(#scSoft)");
+      inner.appendChild(poly);
     }
 
-    // core
+    // Core: seed (<1h) or growth rings (≥1h)
+    var coreG = ns("g");
+    coreG.setAttribute("class", "sc-layer-core");
+    svg.appendChild(coreG);
     if (hours >= 1) {
       for (var ring = hours; ring >= 1; ring--) {
         var c = ns("circle");
         c.setAttribute("cx", cx); c.setAttribute("cy", cy);
-        c.setAttribute("r", String(10 + ring * 7));
+        c.setAttribute("r", String(10 + ring * 8));
         c.setAttribute("fill", "none");
         c.setAttribute("stroke", soft);
-        c.setAttribute("stroke-width", "3");
-        c.setAttribute("opacity", String(0.35 + ring * 0.12));
+        c.setAttribute("stroke-width", "3.2");
+        c.setAttribute("opacity", String(0.28 + ring * 0.14));
         if (!reduceMotion) {
           c.style.transformOrigin = "200px 200px";
           c.style.animation = "wk-grow 0.45s ease-out both";
-          c.style.animationDelay = (0.04 * (hours - ring)) + "s";
+          c.style.animationDelay = (0.05 * (hours - ring)) + "s";
         }
-        svg.appendChild(c);
+        coreG.appendChild(c);
       }
       var core = ns("circle");
       core.setAttribute("cx", cx); core.setAttribute("cy", cy); core.setAttribute("r", "6");
-      core.setAttribute("fill", ink);
-      svg.appendChild(core);
+      core.setAttribute("fill", soft);
+      coreG.appendChild(core);
     } else {
       var seed = ns("circle");
-      seed.setAttribute("cx", cx); seed.setAttribute("cy", cy); seed.setAttribute("r", mini ? "14" : "10");
+      seed.setAttribute("cx", cx); seed.setAttribute("cy", cy); seed.setAttribute("r", mini ? "14" : "11");
       seed.setAttribute("fill", soft);
-      svg.appendChild(seed);
+      seed.setAttribute("opacity", "0.95");
+      coreG.appendChild(seed);
       var seed2 = ns("circle");
-      seed2.setAttribute("cx", cx); seed2.setAttribute("cy", cy); seed2.setAttribute("r", mini ? "6" : "4");
-      seed2.setAttribute("fill", ink);
-      svg.appendChild(seed2);
+      seed2.setAttribute("cx", cx); seed2.setAttribute("cy", cy); seed2.setAttribute("r", mini ? "5" : "4");
+      seed2.setAttribute("fill", mini ? "#5b4bdb" : "#fff");
+      seed2.setAttribute("opacity", "0.95");
+      coreG.appendChild(seed2);
     }
+
+    if (!mini) applyLegendFocus(svg);
   }
 
+  /** Dark GPS silhouette with start→end path draw. */
   function drawMap(svg, pointsStr, accent) {
     clearSvg(svg);
     if (!pointsStr) return false;
-    // trails.json: "x y x y ..." in 0..40 space (same as track-script list cards)
     var nums = String(pointsStr).trim().split(/\s+/).map(Number).filter(function (n) {
       return !isNaN(n);
     });
     if (nums.length < 4) return false;
-    var scaled = [];
+
+    var coords = [];
     for (var i = 0; i + 1 < nums.length; i += 2) {
-      scaled.push(
-        ((nums[i] / 40) * 340 + 30).toFixed(1) + "," +
-        ((nums[i + 1] / 40) * 340 + 30).toFixed(1)
-      );
+      coords.push([
+        (nums[i] / 40) * 340 + 30,
+        (nums[i + 1] / 40) * 340 + 30
+      ]);
     }
+
+    var defs = ns("defs");
+    var filt = ns("filter");
+    filt.setAttribute("id", "trailGlow");
+    filt.setAttribute("x", "-50%"); filt.setAttribute("y", "-50%");
+    filt.setAttribute("width", "200%"); filt.setAttribute("height", "200%");
+    var blur = ns("feGaussianBlur");
+    blur.setAttribute("stdDeviation", "2.4");
+    blur.setAttribute("result", "b");
+    filt.appendChild(blur);
+    var merge = ns("feMerge");
+    var m1 = ns("feMergeNode"); m1.setAttribute("in", "b");
+    var m2 = ns("feMergeNode"); m2.setAttribute("in", "SourceGraphic");
+    merge.appendChild(m1); merge.appendChild(m2);
+    filt.appendChild(merge);
+    defs.appendChild(filt);
+    svg.appendChild(defs);
+
     var bg = ns("rect");
     bg.setAttribute("x", "0"); bg.setAttribute("y", "0");
     bg.setAttribute("width", "400"); bg.setAttribute("height", "400");
-    bg.setAttribute("rx", "24");
-    bg.setAttribute("fill", "#f7f6f3");
+    bg.setAttribute("rx", "20");
+    bg.setAttribute("fill", "#0a0a0a");
     svg.appendChild(bg);
-    var pl = ns("polyline");
-    pl.setAttribute("points", scaled.join(" "));
-    pl.setAttribute("fill", "none");
-    pl.setAttribute("stroke", accent || "#f97316");
-    pl.setAttribute("stroke-width", "6");
-    pl.setAttribute("stroke-linecap", "round");
-    pl.setAttribute("stroke-linejoin", "round");
-    svg.appendChild(pl);
+
+    var d = "M" + coords[0][0].toFixed(1) + " " + coords[0][1].toFixed(1);
+    for (var j = 1; j < coords.length; j++) {
+      d += " L" + coords[j][0].toFixed(1) + " " + coords[j][1].toFixed(1);
+    }
+    var path = ns("path");
+    path.setAttribute("d", d);
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", accent || "#f97316");
+    path.setAttribute("stroke-width", "5.5");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
+    path.setAttribute("filter", "url(#trailGlow)");
+    svg.appendChild(path);
+
+    // start→end draw animation
+    try {
+      var len = path.getTotalLength();
+      if (len > 0) {
+        path.style.strokeDasharray = String(len);
+        path.style.strokeDashoffset = String(reduceMotion ? 0 : len);
+        if (!reduceMotion) {
+          // force layout then ease to 0
+          path.getBoundingClientRect();
+          path.style.transition = "stroke-dashoffset 1.35s cubic-bezier(0.22, 1, 0.36, 1)";
+          requestAnimationFrame(function () {
+            path.style.strokeDashoffset = "0";
+          });
+        }
+      }
+    } catch (e) { /* getTotalLength unavailable */ }
+
+    var start = coords[0];
+    var halo = ns("circle");
+    halo.setAttribute("cx", start[0]); halo.setAttribute("cy", start[1]);
+    halo.setAttribute("r", "10");
+    halo.setAttribute("fill", "#fff");
+    halo.setAttribute("opacity", "0.22");
+    svg.appendChild(halo);
+    var dot = ns("circle");
+    dot.setAttribute("cx", start[0]); dot.setAttribute("cy", start[1]);
+    dot.setAttribute("r", "5.5");
+    dot.setAttribute("fill", "#fff");
+    svg.appendChild(dot);
     return true;
   }
 
@@ -349,7 +457,6 @@
       });
     return trailPromise;
   }
-
 
   var yearCache = {};
   function ensureFullSession(item) {
@@ -386,10 +493,11 @@
   function metricHtml(label, value, unit) {
     var isDash = value === "—";
     return '<div class="wk-metric" role="listitem">' +
-      '<div class="label">' + esc(label) + "</div>" +
       '<div class="value' + (isDash ? " dash" : "") + '">' + esc(value) +
       (unit && !isDash ? ' <span class="u">' + esc(unit) + "</span>" : "") +
-      "</div></div>";
+      "</div>" +
+      '<div class="label">' + esc(label) + "</div>" +
+      "</div>";
   }
 
   function updateLegend(session) {
@@ -397,7 +505,7 @@
     if (!copy) return;
     var hr = (session && session.hr) || [];
     if (hr.length) {
-      copy.innerHTML = "<strong>内曲线</strong>心率折线；越靠外越高";
+      copy.innerHTML = "<strong>内曲线</strong>心率折线包到圆上；越靠外越高";
     } else {
       copy.innerHTML = "<strong>内曲线</strong>无逐点心率（仅区间柱）";
     }
@@ -406,7 +514,7 @@
   function fillMeta(item, accent) {
     var s = item.session || {};
     sportName.textContent = String(item.name || "").toUpperCase();
-    sportPill.style.color = accent || "#9085e9";
+    sportPill.style.color = accent || "#a78bfa";
     titleEl.textContent = item.label || item.name || "活动";
     var when = (item.date || "") + (item.time ? " · " + item.time : "");
     whenEl.textContent = when;
@@ -457,17 +565,23 @@
 
   function openDetail(item, cardEl) {
     if (!item) return;
+    legendFocus = null;
     ensureFullSession(item).then(function (full) {
       item = full || item;
       currentIdx = String(item.idx);
-      var accent = accentOf(cardEl) || "#9085e9";
+      var accent = accentOf(cardEl) || "#a78bfa";
       fillMeta(item, accent);
       var hasTrail = !!item.has_trail;
       var session = item.session || { moving: item.moving || 0, bars: [] };
       updateLegend(session);
+      legendEl.querySelectorAll(".wk-legend-row").forEach(function (row) {
+        row.classList.remove("is-on");
+        row.style.color = accent;
+      });
 
-      legendEl.hidden = hasTrail; // 无 GPS 详情必显三行图例
-      toolsEl.hidden = !hasTrail;
+      // GPS → silhouette only (no clock↔map tabs). No GPS → clock + legend.
+      toolsEl.hidden = true;
+      legendEl.hidden = hasTrail;
 
       drawSessionClock(clockSvg, session, accent, false);
 
@@ -482,14 +596,15 @@
         ensureTrails().then(function (pts) {
           var ok = drawMap(mapSvg, pts[String(item.idx)], accent);
           if (!ok) {
-            toolsEl.hidden = true;
             setViz("clock");
             legendEl.hidden = false;
+            applyLegendFocus(clockSvg);
           }
           show();
         });
       } else {
         setViz("clock");
+        applyLegendFocus(clockSvg);
         show();
       }
     });
@@ -504,7 +619,6 @@
     var idx = card.getAttribute("data-idx");
     var cached = itemsByIdx[idx];
     if (cached) return cached;
-    // fallback minimal from DOM
     return {
       idx: idx,
       label: (card.querySelector(".name") || {}).textContent || "",
@@ -520,14 +634,24 @@
     if (closeBtn) { closeDetail(); return; }
     if (ev.target === dialog) { closeDetail(); return; }
 
+    var legendRow = ev.target.closest && ev.target.closest(".wk-legend-row[data-layer]");
+    if (legendRow && legendEl.contains(legendRow) && !legendEl.hidden) {
+      var layer = legendRow.getAttribute("data-layer");
+      legendFocus = legendFocus === layer ? null : layer;
+      applyLegendFocus(clockSvg);
+      return;
+    }
+
     var tab = ev.target.closest && ev.target.closest(".wk-viz-tab");
     if (tab) {
       var mode = tab.getAttribute("data-viz");
       setViz(mode);
-      // 无 GPS：图例常显；有 GPS：切到心率钟时显示
       var item = itemsByIdx[currentIdx] || {};
       legendEl.hidden = item.has_trail ? mode !== "clock" : false;
-      if (!legendEl.hidden) updateLegend(item.session || {});
+      if (!legendEl.hidden) {
+        updateLegend(item.session || {});
+        applyLegendFocus(clockSvg);
+      }
       return;
     }
 
@@ -554,13 +678,11 @@
     }
   });
 
-  // expose for SSR/lazy to register items
   window.__wkIndexItems = indexMany;
   window.__wkDrawMiniClock = function (svg, session, accent) {
     drawSessionClock(svg, session, accent, true);
   };
 
-  // boot: parse JSON payloads on cards
   function hydrateFromDom() {
     document.querySelectorAll(".run-card[data-idx]").forEach(function (card) {
       try {
@@ -571,7 +693,6 @@
         var idx = card.getAttribute("data-idx");
         var item = itemsByIdx[idx];
         if (!item) return;
-        // mini clock for no-trail — needs bars from year shard index
         if (!item.has_trail && item.session && item.session.bars && item.session.bars.length) {
           var mark = card.querySelector(".mark");
           if (!mark) return;
@@ -594,19 +715,16 @@
     });
   }
 
-  document.addEventListener("workouts:year-loaded", function (ev) {
-    // items are indexed by lazy loader calling __wkIndexItems
+  document.addEventListener("workouts:year-loaded", function () {
     setTimeout(hydrateFromDom, 0);
   });
 
-  // initial
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", hydrateFromDom);
   } else {
     hydrateFromDom();
   }
 
-  // share trails with track-script if already fetched later
   ensureTrails();
 })();
 </script>

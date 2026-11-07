@@ -1278,6 +1278,7 @@
 }
 
 /* ------------------------------------------------------------------ Session Clock / 详情壳 */
+/* Dark detail chrome aligned to activities.geekplux.com (blog dialog, not full wall). */
 
 @keyframes wk-grow {
   from { transform: scale(0.72); opacity: 0; }
@@ -1306,23 +1307,26 @@
   padding: 0;
   border: none;
   background: transparent;
-  max-width: 960px;
+  max-width: 980px;
   width: calc(100vw - 2rem);
-  color: $text-base-color;
+  color: #f3f3f3;
 
   &::backdrop {
-    background: rgba(20, 20, 20, 0.35);
+    background: rgba(0, 0, 0, 0.62);
   }
 }
 
 .wk-detail-sheet {
   position: relative;
   margin: 1.25rem auto;
-  padding: 1.25rem 1.35rem 1.5rem;
-  border: 1px solid $rule;
-  border-radius: 16px;
-  background: #f7f6f3;
-  box-shadow: 0 1px 2px rgba(20, 20, 20, 0.04), 0 12px 40px rgba(20, 20, 20, 0.12);
+  padding: 1.35rem 1.45rem 1.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: #121212;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 18px 48px rgba(0, 0, 0, 0.45);
+  color: #f3f3f3;
 }
 
 .wk-detail-close {
@@ -1335,21 +1339,21 @@
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: $gray;
+  color: rgba(255, 255, 255, 0.45);
   font-size: 1.4rem;
   line-height: 1;
   cursor: pointer;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.05);
-    color: $text-base-color;
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
   }
 }
 
 .wk-detail-layout {
   display: grid;
-  grid-template-columns: minmax(240px, 1fr) minmax(240px, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: minmax(260px, 1.05fr) minmax(240px, 0.95fr);
+  gap: 1.65rem;
   align-items: start;
 
   @include media-query($on-mobile) {
@@ -1366,9 +1370,9 @@
   gap: 0.35rem;
   margin-bottom: 0.65rem;
   padding: 0.2rem;
-  border: 1px solid $rule;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 999px;
-  background: #fff;
+  background: #1a1a1a;
 }
 
 .wk-viz-tab {
@@ -1376,24 +1380,25 @@
   border-radius: 999px;
   padding: 0.28rem 0.75rem;
   background: transparent;
-  color: $gray;
+  color: rgba(255, 255, 255, 0.45);
   font-size: 0.78rem;
   font-family: inherit;
   cursor: pointer;
 
   &.is-on {
-    background: #5b4bdb;
-    color: #fff;
+    background: rgba(255, 255, 255, 0.92);
+    color: #111;
   }
 }
 
 .wk-viz-stage {
   position: relative;
   aspect-ratio: 1;
-  border: 1px solid $rule;
-  border-radius: 14px;
-  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  background: #0a0a0a;
   overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
 }
 
 .wk-viz-panel {
@@ -1403,13 +1408,15 @@
   height: 100%;
   display: grid;
   place-items: center;
-  padding: 6%;
+  padding: 4%;
   box-sizing: border-box;
 }
 
 /* UA [hidden] is display:none; our display:grid/inline-flex would override without this */
 .wk-viz-panel[hidden],
-.wk-viz-tools[hidden] {
+.wk-viz-tools[hidden],
+.wk-legend[hidden],
+.wk-pager[hidden] {
   display: none !important;
 }
 
@@ -1420,9 +1427,23 @@
   display: block;
 }
 
+.sc-layer-outer.is-dim,
+.sc-layer-inner.is-dim,
+.sc-layer-core.is-dim {
+  opacity: 0.18;
+  transition: opacity 0.2s ease;
+}
+
+.sc-layer-outer.is-focus,
+.sc-layer-inner.is-focus,
+.sc-layer-core.is-focus {
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
 .wk-detail-meta {
   min-width: 0;
-  padding-top: 0.2rem;
+  padding-top: 0.15rem;
 }
 
 .wk-sport-pill {
@@ -1430,10 +1451,11 @@
   align-items: center;
   gap: 0.45rem;
   margin-bottom: 0.55rem;
-  color: #9085e9;
+  color: #a78bfa;
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   font-variant-numeric: tabular-nums;
 }
 
@@ -1442,20 +1464,22 @@
   height: 8px;
   border-radius: 50%;
   background: currentColor;
+  box-shadow: 0 0 10px currentColor;
 }
 
 .wk-detail-title {
-  margin: 0 0 0.35rem;
-  font-size: clamp(1.45rem, 3.2vw, 2.2rem);
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.7rem, 3.6vw, 2.55rem);
   font-weight: 800;
   font-style: italic;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: #fff;
 }
 
 .wk-detail-when {
-  margin: 0 0 1.25rem;
-  color: $gray;
+  margin: 0 0 1.35rem;
+  color: rgba(255, 255, 255, 0.42);
   font-size: 0.82rem;
   font-variant-numeric: tabular-nums;
 }
@@ -1463,61 +1487,63 @@
 .wk-metrics {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  border-top: 1px solid $rule;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .wk-metric {
-  padding: 0.7rem 0;
-  border-bottom: 1px solid $rule;
+  padding: 0.85rem 0 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   &:nth-child(odd) {
-    padding-right: 0.85rem;
+    padding-right: 0.9rem;
   }
 
   &:nth-child(even) {
-    padding-left: 0.85rem;
-    border-left: 1px solid $rule;
-  }
-
-  .label {
-    color: $gray;
-    font-size: 0.68rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    font-variant-numeric: tabular-nums;
+    padding-left: 0.9rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .value {
-    margin-top: 0.2rem;
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.35rem;
+    font-weight: 650;
     font-variant-numeric: tabular-nums;
+    color: #fff;
+    letter-spacing: -0.01em;
 
     &.dash {
-      color: $gray;
+      color: rgba(255, 255, 255, 0.35);
     }
 
     .u {
       margin-left: 0.15em;
-      color: $gray;
+      color: rgba(255, 255, 255, 0.4);
       font-size: 0.72rem;
       font-weight: 500;
     }
+  }
+
+  .label {
+    margin-top: 0.28rem;
+    color: rgba(255, 255, 255, 0.38);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
   }
 }
 
 .wk-legend {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
-  margin-top: 1.35rem;
-  color: $gray;
-  font-size: 0.8rem;
+  gap: 0.55rem;
+  margin-top: 1.4rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.78rem;
 
   strong {
     display: block;
-    color: $text-base-color;
-    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 0.78rem;
     font-weight: 600;
   }
 }
@@ -1527,10 +1553,33 @@
   grid-template-columns: 36px 1fr;
   gap: 0.7rem;
   align-items: start;
-  color: #9085e9;
+  width: 100%;
+  margin: 0;
+  padding: 0.45rem 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
 
   div {
-    color: $gray;
+    color: rgba(255, 255, 255, 0.42);
+  }
+
+  strong {
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  &.is-on {
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
   }
 }
 
@@ -1544,10 +1593,10 @@
 .wk-pager-btn {
   display: block;
   padding: 0.7rem 0.85rem;
-  border: 1px solid $rule;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  background: #fff;
-  color: $text-base-color;
+  background: #1a1a1a;
+  color: #f3f3f3;
   text-align: left;
   font: inherit;
   cursor: pointer;
@@ -1557,18 +1606,18 @@
   }
 
   &:disabled {
-    opacity: 0.4;
+    opacity: 0.35;
     cursor: default;
   }
 
   &:not(:disabled):hover {
-    border-color: #5b4bdb;
+    border-color: rgba(255, 255, 255, 0.28);
   }
 
   .dir {
     display: block;
     margin-bottom: 0.15rem;
-    color: $gray;
+    color: rgba(255, 255, 255, 0.4);
     font-size: 0.68rem;
     font-variant-numeric: tabular-nums;
   }
