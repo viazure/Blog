@@ -87,6 +87,7 @@ Also update [ux-p0-ssr-js-fields.md](./ux-p0-ssr-js-fields.md).
 - **Desktop (`hover: hover` + `pointer: fine`)**: keep floating tips — list `.card-tip` on hover/focus-within; calendar / heatmap / stack-bar `data-tip` bubbles on hover/`focus-visible`. Prefer `role="tooltip"` on card tips.
 - **Touch / coarse pointer**: **no** floating tips (no long-press tip, no tap-to-float tip that covers content). List cards drop `.card-tip`; overview `data-tip` bubbles are CSS-gated off. Card tap still opens detail only.
 - **Detail**: Session Clock layer copy stays as **always-visible** legend rows (not hidden in a tip). Metrics that need a definition (`用时` / `能耗` / HR / Session Clock) expose a small **ⓘ** → bottom sheet (`#wk-tip-sheet`) with the same short copy. Close via ×, backdrop, or Escape.
+- **Regression guard**: `node scripts/check_session_clock_tip_guard.js` — static + `node:vm` mock ensures `tipSheet`/`tipTitle`/`tipBody` stay bound next to top DOM queries (away from `TIP_COPY` edits). Not a real browser/phone test.
 
 ## Out of scope
 

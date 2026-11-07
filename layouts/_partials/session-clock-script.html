@@ -97,6 +97,12 @@
   var mapSvg = dialog.querySelector("svg.wk-map");
   var clockSvg = dialog.querySelector("svg.wk-sclock");
   var pager = dialog.querySelector(".wk-pager");
+  // Tip sheet DOM stays with other shell queries -- keep away from TIP_COPY edits.
+  var tipSheet = document.getElementById("wk-tip-sheet");
+  var tipTitle = tipSheet ? tipSheet.querySelector("#wk-tip-sheet-title") : null;
+  var tipBody = tipSheet ? tipSheet.querySelector("[data-wk-tip-body]") : null;
+  var legendHead = dialog.querySelector("[data-wk-legend-head]");
+
   var currentIdx = null;
   var currentList = [];
   var legendFocus = null;
@@ -664,11 +670,6 @@
       body: "整场最高心率（bpm）。"
     }
   };
-  var tipSheet = document.getElementById("wk-tip-sheet");
-  var tipTitle = tipSheet ? tipSheet.querySelector("#wk-tip-sheet-title") : null;
-  var tipBody = tipSheet ? tipSheet.querySelector("[data-wk-tip-body]") : null;
-  var legendHead = dialog.querySelector("[data-wk-legend-head]");
-
   function openTipSheet(key) {
     var copy = TIP_COPY[key];
     if (!copy || !tipSheet || !tipTitle || !tipBody) return;
