@@ -8,7 +8,7 @@
     {{ range .weeks }}
     <div class="hm-week">
         {{ range . }}
-        <span class="{{ .class }}"{{ with .title }} data-tip="{{ . }}"{{ end }}{{ if .colour }} style="--c:{{ .colour }}{{ with .pie }};--pie:{{ . }}{{ end }}"{{ end }}></span>
+        <span class="{{ .class }}"{{ with .title }} data-tip="{{ . }}" tabindex="0"{{ end }}{{ if .colour }} style="--c:{{ .colour }}{{ with .pie }};--pie:{{ . }}{{ end }}"{{ end }}></span>
         {{ end }}
     </div>
     {{ end }}
