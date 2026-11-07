@@ -7,7 +7,7 @@ Branch: `feat/workouts-session-clock` (P0 lazy-render base). Merge after P0 → 
 - All activities open a unified detail shell that **follows the blog theme** (light sheet / `html.dark` sheet; not a forced near-black wall, not a full Activities wall).
 - No GPS: left slot = large Session Clock; 3-line **clickable** legend (outer / inner / core highlight).
 - With GPS: left slot = theme-stage silhouette trail (trails polyline), start→end draw on open, bright start dot. No clock↔map tabs (GPS = silhouette only; trail missing → fall back to clock).
-- Three layers: outer HR-zone **outward spikes** on a base ring (one lap = moving time, 12 o'clock clockwise) + inner HR polyline + core (seed <1h / growth rings >=1h) + ~70 bpm guide. Soft glow / spikes must not be cropped by the viz stage.
+- Three layers: outer HR-zone **outward spikes** on a base ring (one lap = moving time, 12 o'clock clockwise; bar heights remapped per-session for clear undulation) + inner HR **area** (fill inward to ~70 bpm guide + stroke) + core (solid seed <1h / one growth ring per full hour) + compact ~70 bpm guide. Soft glow / spikes must not be cropped by the viz stage.
 - List mini clock (no-trail cards) shares the same outward-spike grammar (light-card friendly strokes).
 - Missing distance/climb/HR/kcal → `—` (never `0.00`). Chinese metric labels; value above label.
 - Sport accent tints clock / trail / pill. Respect `prefers-reduced-motion` (no growth / no trail draw).
