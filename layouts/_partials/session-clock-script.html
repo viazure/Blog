@@ -221,6 +221,25 @@
     var cx = 200, cy = 200;
     var bars = session.bars || [];
     var hr = session.hr || [];
+    function resampleArr(arr, n) {
+      if (!arr || !arr.length) return [];
+      if (arr.length === n) return arr.slice();
+      if (arr.length === 1) {
+        var one = [];
+        for (var ri = 0; ri < n; ri++) one.push(arr[0]);
+        return one;
+      }
+      var out = [];
+      var last = arr.length - 1;
+      for (var ri = 0; ri < n; ri++) {
+        var pos = ri * last / (n - 1);
+        var lo = Math.floor(pos);
+        var hi = Math.min(lo + 1, last);
+        var tt = pos - lo;
+        out.push(Number(arr[lo]) * (1 - tt) + Number(arr[hi]) * tt);
+      }
+      return out;
+    }
     // Prefer session.moving; fall back to top-level aliases for core hour math.
     var moving = Number(session.moving);
     if (!isFinite(moving) || moving <= 0) moving = Number(session.moving_time) || 0;
@@ -264,13 +283,15 @@
     glow.setAttribute("fill", "url(#" + gid + ")");
     svg.appendChild(glow);
 
-    // Geometry: larger hollow (ref shot) + dense outward bars still inside 400 viewBox
-    var hrFloorR = mini ? 46 : 50;
-    var hrSpan = mini ? 78 : 82;
+    // Geometry: geekplux-like stepped crown — detail R=120 / 0.10–0.45R; mini ~0.9×
+    var hrFloorR = mini ? 44 : 48;
+    var hrSpan = mini ? 54 : 60;
     var guideR = hrFloorR;
-    var baseR = mini ? 138 : 136;
-    var barMinH = mini ? 2.5 : 3;
-    var barMaxH = mini ? 38 : 42;
+    var baseR = mini ? 110 : 120;
+    var barMinH = mini ? 11 : 12;
+    var barMaxH = mini ? 48 : 54;
+    var tierH = mini ? [11, 20, 29, 38, 48] : [12, 22, 33, 43, 54];
+    var TARGET_N = 48;
 
     // ~70 bpm guide — full ring (outer/inner are full-session maps)
     var guideStroke = mini
@@ -302,28 +323,37 @@
     barsG.setAttribute("class", "sc-outer-bars");
     outer.appendChild(barsG);
 
+    // Always 48 coarse wedges; fixed 0.8deg seam (~8:1 bar:gap crown).
+    bars = resampleArr(bars, TARGET_N);
+    if (hr.length) hr = resampleArr(hr, TARGET_N).map(function (v) { return Math.round(Number(v) || 0); });
     var N = bars.length || 0;
-    // Distribute bars across the full session lap (always 360°).
     var slot = fullDeg / Math.max(N, 1);
-    var gapDeg = Math.min(slot * 0.32, mini ? 0.7 : 0.9);
+    var gapDeg = 0.8;
     var bMin = Infinity, bMax = -Infinity;
     for (var bi = 0; bi < N; bi++) {
       var bv = Number(bars[bi]) || 0;
       if (bv < bMin) bMin = bv;
       if (bv > bMax) bMax = bv;
     }
-    if (!isFinite(bMin)) { bMin = 0; bMax = 24; }
-    var bSpan = Math.max(bMax - bMin, 1);
+    if (!isFinite(bMin)) { bMin = tierH[0]; bMax = tierH[tierH.length - 1]; }
+    var legacy = bMax <= 24;
     var barPaths = [];
     for (var i = 0; i < N; i++) {
       var a0 = aStart + i * slot + gapDeg * 0.5;
       var a1 = aStart + (i + 1) * slot - gapDeg * 0.5;
       if (a1 <= a0) continue;
       var h = Number(bars[i]) || 0;
-      var tRel = (h - bMin) / bSpan;
-      var tAbs = Math.max(0, Math.min(1, h / 24));
-      var t = Math.pow(0.72 * tRel + 0.28 * tAbs, 0.62);
-      var barH = barMinH + t * (barMaxH - barMinH);
+      var tNorm;
+      if (legacy) {
+        tNorm = Math.pow(Math.max(0, Math.min(1, h / 24)), 0.85);
+      } else {
+        tNorm = Math.max(0, Math.min(1, (h - 12) / (54 - 12)));
+      }
+      var tIdx = Math.round(tNorm * (tierH.length - 1));
+      if (tIdx < 0) tIdx = 0;
+      if (tIdx > tierH.length - 1) tIdx = tierH.length - 1;
+      var barH = tierH[tIdx];
+      var t = (barH - barMinH) / Math.max(barMaxH - barMinH, 1);
       var r0 = baseR;
       var r1 = baseR + barH;
       var p0 = pt(r0, a0), p1 = pt(r0, a1), p2 = pt(r1, a1), p3 = pt(r1, a0);
@@ -353,7 +383,7 @@
         var a = aStart + hi * hrSlot;
         var bpm = Number(hr[hi]) || 70;
         var r = hrFloorR + ((bpm - 70) / 120) * hrSpan;
-        r = Math.max(hrFloorR + 2, Math.min(baseR - 6, r));
+        r = Math.max(hrFloorR + 2, Math.min(baseR - 10, r));
         outerPts.push(pt(r, a));
         angles.push(a);
       }
@@ -412,7 +442,7 @@
       var seed = ns("circle");
       seed.setAttribute("cx", cx);
       seed.setAttribute("cy", cy);
-      seed.setAttribute("r", mini ? "8" : "7.5");
+      seed.setAttribute("r", mini ? "6" : "6.5");
       seed.setAttribute("fill", soft);
       seed.setAttribute("opacity", "0.95");
       coreG.appendChild(seed);
