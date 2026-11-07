@@ -26,6 +26,10 @@
         <h2 class="wk-detail-title display" id="wk-detail-title"></h2>
         <p class="wk-detail-when mono"></p>
         <div class="wk-metrics" role="list"></div>
+        <div class="wk-legend-head" hidden data-wk-legend-head>
+          <p class="wk-legend-title">Session Clock</p>
+          <button type="button" class="wk-info-btn" data-wk-tip="sclock" aria-label="Session Clock 说明">ⓘ</button>
+        </div>
         <div class="wk-legend" aria-label="图例" hidden>
           <button type="button" class="wk-legend-row" data-layer="outer">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
@@ -59,6 +63,16 @@
         </nav>
       </section>
     </div>
+  </div>
+</dialog>
+<dialog class="wk-tip-sheet" id="wk-tip-sheet" aria-labelledby="wk-tip-sheet-title">
+  <div class="wk-tip-sheet-panel">
+    <span class="wk-tip-sheet-handle" aria-hidden="true"></span>
+    <div class="wk-tip-sheet-top">
+      <h3 class="wk-tip-sheet-title" id="wk-tip-sheet-title"></h3>
+      <button type="button" class="wk-tip-sheet-close" aria-label="关闭说明" data-wk-tip-close>&times;</button>
+    </div>
+    <p class="wk-tip-sheet-body" data-wk-tip-body></p>
   </div>
 </dialog>
 <script>
@@ -678,13 +692,65 @@
     });
   }
 
-  function metricHtml(label, value, unit) {
+  var TIP_COPY = {
+    sclock: {
+      title: "Session Clock",
+      body: "外环一整圈 = 1 小时移动时长，顺时针自顶点；不足 1 小时会在 12 点留缺口。外环块高度/亮度约等于心率区间 Z1→Z5。内曲线是心率面积包到圆上，越靠外越高。核心：不足 1 小时是开弧种子，满小时则每满一小时长一环。"
+    },
+    moving: {
+      title: "用时",
+      body: "移动时长（不含暂停）。Session Clock 外环扫过的弧长按此时长映射：满 1 小时合拢成环，不足则在 12 点留缺口。"
+    },
+    kcal: {
+      title: "能耗",
+      body: "设备估算的活动消耗（千卡），来自运动手表/档案汇总，不是实验室测量值。"
+    },
+    hr_avg: {
+      title: "均心率",
+      body: "整次活动的平均心率（bpm）。有心率序列时也会画进 Session Clock 内曲线。"
+    },
+    hr_max: {
+      title: "最大心率",
+      body: "整次活动记录到的最高心率（bpm）。"
+    }
+  };
+
+  var tipSheet = document.getElementById("wk-tip-sheet");
+  var tipTitle = tipSheet ? tipSheet.querySelector("#wk-tip-sheet-title") : null;
+  var tipBody = tipSheet ? tipSheet.querySelector("[data-wk-tip-body]") : null;
+  var legendHead = dialog.querySelector("[data-wk-legend-head]");
+
+  function openTipSheet(key) {
+    var copy = TIP_COPY[key];
+    if (!copy || !tipSheet || !tipTitle || !tipBody) return;
+    tipTitle.textContent = copy.title;
+    tipBody.textContent = copy.body;
+    if (typeof tipSheet.showModal === "function") tipSheet.showModal();
+    else tipSheet.setAttribute("open", "");
+  }
+
+  function closeTipSheet() {
+    if (!tipSheet) return;
+    if (typeof tipSheet.close === "function") tipSheet.close();
+    else tipSheet.removeAttribute("open");
+  }
+
+  function syncLegendVis(hidden) {
+    legendEl.hidden = !!hidden;
+    if (legendHead) legendHead.hidden = !!hidden;
+  }
+
+  function metricHtml(label, value, unit, tipKey) {
     var isDash = value === "—";
+    var info = tipKey && TIP_COPY[tipKey]
+      ? '<button type="button" class="wk-info-btn" data-wk-tip="' + tipKey +
+        '" aria-label="' + esc(label) + ' 说明">ⓘ</button>'
+      : "";
     return '<div class="wk-metric" role="listitem">' +
       '<div class="value' + (isDash ? " dash" : "") + '">' + esc(value) +
       (unit && !isDash ? ' <span class="u">' + esc(unit) + "</span>" : "") +
       "</div>" +
-      '<div class="label">' + esc(label) + "</div>" +
+      '<div class="label"><span class="wk-metric-head">' + esc(label) + info + "</span></div>" +
       "</div>";
   }
 
@@ -716,11 +782,11 @@
 
     var metricParts = [];
     if (km > 0) metricParts.push(metricHtml("距离", km.toFixed(2), "km"));
-    metricParts.push(metricHtml("用时", moving > 0 ? elapsedLabel(moving) : "—", ""));
+    metricParts.push(metricHtml("用时", moving > 0 ? elapsedLabel(moving) : "—", "", "moving"));
     if (elev > 0) metricParts.push(metricHtml("爬升", String(Math.round(elev)), "m"));
-    metricParts.push(metricHtml("均心率", hrAvg > 0 ? String(Math.round(hrAvg)) : "—", hrAvg > 0 ? "bpm" : ""));
-    metricParts.push(metricHtml("最大心率", hrMax > 0 ? String(Math.round(hrMax)) : "—", hrMax > 0 ? "bpm" : ""));
-    metricParts.push(metricHtml("能耗", kcal > 0 ? String(Math.round(kcal)) : "—", kcal > 0 ? "kcal" : ""));
+    metricParts.push(metricHtml("均心率", hrAvg > 0 ? String(Math.round(hrAvg)) : "—", hrAvg > 0 ? "bpm" : "", "hr_avg"));
+    metricParts.push(metricHtml("最大心率", hrMax > 0 ? String(Math.round(hrMax)) : "—", hrMax > 0 ? "bpm" : "", "hr_max"));
+    metricParts.push(metricHtml("能耗", kcal > 0 ? String(Math.round(kcal)) : "—", kcal > 0 ? "kcal" : "", "kcal"));
     metricsEl.innerHTML = metricParts.join("");
   }
 
@@ -784,14 +850,14 @@
 
       function applyPreferredClock() {
         setViz("clock");
-        legendEl.hidden = false;
+        syncLegendVis(false);
         applyLegendFocus(clockSvg);
       }
 
       if (hasTrail) {
         var mode = (preferredViz === "clock") ? "clock" : "map";
         setViz(mode);
-        legendEl.hidden = mode !== "clock";
+        syncLegendVis(mode !== "clock");
         if (mode === "clock") applyLegendFocus(clockSvg);
         ensureTrails().then(function (pts) {
           var ok = drawMap(mapSvg, pts[String(item.idx)], accent);
@@ -801,7 +867,7 @@
           } else if (mode === "clock") {
             // map drawn in background; stay on clock tab
             setViz("clock");
-            legendEl.hidden = false;
+            syncLegendVis(false);
             applyLegendFocus(clockSvg);
           }
           show();
@@ -814,6 +880,7 @@
   }
 
   function closeDetail() {
+    closeTipSheet();
     if (typeof dialog.close === "function") dialog.close();
     else dialog.removeAttribute("open");
   }
@@ -833,6 +900,18 @@
   }
 
   document.addEventListener("click", function (ev) {
+    var tipClose = ev.target.closest && ev.target.closest("[data-wk-tip-close]");
+    if (tipClose) { closeTipSheet(); return; }
+    if (tipSheet && ev.target === tipSheet) { closeTipSheet(); return; }
+
+    var tipBtn = ev.target.closest && ev.target.closest("[data-wk-tip]");
+    if (tipBtn) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      openTipSheet(tipBtn.getAttribute("data-wk-tip"));
+      return;
+    }
+
     var closeBtn = ev.target.closest && ev.target.closest("[data-wk-close]");
     if (closeBtn) { closeDetail(); return; }
     if (ev.target === dialog) { closeDetail(); return; }
@@ -851,7 +930,7 @@
       preferredViz = mode;
       setViz(mode);
       var item = itemsByIdx[currentIdx] || {};
-      legendEl.hidden = item.has_trail ? mode !== "clock" : false;
+      syncLegendVis(item.has_trail ? mode !== "clock" : false);
       if (!legendEl.hidden) {
         updateLegend(item.session || {});
         applyLegendFocus(clockSvg);
@@ -876,7 +955,11 @@
   });
 
   document.addEventListener("keydown", function (ev) {
-    if (ev.key === "Escape" && dialog.open) closeDetail();
+    if (ev.key === "Escape") {
+      if (tipSheet && tipSheet.open) { closeTipSheet(); return; }
+      if (dialog.open) closeDetail();
+      return;
+    }
     if (ev.key === "Enter" && ev.target.classList && ev.target.classList.contains("run-card")) {
       openDetail(itemFromCard(ev.target), ev.target);
     }

@@ -35,7 +35,7 @@
                                     {{ range .calendar }}
                                     <div class="wk">
                                         {{ range . }}
-                                        <span class="{{ .class }}" data-date="{{ .date }}"{{ if .size }} style="--s:{{ .size }}px"{{ end }}{{ if .title }} data-tip="{{ .date }} · {{ .title }}"{{ end }}><b>{{ .day }}</b></span>
+                                        <span class="{{ .class }}" data-date="{{ .date }}"{{ if .size }} style="--s:{{ .size }}px"{{ end }}{{ if .title }} data-tip="{{ .date }} · {{ .title }}"{{ end }} tabindex="0"><b>{{ .day }}</b></span>
                                         {{ end }}
                                     </div>
                                     {{ end }}

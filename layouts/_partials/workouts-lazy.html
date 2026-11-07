@@ -43,7 +43,7 @@
           if (cell.pie) style += ";--pie:" + esc(cell.pie);
           style += '"';
         }
-        var tip = cell.title ? ' data-tip="' + esc(cell.title) + '"' : "";
+        var tip = cell.title ? ' data-tip="' + esc(cell.title) + '" tabindex="0"' : "";
         html += '<span class="' + esc(cell.class || "") + '"' + tip + style + "></span>";
       });
       html += "</div>";
@@ -139,7 +139,7 @@
       html += '<span class="metric sub"><span class="num">' + paceLabel(c.pace) +
         '</span><span class="unit">/km</span></span>';
     }
-    html += '</div></div><div class="card-tip" aria-hidden="true">';
+    html += '</div></div><div class="card-tip" role="tooltip" aria-hidden="true">';
     html += '<div class="card-tip-when">' + esc((c.date || "").slice(5));
     if (c.time) html += " " + esc(c.time);
     html += "</div>";

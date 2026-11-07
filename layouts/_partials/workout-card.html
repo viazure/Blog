@@ -82,7 +82,7 @@
             {{ end }}
         </div>
     </div>
-    <div class="card-tip" aria-hidden="true">
+    <div class="card-tip" role="tooltip" aria-hidden="true">
         <div class="card-tip-when">
             {{ substr $c.date 5 }}{{ with $c.time }} {{ . }}{{ end }}
         </div>
