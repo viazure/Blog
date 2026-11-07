@@ -1278,7 +1278,7 @@
 }
 
 /* ------------------------------------------------------------------ Session Clock / 详情壳 */
-/* Dark detail chrome aligned to activities.geekplux.com (blog dialog, not full wall). */
+/* Detail shell follows blog theme tokens (light default + html.dark). Not a forced near-black wall. */
 
 @keyframes wk-grow {
   from { transform: scale(0.72); opacity: 0; }
@@ -1301,6 +1301,7 @@
   width: 40px;
   height: 40px;
   color: var(--workout-accent);
+  overflow: visible;
 }
 
 .wk-detail {
@@ -1309,10 +1310,21 @@
   background: transparent;
   max-width: 980px;
   width: calc(100vw - 2rem);
-  color: #f3f3f3;
+  color: $text-base-color;
+  --wk-sheet: #{$white};
+  --wk-stage: #f4f4f5;
+  --wk-ink: #{$text-base-color};
+  --wk-muted: #{$gray};
+  --wk-line: #{$rule};
+  --wk-soft: #{$chrome-bg};
+  --wk-guide: rgba(0, 0, 0, 0.12);
+  --wk-hover: rgba(0, 0, 0, 0.04);
+  --wk-hover-strong: rgba(0, 0, 0, 0.07);
+  --wk-tab-on-bg: #{$text-base-color};
+  --wk-tab-on-fg: #{$white};
 
   &::backdrop {
-    background: rgba(0, 0, 0, 0.62);
+    background: rgba(0, 0, 0, 0.42);
   }
 }
 
@@ -1320,13 +1332,13 @@
   position: relative;
   margin: 1.25rem auto;
   padding: 1.35rem 1.45rem 1.6rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--wk-line);
   border-radius: 18px;
-  background: #121212;
+  background: var(--wk-sheet);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.04) inset,
-    0 18px 48px rgba(0, 0, 0, 0.45);
-  color: #f3f3f3;
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 18px 48px rgba(0, 0, 0, 0.12);
+  color: var(--wk-ink);
 }
 
 .wk-detail-close {
@@ -1339,14 +1351,14 @@
   border: 0;
   border-radius: 999px;
   background: transparent;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--wk-muted);
   font-size: 1.4rem;
   line-height: 1;
   cursor: pointer;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: #fff;
+    background: var(--wk-hover);
+    color: var(--wk-ink);
   }
 }
 
@@ -1370,9 +1382,9 @@
   gap: 0.35rem;
   margin-bottom: 0.65rem;
   padding: 0.2rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--wk-line);
   border-radius: 999px;
-  background: #1a1a1a;
+  background: var(--wk-soft);
 }
 
 .wk-viz-tab {
@@ -1380,25 +1392,25 @@
   border-radius: 999px;
   padding: 0.28rem 0.75rem;
   background: transparent;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--wk-muted);
   font-size: 0.78rem;
   font-family: inherit;
   cursor: pointer;
 
   &.is-on {
-    background: rgba(255, 255, 255, 0.92);
-    color: #111;
+    background: var(--wk-tab-on-bg);
+    color: var(--wk-tab-on-fg);
   }
 }
 
 .wk-viz-stage {
   position: relative;
   aspect-ratio: 1;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--wk-line);
   border-radius: 16px;
-  background: #0a0a0a;
-  overflow: hidden;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  background: var(--wk-stage);
+  overflow: visible;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.02) inset;
 }
 
 .wk-viz-panel {
@@ -1408,11 +1420,10 @@
   height: 100%;
   display: grid;
   place-items: center;
-  padding: 4%;
+  padding: 6%;
   box-sizing: border-box;
 }
 
-/* UA [hidden] is display:none; our display:grid/inline-flex would override without this */
 .wk-viz-panel[hidden],
 .wk-viz-tools[hidden],
 .wk-legend[hidden],
@@ -1425,6 +1436,7 @@
   width: 100%;
   height: 100%;
   display: block;
+  overflow: visible;
 }
 
 .sc-layer-outer.is-dim,
@@ -1474,12 +1486,12 @@
   font-style: italic;
   letter-spacing: -0.03em;
   line-height: 1.08;
-  color: #fff;
+  color: var(--wk-ink);
 }
 
 .wk-detail-when {
   margin: 0 0 1.35rem;
-  color: rgba(255, 255, 255, 0.42);
+  color: var(--wk-muted);
   font-size: 0.82rem;
   font-variant-numeric: tabular-nums;
 }
@@ -1487,12 +1499,12 @@
 .wk-metrics {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--wk-line);
 }
 
 .wk-metric {
   padding: 0.85rem 0 0.75rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--wk-line);
 
   &:nth-child(odd) {
     padding-right: 0.9rem;
@@ -1500,23 +1512,23 @@
 
   &:nth-child(even) {
     padding-left: 0.9rem;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 1px solid var(--wk-line);
   }
 
   .value {
     font-size: 1.35rem;
     font-weight: 650;
     font-variant-numeric: tabular-nums;
-    color: #fff;
+    color: var(--wk-ink);
     letter-spacing: -0.01em;
 
     &.dash {
-      color: rgba(255, 255, 255, 0.35);
+      color: var(--wk-muted);
     }
 
     .u {
       margin-left: 0.15em;
-      color: rgba(255, 255, 255, 0.4);
+      color: var(--wk-muted);
       font-size: 0.72rem;
       font-weight: 500;
     }
@@ -1524,7 +1536,7 @@
 
   .label {
     margin-top: 0.28rem;
-    color: rgba(255, 255, 255, 0.38);
+    color: var(--wk-muted);
     font-size: 0.66rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -1537,12 +1549,12 @@
   flex-direction: column;
   gap: 0.55rem;
   margin-top: 1.4rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--wk-muted);
   font-size: 0.78rem;
 
   strong {
     display: block;
-    color: rgba(255, 255, 255, 0.88);
+    color: var(--wk-ink);
     font-size: 0.78rem;
     font-weight: 600;
   }
@@ -1566,20 +1578,20 @@
   transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
 
   div {
-    color: rgba(255, 255, 255, 0.42);
+    color: var(--wk-muted);
   }
 
   strong {
-    color: rgba(255, 255, 255, 0.88);
+    color: var(--wk-ink);
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--wk-hover);
   }
 
   &.is-on {
-    border-color: rgba(255, 255, 255, 0.14);
-    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--wk-line);
+    background: var(--wk-hover-strong);
   }
 }
 
@@ -1593,10 +1605,10 @@
 .wk-pager-btn {
   display: block;
   padding: 0.7rem 0.85rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--wk-line);
   border-radius: 12px;
-  background: #1a1a1a;
-  color: #f3f3f3;
+  background: var(--wk-soft);
+  color: var(--wk-ink);
   text-align: left;
   font: inherit;
   cursor: pointer;
@@ -1611,13 +1623,13 @@
   }
 
   &:not(:disabled):hover {
-    border-color: rgba(255, 255, 255, 0.28);
+    border-color: var(--wk-ink);
   }
 
   .dir {
     display: block;
     margin-bottom: 0.15rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--wk-muted);
     font-size: 0.68rem;
     font-variant-numeric: tabular-nums;
   }
@@ -1625,5 +1637,36 @@
   .ttl {
     font-size: 0.82rem;
     font-weight: 600;
+  }
+}
+
+html.dark {
+  .wk-detail {
+    color: $dark-white;
+    --wk-sheet: #{$surface-dark};
+    --wk-stage: #0f1116;
+    --wk-ink: #{$dark-white};
+    --wk-muted: #{$dark-gray};
+    --wk-line: #{$rule-dark};
+    --wk-soft: #{$dark-light};
+    --wk-guide: rgba(255, 255, 255, 0.16);
+    --wk-hover: rgba(255, 255, 255, 0.04);
+    --wk-hover-strong: rgba(255, 255, 255, 0.07);
+    --wk-tab-on-bg: rgba(255, 255, 255, 0.92);
+    --wk-tab-on-fg: #111;
+
+    &::backdrop {
+      background: rgba(0, 0, 0, 0.62);
+    }
+  }
+
+  .wk-detail-sheet {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.04) inset,
+      0 18px 48px rgba(0, 0, 0, 0.45);
+  }
+
+  .wk-viz-stage {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
   }
 }

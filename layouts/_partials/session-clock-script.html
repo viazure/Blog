@@ -87,6 +87,17 @@
   var currentList = [];
   var legendFocus = null;
 
+  function themeTok(name, fallback) {
+    try {
+      var v = getComputedStyle(dialog).getPropertyValue(name).trim();
+      return v || fallback;
+    } catch (e) { return fallback; }
+  }
+
+  function isDarkTheme() {
+    return document.documentElement.classList.contains("dark");
+  }
+
   function esc(s) {
     return String(s == null ? "" : s)
       .replace(/&/g, "&amp;")
@@ -182,7 +193,7 @@
     });
   }
 
-  /** Polar Session Clock: outer zone bars + inner HR polyline + core seed/rings. */
+  /** Polar Session Clock: outward zone spikes + inner HR polyline + core seed/rings. */
   function drawSessionClock(svg, session, accent, mini) {
     clearSvg(svg);
     session = session || {};
@@ -230,17 +241,23 @@
     svg.appendChild(defs);
 
     var glow = ns("circle");
-    glow.setAttribute("cx", cx); glow.setAttribute("cy", cy); glow.setAttribute("r", "190");
+    glow.setAttribute("cx", cx); glow.setAttribute("cy", cy); glow.setAttribute("r", mini ? "176" : "178");
     glow.setAttribute("fill", "url(#" + gid + ")");
     svg.appendChild(glow);
 
-    // ~70 bpm guide ring (mini sits on light list cards; detail is dark)
+    // ~70 bpm guide ring — strokes follow theme tokens (list mini stays light-card friendly)
+    var guideStroke = mini
+      ? "#e8e4de"
+      : themeTok("--wk-guide", isDarkTheme() ? "rgba(255,255,255,0.16)" : "rgba(0,0,0,0.12)");
+    var guideLabel = mini
+      ? "rgba(0,0,0,0.35)"
+      : themeTok("--wk-muted", isDarkTheme() ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.38)");
     var guide = ns("g");
     guide.setAttribute("class", "sc-layer-guide");
     var ref = ns("circle");
     ref.setAttribute("cx", cx); ref.setAttribute("cy", cy); ref.setAttribute("r", "78");
     ref.setAttribute("fill", "none");
-    ref.setAttribute("stroke", mini ? "#e8e4de" : "rgba(255,255,255,0.16)");
+    ref.setAttribute("stroke", guideStroke);
     ref.setAttribute("stroke-width", mini ? "2" : "1.25");
     if (mini) ref.setAttribute("stroke-dasharray", "2 4");
     guide.appendChild(ref);
@@ -248,7 +265,7 @@
       var lab = ns("text");
       lab.setAttribute("x", cx); lab.setAttribute("y", 118);
       lab.setAttribute("text-anchor", "middle");
-      lab.setAttribute("fill", "rgba(255,255,255,0.35)");
+      lab.setAttribute("fill", guideLabel);
       lab.setAttribute("font-family", "ui-monospace,monospace");
       lab.setAttribute("font-size", "10");
       lab.textContent = "70";
@@ -256,35 +273,51 @@
     }
     svg.appendChild(guide);
 
-    // Outer undulating zone bars (polar bar chart)
+    // Outer zone spikes: sit on base circle, extend OUTWARD (geekplux grammar).
+    // baseR kept low so tips + soft glow stay inside viewBox 400×400.
     var outer = ns("g");
     outer.setAttribute("class", "sc-layer-outer");
     if (!mini) outer.setAttribute("filter", "url(#scSoft)");
     svg.appendChild(outer);
     var N = bars.length || 0;
     var gapDeg = mini ? 1.2 : 1.8;
-    var baseR = 172;
+    var baseR = mini ? 150 : 148;
+    var barPaths = [];
     for (var i = 0; i < N; i++) {
       var a0 = -90 + i * (360 / N) + gapDeg * 0.5;
       var a1 = -90 + (i + 1) * (360 / N) - gapDeg * 0.5;
       if (a1 <= a0) continue;
       var h = Number(bars[i]) || 0;
-      // exaggerate undulation: map 0–24 → 6–36 px outward
+      // map 0–24 → 6–36 px outward from base ring
       var barH = 6 + (h / 24) * 30;
-      var r1 = baseR;
-      var r0 = baseR - barH;
-      var p0 = pt(r1, a0), p1 = pt(r1, a1), p2 = pt(r0, a1), p3 = pt(r0, a0);
+      var r0 = baseR;
+      var r1 = baseR + barH;
+      var p0 = pt(r0, a0), p1 = pt(r0, a1), p2 = pt(r1, a1), p3 = pt(r1, a0);
       var t = h / 24;
       var op = 0.28 + t * 0.72;
       var path = ns("path");
       path.setAttribute("d",
         "M" + p0[0] + " " + p0[1] +
-        " A" + r1 + " " + r1 + " 0 0 1 " + p1[0] + " " + p1[1] +
+        " A" + r0 + " " + r0 + " 0 0 1 " + p1[0] + " " + p1[1] +
         " L" + p2[0] + " " + p2[1] +
-        " A" + r0 + " " + r0 + " 0 0 0 " + p3[0] + " " + p3[1] + " Z");
+        " A" + r1 + " " + r1 + " 0 0 0 " + p3[0] + " " + p3[1] + " Z");
       path.setAttribute("fill", soft);
       path.setAttribute("opacity", String(op));
       outer.appendChild(path);
+      barPaths.push({ path: path, op: op, i: i });
+    }
+    // Light clockwise reveal from 12 o'clock (respect reduced motion)
+    if (!mini && !reduceMotion && barPaths.length) {
+      barPaths.forEach(function (bp) {
+        bp.path.style.opacity = "0";
+        bp.path.style.transition = "opacity 0.22s ease-out";
+        bp.path.style.transitionDelay = (bp.i * (0.85 / Math.max(N, 1))) + "s";
+      });
+      requestAnimationFrame(function () {
+        barPaths.forEach(function (bp) {
+          bp.path.style.opacity = String(bp.op);
+        });
+      });
     }
 
     // Inner polar HR line
@@ -295,8 +328,8 @@
       var n = hr.length;
       var pts = hr.map(function (bpm, i) {
         var a = -90 + i * (360 / n);
-        var r = 58 + ((Number(bpm) - 70) / 90) * 100;
-        r = Math.max(42, Math.min(158, r));
+        var r = 58 + ((Number(bpm) - 70) / 90) * 82;
+        r = Math.max(42, Math.min(138, r));
         var p = pt(r, a);
         return p[0].toFixed(1) + "," + p[1].toFixed(1);
       });
@@ -345,7 +378,7 @@
       coreG.appendChild(seed);
       var seed2 = ns("circle");
       seed2.setAttribute("cx", cx); seed2.setAttribute("cy", cy); seed2.setAttribute("r", mini ? "5" : "4");
-      seed2.setAttribute("fill", mini ? "#5b4bdb" : "#fff");
+      seed2.setAttribute("fill", mini ? "#5b4bdb" : themeTok("--wk-stage", isDarkTheme() ? "#0f1116" : "#f4f4f5"));
       seed2.setAttribute("opacity", "0.95");
       coreG.appendChild(seed2);
     }
@@ -353,7 +386,7 @@
     if (!mini) applyLegendFocus(svg);
   }
 
-  /** Dark GPS silhouette with start→end path draw. */
+  /** GPS silhouette trail with start→end path draw; stage fill follows theme. */
   function drawMap(svg, pointsStr, accent) {
     clearSvg(svg);
     if (!pointsStr) return false;
@@ -391,7 +424,7 @@
     bg.setAttribute("x", "0"); bg.setAttribute("y", "0");
     bg.setAttribute("width", "400"); bg.setAttribute("height", "400");
     bg.setAttribute("rx", "20");
-    bg.setAttribute("fill", "#0a0a0a");
+    bg.setAttribute("fill", themeTok("--wk-stage", isDarkTheme() ? "#0f1116" : "#f4f4f5"));
     svg.appendChild(bg);
 
     var d = "M" + coords[0][0].toFixed(1) + " " + coords[0][1].toFixed(1);
