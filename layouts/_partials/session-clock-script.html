@@ -36,19 +36,19 @@
               <path d="M6 18 A12 12 0 0 1 30 18" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
               <path d="M8 22 A10 10 0 0 1 16 10" fill="none" stroke="currentColor" stroke-width="6" opacity=".5" stroke-linecap="round"/>
             </svg>
-            <div><strong>外圈</strong><span class="wk-legend-desc">一圈 = 整场；柱越高越亮，强度越高。</span></div>
+            <div><strong>外圈</strong><span class="wk-legend-desc">整场强度，沿时间展开</span></div>
           </button>
           <button type="button" class="wk-legend-row" data-layer="inner" data-legend="inner">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <path d="M6 24 L12 16 L18 20 L24 10 L30 14 L30 28 L6 28 Z" fill="currentColor" fill-opacity=".28" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
             </svg>
-            <div data-legend-inner-copy><strong>中圈</strong><span class="wk-legend-desc">一圈 = 整场心率；越靠外跳得越快。</span></div>
+            <div data-legend-inner-copy><strong>中圈</strong><span class="wk-legend-desc">整场心率，越靠外越高</span></div>
           </button>
           <button type="button" class="wk-legend-row" data-layer="core">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <circle cx="18" cy="18" r="5" fill="currentColor"/>
             </svg>
-            <div><strong>核心</strong><span class="wk-legend-desc">不到 1 小时是种子；每满 1 小时多一环。</span></div>
+            <div><strong>核心</strong><span class="wk-legend-desc">用时，不满 1 小时亦为满圆；每满 1 小时多一环</span></div>
           </button>
         </div>
         <nav class="wk-pager" aria-label="相邻活动" hidden>
@@ -642,33 +642,29 @@
     });
   }
 
-  var TIP_COPY = {
+    var TIP_COPY = {
     sclock: {
-      title: "Session Clock",
-      body: "外圈和中圈都把整场训练铺满一圈：外圈柱高/亮度表示强度（约 Z1→Z5），中圈越靠外心率越高。核心只看用时——不到 1 小时是满圆种子，每满 1 小时多一环。"
+      title: "图例",
+      body: "外圈为强度，中圈为心率，核心为用时，均铺满整场。"
     },
     moving: {
       title: "用时",
-      body: "实际移动时长，不含暂停。核心环数按此时长计算；外圈/中圈仍铺满整场，不按用时缩短。"
+      body: "实际移动时长，不含暂停；核心环数依此计算，外圈与中圈仍铺满整场。"
     },
     kcal: {
       title: "能耗",
-      body: "手表估算的消耗（千卡），不是实验室测量。"
+      body: "手表估算消耗（千卡），非实测。"
     },
     hr_avg: {
       title: "均心率",
-      body: "整场平均心率（bpm）。有逐点数据时，会画进中圈。"
+      body: "整场平均心率（bpm），有逐点数据时画入中圈。"
     },
     hr_max: {
       title: "最大心率",
-      body: "整场记录到的最高心率（bpm）。"
+      body: "整场最高心率（bpm）。"
     }
   };
-
-  var tipSheet = document.getElementById("wk-tip-sheet");
-  var tipTitle = tipSheet ? tipSheet.querySelector("#wk-tip-sheet-title") : null;
-  var tipBody = tipSheet ? tipSheet.querySelector("[data-wk-tip-body]") : null;
-  var legendHead = dialog.querySelector("[data-wk-legend-head]");
+var legendHead = dialog.querySelector("[data-wk-legend-head]");
 
   function openTipSheet(key) {
     var copy = TIP_COPY[key];
@@ -709,9 +705,9 @@
     if (!copy) return;
     var hr = (session && session.hr) || [];
     if (hr.length) {
-      copy.innerHTML = "<strong>中圈</strong><span class=\"wk-legend-desc\">一圈 = 整场心率；越靠外跳得越快。</span>";
+      copy.innerHTML = "<strong>中圈</strong><span class=\"wk-legend-desc\">整场心率，越靠外越高</span>";
     } else {
-      copy.innerHTML = "<strong>中圈</strong><span class=\"wk-legend-desc\">没有逐点心率，只看外圈。</span>";
+      copy.innerHTML = "<strong>中圈</strong><span class=\"wk-legend-desc\">无逐点心率，仅外圈有效</span>";
     }
   }
 
