@@ -1579,10 +1579,19 @@
 
   div {
     color: var(--wk-muted);
+    min-width: 0;
   }
 
   strong {
     color: var(--wk-ink);
+  }
+
+  .wk-legend-desc {
+    display: block;
+    line-height: 1.45;
+    overflow-wrap: break-word;
+    word-break: normal;
+    line-break: auto;
   }
 
   &:hover {
