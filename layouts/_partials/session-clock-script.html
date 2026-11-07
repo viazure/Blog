@@ -32,19 +32,19 @@
               <path d="M6 18 A12 12 0 0 1 30 18" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
               <path d="M8 22 A10 10 0 0 1 16 10" fill="none" stroke="currentColor" stroke-width="6" opacity=".5" stroke-linecap="round"/>
             </svg>
-            <div><strong>外环</strong>一整圈 = 整次训练（顺时针自顶点）；块高度/亮度 ≈ 心率区间 Z1→Z5</div>
+            <div><strong>外环</strong><span class="wk-legend-desc">一整圈 = 整次训练（顺时针自顶点）<wbr>；块高度/亮度 ≈ 心率区间&nbsp;Z1→Z5</span></div>
           </button>
           <button type="button" class="wk-legend-row" data-layer="inner" data-legend="inner">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <polyline points="6,24 12,16 18,20 24,10 30,14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             </svg>
-            <div data-legend-inner-copy><strong>内曲线</strong>心率折线包到圆上；越靠外越高</div>
+            <div data-legend-inner-copy><strong>内曲线</strong><span class="wk-legend-desc">心率折线包到圆上<wbr>；越靠外越高</span></div>
           </button>
           <button type="button" class="wk-legend-row" data-layer="core">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <circle cx="18" cy="18" r="5" fill="currentColor"/>
             </svg>
-            <div><strong>核心</strong>不足 1 小时 = 种子点；满小时则生长环</div>
+            <div><strong>核心</strong><span class="wk-legend-desc">不足 1 小时 = 种子点<wbr>；满小时则生长环</span></div>
           </button>
         </div>
         <nav class="wk-pager" aria-label="相邻活动" hidden>
@@ -215,7 +215,7 @@
     var grad = ns("radialGradient");
     grad.setAttribute("id", gid);
     grad.setAttribute("cx", "50%"); grad.setAttribute("cy", "50%"); grad.setAttribute("r", "50%");
-    [["0%", "0.22"], ["55%", "0.08"], ["100%", "0"]].forEach(function (pair) {
+    [["0%", "0.10"], ["55%", "0.035"], ["100%", "0"]].forEach(function (pair) {
       var stop = ns("stop");
       stop.setAttribute("offset", pair[0]);
       stop.setAttribute("stop-color", soft);
@@ -224,20 +224,7 @@
     });
     defs.appendChild(grad);
 
-    var filt = ns("filter");
-    filt.setAttribute("id", mini ? "scSoftMini" : "scSoft");
-    filt.setAttribute("x", "-40%"); filt.setAttribute("y", "-40%");
-    filt.setAttribute("width", "180%"); filt.setAttribute("height", "180%");
-    var blur = ns("feGaussianBlur");
-    blur.setAttribute("stdDeviation", mini ? "1.2" : "1.8");
-    blur.setAttribute("result", "b");
-    filt.appendChild(blur);
-    var merge = ns("feMerge");
-    var m1 = ns("feMergeNode"); m1.setAttribute("in", "b");
-    var m2 = ns("feMergeNode"); m2.setAttribute("in", "SourceGraphic");
-    merge.appendChild(m1); merge.appendChild(m2);
-    filt.appendChild(merge);
-    defs.appendChild(filt);
+    // no soft blur — keep SVG edges crisp; radial glow alone is enough
     svg.appendChild(defs);
 
     var glow = ns("circle");
@@ -274,10 +261,9 @@
     svg.appendChild(guide);
 
     // Outer zone spikes: sit on base circle, extend OUTWARD (geekplux grammar).
-    // baseR kept low so tips + soft glow stay inside viewBox 400×400.
+    // baseR kept low so outward tips stay inside viewBox 400×400.
     var outer = ns("g");
     outer.setAttribute("class", "sc-layer-outer");
-    if (!mini) outer.setAttribute("filter", "url(#scSoft)");
     svg.appendChild(outer);
     var N = bars.length || 0;
     var gapDeg = mini ? 1.2 : 1.8;
@@ -342,7 +328,6 @@
       poly.setAttribute("stroke-linecap", "round");
       poly.setAttribute("stroke-linejoin", "round");
       poly.setAttribute("opacity", "0.95");
-      if (!mini) poly.setAttribute("filter", "url(#scSoft)");
       inner.appendChild(poly);
     }
 
@@ -409,7 +394,7 @@
     filt.setAttribute("x", "-50%"); filt.setAttribute("y", "-50%");
     filt.setAttribute("width", "200%"); filt.setAttribute("height", "200%");
     var blur = ns("feGaussianBlur");
-    blur.setAttribute("stdDeviation", "2.4");
+    blur.setAttribute("stdDeviation", "0.6");
     blur.setAttribute("result", "b");
     filt.appendChild(blur);
     var merge = ns("feMerge");
@@ -538,9 +523,9 @@
     if (!copy) return;
     var hr = (session && session.hr) || [];
     if (hr.length) {
-      copy.innerHTML = "<strong>内曲线</strong>心率折线包到圆上；越靠外越高";
+      copy.innerHTML = "<strong>内曲线</strong><span class=\"wk-legend-desc\">心率折线包到圆上<wbr>；越靠外越高</span>";
     } else {
-      copy.innerHTML = "<strong>内曲线</strong>无逐点心率（仅区间柱）";
+      copy.innerHTML = "<strong>内曲线</strong><span class=\"wk-legend-desc\">无逐点心率<wbr>（仅区间柱）</span>";
     }
   }
 
@@ -612,9 +597,9 @@
         row.style.color = accent;
       });
 
-      // GPS → silhouette only (no clock↔map tabs). No GPS → clock + legend.
-      toolsEl.hidden = true;
-      legendEl.hidden = hasTrail;
+      // GPS → map default + tabs to switch to Session Clock. No GPS → clock only.
+      toolsEl.hidden = !hasTrail;
+      legendEl.hidden = hasTrail; // show legend when clock visible
 
       drawSessionClock(clockSvg, session, accent, false);
 
@@ -629,6 +614,7 @@
         ensureTrails().then(function (pts) {
           var ok = drawMap(mapSvg, pts[String(item.idx)], accent);
           if (!ok) {
+            toolsEl.hidden = true;
             setViz("clock");
             legendEl.hidden = false;
             applyLegendFocus(clockSvg);
