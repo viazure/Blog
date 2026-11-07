@@ -1412,12 +1412,25 @@
 .wk-viz-tab {
   border: 0;
   border-radius: 999px;
-  padding: 0.28rem 0.75rem;
+  padding: 0.28rem 0.6rem;
   background: transparent;
   color: var(--wk-muted);
   font-size: 0.78rem;
   font-family: inherit;
   cursor: pointer;
+
+  &:hover:not(.is-on) {
+    background: var(--wk-hover);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
 
   &.is-on {
     background: var(--wk-tab-on-bg);
@@ -1697,20 +1710,29 @@
   cursor: pointer;
   vertical-align: middle;
 
-  &:hover,
-  &:focus-visible {
+  &:hover {
     color: var(--wk-ink);
-    border-color: var(--wk-ink);
+    opacity: 0.85;
+  }
+
+  &:focus {
     outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    color: var(--wk-ink);
   }
 }
 
 .wk-legend-head {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.35rem;
   margin: 1.4rem 0 0.55rem;
+  /* Align with legend-row text column: row pad + 36px icon + gap */
+  padding-left: calc(0.5rem + 36px + 0.7rem);
 }
 
 .wk-legend-title {
