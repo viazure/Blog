@@ -28,7 +28,7 @@
         <div class="wk-metrics" role="list"></div>
         <div class="wk-legend-head" hidden data-wk-legend-head>
           <p class="wk-legend-title">Session Clock</p>
-          <button type="button" class="wk-info-btn" data-wk-tip="sclock" aria-label="Session Clock 说明">ⓘ</button>
+          <button type="button" class="wk-info-btn" data-wk-tip="sclock" aria-label="如何阅读 Session Clock">ⓘ</button>
         </div>
         <div class="wk-legend" aria-label="图例" hidden>
           <button type="button" class="wk-legend-row" data-layer="outer">
@@ -36,19 +36,19 @@
               <path d="M6 18 A12 12 0 0 1 30 18" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
               <path d="M8 22 A10 10 0 0 1 16 10" fill="none" stroke="currentColor" stroke-width="6" opacity=".5" stroke-linecap="round"/>
             </svg>
-            <div><strong>外环</strong><span class="wk-legend-desc">整次训练的区间柱铺满一圈（顺时针自顶点）<wbr>；块高度/亮度 ≈ 心率区间&nbsp;Z1→Z5</span></div>
+            <div><strong>外圈</strong><span class="wk-legend-desc">一圈 = 整场；柱越高越亮，强度越高。</span></div>
           </button>
           <button type="button" class="wk-legend-row" data-layer="inner" data-legend="inner">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <path d="M6 24 L12 16 L18 20 L24 10 L30 14 L30 28 L6 28 Z" fill="currentColor" fill-opacity=".28" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
             </svg>
-            <div data-legend-inner-copy><strong>内曲线</strong><span class="wk-legend-desc">心率面积按整次训练铺满一圈<wbr>；越靠外越高</span></div>
+            <div data-legend-inner-copy><strong>中圈</strong><span class="wk-legend-desc">一圈 = 整场心率；越靠外跳得越快。</span></div>
           </button>
           <button type="button" class="wk-legend-row" data-layer="core">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <circle cx="18" cy="18" r="5" fill="currentColor"/>
             </svg>
-            <div><strong>核心</strong><span class="wk-legend-desc">不足 1 小时 = 满圆种子<wbr>；满小时则每满一小时长一环</span></div>
+            <div><strong>核心</strong><span class="wk-legend-desc">不到 1 小时是种子；每满 1 小时多一环。</span></div>
           </button>
         </div>
         <nav class="wk-pager" aria-label="相邻活动" hidden>
@@ -645,23 +645,23 @@
   var TIP_COPY = {
     sclock: {
       title: "Session Clock",
-      body: "外环：整次训练的区间柱铺满一圈，顺时针自顶点；块高度/亮度约等于心率区间 Z1→Z5。内曲线：心率面积按整次训练铺满一圈，越靠外越高。核心：不足 1 小时是满圆种子，满小时则每满一小时长一环。"
+      body: "外圈和中圈都把整场训练铺满一圈：外圈柱高/亮度表示强度（约 Z1→Z5），中圈越靠外心率越高。核心只看用时——不到 1 小时是满圆种子，每满 1 小时多一环。"
     },
     moving: {
       title: "用时",
-      body: "移动时长（不含暂停）。外环/内曲线按整次训练铺满一圈；只有核心按此时长：不足 1 小时满圆种子，满小时则每满一小时长一环。"
+      body: "实际移动时长，不含暂停。核心环数按此时长计算；外圈/中圈仍铺满整场，不按用时缩短。"
     },
     kcal: {
       title: "能耗",
-      body: "设备估算的活动消耗（千卡），来自运动手表/档案汇总，不是实验室测量值。"
+      body: "手表估算的消耗（千卡），不是实验室测量。"
     },
     hr_avg: {
       title: "均心率",
-      body: "整次活动的平均心率（bpm）。有心率序列时也会画进 Session Clock 内曲线。"
+      body: "整场平均心率（bpm）。有逐点数据时，会画进中圈。"
     },
     hr_max: {
       title: "最大心率",
-      body: "整次活动记录到的最高心率（bpm）。"
+      body: "整场记录到的最高心率（bpm）。"
     }
   };
 
@@ -709,9 +709,9 @@
     if (!copy) return;
     var hr = (session && session.hr) || [];
     if (hr.length) {
-      copy.innerHTML = "<strong>内曲线</strong><span class=\"wk-legend-desc\">心率面积按整次训练铺满一圈<wbr>；越靠外越高</span>";
+      copy.innerHTML = "<strong>中圈</strong><span class=\"wk-legend-desc\">一圈 = 整场心率；越靠外跳得越快。</span>";
     } else {
-      copy.innerHTML = "<strong>内曲线</strong><span class=\"wk-legend-desc\">无逐点心率<wbr>（仅区间柱）</span>";
+      copy.innerHTML = "<strong>中圈</strong><span class=\"wk-legend-desc\">没有逐点心率，只看外圈。</span>";
     }
   }
 
