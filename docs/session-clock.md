@@ -61,7 +61,7 @@ Visual reference: [activities.geekplux.com](https://activities.geekplux.com/) (s
 | `session.hr` | **48** bpm samples when chart/segments available |
 | `session.hr_avg` / `hr_max` / `kcal` / `elev` | detail metrics |
 
-Frontend maps outer `bars` and inner `hr` across a **full 360°** session lap. Core alone is a full seed (<1h) or hour growth rings (≥1h).
+Frontend maps outer `bars` and inner `hr` across a **full 360 deg** session lap. Core alone is a full seed (<1h) or hour growth rings (>=1h).
 
 ## Front-end
 
@@ -96,4 +96,4 @@ Also update [ux-p0-ssr-js-fields.md](./ux-p0-ssr-js-fields.md).
 - Vert 3D terrain embed
 - Full geekplux Activities wall (Glow, tile size, year chips)
 
-Detail geometry (UI/UX lock): `baseR=120`, `barMinH=12`, `barMaxH=54`, `N=48`, `gapDeg=0.8`, `hrFloorR=48`, `hrSpan=60`; mini ≈0.9× (`baseR=110`, `11/48`, mid `44/54`). Core seed r≈6.5.
+Detail geometry (UI/UX lock): `baseR=120`, `barMinH=12`, `barMaxH=54`, `N=48`, `gapDeg=0.8`, `hrFloorR=48`, `hrSpan=60`; mini ~0.9x (`baseR=110`, `11/48`, mid `44/54`). Core seed r~6.5.
