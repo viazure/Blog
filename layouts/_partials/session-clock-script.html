@@ -36,7 +36,7 @@
               <path d="M6 18 A12 12 0 0 1 30 18" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
               <path d="M8 22 A10 10 0 0 1 16 10" fill="none" stroke="currentColor" stroke-width="6" opacity=".5" stroke-linecap="round"/>
             </svg>
-            <div><strong>外环</strong><span class="wk-legend-desc">一整圈 = 整次训练（顺时针自顶点）<wbr>；块高度/亮度 ≈ 心率区间&nbsp;Z1→Z5</span></div>
+            <div><strong>外环</strong><span class="wk-legend-desc">一整圈 = 1 小时移动时长（顺时针自顶点）<wbr>；不足 1 小时在 12 点留缺口；块高度/亮度 ≈ 心率区间&nbsp;Z1→Z5</span></div>
           </button>
           <button type="button" class="wk-legend-row" data-layer="inner" data-legend="inner">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
@@ -48,7 +48,7 @@
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <circle cx="18" cy="18" r="5" fill="currentColor"/>
             </svg>
-            <div><strong>核心</strong><span class="wk-legend-desc">不足 1 小时 = 种子点<wbr>；满小时则生长环</span></div>
+            <div><strong>核心</strong><span class="wk-legend-desc">不足 1 小时 = 开弧种子<wbr>；满小时则每满一小时长一环</span></div>
           </button>
         </div>
         <nav class="wk-pager" aria-label="相邻活动" hidden>
@@ -217,6 +217,7 @@
   function drawSessionClock(svg, session, accent, mini) {
     clearSvg(svg);
     session = session || {};
+    try { svg.removeAttribute("data-sweep"); svg.removeAttribute("data-moving"); } catch (e) {}
     var cx = 200, cy = 200;
     var bars = session.bars || [];
     var hr = session.hr || [];
@@ -261,6 +262,10 @@
     }
     var aStart = -90;
     var aEnd = aStart + sweepDeg;
+    try {
+      svg.setAttribute("data-sweep", String(Math.round(sweepDeg * 10) / 10));
+      svg.setAttribute("data-moving", String(Math.round(moving)));
+    } catch (e) {}
 
     var defs = ns("defs");
     var gid = mini ? "scGlowMini" : "scGlow";
@@ -305,8 +310,8 @@
     var hrSpan = mini ? 78 : 82;
     var guideR = hrFloorR;
     var baseR = mini ? 138 : 136;
-    var barMinH = mini ? 3 : 4;
-    var barMaxH = mini ? 44 : 50;
+    var barMinH = mini ? 2.5 : 3;
+    var barMaxH = mini ? 38 : 42;
 
     // ~70 bpm guide — open arc when <1h so the gap reads at every layer
     var guideStroke = mini
@@ -330,16 +335,6 @@
     ref.setAttribute("stroke-width", mini ? "1.6" : "1.1");
     if (mini) ref.setAttribute("stroke-dasharray", "2 4");
     guide.appendChild(ref);
-    if (!mini) {
-      var lab = ns("text");
-      lab.setAttribute("x", cx); lab.setAttribute("y", cy - guideR - 6);
-      lab.setAttribute("text-anchor", "middle");
-      lab.setAttribute("fill", guideLabel);
-      lab.setAttribute("font-family", "ui-monospace,monospace");
-      lab.setAttribute("font-size", "10");
-      lab.textContent = "70";
-      guide.appendChild(lab);
-    }
     svg.appendChild(guide);
 
     // Layers drawn together (sync reveal). Outer uses the same hour sweep as inner/core.
@@ -357,15 +352,23 @@
     // even when the crown is dense (otherwise a half-ring can read as a "full" outer).
     // Keep ghost OUTSIDE the bars clip so the remaining hour stays visible.
     if (sweepDeg < 359.5) {
+      // Unused hour: dashed ghost + soft wedge so a dense crown cannot read as a closed ring.
       var ghost = ns("path");
       ghost.setAttribute("d", arcD(baseR, aEnd, aStart + 360));
       ghost.setAttribute("fill", "none");
       ghost.setAttribute("stroke", guideStroke);
-      ghost.setAttribute("stroke-width", mini ? "1.2" : "1");
-      ghost.setAttribute("stroke-dasharray", mini ? "2 4" : "3 5");
-      ghost.setAttribute("opacity", "0.5");
+      ghost.setAttribute("stroke-width", mini ? "1.8" : "1.6");
+      ghost.setAttribute("stroke-dasharray", mini ? "2 3" : "2.5 4");
+      ghost.setAttribute("opacity", mini ? "0.7" : "0.72");
       ghost.setAttribute("class", "sc-outer-ghost");
       outer.appendChild(ghost);
+      var gapFill = ns("path");
+      var gapOuter = baseR + (mini ? 18 : 22);
+      gapFill.setAttribute("d", annularSector(baseR - (mini ? 2 : 3), gapOuter, aEnd, aStart + 360));
+      gapFill.setAttribute("fill", guideStroke);
+      gapFill.setAttribute("opacity", mini ? "0.10" : "0.09");
+      gapFill.setAttribute("class", "sc-outer-gap");
+      outer.appendChild(gapFill);
       var track = ns("path");
       track.setAttribute("d", arcD(baseR, aStart, aEnd));
       track.setAttribute("fill", "none");
@@ -374,6 +377,19 @@
       track.setAttribute("opacity", "0.28");
       track.setAttribute("class", "sc-outer-track");
       outer.appendChild(track);
+      // Butt ticks at sweep ends — hard edge so 12 o'clock gap is unambiguous.
+      [aStart, aEnd].forEach(function (tickA) {
+        var t0 = pt(baseR - 2, tickA), t1 = pt(baseR + (mini ? 16 : 20), tickA);
+        var tick = ns("line");
+        tick.setAttribute("x1", t0[0].toFixed(2)); tick.setAttribute("y1", t0[1].toFixed(2));
+        tick.setAttribute("x2", t1[0].toFixed(2)); tick.setAttribute("y2", t1[1].toFixed(2));
+        tick.setAttribute("stroke", soft);
+        tick.setAttribute("stroke-width", mini ? "1.6" : "1.4");
+        tick.setAttribute("stroke-linecap", "round");
+        tick.setAttribute("opacity", "0.55");
+        tick.setAttribute("class", "sc-outer-tick");
+        outer.appendChild(tick);
+      });
     }
 
     // Bars themselves are clip-masked to the hour sweep (belt-and-suspenders with angle math).

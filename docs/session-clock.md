@@ -97,4 +97,4 @@ Also update [ux-p0-ssr-js-fields.md](./ux-p0-ssr-js-fields.md).
 - Full geekplux Activities wall (Glow, tile size, year chips)
 
 
-Outer crown shares the hour sweep with inner/core; unused hour uses a dashed ghost track + pie clip so <1h never reads as a full outer ring.
+Outer crown shares the hour sweep with inner/core; unused hour uses a dashed ghost track + pie clip so <1h never reads as a full outer ring. Gap gets a soft wedge + end ticks; the old fixed-at-12 "70" bpm label is omitted (it sat in the open gap). Outer bar max height is slightly shorter so the crown does not overpower the open arc.
