@@ -19,3 +19,69 @@ pre,
 .post-updated-at {
   font-family: ui-monospace, Cascadia\ Code, Cascadia\ Mono, Segoe\ UI\ Mono, Consolas, monospace;
 }
+
+/* ux-p1: title / post-meta */
+/* Only article body headings — do not touch .header-title */
+article .page-content {
+  h1 {
+    font-size: 1.625rem; /* 26px */
+    font-weight: 700;
+    margin-top: 1.85rem;
+    margin-bottom: 0.45rem;
+  }
+
+  h2 {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 700;
+    margin-top: 1.85rem;
+    margin-bottom: 0.45rem;
+  }
+
+  h3 {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 650;
+    margin-top: 1.35rem;
+    margin-bottom: 0.35rem;
+  }
+
+  h4 {
+    font-size: 1.125rem; /* 18px */
+    font-weight: 600;
+    margin-top: 1.1rem;
+    margin-bottom: 0.25rem;
+  }
+}
+
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.4rem;
+  font-size: 0.82rem;
+
+  time {
+    margin-right: 0;
+  }
+
+  .post-meta-sep {
+    opacity: 0.55;
+    user-select: none;
+  }
+
+  a.post-meta-tax {
+    color: inherit;
+    text-decoration: none;
+    font-size: 0.82rem;
+    border-bottom: none;
+
+    &[target="_blank"]::after {
+      content: none;
+    }
+
+    &:hover,
+    &:focus {
+      color: $text-link-blue;
+      text-decoration: underline;
+    }
+  }
+}

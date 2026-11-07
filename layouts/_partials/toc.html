@@ -4,7 +4,9 @@
     {{ $toc = .Params.toc }}
 {{- end -}}
 
-{{- if and $toc (gt (len .TableOfContents) 32) -}}
+{{- /* UX P1: render TOC/fab only when body has ≥3 h2 */ -}}
+{{- $h2count := len (findRE "<h2" .Content) -}}
+{{- if and $toc (ge $h2count 3) -}}
 <aside class="post-toc" id="post-toc">
     <div class="post-toc-panel">
         <div class="post-toc-head">
