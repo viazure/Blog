@@ -8,9 +8,9 @@ Branch: `feat/workouts-session-clock` (P0 lazy-render base). Merge after P0 → 
 - No GPS: left slot = large Session Clock; 3-line **clickable** legend (outer / inner / core highlight).
 - With GPS: left slot = theme-stage silhouette trail (trails polyline), start→end draw on open, bright start dot. No clock⇄map tabs (GPS = silhouette only; trail missing → fall back to clock).
 - Three layers (geekplux-aligned):
-  - **Outer** — dense HR-driven outward spikes on a base ring. **Whole session maps to 360°** (always a full crown), clockwise from 12 o'clock. Bar height/brightness ≈ HR zone.
+  - **Outer** — stepped HR/zone crown on a base ring (**48** wedges, fixed ~0.8° seams). **Whole session maps to 360°** (always a full crown), clockwise from 12 o'clock. Heights quantize to five tiers (detail `12/22/33/43/54`).
   - **Inner** — HR **area** (fill inward to ~70 bpm guide + stroke) on the same full-session lap as the outer crown.
-  - **Core** — open C-shaped seed arc when moving <1h; one growth ring per full hour when ≥1h. **Only** this layer leaves a gap / grows with hours.
+  - **Core** — full-circle seed disk when moving <1h; one growth ring per completed hour when ≥1h (geekplux `pc`).
 - Soft glow / spikes must not be cropped by the viz stage. List mini clock (no-trail cards) shares the same outward-spike grammar (light-card friendly strokes).
 - Whole graphic (outer + inner + core) **draws in sync** (~0.9s); not outer-only stagger with inner popping in.
 - Missing distance/climb/HR/kcal → `—` (never `0.00`). Chinese metric labels; value above label.
@@ -26,7 +26,7 @@ Visual reference: [activities.geekplux.com](https://activities.geekplux.com/) (s
 | Layer | Holds |
 |-------|--------|
 | Card attribute `data-wk` | Summary only: idx, label, name, date/time, metrics, `has_trail`, `run_id`, and `session: { has_session, moving, hr_avg, hr_max, kcal, elev }` — **no** `bars` / `hr` arrays |
-| Year shard `/data/workouts/year-YYYY.json` | Full items including `session.bars` (~120) + `session.hr` (~120 when chart present) |
+| Year shard `/data/workouts/year-YYYY.json` | Full items including `session.bars` (**48**) + `session.hr` (**48** when chart present) |
 | In-memory `itemsByIdx` | Prefer richer session (bars/hr) when indexing |
 
 **Why:** Embedding `bars`+`hr` on every SSR/lazy card bloated HTML (tens of KB/year). Year JSON is fetched once and shared by Clock detail + mini clocks.
@@ -45,7 +45,7 @@ Visual reference: [activities.geekplux.com](https://activities.geekplux.com/) (s
 
 | Priority | Source field | → |
 |----------|--------------|---|
-| 1 | `chart.hr` (aggregated series, up to ~200 pts from gen_splits) | inner `hr` + outer `bars` (resampled / kept dense, target **120**) |
+| 1 | `chart.hr` (aggregated series, up to ~200 pts from gen_splits) | inner `hr` + outer `bars` (resampled to **48**, five-tier heights) |
 | 2 | `splits[]` / `laps[]` `hr_avg` weighted by `time` | same, when chart.hr missing |
 | 3 | `zones.hr.seconds` | outer bars as sequential zone wedges |
 | 4 | activity `average_heartrate` | flat bars |
@@ -57,11 +57,11 @@ Visual reference: [activities.geekplux.com](https://activities.geekplux.com/) (s
 | `run_id` | Garmin/archive id |
 | `hr_max` / `kcal` | from split summary when present |
 | `session.moving` | seconds |
-| `session.bars` | ~120 outer heights (0–24); was 28 |
-| `session.hr` | ~120 bpm samples when chart/segments available |
+| `session.bars` | **48** outer heights — five tiers `12/22/33/43/54` |
+| `session.hr` | **48** bpm samples when chart/segments available |
 | `session.hr_avg` / `hr_max` / `kcal` / `elev` | detail metrics |
 
-Frontend maps `bars` across the **hour sweep** (`min(360°, moving/3600×360)`), not always a closed 360° — so <1h sessions show the 12 o'clock gap on every layer.
+Frontend maps outer `bars` and inner `hr` across a **full 360°** session lap. Core alone is a full seed (<1h) or hour growth rings (≥1h).
 
 ## Front-end
 
@@ -96,5 +96,4 @@ Also update [ux-p0-ssr-js-fields.md](./ux-p0-ssr-js-fields.md).
 - Vert 3D terrain embed
 - Full geekplux Activities wall (Glow, tile size, year chips)
 
-
-Outer crown shares the hour sweep with inner/core; unused hour uses a dashed ghost track + pie clip so <1h never reads as a full outer ring. Gap gets a soft wedge + end ticks; the old fixed-at-12 "70" bpm label is omitted (it sat in the open gap). Outer bar max height is slightly shorter so the crown does not overpower the full-circle seed.
+Detail geometry (UI/UX lock): `baseR=120`, `barMinH=12`, `barMaxH=54`, `N=48`, `gapDeg=0.8`, `hrFloorR=48`, `hrSpan=60`; mini ≈0.9× (`baseR=110`, `11/48`, mid `44/54`). Core seed r≈6.5.
