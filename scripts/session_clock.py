@@ -2,7 +2,7 @@
 
 Outer ring = HR series for the whole session (dense bars; always a full 360° lap).
 Inner polyline/area = same HR samples when chart.hr exists (also full lap).
-Core = open seed arc (<1h) or growth rings (≥1h).
+Core = full-circle seed (<1h) or growth rings (≥1h), matching geekplux pc(min).
 
 Source priority (life-data/data/workouts/splits/{run_id}.json):
   1. chart.hr  — aggregated series from gen_splits (up to ~200 pts)

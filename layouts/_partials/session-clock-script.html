@@ -48,7 +48,7 @@
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
               <circle cx="18" cy="18" r="5" fill="currentColor"/>
             </svg>
-            <div><strong>核心</strong><span class="wk-legend-desc">不足 1 小时 = 开弧种子<wbr>；满小时则每满一小时长一环</span></div>
+            <div><strong>核心</strong><span class="wk-legend-desc">不足 1 小时 = 满圆种子<wbr>；满小时则每满一小时长一环</span></div>
           </button>
         </div>
         <nav class="wk-pager" aria-label="相邻活动" hidden>
@@ -211,7 +211,7 @@
 
   /** Polar Session Clock (geekplux-aligned):
    * Outer zone bars + inner HR area/line map the WHOLE session onto 360° (always full ring).
-   * Core alone follows hour semantics: open seed arc when <1h; one growth ring per full hour when ≥1h.
+   * Core: full-circle seed when <1h; one growth ring per completed hour when ≥1h (geekplux pc()).
    * Whole graphic draws in sync.
    */
   function drawSessionClock(svg, session, accent, mini) {
@@ -234,38 +234,14 @@
     function pt(r, a) {
       return [cx + r * Math.cos(rad(a)), cy + r * Math.sin(rad(a))];
     }
-    /** SVG arc path along radius r from a0→a1 (degrees, our polar convention). */
-    function arcD(r, a0, a1) {
-      var p0 = pt(r, a0), p1 = pt(r, a1);
-      var delta = a1 - a0;
-      var large = delta > 180 ? 1 : 0;
-      return "M" + p0[0].toFixed(2) + " " + p0[1].toFixed(2) +
-        " A" + r + " " + r + " 0 " + large + " 1 " + p1[0].toFixed(2) + " " + p1[1].toFixed(2);
-    }
-    /** Filled annular sector (donut wedge) from a0→a1. */
-    function annularSector(rIn, rOut, a0, a1) {
-      var p0 = pt(rOut, a0), p1 = pt(rOut, a1);
-      var p2 = pt(rIn, a1), p3 = pt(rIn, a0);
-      var delta = a1 - a0;
-      var large = delta > 180 ? 1 : 0;
-      return "M" + p0[0].toFixed(2) + " " + p0[1].toFixed(2) +
-        " A" + rOut + " " + rOut + " 0 " + large + " 1 " + p1[0].toFixed(2) + " " + p1[1].toFixed(2) +
-        " L" + p2[0].toFixed(2) + " " + p2[1].toFixed(2) +
-        " A" + rIn + " " + rIn + " 0 " + large + " 0 " + p3[0].toFixed(2) + " " + p3[1].toFixed(2) +
-        " Z";
-    }
 
-    // Outer + inner always span a full lap (session → 360°). Core alone may open.
+    // Outer + inner always span a full lap (session → 360°). Core is seed disk or hour rings — never a duration arc.
     var fullDeg = 360;
     var aStart = -90;
-    var coreSweep = fullDeg;
-    if (moving > 0 && moving < 3600) {
-      coreSweep = Math.max(12, (moving / 3600) * 360);
-    }
-    var coreEnd = aStart + coreSweep;
     try {
-      svg.setAttribute("data-sweep", String(Math.round(coreSweep * 10) / 10));
+      svg.setAttribute("data-sweep", hours >= 1 ? "360" : "seed");
       svg.setAttribute("data-moving", String(Math.round(moving)));
+      svg.setAttribute("data-core", hours >= 1 ? ("rings-" + hours) : "seed");
     } catch (e) {}
 
     var defs = ns("defs");
@@ -412,7 +388,7 @@
       inner.appendChild(poly);
     }
 
-    // Core: open seed arc (<1h) or growth rings (≥1h) — ONLY layer that uses hour sweep
+    // Core: full-circle seed (<1h) or growth rings (≥1h) — matches geekplux pc(min)
     var coreStrokeEls = [];
     if (hours >= 1) {
       for (var ring = hours; ring >= 1; ring--) {
@@ -432,11 +408,11 @@
       coreG.appendChild(coreDot);
       coreStrokeEls.push(coreDot);
     } else {
-      // <1h: C-shaped open ring (duration → arc); outer/inner stay full
-      var seedOuter = mini ? 11 : 10;
-      var seedInner = mini ? 4.5 : 4;
-      var seed = ns("path");
-      seed.setAttribute("d", annularSector(seedInner, seedOuter, aStart, coreEnd));
+      // <1h: solid full-circle seed (not a duration-open arc)
+      var seed = ns("circle");
+      seed.setAttribute("cx", cx);
+      seed.setAttribute("cy", cy);
+      seed.setAttribute("r", mini ? "8" : "7.5");
       seed.setAttribute("fill", soft);
       seed.setAttribute("opacity", "0.95");
       coreG.appendChild(seed);
@@ -639,11 +615,11 @@
   var TIP_COPY = {
     sclock: {
       title: "Session Clock",
-      body: "外环：整次训练的区间柱铺满一圈，顺时针自顶点；块高度/亮度约等于心率区间 Z1→Z5。内曲线：心率面积按整次训练铺满一圈，越靠外越高。核心：不足 1 小时是开弧种子，满小时则每满一小时长一环。"
+      body: "外环：整次训练的区间柱铺满一圈，顺时针自顶点；块高度/亮度约等于心率区间 Z1→Z5。内曲线：心率面积按整次训练铺满一圈，越靠外越高。核心：不足 1 小时是满圆种子，满小时则每满一小时长一环。"
     },
     moving: {
       title: "用时",
-      body: "移动时长（不含暂停）。外环/内曲线按整次训练铺满一圈；只有核心按此时长：不足 1 小时开弧，满小时则每满一小时长一环。"
+      body: "移动时长（不含暂停）。外环/内曲线按整次训练铺满一圈；只有核心按此时长：不足 1 小时满圆种子，满小时则每满一小时长一环。"
     },
     kcal: {
       title: "能耗",
