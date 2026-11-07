@@ -6,9 +6,13 @@ Branch: `feat/workouts-session-clock` (P0 lazy-render base). Merge after P0 → 
 
 - All activities open a unified detail shell that **follows the blog theme** (light sheet / `html.dark` sheet; not a forced near-black wall, not a full Activities wall).
 - No GPS: left slot = large Session Clock; 3-line **clickable** legend (outer / inner / core highlight).
-- With GPS: left slot = theme-stage silhouette trail (trails polyline), start→end draw on open, bright start dot. No clock↔map tabs (GPS = silhouette only; trail missing → fall back to clock).
-- Three layers: outer HR-zone **outward spikes** on a base ring (one lap = moving time, 12 o'clock clockwise; bar heights remapped per-session for clear undulation) + inner HR **area** (fill inward to ~70 bpm guide + stroke) + core (solid seed <1h / one growth ring per full hour) + compact ~70 bpm guide. Soft glow / spikes must not be cropped by the viz stage.
-- List mini clock (no-trail cards) shares the same outward-spike grammar (light-card friendly strokes).
+- With GPS: left slot = theme-stage silhouette trail (trails polyline), start→end draw on open, bright start dot. No clock⇄map tabs (GPS = silhouette only; trail missing → fall back to clock).
+- Three layers:
+  - **Outer** — dense HR-driven outward spikes on a base ring. **One full circle = 1 hour** of moving time, clockwise from 12 o'clock. Sessions under 1h leave a visible gap at 12 (open arc); ≥1h closes the ring.
+  - **Inner** — HR **area** (fill inward to ~70 bpm guide + stroke) on the same sweep as the outer crown.
+  - **Core** — open C-shaped seed arc when <1h (same gap); one growth ring per full hour when ≥1h.
+- Soft glow / spikes must not be cropped by the viz stage. List mini clock (no-trail cards) shares the same outward-spike grammar (light-card friendly strokes).
+- Whole graphic (outer + inner + core) **draws in sync** (~0.9s); not outer-only stagger with inner popping in.
 - Missing distance/climb/HR/kcal → `—` (never `0.00`). Chinese metric labels; value above label.
 - Sport accent tints clock / trail / pill. Respect `prefers-reduced-motion` (no growth / no trail draw).
 - Field `clock` / `clock_unit` = **duration** only. Session Clock payload is `session`.
@@ -22,7 +26,7 @@ Visual reference: [activities.geekplux.com](https://activities.geekplux.com/) (s
 | Layer | Holds |
 |-------|--------|
 | Card attribute `data-wk` | Summary only: idx, label, name, date/time, metrics, `has_trail`, `run_id`, and `session: { has_session, moving, hr_avg, hr_max, kcal, elev }` — **no** `bars` / `hr` arrays |
-| Year shard `/data/workouts/year-YYYY.json` | Full items including `session.bars` (28) + `session.hr` (28) |
+| Year shard `/data/workouts/year-YYYY.json` | Full items including `session.bars` (~120) + `session.hr` (~120 when chart present) |
 | In-memory `itemsByIdx` | Prefer richer session (bars/hr) when indexing |
 
 **Why:** Embedding `bars`+`hr` on every SSR/lazy card bloated HTML (tens of KB/year). Year JSON is fetched once and shared by Clock detail + mini clocks.
@@ -36,11 +40,15 @@ Visual reference: [activities.geekplux.com](https://activities.geekplux.com/) (s
 
 ## Data build
 
-`scripts/session_clock.py` reads `life-data/data/workouts/splits/{run_id}.json`:
+`scripts/session_clock.py` reads **`life-data/data/workouts/splits/{run_id}.json`**
+(produced by life-archive `vendor/run_page/gen_splits.py` → private `life-data` checkout):
 
-- `chart.hr` → inner polyline + outer bar heights (gamma-shaped undulation)
-- else `zones.hr.seconds` → outer bars from time-in-zone
-- else flat bars from `average_heartrate`
+| Priority | Source field | → |
+|----------|--------------|---|
+| 1 | `chart.hr` (aggregated series, up to ~200 pts from gen_splits) | inner `hr` + outer `bars` (resampled / kept dense, target **120**) |
+| 2 | `splits[]` / `laps[]` `hr_avg` weighted by `time` | same, when chart.hr missing |
+| 3 | `zones.hr.seconds` | outer bars as sequential zone wedges |
+| 4 | activity `average_heartrate` | flat bars |
 
 `scripts/build_workouts.py` attaches per item:
 
@@ -49,9 +57,11 @@ Visual reference: [activities.geekplux.com](https://activities.geekplux.com/) (s
 | `run_id` | Garmin/archive id |
 | `hr_max` / `kcal` | from split summary when present |
 | `session.moving` | seconds |
-| `session.bars` | 28 outer heights (0–24) |
-| `session.hr` | 28 bpm samples (optional) |
+| `session.bars` | ~120 outer heights (0–24); was 28 |
+| `session.hr` | ~120 bpm samples when chart/segments available |
 | `session.hr_avg` / `hr_max` / `kcal` / `elev` | detail metrics |
+
+Frontend maps `bars` across the **hour sweep** (`min(360°, moving/3600×360)`), not always a closed 360° — so <1h sessions show the 12 o'clock gap on every layer.
 
 ## Front-end
 

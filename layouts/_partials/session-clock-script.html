@@ -195,7 +195,10 @@
     });
   }
 
-  /** Polar Session Clock: outward zone spikes + inner HR area + core seed/rings. */
+  /** Polar Session Clock: outward HR spikes + inner HR area + core (open arc <1h / rings ≥1h).
+   * One full circle = 1 hour. <1h → all layers sweep an open arc (gap at 12 o'clock).
+   * ≥1h → full circle + one growth ring per full hour. Whole graphic draws in sync.
+   */
   function drawSessionClock(svg, session, accent, mini) {
     clearSvg(svg);
     session = session || {};
@@ -206,11 +209,40 @@
     var hours = Math.floor(moving / 3600);
     var soft = accent || "#a78bfa";
     var ink = soft;
+    var DRAW_MS = 900;
 
     function rad(d) { return d * Math.PI / 180; }
     function pt(r, a) {
       return [cx + r * Math.cos(rad(a)), cy + r * Math.sin(rad(a))];
     }
+    /** SVG arc path along radius r from a0→a1 (degrees, our polar convention). */
+    function arcD(r, a0, a1) {
+      var p0 = pt(r, a0), p1 = pt(r, a1);
+      var delta = a1 - a0;
+      var large = delta > 180 ? 1 : 0;
+      return "M" + p0[0].toFixed(2) + " " + p0[1].toFixed(2) +
+        " A" + r + " " + r + " 0 " + large + " 1 " + p1[0].toFixed(2) + " " + p1[1].toFixed(2);
+    }
+    /** Filled annular sector (donut wedge) from a0→a1. */
+    function annularSector(rIn, rOut, a0, a1) {
+      var p0 = pt(rOut, a0), p1 = pt(rOut, a1);
+      var p2 = pt(rIn, a1), p3 = pt(rIn, a0);
+      var delta = a1 - a0;
+      var large = delta > 180 ? 1 : 0;
+      return "M" + p0[0].toFixed(2) + " " + p0[1].toFixed(2) +
+        " A" + rOut + " " + rOut + " 0 " + large + " 1 " + p1[0].toFixed(2) + " " + p1[1].toFixed(2) +
+        " L" + p2[0].toFixed(2) + " " + p2[1].toFixed(2) +
+        " A" + rIn + " " + rIn + " 0 " + large + " 0 " + p3[0].toFixed(2) + " " + p3[1].toFixed(2) +
+        " Z";
+    }
+
+    // Sweep: <1h leaves a gap at 12 o'clock; ≥1h closes the ring.
+    var sweepDeg = 360;
+    if (moving > 0 && moving < 3600) {
+      sweepDeg = Math.max(12, (moving / 3600) * 360);
+    }
+    var aStart = -90;
+    var aEnd = aStart + sweepDeg;
 
     var defs = ns("defs");
     var gid = mini ? "scGlowMini" : "scGlow";
@@ -225,8 +257,6 @@
       grad.appendChild(stop);
     });
     defs.appendChild(grad);
-
-    // no soft blur — keep SVG edges crisp; radial glow alone is enough
     svg.appendChild(defs);
 
     var glow = ns("circle");
@@ -234,16 +264,15 @@
     glow.setAttribute("fill", "url(#" + gid + ")");
     svg.appendChild(glow);
 
-    // Geometry: smaller hollow + taller outward bars (tips stay inside 400 viewBox)
-    // 70 bpm guide sits at hrFloorR; HR area fills between hrFloorR and polar HR radius.
-    var hrFloorR = mini ? 36 : 38;
-    var hrSpan = mini ? 88 : 92;
+    // Geometry: larger hollow (ref shot) + dense outward bars still inside 400 viewBox
+    var hrFloorR = mini ? 46 : 50;
+    var hrSpan = mini ? 78 : 82;
     var guideR = hrFloorR;
     var baseR = mini ? 138 : 136;
-    var barMinH = mini ? 4 : 5;
-    var barMaxH = mini ? 46 : 52;
+    var barMinH = mini ? 3 : 4;
+    var barMaxH = mini ? 44 : 50;
 
-    // ~70 bpm guide ring — strokes follow theme tokens (list mini stays light-card friendly)
+    // ~70 bpm guide — open arc when <1h so the gap reads at every layer
     var guideStroke = mini
       ? "#e8e4de"
       : themeTok("--wk-guide", isDarkTheme() ? "rgba(255,255,255,0.16)" : "rgba(0,0,0,0.12)");
@@ -252,8 +281,14 @@
       : themeTok("--wk-muted", isDarkTheme() ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.38)");
     var guide = ns("g");
     guide.setAttribute("class", "sc-layer-guide");
-    var ref = ns("circle");
-    ref.setAttribute("cx", cx); ref.setAttribute("cy", cy); ref.setAttribute("r", String(guideR));
+    var ref;
+    if (sweepDeg >= 359.5) {
+      ref = ns("circle");
+      ref.setAttribute("cx", cx); ref.setAttribute("cy", cy); ref.setAttribute("r", String(guideR));
+    } else {
+      ref = ns("path");
+      ref.setAttribute("d", arcD(guideR, aStart, aEnd));
+    }
     ref.setAttribute("fill", "none");
     ref.setAttribute("stroke", guideStroke);
     ref.setAttribute("stroke-width", mini ? "1.6" : "1.1");
@@ -271,13 +306,21 @@
     }
     svg.appendChild(guide);
 
-    // Outer zone spikes: sit on base circle, extend OUTWARD (geekplux grammar).
-    // Remap bar heights relative to this session so mid-band HR still undulates.
+    // Layers drawn together (sync reveal)
     var outer = ns("g");
     outer.setAttribute("class", "sc-layer-outer");
     svg.appendChild(outer);
+    var inner = ns("g");
+    inner.setAttribute("class", "sc-layer-inner");
+    svg.appendChild(inner);
+    var coreG = ns("g");
+    coreG.setAttribute("class", "sc-layer-core");
+    svg.appendChild(coreG);
+
     var N = bars.length || 0;
-    var gapDeg = mini ? 1.2 : 1.8;
+    // Gap between teeth scales with density so 120 bars stay thin, not blocky
+    var slot = sweepDeg / Math.max(N, 1);
+    var gapDeg = Math.min(slot * 0.32, mini ? 0.7 : 0.9);
     var bMin = Infinity, bMax = -Infinity;
     for (var bi = 0; bi < N; bi++) {
       var bv = Number(bars[bi]) || 0;
@@ -288,13 +331,11 @@
     var bSpan = Math.max(bMax - bMin, 1);
     var barPaths = [];
     for (var i = 0; i < N; i++) {
-      var a0 = -90 + i * (360 / N) + gapDeg * 0.5;
-      var a1 = -90 + (i + 1) * (360 / N) - gapDeg * 0.5;
+      var a0 = aStart + i * slot + gapDeg * 0.5;
+      var a1 = aStart + (i + 1) * slot - gapDeg * 0.5;
       if (a1 <= a0) continue;
       var h = Number(bars[i]) || 0;
-      // relative 0–1 inside this session, then ease for steeper peaks
       var tRel = (h - bMin) / bSpan;
-      // keep a whisper of absolute height so flat-zone sessions still read intensity
       var tAbs = Math.max(0, Math.min(1, h / 24));
       var t = Math.pow(0.72 * tRel + 0.28 * tAbs, 0.62);
       var barH = barMinH + t * (barMaxH - barMinH);
@@ -310,51 +351,38 @@
         " A" + r1 + " " + r1 + " 0 0 0 " + p3[0] + " " + p3[1] + " Z");
       path.setAttribute("fill", soft);
       path.setAttribute("opacity", String(op));
+      path.setAttribute("data-op", String(op));
       outer.appendChild(path);
       barPaths.push({ path: path, op: op, i: i });
     }
-    // Light clockwise reveal from 12 o'clock (respect reduced motion)
-    if (!mini && !reduceMotion && barPaths.length) {
-      barPaths.forEach(function (bp) {
-        bp.path.style.opacity = "0";
-        bp.path.style.transition = "opacity 0.22s ease-out";
-        bp.path.style.transitionDelay = (bp.i * (0.85 / Math.max(N, 1))) + "s";
-      });
-      requestAnimationFrame(function () {
-        barPaths.forEach(function (bp) {
-          bp.path.style.opacity = String(bp.op);
-        });
-      });
-    }
 
-    // Inner polar HR area (fill inward to guide) + stroke on top
-    // One lap = whole session → samples span full 360° (not wall-clock).
-    var inner = ns("g");
-    inner.setAttribute("class", "sc-layer-inner");
-    svg.appendChild(inner);
+    // Inner polar HR area + stroke — same sweep as outer
+    var poly = null;
+    var area = null;
     if (hr.length) {
       var n = hr.length;
+      var hrSlot = sweepDeg / Math.max(n, 1);
       var outerPts = [];
       var angles = [];
       for (var hi = 0; hi < n; hi++) {
-        var a = -90 + hi * (360 / n);
+        var a = aStart + hi * hrSlot;
         var bpm = Number(hr[hi]) || 70;
         var r = hrFloorR + ((bpm - 70) / 120) * hrSpan;
         r = Math.max(hrFloorR + 2, Math.min(baseR - 6, r));
         outerPts.push(pt(r, a));
         angles.push(a);
       }
-      // Area path: outer HR polyline, then reverse along floor radius, close
       var d = "M" + outerPts[0][0].toFixed(2) + " " + outerPts[0][1].toFixed(2);
       for (var oi = 1; oi < outerPts.length; oi++) {
         d += " L" + outerPts[oi][0].toFixed(2) + " " + outerPts[oi][1].toFixed(2);
       }
+      // close along floor arc (not full circle when open)
       for (var ri = n - 1; ri >= 0; ri--) {
         var ip = pt(hrFloorR, angles[ri]);
         d += " L" + ip[0].toFixed(2) + " " + ip[1].toFixed(2);
       }
       d += " Z";
-      var area = ns("path");
+      area = ns("path");
       area.setAttribute("d", d);
       area.setAttribute("fill", soft);
       area.setAttribute("fill-opacity", mini ? "0.28" : "0.32");
@@ -362,7 +390,7 @@
       area.setAttribute("opacity", "0.95");
       inner.appendChild(area);
 
-      var poly = ns("polyline");
+      poly = ns("polyline");
       poly.setAttribute("points", outerPts.map(function (p) {
         return p[0].toFixed(1) + "," + p[1].toFixed(1);
       }).join(" "));
@@ -375,38 +403,88 @@
       inner.appendChild(poly);
     }
 
-    // Core: solid seed (<1h) or growth rings (≥1h) — sit inside the smaller hollow
-    var coreG = ns("g");
-    coreG.setAttribute("class", "sc-layer-core");
-    svg.appendChild(coreG);
+    // Core: open seed arc (<1h) or growth rings (≥1h)
+    var coreStrokeEls = [];
     if (hours >= 1) {
       for (var ring = hours; ring >= 1; ring--) {
         var c = ns("circle");
         c.setAttribute("cx", cx); c.setAttribute("cy", cy);
-        // tight rings inside the hollow (guideR ~38)
-        c.setAttribute("r", String(6 + ring * 6));
+        c.setAttribute("r", String(8 + ring * 7));
         c.setAttribute("fill", "none");
         c.setAttribute("stroke", soft);
         c.setAttribute("stroke-width", mini ? "2.4" : "2.8");
         c.setAttribute("opacity", String(0.32 + ring * 0.16));
-        if (!reduceMotion) {
-          c.style.transformOrigin = "200px 200px";
-          c.style.animation = "wk-grow 0.45s ease-out both";
-          c.style.animationDelay = (0.05 * (hours - ring)) + "s";
-        }
         coreG.appendChild(c);
+        coreStrokeEls.push(c);
       }
-      var core = ns("circle");
-      core.setAttribute("cx", cx); core.setAttribute("cy", cy); core.setAttribute("r", mini ? "5" : "4.5");
-      core.setAttribute("fill", soft);
-      coreG.appendChild(core);
+      var coreDot = ns("circle");
+      coreDot.setAttribute("cx", cx); coreDot.setAttribute("cy", cy); coreDot.setAttribute("r", mini ? "5" : "4.5");
+      coreDot.setAttribute("fill", soft);
+      coreG.appendChild(coreDot);
+      coreStrokeEls.push(coreDot);
     } else {
-      // <1h: solid seed (not a hollow donut)
-      var seed = ns("circle");
-      seed.setAttribute("cx", cx); seed.setAttribute("cy", cy); seed.setAttribute("r", mini ? "8" : "7");
+      // <1h: C-shaped open ring (not a filled disk) — gap aligns with outer/inner
+      var seedOuter = mini ? 11 : 10;
+      var seedInner = mini ? 4.5 : 4;
+      var seed = ns("path");
+      seed.setAttribute("d", annularSector(seedInner, seedOuter, aStart, aEnd));
       seed.setAttribute("fill", soft);
       seed.setAttribute("opacity", "0.95");
       coreG.appendChild(seed);
+      coreStrokeEls.push(seed);
+    }
+
+    // Sync draw: outer + inner + core reveal together over DRAW_MS
+    if (!mini && !reduceMotion) {
+      barPaths.forEach(function (bp) {
+        bp.path.style.opacity = "0";
+        bp.path.style.transition = "opacity 0.2s ease-out";
+        // same total window as inner/core — stagger within DRAW_MS so crown draws clockwise with them
+        bp.path.style.transitionDelay = (bp.i * (DRAW_MS / 1000) / Math.max(N, 1)) + "s";
+      });
+      if (area) {
+        area.style.opacity = "0";
+        area.style.transition = "opacity " + (DRAW_MS / 1000) + "s ease-out";
+        area.style.transitionDelay = "0s";
+      }
+      if (poly) {
+        try {
+          var plen = poly.getTotalLength ? poly.getTotalLength() : 0;
+          if (plen > 0) {
+            poly.style.strokeDasharray = String(plen);
+            poly.style.strokeDashoffset = String(plen);
+            poly.style.transition = "stroke-dashoffset " + (DRAW_MS / 1000) + "s cubic-bezier(0.22, 1, 0.36, 1)";
+          } else {
+            poly.style.opacity = "0";
+            poly.style.transition = "opacity " + (DRAW_MS / 1000) + "s ease-out";
+          }
+        } catch (e) {
+          poly.style.opacity = "0";
+          poly.style.transition = "opacity " + (DRAW_MS / 1000) + "s ease-out";
+        }
+      }
+      coreStrokeEls.forEach(function (el) {
+        el.style.opacity = "0";
+        el.style.transition = "opacity " + (DRAW_MS / 1000) + "s ease-out";
+      });
+      requestAnimationFrame(function () {
+        barPaths.forEach(function (bp) {
+          bp.path.style.opacity = String(bp.op);
+        });
+        if (area) area.style.opacity = "0.95";
+        if (poly) {
+          if (poly.style.strokeDasharray) {
+            poly.style.strokeDashoffset = "0";
+          } else {
+            poly.style.opacity = "0.95";
+          }
+        }
+        coreStrokeEls.forEach(function (el) {
+          var target = el.getAttribute("opacity") || "0.95";
+          // restore intended opacity (we zeroed via style)
+          el.style.opacity = target;
+        });
+      });
     }
 
     if (!mini) applyLegendFocus(svg);
