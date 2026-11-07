@@ -7,10 +7,10 @@ Branch: `feat/workouts-session-clock` (P0 lazy-render base). Merge after P0 → 
 - All activities open a unified detail shell that **follows the blog theme** (light sheet / `html.dark` sheet; not a forced near-black wall, not a full Activities wall).
 - No GPS: left slot = large Session Clock; 3-line **clickable** legend (outer / inner / core highlight).
 - With GPS: left slot = theme-stage silhouette trail (trails polyline), start→end draw on open, bright start dot. No clock⇄map tabs (GPS = silhouette only; trail missing → fall back to clock).
-- Three layers:
-  - **Outer** — dense HR-driven outward spikes on a base ring. **One full circle = 1 hour** of moving time, clockwise from 12 o'clock. Sessions under 1h leave a visible gap at 12 (open arc); ≥1h closes the ring.
-  - **Inner** — HR **area** (fill inward to ~70 bpm guide + stroke) on the same sweep as the outer crown.
-  - **Core** — open C-shaped seed arc when <1h (same gap); one growth ring per full hour when ≥1h.
+- Three layers (geekplux-aligned):
+  - **Outer** — dense HR-driven outward spikes on a base ring. **Whole session maps to 360°** (always a full crown), clockwise from 12 o'clock. Bar height/brightness ≈ HR zone.
+  - **Inner** — HR **area** (fill inward to ~70 bpm guide + stroke) on the same full-session lap as the outer crown.
+  - **Core** — open C-shaped seed arc when moving <1h; one growth ring per full hour when ≥1h. **Only** this layer leaves a gap / grows with hours.
 - Soft glow / spikes must not be cropped by the viz stage. List mini clock (no-trail cards) shares the same outward-spike grammar (light-card friendly strokes).
 - Whole graphic (outer + inner + core) **draws in sync** (~0.9s); not outer-only stagger with inner popping in.
 - Missing distance/climb/HR/kcal → `—` (never `0.00`). Chinese metric labels; value above label.
