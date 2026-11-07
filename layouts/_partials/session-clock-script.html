@@ -642,7 +642,7 @@
     });
   }
 
-    var TIP_COPY = {
+  var TIP_COPY = {
     sclock: {
       title: "图例",
       body: "外圈为强度，中圈为心率，核心为用时，均铺满整场。"
@@ -664,7 +664,10 @@
       body: "整场最高心率（bpm）。"
     }
   };
-var legendHead = dialog.querySelector("[data-wk-legend-head]");
+  var tipSheet = document.getElementById("wk-tip-sheet");
+  var tipTitle = tipSheet ? tipSheet.querySelector("#wk-tip-sheet-title") : null;
+  var tipBody = tipSheet ? tipSheet.querySelector("[data-wk-tip-body]") : null;
+  var legendHead = dialog.querySelector("[data-wk-legend-head]");
 
   function openTipSheet(key) {
     var copy = TIP_COPY[key];
