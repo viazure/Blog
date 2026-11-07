@@ -544,13 +544,14 @@
     var kcal = Number(s.kcal != null ? s.kcal : item.kcal) || 0;
     var moving = Number(s.moving != null ? s.moving : item.moving) || 0;
 
-    metricsEl.innerHTML =
-      metricHtml("距离", km > 0 ? km.toFixed(2) : "—", km > 0 ? "km" : "") +
-      metricHtml("用时", moving > 0 ? elapsedLabel(moving) : "—", "") +
-      metricHtml("爬升", elev > 0 ? String(Math.round(elev)) : "—", elev > 0 ? "m" : "") +
-      metricHtml("均心率", hrAvg > 0 ? String(Math.round(hrAvg)) : "—", hrAvg > 0 ? "bpm" : "") +
-      metricHtml("最大心率", hrMax > 0 ? String(Math.round(hrMax)) : "—", hrMax > 0 ? "bpm" : "") +
-      metricHtml("能耗", kcal > 0 ? String(Math.round(kcal)) : "—", kcal > 0 ? "kcal" : "");
+    var metricParts = [];
+    if (km > 0) metricParts.push(metricHtml("距离", km.toFixed(2), "km"));
+    metricParts.push(metricHtml("用时", moving > 0 ? elapsedLabel(moving) : "—", ""));
+    if (elev > 0) metricParts.push(metricHtml("爬升", String(Math.round(elev)), "m"));
+    metricParts.push(metricHtml("均心率", hrAvg > 0 ? String(Math.round(hrAvg)) : "—", hrAvg > 0 ? "bpm" : ""));
+    metricParts.push(metricHtml("最大心率", hrMax > 0 ? String(Math.round(hrMax)) : "—", hrMax > 0 ? "bpm" : ""));
+    metricParts.push(metricHtml("能耗", kcal > 0 ? String(Math.round(kcal)) : "—", kcal > 0 ? "kcal" : ""));
+    metricsEl.innerHTML = metricParts.join("");
   }
 
   function setViz(mode) {
