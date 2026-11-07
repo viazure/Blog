@@ -86,6 +86,8 @@
   var currentIdx = null;
   var currentList = [];
   var legendFocus = null;
+  // Remember viz tab across detail pager / reopen (map|clock); null = default by has_trail
+  var preferredViz = null;
 
   function themeTok(name, fallback) {
     try {
@@ -598,9 +600,8 @@
         row.style.color = accent;
       });
 
-      // GPS → map default + tabs to switch to Session Clock. No GPS → clock only.
+      // GPS → tabs (keep preferredViz across pager). No GPS → clock only (ignore map pref).
       toolsEl.hidden = !hasTrail;
-      legendEl.hidden = hasTrail; // show legend when clock visible
 
       drawSessionClock(clockSvg, session, accent, false);
 
@@ -610,12 +611,24 @@
         updatePager(item);
       }
 
+      function applyPreferredClock() {
+        setViz("clock");
+        legendEl.hidden = false;
+        applyLegendFocus(clockSvg);
+      }
+
       if (hasTrail) {
-        setViz("map");
+        var mode = (preferredViz === "clock") ? "clock" : "map";
+        setViz(mode);
+        legendEl.hidden = mode !== "clock";
+        if (mode === "clock") applyLegendFocus(clockSvg);
         ensureTrails().then(function (pts) {
           var ok = drawMap(mapSvg, pts[String(item.idx)], accent);
           if (!ok) {
             toolsEl.hidden = true;
+            applyPreferredClock();
+          } else if (mode === "clock") {
+            // map drawn in background; stay on clock tab
             setViz("clock");
             legendEl.hidden = false;
             applyLegendFocus(clockSvg);
@@ -623,8 +636,7 @@
           show();
         });
       } else {
-        setViz("clock");
-        applyLegendFocus(clockSvg);
+        applyPreferredClock();
         show();
       }
     });
@@ -665,6 +677,7 @@
     var tab = ev.target.closest && ev.target.closest(".wk-viz-tab");
     if (tab) {
       var mode = tab.getAttribute("data-viz");
+      preferredViz = mode;
       setViz(mode);
       var item = itemsByIdx[currentIdx] || {};
       legendEl.hidden = item.has_trail ? mode !== "clock" : false;
@@ -704,30 +717,13 @@
   };
 
   function hydrateFromDom() {
+    // Index list cards only — Session Clock lives in detail, not as list mini clocks.
+    // No-trail cards keep SSR/lazy emoji (.ico); trail cards keep .rmap thumb.
     document.querySelectorAll(".run-card[data-idx]").forEach(function (card) {
       try {
         var raw = card.getAttribute("data-wk");
         if (raw) {
           indexItem(JSON.parse(raw));
-        }
-        var idx = card.getAttribute("data-idx");
-        var item = itemsByIdx[idx];
-        if (!item) return;
-        if (!item.has_trail && item.session && item.session.bars && item.session.bars.length) {
-          var mark = card.querySelector(".mark");
-          if (!mark) return;
-          var existing = mark.querySelector("svg.sclock-mini");
-          if (existing) return;
-          var ico = mark.querySelector(".ico");
-          var svg = ns("svg");
-          svg.setAttribute("class", "sclock-mini");
-          svg.setAttribute("viewBox", "0 0 400 400");
-          svg.setAttribute("width", "40");
-          svg.setAttribute("height", "40");
-          svg.setAttribute("aria-hidden", "true");
-          mark.insertBefore(svg, ico || null);
-          if (ico) ico.hidden = true;
-          drawSessionClock(svg, item.session, accentOf(card), true);
         }
       } catch (e) {
         console.warn("[session-clock] hydrate failed", e);
