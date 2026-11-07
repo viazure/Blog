@@ -36,9 +36,9 @@
           </button>
           <button type="button" class="wk-legend-row" data-layer="inner" data-legend="inner">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
-              <polyline points="6,24 12,16 18,20 24,10 30,14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M6 24 L12 16 L18 20 L24 10 L30 14 L30 28 L6 28 Z" fill="currentColor" fill-opacity=".28" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
             </svg>
-            <div data-legend-inner-copy><strong>内曲线</strong><span class="wk-legend-desc">心率折线包到圆上<wbr>；越靠外越高</span></div>
+            <div data-legend-inner-copy><strong>内曲线</strong><span class="wk-legend-desc">心率面积包到圆上<wbr>；越靠外越高</span></div>
           </button>
           <button type="button" class="wk-legend-row" data-layer="core">
             <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
@@ -195,7 +195,7 @@
     });
   }
 
-  /** Polar Session Clock: outward zone spikes + inner HR polyline + core seed/rings. */
+  /** Polar Session Clock: outward zone spikes + inner HR area + core seed/rings. */
   function drawSessionClock(svg, session, accent, mini) {
     clearSvg(svg);
     session = session || {};
@@ -234,6 +234,15 @@
     glow.setAttribute("fill", "url(#" + gid + ")");
     svg.appendChild(glow);
 
+    // Geometry: smaller hollow + taller outward bars (tips stay inside 400 viewBox)
+    // 70 bpm guide sits at hrFloorR; HR area fills between hrFloorR and polar HR radius.
+    var hrFloorR = mini ? 36 : 38;
+    var hrSpan = mini ? 88 : 92;
+    var guideR = hrFloorR;
+    var baseR = mini ? 138 : 136;
+    var barMinH = mini ? 4 : 5;
+    var barMaxH = mini ? 46 : 52;
+
     // ~70 bpm guide ring — strokes follow theme tokens (list mini stays light-card friendly)
     var guideStroke = mini
       ? "#e8e4de"
@@ -244,15 +253,15 @@
     var guide = ns("g");
     guide.setAttribute("class", "sc-layer-guide");
     var ref = ns("circle");
-    ref.setAttribute("cx", cx); ref.setAttribute("cy", cy); ref.setAttribute("r", "78");
+    ref.setAttribute("cx", cx); ref.setAttribute("cy", cy); ref.setAttribute("r", String(guideR));
     ref.setAttribute("fill", "none");
     ref.setAttribute("stroke", guideStroke);
-    ref.setAttribute("stroke-width", mini ? "2" : "1.25");
+    ref.setAttribute("stroke-width", mini ? "1.6" : "1.1");
     if (mini) ref.setAttribute("stroke-dasharray", "2 4");
     guide.appendChild(ref);
     if (!mini) {
       var lab = ns("text");
-      lab.setAttribute("x", cx); lab.setAttribute("y", 118);
+      lab.setAttribute("x", cx); lab.setAttribute("y", cy - guideR - 6);
       lab.setAttribute("text-anchor", "middle");
       lab.setAttribute("fill", guideLabel);
       lab.setAttribute("font-family", "ui-monospace,monospace");
@@ -263,26 +272,36 @@
     svg.appendChild(guide);
 
     // Outer zone spikes: sit on base circle, extend OUTWARD (geekplux grammar).
-    // baseR kept low so outward tips stay inside viewBox 400×400.
+    // Remap bar heights relative to this session so mid-band HR still undulates.
     var outer = ns("g");
     outer.setAttribute("class", "sc-layer-outer");
     svg.appendChild(outer);
     var N = bars.length || 0;
     var gapDeg = mini ? 1.2 : 1.8;
-    var baseR = mini ? 150 : 148;
+    var bMin = Infinity, bMax = -Infinity;
+    for (var bi = 0; bi < N; bi++) {
+      var bv = Number(bars[bi]) || 0;
+      if (bv < bMin) bMin = bv;
+      if (bv > bMax) bMax = bv;
+    }
+    if (!isFinite(bMin)) { bMin = 0; bMax = 24; }
+    var bSpan = Math.max(bMax - bMin, 1);
     var barPaths = [];
     for (var i = 0; i < N; i++) {
       var a0 = -90 + i * (360 / N) + gapDeg * 0.5;
       var a1 = -90 + (i + 1) * (360 / N) - gapDeg * 0.5;
       if (a1 <= a0) continue;
       var h = Number(bars[i]) || 0;
-      // map 0–24 → 6–36 px outward from base ring
-      var barH = 6 + (h / 24) * 30;
+      // relative 0–1 inside this session, then ease for steeper peaks
+      var tRel = (h - bMin) / bSpan;
+      // keep a whisper of absolute height so flat-zone sessions still read intensity
+      var tAbs = Math.max(0, Math.min(1, h / 24));
+      var t = Math.pow(0.72 * tRel + 0.28 * tAbs, 0.62);
+      var barH = barMinH + t * (barMaxH - barMinH);
       var r0 = baseR;
       var r1 = baseR + barH;
       var p0 = pt(r0, a0), p1 = pt(r0, a1), p2 = pt(r1, a1), p3 = pt(r1, a0);
-      var t = h / 24;
-      var op = 0.28 + t * 0.72;
+      var op = 0.22 + t * 0.78;
       var path = ns("path");
       path.setAttribute("d",
         "M" + p0[0] + " " + p0[1] +
@@ -308,32 +327,55 @@
       });
     }
 
-    // Inner polar HR line
+    // Inner polar HR area (fill inward to guide) + stroke on top
+    // One lap = whole session → samples span full 360° (not wall-clock).
     var inner = ns("g");
     inner.setAttribute("class", "sc-layer-inner");
     svg.appendChild(inner);
     if (hr.length) {
       var n = hr.length;
-      var pts = hr.map(function (bpm, i) {
-        var a = -90 + i * (360 / n);
-        var r = 58 + ((Number(bpm) - 70) / 90) * 82;
-        r = Math.max(42, Math.min(138, r));
-        var p = pt(r, a);
-        return p[0].toFixed(1) + "," + p[1].toFixed(1);
-      });
-      // close almost to start for continuous feel without full loop fill
+      var outerPts = [];
+      var angles = [];
+      for (var hi = 0; hi < n; hi++) {
+        var a = -90 + hi * (360 / n);
+        var bpm = Number(hr[hi]) || 70;
+        var r = hrFloorR + ((bpm - 70) / 120) * hrSpan;
+        r = Math.max(hrFloorR + 2, Math.min(baseR - 6, r));
+        outerPts.push(pt(r, a));
+        angles.push(a);
+      }
+      // Area path: outer HR polyline, then reverse along floor radius, close
+      var d = "M" + outerPts[0][0].toFixed(2) + " " + outerPts[0][1].toFixed(2);
+      for (var oi = 1; oi < outerPts.length; oi++) {
+        d += " L" + outerPts[oi][0].toFixed(2) + " " + outerPts[oi][1].toFixed(2);
+      }
+      for (var ri = n - 1; ri >= 0; ri--) {
+        var ip = pt(hrFloorR, angles[ri]);
+        d += " L" + ip[0].toFixed(2) + " " + ip[1].toFixed(2);
+      }
+      d += " Z";
+      var area = ns("path");
+      area.setAttribute("d", d);
+      area.setAttribute("fill", soft);
+      area.setAttribute("fill-opacity", mini ? "0.28" : "0.32");
+      area.setAttribute("stroke", "none");
+      area.setAttribute("opacity", "0.95");
+      inner.appendChild(area);
+
       var poly = ns("polyline");
-      poly.setAttribute("points", pts.join(" "));
+      poly.setAttribute("points", outerPts.map(function (p) {
+        return p[0].toFixed(1) + "," + p[1].toFixed(1);
+      }).join(" "));
       poly.setAttribute("fill", "none");
       poly.setAttribute("stroke", ink);
-      poly.setAttribute("stroke-width", mini ? "3.2" : "2.4");
+      poly.setAttribute("stroke-width", mini ? "2.8" : "2.2");
       poly.setAttribute("stroke-linecap", "round");
       poly.setAttribute("stroke-linejoin", "round");
       poly.setAttribute("opacity", "0.95");
       inner.appendChild(poly);
     }
 
-    // Core: seed (<1h) or growth rings (≥1h)
+    // Core: solid seed (<1h) or growth rings (≥1h) — sit inside the smaller hollow
     var coreG = ns("g");
     coreG.setAttribute("class", "sc-layer-core");
     svg.appendChild(coreG);
@@ -341,11 +383,12 @@
       for (var ring = hours; ring >= 1; ring--) {
         var c = ns("circle");
         c.setAttribute("cx", cx); c.setAttribute("cy", cy);
-        c.setAttribute("r", String(10 + ring * 8));
+        // tight rings inside the hollow (guideR ~38)
+        c.setAttribute("r", String(6 + ring * 6));
         c.setAttribute("fill", "none");
         c.setAttribute("stroke", soft);
-        c.setAttribute("stroke-width", "3.2");
-        c.setAttribute("opacity", String(0.28 + ring * 0.14));
+        c.setAttribute("stroke-width", mini ? "2.4" : "2.8");
+        c.setAttribute("opacity", String(0.32 + ring * 0.16));
         if (!reduceMotion) {
           c.style.transformOrigin = "200px 200px";
           c.style.animation = "wk-grow 0.45s ease-out both";
@@ -354,20 +397,16 @@
         coreG.appendChild(c);
       }
       var core = ns("circle");
-      core.setAttribute("cx", cx); core.setAttribute("cy", cy); core.setAttribute("r", "6");
+      core.setAttribute("cx", cx); core.setAttribute("cy", cy); core.setAttribute("r", mini ? "5" : "4.5");
       core.setAttribute("fill", soft);
       coreG.appendChild(core);
     } else {
+      // <1h: solid seed (not a hollow donut)
       var seed = ns("circle");
-      seed.setAttribute("cx", cx); seed.setAttribute("cy", cy); seed.setAttribute("r", mini ? "14" : "11");
+      seed.setAttribute("cx", cx); seed.setAttribute("cy", cy); seed.setAttribute("r", mini ? "8" : "7");
       seed.setAttribute("fill", soft);
       seed.setAttribute("opacity", "0.95");
       coreG.appendChild(seed);
-      var seed2 = ns("circle");
-      seed2.setAttribute("cx", cx); seed2.setAttribute("cy", cy); seed2.setAttribute("r", mini ? "5" : "4");
-      seed2.setAttribute("fill", mini ? "#5b4bdb" : themeTok("--wk-stage", isDarkTheme() ? "#0f1116" : "#f4f4f5"));
-      seed2.setAttribute("opacity", "0.95");
-      coreG.appendChild(seed2);
     }
 
     if (!mini) applyLegendFocus(svg);
@@ -525,7 +564,7 @@
     if (!copy) return;
     var hr = (session && session.hr) || [];
     if (hr.length) {
-      copy.innerHTML = "<strong>内曲线</strong><span class=\"wk-legend-desc\">心率折线包到圆上<wbr>；越靠外越高</span>";
+      copy.innerHTML = "<strong>内曲线</strong><span class=\"wk-legend-desc\">心率面积包到圆上<wbr>；越靠外越高</span>";
     } else {
       copy.innerHTML = "<strong>内曲线</strong><span class=\"wk-legend-desc\">无逐点心率<wbr>（仅区间柱）</span>";
     }

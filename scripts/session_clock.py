@@ -41,14 +41,15 @@ def _resample(values: list[float], n: int) -> list[float]:
 
 
 def _bars_from_hr(hr: list[float]) -> list[int]:
-    """Map bpm → bar height with a soft floor so the rim undulates (polar bar chart)."""
+    """Map bpm → bar height; steep curve so polar rim undulates clearly."""
     bars: list[int] = []
     span = float(BPM_CEIL - BPM_FLOOR) or 1.0
     for bpm in hr:
-        # gamma < 1 exaggerates mid/high swings for a more "jagged rim" look
+        # gamma << 1 pushes mid/high HR toward taller spikes (still real bpm → height)
         norm = _clamp((float(bpm) - BPM_FLOOR) / span, 0.0, 1.0)
-        h = (norm ** 0.85) * BAR_MAX
-        bars.append(int(round(_clamp(h, 3, BAR_MAX))))
+        h = (norm ** 0.55) * BAR_MAX
+        # allow near-floor shorts so peaks read taller against neighbors
+        bars.append(int(round(_clamp(h, 2, BAR_MAX))))
     return bars
 
 
@@ -61,9 +62,9 @@ def _bars_from_zones(seconds: list[float]) -> list[int]:
     total = sum(usable)
     if total <= 0 or not usable:
         return [4] * N_SAMPLES
-    # zone height: Z1 soft → top zone tall
+    # zone height: Z1 soft → top zone tall (steeper steps for clearer rim relief)
     zone_h = [
-        max(3, int(round(4 + (i / max(len(usable) - 1, 1)) * (BAR_MAX - 4))))
+        max(2, int(round(2 + (i / max(len(usable) - 1, 1)) ** 0.75 * (BAR_MAX - 2))))
         for i in range(len(usable))
     ]
     bars: list[int] = []
