@@ -1,7 +1,7 @@
 """Compact Session Clock payloads from life-data splits JSON.
 
-Outer ring = HR series over moving time (dense bars; one lap = 1h, open if <1h).
-Inner polyline/area = same HR samples when chart.hr exists.
+Outer ring = HR series for the whole session (dense bars; always a full 360° lap).
+Inner polyline/area = same HR samples when chart.hr exists (also full lap).
 Core = open seed arc (<1h) or growth rings (≥1h).
 
 Source priority (life-data/data/workouts/splits/{run_id}.json):
