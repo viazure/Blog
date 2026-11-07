@@ -195,9 +195,10 @@
     });
   }
 
-  /** Polar Session Clock: outward HR spikes + inner HR area + core (open arc <1h / rings ≥1h).
-   * One full circle = 1 hour. <1h → all layers sweep an open arc (gap at 12 o'clock).
-   * ≥1h → full circle + one growth ring per full hour. Whole graphic draws in sync.
+  /** Polar Session Clock: outward HR spikes + inner HR area + core (open arc <1h / rings >=1h).
+   * One full circle = 1 hour. <1h → outer + inner + core share the same hour sweep (gap at 12).
+   * Outer crown is clip-masked to that sweep; unused hour shows a dashed ghost track.
+   * >=1h → full circle + one growth ring per full hour. Whole graphic draws in sync.
    */
   function drawSessionClock(svg, session, accent, mini) {
     clearSvg(svg);
@@ -205,7 +206,10 @@
     var cx = 200, cy = 200;
     var bars = session.bars || [];
     var hr = session.hr || [];
-    var moving = Number(session.moving) || 0;
+    // Prefer session.moving; fall back to top-level aliases so sweep never sticks at 360 by accident.
+    var moving = Number(session.moving);
+    if (!isFinite(moving) || moving <= 0) moving = Number(session.moving_time) || 0;
+    if (!isFinite(moving) || moving <= 0) moving = 0;
     var hours = Math.floor(moving / 3600);
     var soft = accent || "#a78bfa";
     var ink = soft;
@@ -246,6 +250,7 @@
 
     var defs = ns("defs");
     var gid = mini ? "scGlowMini" : "scGlow";
+    var clipId = mini ? "scSweepClipMini" : "scSweepClip";
     var grad = ns("radialGradient");
     grad.setAttribute("id", gid);
     grad.setAttribute("cx", "50%"); grad.setAttribute("cy", "50%"); grad.setAttribute("r", "50%");
@@ -257,11 +262,28 @@
       grad.appendChild(stop);
     });
     defs.appendChild(grad);
+    // Pie clip = hour progress. Outer crown + glow cannot paint into the unused hour gap.
+    if (sweepDeg < 359.5) {
+      var clip = ns("clipPath");
+      clip.setAttribute("id", clipId);
+      var rim = mini ? 190 : 195;
+      var rim0 = pt(rim, aStart), rim1 = pt(rim, aEnd);
+      var pie = ns("path");
+      var pieLarge = sweepDeg > 180 ? 1 : 0;
+      pie.setAttribute("d",
+        "M" + cx + " " + cy +
+        " L" + rim0[0].toFixed(2) + " " + rim0[1].toFixed(2) +
+        " A" + rim + " " + rim + " 0 " + pieLarge + " 1 " + rim1[0].toFixed(2) + " " + rim1[1].toFixed(2) +
+        " Z");
+      clip.appendChild(pie);
+      defs.appendChild(clip);
+    }
     svg.appendChild(defs);
 
     var glow = ns("circle");
     glow.setAttribute("cx", cx); glow.setAttribute("cy", cy); glow.setAttribute("r", mini ? "176" : "178");
     glow.setAttribute("fill", "url(#" + gid + ")");
+    if (sweepDeg < 359.5) glow.setAttribute("clip-path", "url(#" + clipId + ")");
     svg.appendChild(glow);
 
     // Geometry: larger hollow (ref shot) + dense outward bars still inside 400 viewBox
@@ -306,7 +328,7 @@
     }
     svg.appendChild(guide);
 
-    // Layers drawn together (sync reveal)
+    // Layers drawn together (sync reveal). Outer uses the same hour sweep as inner/core.
     var outer = ns("g");
     outer.setAttribute("class", "sc-layer-outer");
     svg.appendChild(outer);
@@ -317,8 +339,37 @@
     coreG.setAttribute("class", "sc-layer-core");
     svg.appendChild(coreG);
 
+    // Ghost track for the unused part of the hour — makes the 12 o'clock gap obvious
+    // even when the crown is dense (otherwise a half-ring can read as a "full" outer).
+    // Keep ghost OUTSIDE the bars clip so the remaining hour stays visible.
+    if (sweepDeg < 359.5) {
+      var ghost = ns("path");
+      ghost.setAttribute("d", arcD(baseR, aEnd, aStart + 360));
+      ghost.setAttribute("fill", "none");
+      ghost.setAttribute("stroke", guideStroke);
+      ghost.setAttribute("stroke-width", mini ? "1.2" : "1");
+      ghost.setAttribute("stroke-dasharray", mini ? "2 4" : "3 5");
+      ghost.setAttribute("opacity", "0.5");
+      ghost.setAttribute("class", "sc-outer-ghost");
+      outer.appendChild(ghost);
+      var track = ns("path");
+      track.setAttribute("d", arcD(baseR, aStart, aEnd));
+      track.setAttribute("fill", "none");
+      track.setAttribute("stroke", soft);
+      track.setAttribute("stroke-width", mini ? "1.4" : "1.2");
+      track.setAttribute("opacity", "0.28");
+      track.setAttribute("class", "sc-outer-track");
+      outer.appendChild(track);
+    }
+
+    // Bars themselves are clip-masked to the hour sweep (belt-and-suspenders with angle math).
+    var barsG = ns("g");
+    barsG.setAttribute("class", "sc-outer-bars");
+    if (sweepDeg < 359.5) barsG.setAttribute("clip-path", "url(#" + clipId + ")");
+    outer.appendChild(barsG);
+
     var N = bars.length || 0;
-    // Gap between teeth scales with density so 120 bars stay thin, not blocky
+    // Distribute bars across the hour sweep only (<1h → open arc; ≥1h → full ring).
     var slot = sweepDeg / Math.max(N, 1);
     var gapDeg = Math.min(slot * 0.32, mini ? 0.7 : 0.9);
     var bMin = Infinity, bMax = -Infinity;
@@ -352,7 +403,7 @@
       path.setAttribute("fill", soft);
       path.setAttribute("opacity", String(op));
       path.setAttribute("data-op", String(op));
-      outer.appendChild(path);
+      barsG.appendChild(path);
       barPaths.push({ path: path, op: op, i: i });
     }
 
@@ -710,7 +761,10 @@
       var accent = accentOf(cardEl) || "#a78bfa";
       fillMeta(item, accent);
       var hasTrail = !!item.has_trail;
-      var session = item.session || { moving: item.moving || 0, bars: [] };
+      var session = Object.assign({}, item.session || {});
+      session.moving = Number(session.moving != null ? session.moving : item.moving) || 0;
+      if (!session.bars) session.bars = [];
+      if (!session.hr) session.hr = [];
       updateLegend(session);
       legendEl.querySelectorAll(".wk-legend-row").forEach(function (row) {
         row.classList.remove("is-on");
