@@ -1463,7 +1463,8 @@
 .wk-viz-tools[hidden],
 .wk-legend[hidden],
 .wk-legend-head[hidden],
-.wk-pager[hidden] {
+.wk-pager[hidden],
+.wk-hr-scrub[hidden] {
   display: none !important;
 }
 
@@ -1578,6 +1579,125 @@
     text-transform: uppercase;
     font-variant-numeric: tabular-nums;
   }
+}
+
+.wk-hr-scrub {
+  margin: 0.85rem 0 0;
+  border: 1px solid var(--wk-line);
+  border-radius: 12px;
+  background: var(--wk-sheet);
+  overflow: hidden;
+}
+
+.wk-hr-scrub-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--wk-hover);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+}
+
+.wk-hr-scrub-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--wk-ink);
+}
+
+.wk-hr-scrub-chev {
+  display: inline-block;
+  color: var(--wk-muted);
+  font-size: 0.9rem;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+
+.wk-hr-scrub.is-open .wk-hr-scrub-chev {
+  transform: rotate(90deg);
+}
+
+.wk-hr-scrub-hint {
+  font-size: 0.72rem;
+  color: var(--wk-muted);
+  font-weight: 400;
+}
+
+.wk-hr-scrub-panel {
+  display: none;
+  padding: 0 0.8rem 0.85rem;
+  border-top: 1px solid var(--wk-line);
+}
+
+.wk-hr-scrub.is-open .wk-hr-scrub-panel {
+  display: block;
+}
+
+.wk-hr-scrub-readout {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0.6rem 0 0.35rem;
+  font-variant-numeric: tabular-nums;
+
+  .t {
+    color: var(--wk-muted);
+    font-size: 0.78rem;
+  }
+
+  .bpm {
+    color: #d4534a;
+    font-size: 1.02rem;
+    font-weight: 700;
+  }
+}
+
+.wk-hr-scrub-wrap {
+  position: relative;
+  height: 88px;
+  user-select: none;
+  touch-action: none;
+  cursor: crosshair;
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(212, 83, 74, 0.04), transparent 70%);
+  }
+}
+
+.wk-hr-scrub-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.25rem;
+  color: var(--wk-muted);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .wk-legend {

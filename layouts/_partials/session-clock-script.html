@@ -26,6 +26,26 @@
         <h2 class="wk-detail-title display" id="wk-detail-title"></h2>
         <p class="wk-detail-when mono"></p>
         <div class="wk-metrics" role="list"></div>
+        <div class="wk-hr-scrub" id="wk-hr-scrub" hidden data-wk-hr-scrub>
+          <button type="button" class="wk-hr-scrub-toggle" data-wk-hr-toggle aria-expanded="false" aria-controls="wk-hr-scrub-panel">
+            <span class="wk-hr-scrub-left"><span class="wk-hr-scrub-chev" aria-hidden="true">&rsaquo;</span>心率趋势</span>
+            <span class="wk-hr-scrub-hint" data-wk-hr-hint>点开查看整场</span>
+          </button>
+          <div class="wk-hr-scrub-panel" id="wk-hr-scrub-panel" role="region" aria-label="心率趋势图">
+            <div class="wk-hr-scrub-readout">
+              <span class="t" data-wk-hr-time></span>
+              <span class="bpm" data-wk-hr-bpm></span>
+            </div>
+            <div class="wk-hr-scrub-wrap" data-wk-hr-wrap title="拖动查看">
+              <canvas data-wk-hr-canvas width="640" height="176"></canvas>
+            </div>
+            <div class="wk-hr-scrub-axis">
+              <span data-wk-hr-axis-start>0:00</span>
+              <span data-wk-hr-axis-mid></span>
+              <span data-wk-hr-axis-end></span>
+            </div>
+          </div>
+        </div>
         <div class="wk-legend-head" hidden data-wk-legend-head>
           <p class="wk-legend-title">图例</p>
           <button type="button" class="wk-info-btn" data-wk-tip="sclock" aria-label="如何阅读图例">ⓘ</button>
@@ -102,6 +122,21 @@
   var tipTitle = tipSheet ? tipSheet.querySelector("#wk-tip-sheet-title") : null;
   var tipBody = tipSheet ? tipSheet.querySelector("[data-wk-tip-body]") : null;
   var legendHead = dialog.querySelector("[data-wk-legend-head]");
+  var hrScrubEl = dialog.querySelector("[data-wk-hr-scrub]");
+  var hrToggleBtn = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-toggle]") : null;
+  var hrHintEl = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-hint]") : null;
+  var hrTimeEl = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-time]") : null;
+  var hrBpmEl = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-bpm]") : null;
+  var hrWrapEl = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-wrap]") : null;
+  var hrCanvas = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-canvas]") : null;
+  var hrAxisStart = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-axis-start]") : null;
+  var hrAxisMid = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-axis-mid]") : null;
+  var hrAxisEnd = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-axis-end]") : null;
+  var hrSeries = [];
+  var hrMovingSec = 0;
+  var hrStartMin = null;
+  var hrIdx = 0;
+  var hrDragging = false;
 
   var currentIdx = null;
   var currentList = [];
@@ -715,6 +750,176 @@
     }
   }
 
+
+  function fmtElapsedSec(sec) {
+    var s = Math.max(0, Math.floor(Number(sec) || 0));
+    var h = Math.floor(s / 3600);
+    var m = Math.floor((s % 3600) / 60);
+    var r = s % 60;
+    if (h > 0) {
+      return h + ":" + (m < 10 ? "0" : "") + m + ":" + (r < 10 ? "0" : "") + r;
+    }
+    return m + ":" + (r < 10 ? "0" : "") + r;
+  }
+
+  function parseStartMinutes(timeStr) {
+    if (!timeStr) return null;
+    var m = String(timeStr).match(/^(\d{1,2}):(\d{2})/);
+    if (!m) return null;
+    return (Number(m[1]) * 60 + Number(m[2])) % (24 * 60);
+  }
+
+  function clockAtFrac(frac) {
+    if (hrStartMin == null) return null;
+    var add = Math.floor((Number(frac) || 0) * hrMovingSec / 60);
+    var abs = (hrStartMin + add) % (24 * 60);
+    var hh = Math.floor(abs / 60);
+    var mm = abs % 60;
+    return (hh < 10 ? "0" : "") + hh + ":" + (mm < 10 ? "0" : "") + mm;
+  }
+
+  function collapseHrScrub() {
+    if (!hrScrubEl) return;
+    hrScrubEl.classList.remove("is-open");
+    if (hrToggleBtn) hrToggleBtn.setAttribute("aria-expanded", "false");
+    if (hrHintEl) hrHintEl.textContent = "点开查看整场";
+  }
+
+  function updateHrReadout() {
+    if (!hrSeries.length) return;
+    var n = hrSeries.length;
+    var frac = n <= 1 ? 0 : hrIdx / (n - 1);
+    var elapsed = fmtElapsedSec(frac * hrMovingSec);
+    var label = hrIdx === 0 ? "起跑" : (hrIdx === n - 1 ? "结束" : "进度 " + Math.round(frac * 100) + "%");
+    var clock = clockAtFrac(frac);
+    if (hrTimeEl) {
+      hrTimeEl.textContent = (clock ? clock + " · " : "") + label + " · " + elapsed;
+    }
+    if (hrBpmEl) hrBpmEl.textContent = Math.round(hrSeries[hrIdx]) + " bpm";
+  }
+
+  function drawHrScrub() {
+    if (!hrCanvas || !hrWrapEl || !hrSeries.length) return;
+    var ctx = hrCanvas.getContext("2d");
+    if (!ctx) return;
+    var dpr = window.devicePixelRatio || 1;
+    var w = hrWrapEl.clientWidth || 280;
+    var h = 88;
+    hrCanvas.width = Math.round(w * dpr);
+    hrCanvas.height = Math.round(h * dpr);
+    hrCanvas.style.width = w + "px";
+    hrCanvas.style.height = h + "px";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    var pad = { l: 4, r: 4, t: 8, b: 8 };
+    var iw = Math.max(1, w - pad.l - pad.r);
+    var ih = Math.max(1, h - pad.t - pad.b);
+    var min = 100;
+    var max = 180;
+    var i;
+    for (i = 0; i < hrSeries.length; i++) {
+      var v = Number(hrSeries[i]) || 0;
+      if (v < min) min = Math.max(60, v - 8);
+      if (v > max) max = Math.min(220, v + 8);
+    }
+    if (max <= min) max = min + 1;
+    var n = hrSeries.length;
+
+    function xy(ii) {
+      var vv = Number(hrSeries[ii]) || min;
+      var x = pad.l + (n <= 1 ? 0 : (ii / (n - 1)) * iw);
+      var y = pad.t + (1 - (vv - min) / (max - min)) * ih;
+      return { x: x, y: y };
+    }
+
+    ctx.beginPath();
+    for (i = 0; i < n; i++) {
+      var p = xy(i);
+      if (i === 0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y);
+    }
+    ctx.lineTo(pad.l + iw, pad.t + ih);
+    ctx.lineTo(pad.l, pad.t + ih);
+    ctx.closePath();
+    var grad = ctx.createLinearGradient(0, pad.t, 0, pad.t + ih);
+    grad.addColorStop(0, "rgba(212,83,74,0.32)");
+    grad.addColorStop(1, "rgba(212,83,74,0.02)");
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    ctx.beginPath();
+    for (i = 0; i < n; i++) {
+      var p2 = xy(i);
+      if (i === 0) ctx.moveTo(p2.x, p2.y); else ctx.lineTo(p2.x, p2.y);
+    }
+    ctx.strokeStyle = "#d4534a";
+    ctx.lineWidth = 1.6;
+    ctx.lineJoin = "round";
+    ctx.stroke();
+
+    var scrub = xy(hrIdx);
+    ctx.beginPath();
+    ctx.moveTo(scrub.x, pad.t);
+    ctx.lineTo(scrub.x, pad.t + ih);
+    ctx.strokeStyle = isDarkTheme() ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.28)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(scrub.x, scrub.y, 4.5, 0, Math.PI * 2);
+    ctx.fillStyle = themeTok("--wk-sheet", "#fff");
+    ctx.fill();
+    ctx.strokeStyle = "#d4534a";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  function setHrIdxFromClientX(clientX) {
+    if (!hrWrapEl || hrSeries.length < 1) return;
+    var rect = hrWrapEl.getBoundingClientRect();
+    var x = Math.min(Math.max(clientX - rect.left, 0), rect.width || 1);
+    hrIdx = Math.round((x / (rect.width || 1)) * (hrSeries.length - 1));
+    if (hrIdx < 0) hrIdx = 0;
+    if (hrIdx > hrSeries.length - 1) hrIdx = hrSeries.length - 1;
+    updateHrReadout();
+    drawHrScrub();
+  }
+
+  function setHrScrub(session, item) {
+    if (!hrScrubEl) return;
+    var series = (session && session.hr) || [];
+    if (!series.length) {
+      hrSeries = [];
+      hrScrubEl.hidden = true;
+      collapseHrScrub();
+      return;
+    }
+    hrSeries = series.map(function (v) { return Number(v) || 0; });
+    hrMovingSec = Number(session && session.moving != null ? session.moving : (item && item.moving)) || 0;
+    if (hrMovingSec <= 0) hrMovingSec = Math.max(1, (hrSeries.length - 1) * 30);
+    hrStartMin = parseStartMinutes(item && item.time);
+    hrIdx = Math.min(hrSeries.length - 1, Math.max(0, Math.floor(hrSeries.length * 0.42)));
+    hrScrubEl.hidden = false;
+    collapseHrScrub();
+    if (hrAxisStart) hrAxisStart.textContent = "0:00";
+    if (hrAxisMid) hrAxisMid.textContent = fmtElapsedSec(hrMovingSec / 2);
+    if (hrAxisEnd) hrAxisEnd.textContent = fmtElapsedSec(hrMovingSec);
+    updateHrReadout();
+  }
+
+  function toggleHrScrub() {
+    if (!hrScrubEl || hrScrubEl.hidden || !hrSeries.length) return;
+    var open = !hrScrubEl.classList.contains("is-open");
+    hrScrubEl.classList.toggle("is-open", open);
+    if (hrToggleBtn) hrToggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    if (hrHintEl) hrHintEl.textContent = open ? "再点收起" : "点开查看整场";
+    if (open) {
+      requestAnimationFrame(function () {
+        updateHrReadout();
+        drawHrScrub();
+      });
+    }
+  }
+
   function fillMeta(item, accent) {
     var s = item.session || {};
     sportName.textContent = String(item.name || "").toUpperCase();
@@ -782,6 +987,7 @@
       if (!session.bars) session.bars = [];
       if (!session.hr) session.hr = [];
       updateLegend(session);
+      setHrScrub(session, item);
       legendEl.querySelectorAll(".wk-legend-row").forEach(function (row) {
         row.classList.remove("is-on");
         row.style.color = accent;
@@ -831,6 +1037,7 @@
 
   function closeDetail() {
     closeTipSheet();
+    collapseHrScrub();
     if (typeof dialog.close === "function") dialog.close();
     else dialog.removeAttribute("open");
   }
@@ -849,10 +1056,37 @@
     };
   }
 
+  if (hrWrapEl && typeof hrWrapEl.addEventListener === "function") {
+    hrWrapEl.addEventListener("pointerdown", function (e) {
+      if (!hrSeries.length || !hrScrubEl || !hrScrubEl.classList.contains("is-open")) return;
+      hrDragging = true;
+      try { hrWrapEl.setPointerCapture(e.pointerId); } catch (err) {}
+      setHrIdxFromClientX(e.clientX);
+    });
+    hrWrapEl.addEventListener("pointermove", function (e) {
+      if (!hrDragging) return;
+      setHrIdxFromClientX(e.clientX);
+    });
+    hrWrapEl.addEventListener("pointerup", function () { hrDragging = false; });
+    hrWrapEl.addEventListener("pointercancel", function () { hrDragging = false; });
+  }
+  if (typeof window.addEventListener === "function") {
+    window.addEventListener("resize", function () {
+      if (hrScrubEl && hrScrubEl.classList.contains("is-open")) drawHrScrub();
+    });
+  }
+
   document.addEventListener("click", function (ev) {
     var tipClose = ev.target.closest && ev.target.closest("[data-wk-tip-close]");
     if (tipClose) { closeTipSheet(); return; }
     if (tipSheet && ev.target === tipSheet) { closeTipSheet(); return; }
+
+    var hrToggle = ev.target.closest && ev.target.closest("[data-wk-hr-toggle]");
+    if (hrToggle && hrScrubEl && hrScrubEl.contains(hrToggle)) {
+      ev.preventDefault();
+      toggleHrScrub();
+      return;
+    }
 
     var tipBtn = ev.target.closest && ev.target.closest("[data-wk-tip]");
     if (tipBtn) {
