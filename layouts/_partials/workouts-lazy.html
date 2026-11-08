@@ -1,8 +1,8 @@
 {{/* 运动页：年份懒加载。热力与记录各自独立筛选，不互相同步。
      分片路径：/data/workouts/year-YYYY.json（由 scripts/emit_page_shards.py 产出）。
 
-     SSR/JS: workout-card.html <-> renderCard; see docs/ux-p0-ssr-js-fields.md
-     clock/clock_unit = duration, NOT Session Clock.
+     SSR/JS: workout-card.html <-> renderCard；见 docs/ssr-js-fields.md
+     clock/clock_unit = 运动时长（duration），勿当会话状态。
      After load: dispatch workouts:year-loaded for track-script. */}}
 <script>
 (function () {
