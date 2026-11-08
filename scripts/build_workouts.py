@@ -785,6 +785,9 @@ def main() -> None:
         "workouts ok (%d activities, %d trails, %.0f KB of track data)"
         % (len(rows), len(trimmed), used / 1024)
     )
+    from emit_page_shards import emit_workouts
+
+    emit_workouts()
 
 
 if __name__ == "__main__":

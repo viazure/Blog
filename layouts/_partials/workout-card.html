@@ -1,3 +1,6 @@
+{{/* Workout card SSR. Keep in sync with workouts-lazy renderCard.
+     Field map: docs/ux-p0-ssr-js-fields.md
+     clock/clock_unit = duration, not Session Clock. */}}
 {{ $c := . }}
 {{ $tips := slice }}
 {{ if gt $c.km 0 }}
