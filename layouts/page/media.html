@@ -1,5 +1,11 @@
 {{ define "main" }}
+{{ $categories := hugo.Data.neodb.categories }}
+{{ $lastfm := hugo.Data.lastfm }}
+{{/* ADR: default Tab = music (if lastfm) else first NeoDB category; Params.tab overrides. */}}
 {{ $active := .Params.tab | default "" }}
+{{ if eq $active "" }}
+{{ if $lastfm }}{{ $active = "music" }}{{ else if $categories }}{{ $active = (index $categories 0).id }}{{ end }}
+{{ end }}
 <div class="wrapper post data-page">
     <main class="page-content" aria-label="Content">
         <article>
@@ -9,18 +15,14 @@
             <div class="page-content">
                 {{ with .Content }}{{ . }}{{ end }}
 
-                {{ $categories := hugo.Data.neodb.categories }}
-                {{ $lastfm := hugo.Data.lastfm }}
                 {{ if or $categories $lastfm }}
                 {{/* 页签用 radio + label：radio 必须与 .tab-panels 同级且在前。
                      音乐与 NeoDB 分类共用一组 media-tab。 */}}
                 {{ if $lastfm }}
                 <input class="tab-radio" type="radio" name="media-tab" id="media-tab-music" value="music" {{ if eq $active "music" }}checked{{ end }} aria-hidden="true" tabindex="-1">
                 {{ end }}
-                {{ $first := true }}
                 {{ range $categories }}
-                <input class="tab-radio" type="radio" name="media-tab" id="media-tab-{{ .id }}" value="{{ .id }}" {{ if and (ne $active "music") $first }}checked{{ end }} aria-hidden="true" tabindex="-1">
-                {{ $first = false }}
+                <input class="tab-radio" type="radio" name="media-tab" id="media-tab-{{ .id }}" value="{{ .id }}" {{ if eq $active .id }}checked{{ end }} aria-hidden="true" tabindex="-1">
                 {{ end }}
 
                 <nav class="tabs" aria-label="书影音分类">
@@ -53,8 +55,8 @@
                     {{ end }}
 
                     {{ $defaultCat := "" }}
-                    {{ if and (ne $active "music") $categories }}
-                    {{ $defaultCat = (index $categories 0).id }}
+                    {{ if and (ne $active "music") $active }}
+                    {{ $defaultCat = $active }}
                     {{ end }}
                     {{ range $categories }}
                     <section class="tab-panel panel-{{ .id }}" role="tabpanel" aria-label="{{ .label }}" data-media-cat="{{ .id }}"{{ if ne .id $defaultCat }} data-pending="neodb"{{ end }}>
