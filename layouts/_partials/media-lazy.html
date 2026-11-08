@@ -1,0 +1,420 @@
+{{/* 书影音：非默认 Tab / 非默认时段按需加载。分片在 /data/media/...
+     切 Tab 时预留高度 + 骨架，减轻懒加载插入导致的布局抖动。
+
+     SSR/JS field map: docs/ux-p0-ssr-js-fields.md
+     note_html: SSR safeHTML (build paths.note_html); client MUST use safeNoteHtml.
+     cover onerror: same as SSR (cover-broken + 1x1 gif). */}}
+<script>
+(function () {
+  var LASTFM_BASE = {{ "data/media/lastfm/" | relURL }};
+  var NEODB_BASE = {{ "data/media/neodb/" | relURL }};
+  var cache = { period: Object.create(null), cat: Object.create(null), musicMeta: null };
+  var panelsEl = null;
+  var reservedH = 0;
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  /* note_html: build-time paths.note_html; client same whitelist. */
+  function safeNoteHtml(html) {
+    if (!html) return "";
+    var s = String(html);
+    var holes = [];
+    s = s.replace(/<a\s+href="(https?:\/\/[^"<>]*)"\s+rel="nofollow noopener"\s+target="_blank">([\s\S]*?)<\/a>/gi, function (_m, href, body) {
+      var safeBody = String(body).replace(/<[^>]*>/g, "");
+      holes.push('<a href="' + esc(href) + '" rel="nofollow noopener" target="_blank">' + safeBody + '</a>');
+      return "\x00" + (holes.length - 1) + "\x00";
+    });
+    s = s.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    for (var i = 0; i < holes.length; i++) {
+      s = s.split("\x00" + i + "\x00").join(holes[i]);
+    }
+    return s;
+  }
+
+  function coverImg(src, alt) {
+    if (!src) {
+      return '<span class="rank-cover rank-cover-blank" aria-hidden="true"></span>';
+    }
+    return '<img class="rank-cover" src="' + esc(src) + '" alt="' + esc(alt) +
+      '" width="28" height="28" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.classList.add(\'cover-broken\');this.src=\'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\'">';
+  }
+
+  function lovedMark(loved) {
+    if (!loved) return "";
+    return '<span class="loved" title="已标记红心" aria-label="已标记红心">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">' +
+      '<path d="M12 21s-6.7-4.35-9.33-8.1C.7 9.7 1.6 5.9 5.05 4.55A5.1 5.1 0 0 1 12 7.1a5.1 5.1 0 0 1 6.95-2.55c3.45 1.35 4.35 5.15 2.38 8.35C18.7 16.65 12 21 12 21z"/></svg></span>';
+  }
+
+  function musicRow(index, item) {
+    var alt = (item.title || "") + (item.artist ? " — " + item.artist : "") + " 封面";
+    var html = '<span class="rank-no">' + (index + 1 < 10 ? "0" : "") + (index + 1) + "</span>";
+    html += coverImg(item.cover, alt);
+    html += '<span class="rank-title"><span class="title-text" title="' + esc(item.title) + '">';
+    if (item.url) html += '<a href="' + esc(item.url) + '">' + esc(item.title) + "</a>";
+    else html += esc(item.title);
+    html += "</span>" + lovedMark(item.loved) + "</span>";
+    if (item.artist) html += '<span class="rank-sub" title="' + esc(item.artist) + '">' + esc(item.artist) + "</span>";
+    html += '<span class="rank-bar" aria-hidden="true"><i style="width: ' + esc(item.share) + '%"></i></span>';
+    html += '<span class="rank-count">' + esc(item.playcount) + "</span>";
+    return html;
+  }
+
+  function renderPeriod(period) {
+    var html = "";
+    (period.boards || []).forEach(function (board) {
+      html += '<section class="board"><h2 class="data-label">' + esc(board.label) + "</h2>";
+      html += '<ol class="board-list">';
+      (board.items || []).forEach(function (item, index) {
+        html += "<li" + (index >= 10 ? ' class="board-more"' : "") + ">" + musicRow(index, item) + "</li>";
+      });
+      html += "</ol>";
+      if ((board.items || []).length > 10) {
+        html += '<details class="fold board-fold"><summary><span class="fold-open">展开</span><span class="fold-close">收起</span></summary></details>';
+      }
+      html += "</section>";
+    });
+    return html;
+  }
+
+  function timelineCover(item) {
+    if (!item.image) return '<span class="timeline-cover timeline-cover-blank" aria-hidden="true"></span>';
+    var alt = (item.track || "") + " — " + (item.artist || "") + " 封面";
+    return '<img class="timeline-cover" src="' + esc(item.image) + '" alt="' + esc(alt) +
+      '" width="28" height="28" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.classList.add(\'cover-broken\');this.src=\'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\'">';
+  }
+
+  function renderMusicShell(meta, firstPeriod) {
+    var html = "";
+    if (meta.recent && meta.recent.length) {
+      html += '<h2 class="data-label">最近在听';
+      if (meta.scrobbled_to) html += '<span class="data-note"> · 记录至 ' + esc(meta.scrobbled_to) + "</span>";
+      html += "</h2><ol class=\"timeline\">";
+      meta.recent.forEach(function (row) {
+        html += '<li class="timeline-item">' + timelineCover(row);
+        html += '<span class="timeline-title"><span class="title-text" title="' + esc(row.track) + '">';
+        if (row.url) html += '<a href="' + esc(row.url) + '">' + esc(row.track) + "</a>";
+        else html += esc(row.track);
+        html += "</span>" + lovedMark(row.loved) + "</span>";
+        var metaText = row.artist || "";
+        if (row.album) metaText += " · " + row.album;
+        html += '<span class="data-meta" title="' + esc(metaText) + '">' + esc(metaText) + "</span>";
+        html += '<time class="timeline-time">' + esc((row.date || "").slice(5)) + " " + esc(row.time || "") + "</time>";
+        html += "</li>";
+      });
+      html += "</ol>";
+    }
+    var periods = meta.periods || [];
+    periods.forEach(function (p, i) {
+      html += '<input class="period-radio" type="radio" name="music-period" id="period-' + esc(p.id) +
+        '" value="' + esc(p.id) + '" data-period="' + esc(p.id) + '"' + (i === 0 ? " checked" : "") +
+        ' aria-hidden="true" tabindex="-1">';
+    });
+    html += '<nav class="tabs tabs-sub" aria-label="统计时段">';
+    periods.forEach(function (p) {
+      html += '<label class="tab-label" for="period-' + esc(p.id) + '" tabindex="0">' + esc(p.label) + "</label>";
+    });
+    html += '</nav><div class="period-panels">';
+    periods.forEach(function (p, i) {
+      html += '<section class="period-panel period-' + esc(p.id) + '" aria-label="' + esc(p.label) +
+        '" data-period="' + esc(p.id) + '"' + (i === 0 ? "" : ' data-pending="period"') + ">";
+      if (i === 0 && firstPeriod) html += renderPeriod(firstPeriod);
+      html += "</section>";
+    });
+    html += "</div>";
+    return html;
+  }
+
+  function mediaDate(created) {
+    if (!created) return "";
+    var year = created.slice(0, 4);
+    var nowY = String(new Date().getFullYear());
+    var html = '<span class="card-when">';
+    if (year !== nowY) html += '<span class="card-year">' + esc(year) + "</span>";
+    html += '<span class="card-date">' + esc(created.slice(5)) + "</span></span>";
+    return html;
+  }
+
+  function mediaGrade(item) {
+    if (!item.rating_grade) return "";
+    var filled = item.rating_filled || 0;
+    var html = '<span class="grade" title="我的评分 ' + esc(item.rating_grade) + '/10"><span class="grade-dot" aria-hidden="true">';
+    for (var i = 1; i <= 5; i++) html += '<i class="' + (i <= filled ? "on" : "off") + '"></i>';
+    html += '</span><span class="grade-num">' + esc(item.rating_grade) + "</span></span>";
+    return html;
+  }
+
+  function mediaCard(item) {
+    var title = item.url
+      ? '<a class="card-title" href="https://neodb.social' + esc(item.url) + '" title="' + esc(item.title) + '">' + esc(item.title) + "</a>"
+      : '<span class="card-title" title="' + esc(item.title) + '">' + esc(item.title) + "</span>";
+    if (item.note_html) {
+      return '<li class="card"><details class="card-note-fold"><summary class="card-top">' + title +
+        '<span class="note-mark" aria-hidden="true">评</span>' + mediaGrade(item) + mediaDate(item.created_time) +
+        '</summary><p class="card-note">' + safeNoteHtml(item.note_html) + "</p></details></li>";
+    }
+    return '<li class="card"><div class="card-top">' + title + mediaGrade(item) + mediaDate(item.created_time) + "</div></li>";
+  }
+
+  function mediaWant(item) {
+    var title = item.url
+      ? '<a class="want-title" href="https://neodb.social' + esc(item.url) + '" title="' + esc(item.title) + '">' + esc(item.title) + "</a>"
+      : '<span class="want-title" title="' + esc(item.title) + '">' + esc(item.title) + "</span>";
+    return "<li>" + title + mediaDate(item.created_time) + "</li>";
+  }
+
+  function renderNeodbCat(cat) {
+    var html = "";
+    (cat.groups || []).forEach(function (g) {
+      if (g.id === "wishlist") {
+        html += '<h3 class="year-head"><span class="year-num">' + esc(g.label) + '</span><span class="year-rule"></span><span class="year-count">' +
+          esc(g.count) + "</span></h3>";
+        html += '<div class="' + (g.count > 16 ? "scroll-clip" : "") + '"><ul class="wants' +
+          (g.count > 16 ? " scroll-list" : "") + '">';
+        (g.items || []).forEach(function (it) { html += mediaWant(it); });
+        html += "</ul></div>";
+      } else if (g.years) {
+        (g.years || []).forEach(function (y) {
+          if (y.collapsed) {
+            html += '<details class="fold year-big"><summary><span class="year-num">' + esc(y.label) +
+              '</span><span class="year-rule"></span><span class="year-count">' + esc(y.count) +
+              '</span></summary><ul class="cards">';
+            (y.items || []).forEach(function (it) { html += mediaCard(it); });
+            html += "</ul></details>";
+          } else {
+            html += '<h3 class="year-head"><span class="year-num">' + esc(y.label) +
+              '</span><span class="year-rule"></span><span class="year-count">' + esc(y.count) +
+              '</span></h3><ul class="cards">';
+            (y.items || []).forEach(function (it) { html += mediaCard(it); });
+            html += "</ul>";
+          }
+        });
+      } else {
+        html += '<h3 class="year-head"><span class="year-num">' + esc(g.heading) +
+          '</span><span class="year-rule"></span><span class="year-count">' + esc(g.count) + "</span></h3>";
+        html += '<div class="' + (g.count > 16 ? "scroll-clip" : "") + '"><ul class="cards' +
+          (g.count > 16 ? " scroll-list" : "") + '">';
+        (g.items || []).forEach(function (it) { html += mediaCard(it); });
+        html += "</ul></div>";
+      }
+    });
+    return html;
+  }
+
+  function loadJSON(url) {
+    return fetch(url).then(function (res) { return res.ok ? res.json() : null; });
+  }
+
+  function getPanels() {
+    if (!panelsEl) panelsEl = document.querySelector(".tab-panels");
+    return panelsEl;
+  }
+
+  function capturePanelsHeight() {
+    var el = getPanels();
+    if (!el) return;
+    var h = el.getBoundingClientRect().height;
+    if (h > 80) reservedH = h;
+  }
+
+  function reservePanelsHeight() {
+    var el = getPanels();
+    if (!el || reservedH < 80) return;
+    el.style.minHeight = reservedH + "px";
+  }
+
+  function settlePanelsHeight() {
+    var el = getPanels();
+    if (!el) return;
+    // 先清掉预留再量真实内容，避免把骨架高度当成终态
+    el.style.minHeight = "";
+    var h = el.getBoundingClientRect().height;
+    if (h > 80) {
+      reservedH = h;
+      el.style.minHeight = h + "px";
+    } else if (reservedH > 80) {
+      el.style.minHeight = reservedH + "px";
+    }
+  }
+
+  function skelHtml() {
+    var bars = "";
+    for (var i = 0; i < 10; i++) bars += '<div class="media-skel-bar"></div>';
+    return '<div class="media-skel" aria-hidden="true">' + bars + "</div>";
+  }
+
+  function showSkeleton(el) {
+    if (!el) return;
+    if (!el.querySelector(".media-skel")) el.innerHTML = skelHtml();
+  }
+
+  function failHtml(kind, id) {
+    return '<div class="lazy-fail" role="alert" data-fail-kind="' + esc(kind) + '" data-fail-id="' + esc(id || "") + '">' +
+      "<p>加载失败，请重试。</p>" +
+      '<button type="button" data-retry-media="' + esc(kind) + '" data-retry-id="' + esc(id || "") + '">重试</button></div>';
+  }
+
+  function showFail(el, kind, id) {
+    if (!el) return;
+    el.innerHTML = failHtml(kind, id);
+  }
+
+  function ensureMusicPanel() {
+    var panel = document.querySelector('.tab-panel.panel-music[data-pending="music"]');
+    if (!panel) return Promise.resolve();
+    showSkeleton(panel);
+    reservePanelsHeight();
+    var metaP = cache.musicMeta
+      ? Promise.resolve(cache.musicMeta)
+      : loadJSON(LASTFM_BASE + "meta.json").then(function (m) { cache.musicMeta = m; return m; });
+    return metaP.then(function (meta) {
+      if (!meta) {
+        showFail(panel, "music", "music");
+        return;
+      }
+      var pid = meta.default_period;
+      var periodP = cache.period[pid]
+        ? Promise.resolve(cache.period[pid])
+        : loadJSON(LASTFM_BASE + "period-" + pid + ".json").then(function (p) {
+            if (p) cache.period[pid] = p;
+            return p;
+          });
+      return periodP.then(function (period) {
+        if (!period) {
+          showFail(panel, "music", "music");
+          return;
+        }
+        panel.innerHTML = renderMusicShell(meta, period);
+        panel.removeAttribute("data-pending");
+      });
+    }).catch(function () {
+      showFail(panel, "music", "music");
+    });
+  }
+
+  function ensurePeriod(id) {
+    if (!id) return Promise.resolve();
+    var el = document.querySelector('.period-panel[data-period="' + id + '"][data-pending]');
+    if (!el) return Promise.resolve();
+    showSkeleton(el);
+    reservePanelsHeight();
+    var p = cache.period[id]
+      ? Promise.resolve(cache.period[id])
+      : loadJSON(LASTFM_BASE + "period-" + id + ".json").then(function (json) {
+          if (json) cache.period[id] = json;
+          return json;
+        });
+    return p.then(function (period) {
+      if (!period) {
+        showFail(el, "period", id);
+        return;
+      }
+      el.innerHTML = renderPeriod(period);
+      el.removeAttribute("data-pending");
+    }).catch(function () {
+      showFail(el, "period", id);
+    });
+  }
+
+  function ensureNeodb(id) {
+    if (!id || id === "music") return Promise.resolve();
+    var el = document.querySelector('.tab-panel[data-media-cat="' + id + '"][data-pending]');
+    if (!el) return Promise.resolve();
+    showSkeleton(el);
+    reservePanelsHeight();
+    var p = cache.cat[id]
+      ? Promise.resolve(cache.cat[id])
+      : loadJSON(NEODB_BASE + "cat-" + id + ".json").then(function (json) {
+          if (json) cache.cat[id] = json;
+          return json;
+        });
+    return p.then(function (cat) {
+      if (!cat) {
+        showFail(el, "neodb", id);
+        return;
+      }
+      el.innerHTML = renderNeodbCat(cat);
+      el.removeAttribute("data-pending");
+    }).catch(function () {
+      showFail(el, "neodb", id);
+    });
+  }
+
+  // 在 radio 切换前锁高度，避免空面板先把页面压扁
+  document.addEventListener("pointerdown", function (ev) {
+    var t = ev.target;
+    if (!t || !t.closest) return;
+    if (t.closest(".tabs > .tab-label")) {
+      capturePanelsHeight();
+      reservePanelsHeight();
+    }
+  }, true);
+
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key !== "Enter" && ev.key !== " ") return;
+    var t = ev.target;
+    if (!t || !t.closest) return;
+    if (t.closest(".tabs > .tab-label")) {
+      capturePanelsHeight();
+      reservePanelsHeight();
+    }
+  }, true);
+
+  document.addEventListener("change", function (ev) {
+    var t = ev.target;
+    if (!t || !t.matches) return;
+    var done;
+    if (t.matches('input[name="media-tab"]')) {
+      var id = t.value;
+      done = (id === "music") ? ensureMusicPanel() : ensureNeodb(id);
+    } else if (t.matches('input[name="music-period"]')) {
+      done = ensurePeriod(t.getAttribute("data-period") || t.value);
+    } else {
+      return;
+    }
+    Promise.resolve(done).then(function () {
+      requestAnimationFrame(function () { settlePanelsHeight(); });
+    });
+  });
+
+  document.addEventListener("click", function (ev) {
+    var btn = ev.target && ev.target.closest && ev.target.closest("[data-retry-media]");
+    if (!btn) return;
+    var kind = btn.getAttribute("data-retry-media");
+    var id = btn.getAttribute("data-retry-id") || "";
+    var done;
+    if (kind === "music") {
+      var panel = document.querySelector(".tab-panel.panel-music");
+      if (panel) {
+        panel.setAttribute("data-pending", "music");
+        cache.musicMeta = null;
+      }
+      done = ensureMusicPanel();
+    } else if (kind === "period") {
+      var el = document.querySelector('.period-panel[data-period="' + id + '"]');
+      if (el) el.setAttribute("data-pending", "period");
+      delete cache.period[id];
+      done = ensurePeriod(id);
+    } else if (kind === "neodb") {
+      var nel = document.querySelector('.tab-panel[data-media-cat="' + id + '"]');
+      if (nel) nel.setAttribute("data-pending", "neodb");
+      delete cache.cat[id];
+      done = ensureNeodb(id);
+    } else {
+      return;
+    }
+    Promise.resolve(done).then(function () {
+      requestAnimationFrame(function () { settlePanelsHeight(); });
+    });
+  });
+
+  // 首屏稳定后记下高度，供第一次切 Tab 使用
+  requestAnimationFrame(function () { capturePanelsHeight(); });
+})();
+</script>

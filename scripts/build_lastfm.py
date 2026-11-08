@@ -309,6 +309,9 @@ def main() -> None:
             "user": top.get("user") or scrobbles.get("user") or "viazure",
         },
     )
+    from emit_page_shards import emit_lastfm
+
+    emit_lastfm()
 
 
 if __name__ == "__main__":

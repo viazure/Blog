@@ -13,3 +13,8 @@ worker/.wrangler/
 worker/dist/
 worker/.dev.vars
 .dev.vars
+
+# local verification builds
+public-p0-check/
+public-main-baseline/
+

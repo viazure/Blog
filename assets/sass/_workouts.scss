@@ -18,6 +18,8 @@
 .stv-year {
   display: none;
   min-width: 0;
+  cursor: default;
+  user-select: none;
 }
 
 .stv-year .stv-label {
@@ -30,6 +32,13 @@
 
 .stv-year .stv-cap {
   margin-top: 0.35rem;
+}
+
+.sec-sub {
+  margin-left: 0.35em;
+  color: $gray;
+  font-size: 0.72em;
+  font-weight: 400;
 }
 
 .stv-recent {
@@ -790,6 +799,7 @@
   .act-switcher:has(.sw-#{$i}:checked) .act-bar .chips > label:nth-of-type(#{$i}) {
     color: #fff;
     background: $text-base-color;
+    border-radius: 999px;
   }
 
   .sport-switcher:has(.sw-#{$i}:checked) > .chips > .chip-#{$i} {
@@ -1192,4 +1202,45 @@
   height: 40px;
   color: var(--workout-accent);
   overflow: visible;
+}
+
+/* 懒加载失败态 */
+.lazy-fail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0.75rem 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px dashed $rule;
+  border-radius: 8px;
+  color: $gray;
+  font-size: 0.85rem;
+
+  p {
+    margin: 0;
+  }
+
+  button {
+    appearance: none;
+    margin: 0;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid $rule;
+    border-radius: 999px;
+    background: transparent;
+    color: $text-base-color;
+    font: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      border-color: $text-base-color;
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+  }
 }

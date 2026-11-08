@@ -207,6 +207,9 @@ def main() -> None:
         )
 
     dump_data("neodb.json", {"categories": tabs})
+    from emit_page_shards import emit_neodb
+
+    emit_neodb()
 
 
 if __name__ == "__main__":

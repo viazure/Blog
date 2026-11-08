@@ -179,9 +179,30 @@
   display: none;
 }
 
+/* 懒加载骨架：切 Tab 时空面板先占位，配合 JS 的 min-height 预留减轻 CLS */
+.media-skel {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.35rem 0 1.1rem;
+  min-height: 22rem;
+}
+
+.media-skel-bar {
+  height: 1.05rem;
+  border-radius: 3px;
+  background: $rule;
+  opacity: 0.65;
+
+  &:nth-child(3n) { width: 70%; }
+  &:nth-child(3n + 1) { width: 94%; }
+  &:nth-child(3n + 2) { width: 82%; }
+}
+
+
 /* 选中态：radio 与面板容器同级，用 #id:checked ~ 选到对应面板。
    必须绑到具体 id，否则任意选中的 radio 会同时打开所有面板。 */
-$media-tabs: "music", "book", "movie", "tv", "game", "podcast", "performance";
+/* Align with data/neodb categories.id + music tab; no ghost ids (dropped performance). */
+$media-tabs: "music", "book", "movie", "tv", "game", "podcast";
 
 @each $tab in $media-tabs {
   #media-tab-#{$tab}:checked ~ .tab-panels > .tab-panel.panel-#{$tab} {
@@ -292,6 +313,10 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
   .rank-cover-blank,
   .rank-cover.cover-broken,
   .scroll-fade {
+    background: $rule-dark;
+  }
+
+  .media-skel-bar {
     background: $rule-dark;
   }
 
@@ -442,4 +467,42 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
 html.dark {
   @include data-muted;
   @include data-tab-active-dark;
+}
+
+.lazy-fail {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0.75rem 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px dashed $rule;
+  border-radius: 8px;
+  color: $gray;
+  font-size: 0.85rem;
+
+  p { margin: 0; }
+
+  button {
+    appearance: none;
+    margin: 0;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid $rule;
+    border-radius: 999px;
+    background: transparent;
+    color: $text-base-color;
+    font: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      border-color: $text-base-color;
+    }
+
+    &:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+    }
+  }
 }

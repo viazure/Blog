@@ -1,0 +1,27 @@
+{{/* 单年热力图面板正文：月份轴 + 格子 + 图例。上下文为 heatmap.years 的一项。 */}}
+<div class="hm-months" aria-hidden="true">
+    {{ range .months }}
+    <span class="hm-month" style="left:{{ .pct }}%">{{ .label }}</span>
+    {{ end }}
+</div>
+<div class="heatmap" role="img" aria-label="{{ .year }} 年热力图">
+    {{ range .weeks }}
+    <div class="hm-week">
+        {{ range . }}
+        <span class="{{ .class }}"{{ with .title }} data-tip="{{ . }}"{{ end }}{{ if .colour }} style="--c:{{ .colour }}{{ with .pie }};--pie:{{ . }}{{ end }}"{{ end }}></span>
+        {{ end }}
+    </div>
+    {{ end }}
+</div>
+{{ with .legend }}
+<div class="legend">
+    {{ range . }}
+    <span>
+        <span class="ramp" aria-hidden="true">
+            {{ range .colours }}<i class="dot" style="background:{{ . }}"></i>{{ end }}
+        </span>
+        {{ .name }}
+    </span>
+    {{ end }}
+</div>
+{{ end }}
