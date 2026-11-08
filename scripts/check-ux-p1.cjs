@@ -42,8 +42,8 @@ function assert(cond, msg) {
 // 3) toc site default + threshold
 {
   const toml = read("hugo.toml");
-  assert(/toc\s*=\s*true/.test(toml), "hugo.toml toc=true");
-  assert(!/toc\s*=\s*false/.test(toml), "hugo.toml toc not false");
+  assert(/toc\s*=\s*false/.test(toml), "hugo.toml toc=false (opt-in)");
+  assert(!/toc\s*=\s*true/.test(toml), "hugo.toml toc not true");
   const toc = read("layouts/_partials/toc.html");
   assert(toc.includes('findRE "<h2" .Content'), "toc counts h2 via findRE");
   assert(/ge \$h2count 3/.test(toc), "toc requires h2count >= 3");
