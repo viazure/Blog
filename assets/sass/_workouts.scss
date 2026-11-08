@@ -1639,11 +1639,6 @@
   transform: rotate(90deg);
 }
 
-.wk-hr-scrub-hint {
-  font-size: 0.72rem;
-  color: var(--wk-muted);
-  font-weight: 400;
-}
 
 .wk-hr-scrub-panel {
   display: none;
@@ -1813,26 +1808,22 @@
 }
 
 .wk-info-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 1.05rem;
-  height: 1.05rem;
-  margin: 0;
+  display: inline;
+  margin: 0 0 0 0.15rem;
   padding: 0;
-  border: 1px solid var(--wk-line);
-  border-radius: 999px;
+  border: 0;
+  border-radius: 0;
   background: transparent;
   color: var(--wk-muted);
-  font-size: 0.68rem;
-  font-weight: 700;
+  font-size: inherit;
+  font-weight: 500;
   font-family: inherit;
   line-height: 1;
   cursor: pointer;
-  vertical-align: middle;
+  vertical-align: baseline;
 
   &:hover {
     color: var(--wk-ink);
-    opacity: 0.85;
   }
 
   &:focus {

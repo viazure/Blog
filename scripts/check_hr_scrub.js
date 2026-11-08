@@ -24,12 +24,14 @@ function staticChecks(html) {
     'id="wk-hr-scrub"',
     'data-wk-hr-toggle',
     'data-wk-hr-canvas',
+    'aria-label="展开心率趋势"',
     'id="wk-tip-sheet"',
     'var tipSheet = document.getElementById("wk-tip-sheet")',
     'var hrScrubEl = dialog.querySelector("[data-wk-hr-scrub]")',
     "function setHrScrub(",
     "function toggleHrScrub(",
     "function drawHrScrub(",
+    'ctx.fillStyle = "#d4534a"',
   ];
   for (const n of need) {
     if (!html.includes(n)) fail("missing " + n);
@@ -40,6 +42,27 @@ function staticChecks(html) {
     fail("openDetail missing setHrScrub");
   }
   pass("static markup + bindings + openDetail wire");
+  if (html.includes("data-wk-hr-hint") || html.includes("点开查看整场") || html.includes("再点收起")) {
+    fail("HR hint copy should be removed");
+  }
+  const tipIdx = html.indexOf("var TIP_COPY =");
+  if (tipIdx < 0) fail("TIP_COPY missing");
+  const tipChunk = html.slice(tipIdx, tipIdx + 900);
+  const metricBodies = {
+    moving: "实际移动时长，不含暂停。",
+    kcal: "手表估算消耗，非实测。",
+    hr_avg: "整场平均心率。",
+    hr_max: "整场最高心率。",
+  };
+  for (const [key, body] of Object.entries(metricBodies)) {
+    if (!tipChunk.includes('body: "' + body + '"')) fail("TIP_COPY body mismatch for " + key);
+  }
+  if (!tipChunk.includes('body: "外圈为强度，中圈为心率，核心为用时，均铺满整场。"')) {
+    fail("sclock legend tip changed unexpectedly");
+  }
+  const drawChunk = html.split("function drawHrScrub")[1].split("function setHrIdxFromClientX")[0];
+  if (!drawChunk.includes('fillStyle = "#d4534a"')) fail("solid scrub fill missing");
+  if (drawChunk.includes('fillStyle = themeTok("--wk-sheet"')) fail("hollow scrub fill still present");
 }
 
 function makeEl(id, attrs) {
@@ -309,12 +332,12 @@ function __probe(has) {
     hidden: !!hrScrubEl.hidden,
     open: hrScrubEl.classList.contains("is-open"),
     expanded: hrToggleBtn.getAttribute("aria-expanded"),
-    hint: hrHintEl.textContent,
+    label: hrToggleBtn.getAttribute("aria-label"),
     axisEnd: hrAxisEnd.textContent,
     bpm: hrBpmEl.textContent
   };
 }
-function __toggle(){ toggleHrScrub(); return { open: hrScrubEl.classList.contains("is-open"), expanded: hrToggleBtn.getAttribute("aria-expanded"), hint: hrHintEl.textContent }; }
+function __toggle(){ toggleHrScrub(); return { open: hrScrubEl.classList.contains("is-open"), expanded: hrToggleBtn.getAttribute("aria-expanded"), label: hrToggleBtn.getAttribute("aria-label") }; }
 `;
   const uDom = buildDom();
   const uSand = {
@@ -329,7 +352,7 @@ function __toggle(){ toggleHrScrub(); return { open: hrScrubEl.classList.contain
   // bind DOM vars into sandbox
   uSand.hrScrubEl = uDom.hr;
   uSand.hrToggleBtn = uDom.hrToggle;
-  uSand.hrHintEl = uDom.hr.querySelector("[data-wk-hr-hint]") || uDom.hr.children[1];
+  uSand.hrHintEl = null;
   uSand.hrTimeEl = uDom.hr.querySelector("[data-wk-hr-time]");
   uSand.hrBpmEl = uDom.hr.querySelector("[data-wk-hr-bpm]");
   uSand.hrWrapEl = uDom.hr.querySelector("[data-wk-hr-wrap]");
@@ -345,13 +368,16 @@ function __toggle(){ toggleHrScrub(); return { open: hrScrubEl.classList.contain
   if (has.axisEnd !== "30:00") fail("axis end expected 30:00 got " + has.axisEnd);
   pass("has HR: visible + collapsed + readout");
 
+  if (has.label !== "展开心率趋势") fail("collapsed aria-label expected 展开心率趋势 got " + has.label);
+
   const opened = uSand.__toggle();
   if (!opened.open || opened.expanded !== "true") fail("toggle open failed");
-  if (opened.hint !== "再点收起") fail("hint not updated on open");
+  if (opened.label !== "收起心率趋势") fail("open aria-label expected 收起心率趋势 got " + opened.label);
   pass("expand");
 
   const closed = uSand.__toggle();
   if (closed.open || closed.expanded !== "false") fail("toggle close failed");
+  if (closed.label !== "展开心率趋势") fail("close aria-label expected 展开心率趋势 got " + closed.label);
   pass("collapse");
 
   const no = uSand.__probe(false);

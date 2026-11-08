@@ -27,9 +27,8 @@
         <p class="wk-detail-when mono"></p>
         <div class="wk-metrics" role="list"></div>
         <div class="wk-hr-scrub" id="wk-hr-scrub" hidden data-wk-hr-scrub>
-          <button type="button" class="wk-hr-scrub-toggle" data-wk-hr-toggle aria-expanded="false" aria-controls="wk-hr-scrub-panel">
+          <button type="button" class="wk-hr-scrub-toggle" data-wk-hr-toggle aria-expanded="false" aria-controls="wk-hr-scrub-panel" aria-label="展开心率趋势">
             <span class="wk-hr-scrub-left"><span class="wk-hr-scrub-chev" aria-hidden="true">&rsaquo;</span>心率趋势</span>
-            <span class="wk-hr-scrub-hint" data-wk-hr-hint>点开查看整场</span>
           </button>
           <div class="wk-hr-scrub-panel" id="wk-hr-scrub-panel" role="region" aria-label="心率趋势图">
             <div class="wk-hr-scrub-readout">
@@ -124,7 +123,6 @@
   var legendHead = dialog.querySelector("[data-wk-legend-head]");
   var hrScrubEl = dialog.querySelector("[data-wk-hr-scrub]");
   var hrToggleBtn = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-toggle]") : null;
-  var hrHintEl = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-hint]") : null;
   var hrTimeEl = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-time]") : null;
   var hrBpmEl = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-bpm]") : null;
   var hrWrapEl = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-wrap]") : null;
@@ -690,19 +688,19 @@
     },
     moving: {
       title: "用时",
-      body: "实际移动时长，不含暂停；核心环数依此计算，外圈与中圈仍铺满整场。"
+      body: "实际移动时长，不含暂停。"
     },
     kcal: {
       title: "能耗",
-      body: "手表估算消耗（千卡），非实测。"
+      body: "手表估算消耗，非实测。"
     },
     hr_avg: {
       title: "均心率",
-      body: "整场平均心率（bpm），有逐点数据时画入中圈。"
+      body: "整场平均心率。"
     },
     hr_max: {
       title: "最大心率",
-      body: "整场最高心率（bpm）。"
+      body: "整场最高心率。"
     }
   };
   function openTipSheet(key) {
@@ -781,8 +779,10 @@
   function collapseHrScrub() {
     if (!hrScrubEl) return;
     hrScrubEl.classList.remove("is-open");
-    if (hrToggleBtn) hrToggleBtn.setAttribute("aria-expanded", "false");
-    if (hrHintEl) hrHintEl.textContent = "点开查看整场";
+    if (hrToggleBtn) {
+      hrToggleBtn.setAttribute("aria-expanded", "false");
+      hrToggleBtn.setAttribute("aria-label", "展开心率趋势");
+    }
   }
 
   function updateHrReadout() {
@@ -866,11 +866,8 @@
     ctx.stroke();
     ctx.beginPath();
     ctx.arc(scrub.x, scrub.y, 4.5, 0, Math.PI * 2);
-    ctx.fillStyle = themeTok("--wk-sheet", "#fff");
+    ctx.fillStyle = "#d4534a";
     ctx.fill();
-    ctx.strokeStyle = "#d4534a";
-    ctx.lineWidth = 2;
-    ctx.stroke();
   }
 
   function setHrIdxFromClientX(clientX) {
@@ -910,8 +907,10 @@
     if (!hrScrubEl || hrScrubEl.hidden || !hrSeries.length) return;
     var open = !hrScrubEl.classList.contains("is-open");
     hrScrubEl.classList.toggle("is-open", open);
-    if (hrToggleBtn) hrToggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
-    if (hrHintEl) hrHintEl.textContent = open ? "再点收起" : "点开查看整场";
+    if (hrToggleBtn) {
+      hrToggleBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      hrToggleBtn.setAttribute("aria-label", open ? "收起心率趋势" : "展开心率趋势");
+    }
     if (open) {
       requestAnimationFrame(function () {
         updateHrReadout();
