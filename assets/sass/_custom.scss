@@ -68,14 +68,18 @@ article .page-content {
     user-select: none;
   }
 
-  a.post-meta-cat,
-  a.post-meta-tag {
+  a.post-meta-cat {
     color: inherit;
     text-decoration: none;
+    font-size: 0.82rem;
     border-bottom: none;
 
     &[target="_blank"]::after {
       content: none;
+    }
+
+    &:visited {
+      color: inherit;
     }
 
     &:hover,
@@ -83,25 +87,5 @@ article .page-content {
       color: $text-link-blue;
       text-decoration: underline;
     }
-  }
-
-  a.post-meta-cat {
-    font-size: 0.82rem;
-  }
-
-  .post-meta-tags {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    gap: 0.35rem 0.55rem;
-    margin-top: 0.15rem;
-    font-size: 0.76rem;
-    opacity: 0.72;
-    line-height: 1.45;
-  }
-
-  a.post-meta-tag {
-    font-size: inherit;
-    padding: 4px 0;
   }
 }

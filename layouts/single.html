@@ -15,23 +15,6 @@
                             <a class="post-meta-cat" href="{{ printf "/categories/%s/" ($c | urlize) | relLangURL }}">{{ $c }}</a>
                         {{- end -}}
                     {{- end -}}
-                    {{- $catsLower := slice -}}
-                    {{- range $.Params.categories -}}
-                        {{- $catsLower = $catsLower | append (lower .) -}}
-                    {{- end -}}
-                    {{- $tagsShow := slice -}}
-                    {{- range $.Params.tags -}}
-                        {{- if not (in $catsLower (lower .)) -}}
-                            {{- $tagsShow = $tagsShow | append . -}}
-                        {{- end -}}
-                    {{- end -}}
-                    {{- with $tagsShow -}}
-                    <div class="post-meta-tags">
-                        {{- range . -}}
-                        <a class="post-meta-tag" href="{{ printf "/tags/%s/" (. | urlize) | relLangURL }}">#{{ . }}</a>
-                        {{- end -}}
-                    </div>
-                    {{- end -}}
                 </div>
                 {{ end }}
             </header>

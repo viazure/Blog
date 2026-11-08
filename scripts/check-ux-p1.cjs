@@ -25,8 +25,9 @@ function assert(cond, msg) {
   assert(/h4\s*\{[^}]*font-weight:\s*600/s.test(s), "h4 weight 600");
   assert(/h1\s*\{[^}]*font-size:\s*1\.625rem/s.test(s), "h1 1.625rem");
   assert(/a\.post-meta-cat/.test(s), "post-meta-cat styles present");
-  assert(/\.post-meta-tags/.test(s), "post-meta-tags row styles present");
-  assert(/a\.post-meta-tag/.test(s), "post-meta-tag styles present");
+  assert(/:visited/.test(s), "post-meta-cat visited inherits");
+  assert(!/\.post-meta-tags/.test(s), "post-meta-tags styles removed");
+  assert(!/a\.post-meta-tag/.test(s), "post-meta-tag styles removed");
   assert(!/a\.post-meta-tax/.test(s), "old post-meta-tax style removed");
   assert(/font-size:\s*0\.82rem/.test(s), "post-meta font ~0.82rem");
 }
@@ -55,16 +56,15 @@ function assert(cond, msg) {
   assert(toc.includes('id="post-toc"'), "post-toc still present");
 }
 
-// 4) post-meta categories/tags (date·cat / tags row)
+// 4) post-meta: date · categories only (no tags)
 {
   const s = read("layouts/single.html");
   assert(s.includes("$.Params.categories"), "categories after date");
   assert(s.includes("post-meta-cat"), "post-meta-cat class");
-  assert(s.includes("post-meta-tags"), "post-meta-tags row");
-  assert(s.includes("post-meta-tag"), "post-meta-tag class");
   assert(s.includes("post-meta-sep"), "post-meta-sep for date·cat");
-  assert(s.includes("catsLower"), "dedupe tags vs categories");
-  assert(s.includes("#{{ . }}") || s.includes("#{{."), "hash prefix on tags");
+  assert(!s.includes("Params.tags"), "tags not rendered in post-meta");
+  assert(!s.includes("post-meta-tags"), "post-meta-tags row removed");
+  assert(!s.includes("post-meta-tag"), "post-meta-tag class removed");
   assert(!s.includes("post-meta-tax"), "old post-meta-tax removed");
   assert(s.includes('class="header-title"'), "header-title unchanged");
 }
