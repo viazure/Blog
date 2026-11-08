@@ -35,10 +35,10 @@ function assert(cond, msg) {
 // 2) author margins
 {
   const s = read("assets/sass/_layout.scss");
-  assert(/\.author\s*\{[^}]*margin-top:\s*4\.5rem/s.test(s), "author margin-top 4.5rem");
-  assert(/\.author\s*\{[^}]*margin-bottom:\s*3\.5rem/s.test(s), "author margin-bottom 3.5rem");
-  assert(/@include media-query\(\$on-mobile\)\s*\{\s*margin-top:\s*3\.5rem/s.test(s), "mobile author margin-top 3.5rem");
-  assert(/margin-bottom:\s*3em/.test(s), "mobile author margin-bottom ~3em kept");
+  assert(/\.author\s*\{[^}]*margin-top:\s*5\.25rem/s.test(s), "author margin-top 5.25rem");
+  assert(/\.author\s*\{[^}]*margin-bottom:\s*5rem/s.test(s), "author margin-bottom 5rem");
+  assert(/@include media-query\(\$on-mobile\)\s*\{\s*margin-top:\s*4rem/s.test(s), "mobile author margin-top 4rem");
+  assert(/@include media-query\(\$on-mobile\)\s*\{[\s\S]*?margin-bottom:\s*4rem/s.test(s), "mobile author margin-bottom 4rem");
   assert(!/margin-top:\s*6\.3rem/.test(s), "old 6.3rem gone");
   assert(!/margin-bottom:\s*7\.2rem/.test(s), "old 7.2rem gone");
 }
