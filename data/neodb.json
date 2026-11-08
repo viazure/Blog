@@ -242,23 +242,6 @@
               "url": "/book/5hGtQw50lTwZRfG14mdWQq"
             },
             {
-              "created_time": "2026-08-15",
-              "note": "",
-              "note_html": "",
-              "rating_filled": 5,
-              "rating_grade": 9,
-              "title": "風が強く吹いている",
-              "url": "/book/1cRpeCgFNQgLu0XwEjCEUU"
-            },
-            {
-              "created_time": "2026-08-15",
-              "note": "",
-              "note_html": "",
-              "rating_grade": null,
-              "title": "哆啦a梦（松本大洋版）",
-              "url": "/book/3os8BRGKmJDkZwQywrdGM9"
-            },
-            {
               "created_time": "2026-08-14",
               "note": "学到了一些可实践的道理，但要具体在生活中使用还得持续练习。另外总有些读圣经的感觉，各种「爱与和平」，不知道是原本本就如此还是翻译的问题，",
               "note_html": "学到了一些可实践的道理，但要具体在生活中使用还得持续练习。另外总有些读圣经的感觉，各种「爱与和平」，不知道是原本本就如此还是翻译的问题，",
@@ -266,15 +249,6 @@
               "rating_grade": 8,
               "title": "非暴力沟通",
               "url": "/book/2L44tOTX0en2yXzxzoQ36l"
-            },
-            {
-              "created_time": "2026-08-14",
-              "note": "",
-              "note_html": "",
-              "rating_filled": 5,
-              "rating_grade": 10,
-              "title": "Sunny",
-              "url": "/book/01suRXD0kDcNQC3dxyUVPR"
             },
             {
               "created_time": "2026-01-16",
@@ -478,6 +452,15 @@
             },
             {
               "created_time": "2024-05-05",
+              "note": "相比于动漫，书籍本身有些平淡了。",
+              "note_html": "相比于动漫，书籍本身有些平淡了。",
+              "rating_filled": 5,
+              "rating_grade": 9,
+              "title": "風が強く吹いている",
+              "url": "/book/1cRpeCgFNQgLu0XwEjCEUU"
+            },
+            {
+              "created_time": "2024-05-05",
               "note": "先看的番再看的书，不得不说动漫是改编的真好，书不错，动漫更不错。",
               "note_html": "先看的番再看的书，不得不说动漫是改编的真好，书不错，动漫更不错。",
               "rating_filled": 5,
@@ -519,6 +502,24 @@
               "rating_grade": 10,
               "title": "小狗钱钱",
               "url": "/book/5P1bSNRAYdKNkKC8FSAaiZ"
+            },
+            {
+              "created_time": "2023-03-19",
+              "note": "",
+              "note_html": "",
+              "rating_filled": 5,
+              "rating_grade": 10,
+              "title": "Sunny",
+              "url": "/book/01suRXD0kDcNQC3dxyUVPR"
+            },
+            {
+              "created_time": "2023-02-18",
+              "note": "",
+              "note_html": "",
+              "rating_filled": 4,
+              "rating_grade": 8,
+              "title": "哆啦a梦（松本大洋版）",
+              "url": "/book/3os8BRGKmJDkZwQywrdGM9"
             },
             {
               "created_time": "2023-02-17",
@@ -634,7 +635,7 @@
           "years": [
             {
               "collapsed": false,
-              "count": 6,
+              "count": 3,
               "items": [
                 {
                   "created_time": "2026-09-27",
@@ -646,23 +647,6 @@
                   "url": "/book/5hGtQw50lTwZRfG14mdWQq"
                 },
                 {
-                  "created_time": "2026-08-15",
-                  "note": "",
-                  "note_html": "",
-                  "rating_filled": 5,
-                  "rating_grade": 9,
-                  "title": "風が強く吹いている",
-                  "url": "/book/1cRpeCgFNQgLu0XwEjCEUU"
-                },
-                {
-                  "created_time": "2026-08-15",
-                  "note": "",
-                  "note_html": "",
-                  "rating_grade": null,
-                  "title": "哆啦a梦（松本大洋版）",
-                  "url": "/book/3os8BRGKmJDkZwQywrdGM9"
-                },
-                {
                   "created_time": "2026-08-14",
                   "note": "学到了一些可实践的道理，但要具体在生活中使用还得持续练习。另外总有些读圣经的感觉，各种「爱与和平」，不知道是原本本就如此还是翻译的问题，",
                   "note_html": "学到了一些可实践的道理，但要具体在生活中使用还得持续练习。另外总有些读圣经的感觉，各种「爱与和平」，不知道是原本本就如此还是翻译的问题，",
@@ -670,15 +654,6 @@
                   "rating_grade": 8,
                   "title": "非暴力沟通",
                   "url": "/book/2L44tOTX0en2yXzxzoQ36l"
-                },
-                {
-                  "created_time": "2026-08-14",
-                  "note": "",
-                  "note_html": "",
-                  "rating_filled": 5,
-                  "rating_grade": 10,
-                  "title": "Sunny",
-                  "url": "/book/01suRXD0kDcNQC3dxyUVPR"
                 },
                 {
                   "created_time": "2026-01-16",
@@ -787,7 +762,7 @@
             },
             {
               "collapsed": false,
-              "count": 16,
+              "count": 17,
               "items": [
                 {
                   "created_time": "2024-12-27",
@@ -896,6 +871,15 @@
                 },
                 {
                   "created_time": "2024-05-05",
+                  "note": "相比于动漫，书籍本身有些平淡了。",
+                  "note_html": "相比于动漫，书籍本身有些平淡了。",
+                  "rating_filled": 5,
+                  "rating_grade": 9,
+                  "title": "風が強く吹いている",
+                  "url": "/book/1cRpeCgFNQgLu0XwEjCEUU"
+                },
+                {
+                  "created_time": "2024-05-05",
                   "note": "先看的番再看的书，不得不说动漫是改编的真好，书不错，动漫更不错。",
                   "note_html": "先看的番再看的书，不得不说动漫是改编的真好，书不错，动漫更不错。",
                   "rating_filled": 5,
@@ -934,7 +918,7 @@
             },
             {
               "collapsed": false,
-              "count": 6,
+              "count": 8,
               "items": [
                 {
                   "created_time": "2023-06-03",
@@ -944,6 +928,24 @@
                   "rating_grade": 10,
                   "title": "小狗钱钱",
                   "url": "/book/5P1bSNRAYdKNkKC8FSAaiZ"
+                },
+                {
+                  "created_time": "2023-03-19",
+                  "note": "",
+                  "note_html": "",
+                  "rating_filled": 5,
+                  "rating_grade": 10,
+                  "title": "Sunny",
+                  "url": "/book/01suRXD0kDcNQC3dxyUVPR"
+                },
+                {
+                  "created_time": "2023-02-18",
+                  "note": "",
+                  "note_html": "",
+                  "rating_filled": 4,
+                  "rating_grade": 8,
+                  "title": "哆啦a梦（松本大洋版）",
+                  "url": "/book/3os8BRGKmJDkZwQywrdGM9"
                 },
                 {
                   "created_time": "2023-02-17",
