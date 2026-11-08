@@ -48,8 +48,7 @@ def emit_workouts() -> None:
         payload = {
             "year": year,
             "heatmap": y,
-            "group": groups.get(year)
-            or {"year": year, "count": 0, "items": [], "kinds": []},
+            "group": groups.get(year) or {"year": year, "count": 0, "items": [], "kinds": []},
         }
         _dump(out / f"year-{year}.json", payload)
     print("workouts shards: %d years -> %s" % (len(years), out))
@@ -107,4 +106,4 @@ if __name__ == "__main__":
         main()
     except FileNotFoundError as exc:
         print(exc, file=sys.stderr)
-        raise SystemExit(1)
+        raise SystemExit(1) from None
