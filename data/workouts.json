@@ -9377,71 +9377,6 @@
         [
           {
             "class": "cd on",
-            "date": "2026-10-12",
-            "day": 12,
-            "km": 2.9,
-            "size": 12,
-            "title": "午后走路 2.94 km",
-            "today": false
-          },
-          {
-            "class": "cd on",
-            "date": "2026-10-13",
-            "day": 13,
-            "km": 5.0,
-            "size": 11,
-            "title": "晨间跑步 5.01 km",
-            "today": false
-          },
-          {
-            "class": "cd",
-            "date": "2026-10-14",
-            "day": 14,
-            "km": 0,
-            "size": 0,
-            "title": "",
-            "today": false
-          },
-          {
-            "class": "cd on",
-            "date": "2026-10-15",
-            "day": 15,
-            "km": 5.0,
-            "size": 11,
-            "title": "晨间跑步 5.01 km",
-            "today": false
-          },
-          {
-            "class": "cd",
-            "date": "2026-10-16",
-            "day": 16,
-            "km": 0,
-            "size": 0,
-            "title": "",
-            "today": false
-          },
-          {
-            "class": "cd on",
-            "date": "2026-10-17",
-            "day": 17,
-            "km": 5.2,
-            "size": 11,
-            "title": "晨间跑步 5.18 km",
-            "today": false
-          },
-          {
-            "class": "cd",
-            "date": "2026-10-18",
-            "day": 18,
-            "km": 0,
-            "size": 0,
-            "title": "",
-            "today": false
-          }
-        ],
-        [
-          {
-            "class": "cd on",
             "date": "2026-10-19",
             "day": 19,
             "km": 5.0,
@@ -9625,43 +9560,87 @@
             "today": false
           },
           {
-            "class": "cd on today",
+            "class": "cd on",
             "date": "2026-11-08",
             "day": 8,
             "km": 7.1,
             "size": 14,
             "title": "晨间徒步 2.07 km · 晨间跑步 5.01 km",
+            "today": false
+          }
+        ],
+        [
+          {
+            "class": "cd today",
+            "date": "2026-11-09",
+            "day": 9,
+            "km": 0,
+            "size": 0,
+            "title": "",
             "today": true
+          },
+          {
+            "class": "cd future",
+            "date": "2026-11-10",
+            "day": 10,
+            "km": 0,
+            "size": 0,
+            "title": "",
+            "today": false
+          },
+          {
+            "class": "cd future",
+            "date": "2026-11-11",
+            "day": 11,
+            "km": 0,
+            "size": 0,
+            "title": "",
+            "today": false
+          },
+          {
+            "class": "cd future",
+            "date": "2026-11-12",
+            "day": 12,
+            "km": 0,
+            "size": 0,
+            "title": "",
+            "today": false
+          },
+          {
+            "class": "cd future",
+            "date": "2026-11-13",
+            "day": 13,
+            "km": 0,
+            "size": 0,
+            "title": "",
+            "today": false
+          },
+          {
+            "class": "cd future",
+            "date": "2026-11-14",
+            "day": 14,
+            "km": 0,
+            "size": 0,
+            "title": "",
+            "today": false
+          },
+          {
+            "class": "cd future",
+            "date": "2026-11-15",
+            "day": 15,
+            "km": 0,
+            "size": 0,
+            "title": "",
+            "today": false
           }
         ]
       ],
-      "recent_n": 14,
+      "recent_n": 10,
       "week_bars": [
-        {
-          "hm": "2h 44m",
-          "moving": 9854,
-          "pct": 100.0,
-          "segments": [
-            {
-              "colour": "#fed7aa",
-              "hm": "1h 53m",
-              "name": "跑步",
-              "pct": 69.1,
-              "tip": "跑步 1h 53m"
-            },
-            {
-              "colour": "#d9f99d",
-              "hm": "50m",
-              "name": "走路",
-              "pct": 30.9,
-              "tip": "走路 50m"
-            }
-          ]
-        },
         {
           "hm": "1h 44m",
           "moving": 6297,
-          "pct": 63.9,
+          "pct": 79.0,
           "segments": [
             {
               "colour": "#fed7aa",
@@ -9675,7 +9654,7 @@
         {
           "hm": "1h 37m",
           "moving": 5831,
-          "pct": 59.2,
+          "pct": 73.2,
           "segments": [
             {
               "colour": "#fed7aa",
@@ -9689,7 +9668,7 @@
         {
           "hm": "2h 12m",
           "moving": 7969,
-          "pct": 80.9,
+          "pct": 100.0,
           "segments": [
             {
               "colour": "#fed7aa",
@@ -9713,11 +9692,6 @@
           "colour": "#fed7aa",
           "icon": "🏃",
           "name": "跑步"
-        },
-        {
-          "colour": "#d9f99d",
-          "icon": "🚶",
-          "name": "走路"
         },
         {
           "colour": "#bbf7d0",
@@ -38236,11 +38210,11 @@
     ]
   },
   "last4": {
-    "elev": 994,
-    "hours": "8.3 小时",
-    "km": 62.3,
-    "moving": 29951,
-    "n": 14
+    "elev": 546,
+    "hours": "5.6 小时",
+    "km": 44.2,
+    "moving": 20097,
+    "n": 10
   },
   "latest": "2026-11-08",
   "panels": [
@@ -38256,11 +38230,11 @@
       "hide_km": false,
       "icon": "🏃",
       "recent": {
-        "elev": 881,
-        "hours": "6.7 小时",
-        "km": 57.3,
-        "moving": 24256,
-        "n": 12
+        "elev": 521,
+        "hours": "4.8 小时",
+        "km": 42.1,
+        "moving": 17450,
+        "n": 9
       },
       "records": [
         {
@@ -38394,11 +38368,11 @@
       "hide_km": false,
       "icon": "🚶",
       "recent": {
-        "elev": 88,
-        "hours": "51 分钟",
-        "km": 2.9,
-        "moving": 3048,
-        "n": 1
+        "elev": 0,
+        "hours": "0 分钟",
+        "km": 0,
+        "moving": 0,
+        "n": 0
       },
       "records": [
         {
