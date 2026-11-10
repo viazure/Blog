@@ -2,8 +2,25 @@
   "generated_from": "life-data/workouts/activities.json",
   "groups": [
     {
-      "count": 81,
+      "count": 82,
       "items": [
+        {
+          "bucket": "跑步",
+          "clock": "26",
+          "clock_unit": "min",
+          "date": "2026-11-10",
+          "elev": 18.0,
+          "has_trail": true,
+          "hr": 136.0,
+          "icon": "🏃",
+          "idx": 537,
+          "km": 4.0,
+          "label": "晨间跑步",
+          "moving": 1572,
+          "name": "跑步",
+          "pace": 392.6,
+          "time": "07:07"
+        },
         {
           "bucket": "其他",
           "clock": "44",
@@ -9571,22 +9588,22 @@
         ],
         [
           {
-            "class": "cd today",
+            "class": "cd",
             "date": "2026-11-09",
             "day": 9,
             "km": 0,
             "size": 0,
             "title": "",
-            "today": true
+            "today": false
           },
           {
-            "class": "cd future",
+            "class": "cd on today",
             "date": "2026-11-10",
             "day": 10,
-            "km": 0,
-            "size": 0,
-            "title": "",
-            "today": false
+            "km": 4.0,
+            "size": 10,
+            "title": "晨间跑步 4.00 km",
+            "today": true
           },
           {
             "class": "cd future",
@@ -9635,7 +9652,7 @@
           }
         ]
       ],
-      "recent_n": 10,
+      "recent_n": 11,
       "week_bars": [
         {
           "hm": "1h 44m",
@@ -9685,6 +9702,20 @@
               "tip": "徒步 44m"
             }
           ]
+        },
+        {
+          "hm": "26m",
+          "moving": 1572,
+          "pct": 19.7,
+          "segments": [
+            {
+              "colour": "#fed7aa",
+              "hm": "26m",
+              "name": "跑步",
+              "pct": 100.0,
+              "tip": "跑步 26m"
+            }
+          ]
         }
       ],
       "week_kinds": [
@@ -9702,8 +9733,8 @@
     },
     "years": [
       {
-        "hours": "40.6 小时",
-        "km": 313.0,
+        "hours": "41 小时",
+        "km": 317.0,
         "legend": [
           {
             "colours": [
@@ -9801,7 +9832,7 @@
             "pct": 91.667
           }
         ],
-        "n": 81,
+        "n": 82,
         "weeks": [
           [
             {
@@ -12433,10 +12464,18 @@
               "title": "2026-11-09"
             },
             {
-              "class": "hm",
-              "colour": "",
-              "segments": [],
-              "title": "2026-11-10"
+              "class": "hm on",
+              "colour": "#f97316",
+              "pie": "",
+              "segments": [
+                {
+                  "colour": "#f97316",
+                  "name": "跑步",
+                  "pct": 100.0,
+                  "start": 0.0
+                }
+              ],
+              "title": "2026-11-10 · 晨间跑步 4.00 km"
             },
             {
               "class": "hm",
@@ -38210,31 +38249,31 @@
     ]
   },
   "last4": {
-    "elev": 546,
-    "hours": "5.6 小时",
-    "km": 44.2,
-    "moving": 20097,
-    "n": 10
+    "elev": 564,
+    "hours": "6 小时",
+    "km": 48.2,
+    "moving": 21669,
+    "n": 11
   },
-  "latest": "2026-11-08",
+  "latest": "2026-11-10",
   "panels": [
     {
       "all": {
-        "elev": 9888,
-        "hours": "296.4 小时",
-        "km": 2825.3,
-        "moving": 1066997,
-        "n": 424
+        "elev": 9906,
+        "hours": "296.8 小时",
+        "km": 2829.3,
+        "moving": 1068569,
+        "n": 425
       },
       "bucket": "跑步",
       "hide_km": false,
       "icon": "🏃",
       "recent": {
-        "elev": 521,
-        "hours": "4.8 小时",
-        "km": 42.1,
-        "moving": 17450,
-        "n": 9
+        "elev": 539,
+        "hours": "5.3 小时",
+        "km": 46.1,
+        "moving": 19022,
+        "n": 10
       },
       "records": [
         {
@@ -38275,11 +38314,11 @@
       ],
       "yearly": [
         {
-          "elev": 2624,
-          "hours": "34.6 小时",
-          "km": 291.1,
-          "moving": 124675,
-          "n": 73,
+          "elev": 2642,
+          "hours": "35.1 小时",
+          "km": 295.1,
+          "moving": 126247,
+          "n": 74,
           "year": 2026
         },
         {
@@ -39794,10 +39833,10 @@
   "run_page": "https://run.viazure.cc",
   "stopgap": false,
   "totals": {
-    "km": 3123.9,
-    "moving": 1328623,
-    "runs": 424,
-    "sessions": 537
+    "km": 3127.9,
+    "moving": 1330195,
+    "runs": 425,
+    "sessions": 538
   },
   "year": 2026
 }
