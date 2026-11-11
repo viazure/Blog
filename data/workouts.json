@@ -9597,22 +9597,22 @@
             "today": false
           },
           {
-            "class": "cd on today",
+            "class": "cd on",
             "date": "2026-11-10",
             "day": 10,
             "km": 4.0,
             "size": 10,
             "title": "晨间跑步 4.00 km",
-            "today": true
+            "today": false
           },
           {
-            "class": "cd future",
+            "class": "cd today",
             "date": "2026-11-11",
             "day": 11,
             "km": 0,
             "size": 0,
             "title": "",
-            "today": false
+            "today": true
           },
           {
             "class": "cd future",
