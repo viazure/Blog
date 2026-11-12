@@ -18,3 +18,10 @@ worker/.dev.vars
 public-p0-check/
 public-main-baseline/
 
+
+# Generated from viazure/life-data; rebuild with scripts/build_*.py
+data/lastfm.json
+data/neodb.json
+data/workouts.json
+static/trails.json
+static/data/

@@ -23,3 +23,15 @@ Read those before changing card fields or shard ids. Session Clock does not land
 
 - 主题文件在 `themes/hugo-blog-awesome/`（git submodule），不要直接修改；站点自有样式写在 `assets/sass/`，模板覆盖写在 `layouts/`。
 - 站内沟通与代码注释使用中文。
+
+## 页面数据（life-data）
+
+运动 / 书影音页用的 JSON 是构建产物，不进 Git。本地预览前需要 `viazure/life-data`（默认在同级目录 `../life-data`，也可设环境变量 `LIFE_DATA_DIR`），然后在仓库根目录运行：
+
+```
+python scripts/build_lastfm.py
+python scripts/build_neodb.py
+python scripts/build_workouts.py
+```
+
+会写出 `data/*.json`、`static/trails.json` 和 `static/data/` 分片，再执行 `hugo server`。源数据缺失或解析不到活动时，脚本以非零状态退出。

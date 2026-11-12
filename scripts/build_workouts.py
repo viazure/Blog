@@ -598,8 +598,7 @@ def build_heatmap(rows: list[dict], years: list[int], by_day: dict[date, list[di
 def main() -> None:
     path = life_data_root() / "data" / "workouts" / "activities.json"
     if not path.exists():
-        print("activities source missing, skip")
-        return
+        raise SystemExit("activities source missing")
     raw = load_json(path)
     if not isinstance(raw, list):
         raise SystemExit("workouts/activities.json must be a JSON array")
@@ -653,8 +652,7 @@ def main() -> None:
         if points:
             trails[str(index)] = points
     if not rows:
-        print("no activities parsed, skip")
-        return
+        raise SystemExit("no activities parsed")
 
     rows.sort(key=lambda r: (r["date"], r.get("time") or ""), reverse=True)
     runs = [r for r in rows if r["name"] == "跑步"]

@@ -23,8 +23,6 @@ jobs:
           fetch-depth: 0
 
       - name: Checkout life-data
-        id: life_data
-        continue-on-error: true
         uses: actions/checkout@v5
         with:
           repository: viazure/life-data
@@ -33,30 +31,33 @@ jobs:
           persist-credentials: false
 
       - name: Setup Python
-        if: steps.life_data.outcome == 'success'
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
       - name: Build data pages
-        if: steps.life_data.outcome == 'success'
         run: |
           python scripts/build_lastfm.py
           python scripts/build_neodb.py
           python scripts/build_workouts.py
 
-      - name: Commit data
-        if: steps.life_data.outcome == 'success'
+      - name: Check data artifacts
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data static/trails.json static/data
-          if git diff --cached --quiet; then
-            echo "nothing to commit"
-          else
-            git commit -m "update page data [skip ci]"
-            git push
-          fi
+          set -euo pipefail
+          for f in \
+            data/lastfm.json \
+            data/neodb.json \
+            data/workouts.json \
+            static/trails.json \
+            static/data/workouts/index.json \
+            static/data/media/lastfm/meta.json \
+            static/data/media/neodb/meta.json
+          do
+            if [ ! -s "$f" ]; then
+              echo "missing or empty: $f" >&2
+              exit 1
+            fi
+          done
 
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
@@ -66,6 +67,24 @@ jobs:
 
       - name: Build Web
         run: hugo
+
+      - name: Check published data pages
+        run: |
+          set -euo pipefail
+          for f in \
+            public/trails.json \
+            public/data/workouts/index.json \
+            public/data/media/lastfm/meta.json \
+            public/data/media/neodb/meta.json \
+            public/media/index.html \
+            public/music/index.html \
+            public/workouts/index.html
+          do
+            if [ ! -s "$f" ]; then
+              echo "missing or empty after hugo: $f" >&2
+              exit 1
+            fi
+          done
 
       - name: Deploy Web
         uses: peaceiris/actions-gh-pages@v4

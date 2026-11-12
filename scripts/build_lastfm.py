@@ -209,8 +209,7 @@ def main() -> None:
     loved_path = lastfm_root / "loved.json"
     listens_path = lb_root / "listens.json"
     if not scrobble_path.exists() or not top_path.exists():
-        print("lastfm source missing, skip")
-        return
+        raise SystemExit("lastfm source missing")
 
     scrobbles = load_archive(scrobble_path)
     top = load_archive(top_path)
