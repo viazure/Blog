@@ -9,6 +9,12 @@
                 {{ $ISO_time := dateFormat "2006-01-02T15:04:05-07:00" . }}
                 <div class="post-meta">
                     <time datetime="{{ $ISO_time }}" itemprop="datePublished"> {{ .Format $configDateFormat }} </time>
+                    {{- with $.Params.categories -}}
+                        {{- range $c := . -}}
+                            <span class="post-meta-sep" aria-hidden="true">·</span>
+                            <a class="post-meta-cat" href="{{ printf "/categories/%s/" ($c | urlize) | relLangURL }}">{{ $c }}</a>
+                        {{- end -}}
+                    {{- end -}}
                 </div>
                 {{ end }}
             </header>

@@ -10,14 +10,14 @@
 
 其中规定了本站的配色变量、字体层次、圆角/动效取值、深色模式双路径写法、响应式断点、类名前缀约定与自检清单。禁止在样式里硬编码新颜色。
 
-## UX P0 lazy-load contract
+## 懒加载约定
 
-See:
+改卡片字段或分片 id 前先读：
 
-- [docs/ux-p0-lazy-shards.md](docs/ux-p0-lazy-shards.md) — shard URLs, default year/Tab, `workouts:year-loaded`, cache, Session Clock boundary
-- [docs/ux-p0-ssr-js-fields.md](docs/ux-p0-ssr-js-fields.md) — SSR/JS field map and `note_html` safety
+- [docs/lazy-shards.md](docs/lazy-shards.md) — 分片 URL、默认年份/Tab、`workouts:year-loaded`、缓存、双端渲染
+- [docs/ssr-js-fields.md](docs/ssr-js-fields.md) — SSR/JS 字段对照与 `note_html` 安全
 
-Read those before changing card fields or shard ids. Session Clock does not land on the P0 branch; do not reuse `clock`/`clock_unit` for session state.
+其中 `clock` / `clock_unit` 表示运动时长（duration），勿当会话状态。
 
 ## 其他约定
 

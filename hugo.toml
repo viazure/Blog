@@ -78,7 +78,7 @@ theme = "hugo-blog-awesome"
     # 你可以查看 layouts/index.html 获取更多信息
     description = "生活是体验，拍照是情绪，写作是思考，折腾是？"
     mainSections = ["posts"]
-    toc = false # 设置为 false 可全局禁用目录
+    toc = false # 默认关；单篇 toc: true 才开；渲染另受 h2≥3 门槛
     goToTop = true # 设置为 false 可禁用"返回顶部"按钮
     search = true # 导航栏 Fuse.js 搜索
     dateFormat = "2006-01-02" # 用于在各个页面显示日期的格式。如果未指定，则使用 "2 Jan 2006" 格式

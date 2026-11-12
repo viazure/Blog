@@ -1,6 +1,6 @@
 {{/* Workout card SSR. Keep in sync with workouts-lazy renderCard.
-     Field map: docs/ux-p0-ssr-js-fields.md
-     clock/clock_unit = duration, not Session Clock. */}}
+     字段对照：docs/ssr-js-fields.md
+     clock/clock_unit = 运动时长（duration），勿当会话状态。 */}}
 {{ $c := . }}
 {{ $tips := slice }}
 {{ if gt $c.km 0 }}
