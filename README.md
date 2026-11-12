@@ -16,6 +16,8 @@ Hi 👋
 
 文章使用 Obsidian 编写，通过 Enveloppe 插件进行发布。
 
+运动 / 书影音页面的数据由 [viazure/life-data](https://github.com/viazure/life-data) 在构建时生成，不纳入本仓库。本地预览说明见 [AGENTS.md](AGENTS.md)。
+
 博客的多项功能实现方案参考了博主 [Pseudoyu](https://www.pseudoyu.com/) 的文章《[2024 年了，我的博客有了什么变化](https://www.pseudoyu.com/zh/2024/06/29/what_changed_in_my_blog_2024)》中提到的相关教程。
 
 **博客地址**：[viazure.cc](https://viazure.cc)

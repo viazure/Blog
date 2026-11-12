@@ -119,8 +119,7 @@ def title_of(item: dict) -> str:
 def main() -> None:
     path = life_data_root() / "data" / "neodb" / "shelf.json"
     if not path.exists():
-        print("neodb source missing, skip")
-        return
+        raise SystemExit("neodb source missing")
 
     items = load_archive(path).get("items") or []
     grouped = {key: {shelf: [] for shelf in SHELVES} for key in LABELS}
