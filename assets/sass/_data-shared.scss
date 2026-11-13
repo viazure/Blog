@@ -2,7 +2,7 @@
   .data-label {
     margin: 1.6rem 0 0.5rem;
     color: $gray;
-    font-size: $small-font-size;
+    font-size: 0.9rem; /* half-step above small, section heads */
     font-weight: $normal-weight;
     line-height: 1.4;
   }
@@ -188,14 +188,31 @@
 }
 
 .media-skel-bar {
-  height: 1.05rem;
+  height: 0.95rem;
   border-radius: 3px;
   background: $rule;
-  opacity: 0.65;
+  opacity: 0.7;
+  animation: media-skel-pulse 1.25s ease-in-out infinite;
 
-  &:nth-child(3n) { width: 70%; }
-  &:nth-child(3n + 1) { width: 94%; }
-  &:nth-child(3n + 2) { width: 82%; }
+  /* widths echo real list rows: section label / title+meta / short */
+  &:nth-child(6n + 1) { width: 28%; height: 0.72rem; opacity: 0.5; }
+  &:nth-child(6n + 2) { width: 92%; }
+  &:nth-child(6n + 3) { width: 64%; }
+  &:nth-child(6n + 4) { width: 88%; }
+  &:nth-child(6n + 5) { width: 52%; }
+  &:nth-child(6n + 6) { width: 76%; }
+}
+
+@keyframes media-skel-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.28; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-skel-bar {
+    animation: none;
+    opacity: 0.55;
+  }
 }
 
 
@@ -212,6 +229,9 @@ $media-tabs: "music", "book", "movie", "tv", "game", "podcast";
   #media-tab-#{$tab}:checked ~ .tabs > .tab-label[for="media-tab-#{$tab}"] {
     color: $text-base-color;
     font-weight: $bold-weight;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 0.38em;
   }
 }
 
@@ -294,6 +314,15 @@ $music-periods: "7day", "1month", "3month", "6month", "12month", "overall";
   .run-card:hover,
   .run-card:focus-within {
     background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  .run-card:active {
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .year-nav-label {
+    color: $gray;
   }
 
   .year-dd-list {

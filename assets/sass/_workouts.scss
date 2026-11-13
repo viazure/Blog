@@ -220,9 +220,11 @@
       z-index: 5;
     }
 
-    &[data-tip]:hover::after,
-    &[data-tip]:focus-visible::after {
-      opacity: 1;
+    @media (hover: hover) and (pointer: fine) {
+      &[data-tip]:hover::after,
+      &[data-tip]:focus-visible::after {
+        opacity: 1;
+      }
     }
   }
 }
@@ -349,9 +351,11 @@
     @include tip-bubble;
   }
 
-  &[data-tip]:hover::after,
-  &[data-tip]:focus-visible::after {
-    opacity: 1;
+  @media (hover: hover) and (pointer: fine) {
+    &[data-tip]:hover::after,
+    &[data-tip]:focus-visible::after {
+      opacity: 1;
+    }
   }
 }
 
@@ -411,6 +415,28 @@
 
 .heat-switcher {
   position: relative;
+}
+
+.year-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.year-nav-label {
+  margin: 0;
+  color: $gray;
+  font-size: 0.68rem;
+  font-weight: $normal-weight;
+  letter-spacing: 0.08em;
+  text-transform: none;
+  opacity: 0.85;
+}
+
+.act-year-nav {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .heat-chips {
@@ -513,9 +539,11 @@
     @include tip-bubble;
   }
 
-  &[data-tip]:hover::after,
-  &[data-tip]:focus-visible::after {
-    opacity: 1;
+  @media (hover: hover) and (pointer: fine) {
+    &[data-tip]:hover::after,
+    &[data-tip]:focus-visible::after {
+      opacity: 1;
+    }
   }
 }
 
@@ -573,7 +601,12 @@
   gap: 0.55rem;
   margin: 0 0 1rem;
 
-  > .chips {
+  > .act-year-nav {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .chips {
     flex: 1 1 auto;
     min-width: 0;
     margin: 0;
@@ -1033,16 +1066,23 @@
   border-radius: 12px;
   --workout-accent: #{$gray};
   box-sizing: border-box;
-  transition: background-color 0.16s ease-out;
+  transition: background-color 0.16s ease-out, border-color 0.16s ease-out;
 
   &:hover,
   &:focus-within {
-    background: rgba(0, 0, 0, 0.035);
+    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(0, 0, 0, 0.14);
   }
 
-  &:hover > .card-tip,
-  &:focus-within > .card-tip {
-    opacity: 1;
+  &:active {
+    background: rgba(0, 0, 0, 0.07);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover > .card-tip,
+    &:focus-within > .card-tip {
+      opacity: 1;
+    }
   }
 
   .card-tip {
@@ -1242,5 +1282,1153 @@
       outline: 2px solid currentColor;
       outline-offset: 2px;
     }
+  }
+}
+
+/* Touch / coarse pointer: no floating tips (sticky hover / long-press banned). */
+@media (hover: none), (pointer: coarse) {
+  .run-card > .card-tip {
+    display: none !important;
+  }
+
+  .cd[data-tip]::after,
+  .hm[data-tip]::after,
+  .stv-bar i[data-tip]::after {
+    content: none !important;
+    display: none !important;
+  }
+}
+
+/* ------------------------------------------------------------------ Session Clock / 详情壳 */
+/* Detail shell follows blog theme tokens (light default + html.dark). Not a forced near-black wall. */
+
+@keyframes wk-grow {
+  from { transform: scale(0.72); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes wk-grow {
+    from { opacity: 1; }
+    to { opacity: 1; }
+  }
+}
+
+.run-card {
+  cursor: pointer;
+}
+
+.sclock-mini {
+  display: block;
+  width: 40px;
+  height: 40px;
+  color: var(--workout-accent);
+  overflow: visible;
+}
+
+.wk-detail {
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-sizing: border-box;
+  // Shrink-wrap + inset/margin centering. Do not use a flex/min-height:0
+  // collapse chain; the white card is the sheet's compact size.
+  position: fixed;
+  inset: 0;
+  width: fit-content;
+  height: fit-content;
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  overflow: visible;
+  color: $text-base-color;
+  --wk-sheet: #{$white};
+  --wk-stage: #f4f4f5;
+  --wk-ink: #{$text-base-color};
+  --wk-muted: #{$gray};
+  --wk-line: #{$rule};
+  --wk-soft: #{$chrome-bg};
+  --wk-hover: rgba(0, 0, 0, 0.04);
+  --wk-hover-strong: rgba(0, 0, 0, 0.07);
+  --wk-tab-on-bg: #{$text-base-color};
+  --wk-tab-on-fg: #{$white};
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.42);
+  }
+}
+
+html.wk-detail-open,
+body.wk-detail-open {
+  overflow: hidden;
+}
+
+.wk-detail-sheet {
+  position: relative;
+  box-sizing: border-box;
+  width: unquote("min(960px, calc(100vw - 64px))");
+  // 625/84dvh: slightly taller than 620 so the 380 chart and folded HR can fit.
+  height: unquote("min(625px, 84dvh)");
+  max-width: 960px;
+  max-height: unquote("min(625px, 84dvh)");
+  margin: 0;
+  padding: 24px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  column-gap: 24px;
+  align-items: stretch;
+  border: 1px solid var(--wk-line);
+  border-radius: 18px;
+  background: var(--wk-sheet);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.5) inset,
+    0 18px 48px rgba(0, 0, 0, 0.12);
+  color: var(--wk-ink);
+}
+
+// Flatten chrome + columns into the sheet grid on desktop so the title
+// still starts at the top of the right column, beside the tab pill.
+.wk-detail-topbar,
+.wk-detail-topbar-start,
+.wk-detail-body,
+.wk-detail-layout {
+  display: contents;
+}
+
+.wk-detail-close {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.75rem;
+  z-index: 2;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--wk-muted);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--wk-hover);
+    color: var(--wk-ink);
+  }
+}
+
+.wk-detail-layout {
+  display: contents;
+}
+
+.wk-detail-viz {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  // Size container so the stage can cap to leftover height minus the
+  // legend stack. Leftover space stays below the legend, not between
+  // the grey stage and the keys.
+  container-type: size;
+  --wk-legend-stack: calc(12px + 5.28rem);
+}
+
+.wk-viz-tools {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  width: max-content;
+  max-width: 100%;
+  display: inline-flex;
+  gap: 0.35rem;
+  margin-bottom: 10px;
+  padding: 0.2rem;
+  border: 1px solid var(--wk-line);
+  border-radius: 999px;
+  background: var(--wk-soft);
+}
+
+.wk-viz-tab {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.28rem 0.6rem;
+  background: transparent;
+  color: var(--wk-muted);
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+
+  &:hover:not(.is-on) {
+    background: var(--wk-hover);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+
+  &.is-on {
+    background: var(--wk-tab-on-bg);
+    color: var(--wk-tab-on-fg);
+  }
+}
+
+.wk-viz-stage-wrap {
+  width: unquote("min(100%, 380px, calc(100cqh - var(--wk-legend-stack)))");
+  min-width: 0;
+  min-height: 0;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  container-type: normal;
+}
+
+.wk-viz-stage {
+  position: relative;
+  box-sizing: border-box;
+  flex: none;
+  width: 100%;
+  max-width: 100%;
+  max-height: none;
+  height: auto;
+  aspect-ratio: 1;
+  border: 1px solid var(--wk-line);
+  border-radius: 16px;
+  background: var(--wk-stage);
+  overflow: visible;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.02) inset;
+}
+
+.wk-viz-panel {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 6%;
+  box-sizing: border-box;
+}
+
+.wk-viz-panel[hidden],
+.wk-pager[hidden],
+.wk-hr-scrub[hidden] {
+  display: none !important;
+}
+
+.wk-sclock,
+.wk-map {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.wk-sclock {
+  touch-action: manipulation;
+}
+
+.wk-viz-panel.wk-clock-appear .wk-sclock {
+  animation: wk-clock-appear 150ms ease-out;
+}
+
+@keyframes wk-clock-appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wk-viz-panel.wk-clock-appear .wk-sclock {
+    animation: none;
+  }
+}
+
+.sc-layer-outer.is-dim,
+.sc-layer-inner.is-dim,
+.sc-layer-core.is-dim {
+  opacity: 0.18;
+}
+
+.sc-layer-outer.is-focus,
+.sc-layer-inner.is-focus,
+.sc-layer-core.is-focus {
+  opacity: 1;
+}
+
+.wk-detail-meta {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  min-width: 0;
+  min-height: 0;
+  // Room for the sport-dot glow; left negative margin uses the column gap.
+  padding-top: 0.7rem;
+  padding-left: 0.65rem;
+  margin-left: -0.65rem;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+// Keep the heading in place; start the real scroller below it so the
+// track clears the absolutely positioned close button. Do not pad the
+// scroller instead - padding would not move the scrollbar origin.
+.wk-detail-meta-head {
+  flex: none;
+  overflow: visible;
+  // Independent close-button gutter on the two-column layout only.
+  padding-right: 2.5rem;
+
+  @include media-query($on-mobile) {
+    padding-right: 0;
+  }
+}
+
+.wk-detail-meta-scroll {
+  // Metrics sit above this scroller so in-page .wk-info-tip can overflow
+  // into the header gap instead of being clipped here.
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--wk-ink) 28%, transparent) transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: 2px solid var(--wk-sheet);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--wk-ink) 28%, transparent);
+    background-clip: padding-box;
+  }
+}
+
+.wk-sport-pill {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.55rem;
+  overflow: visible;
+  color: #a78bfa;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.wk-sport-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.wk-detail-title {
+  flex-shrink: 0;
+  margin: 0 0 0.4rem;
+  font-size: clamp(1.7rem, 3.6vw, 2.55rem);
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  color: var(--wk-ink);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.wk-detail-when {
+  flex-shrink: 0;
+  margin: 0 0 1.35rem;
+  color: var(--wk-muted);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.wk-metrics {
+  display: grid;
+  flex-shrink: 0;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--wk-line);
+  overflow: visible;
+}
+
+.wk-metric {
+  overflow: visible;
+  padding: 0.85rem 0 0.75rem;
+  border-bottom: 1px solid var(--wk-line);
+
+  &:nth-child(odd) {
+    padding-right: 0.9rem;
+  }
+
+  &:nth-child(even) {
+    padding-left: 0.9rem;
+    border-left: 1px solid var(--wk-line);
+  }
+
+  .value {
+    font-size: 1.35rem;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    color: var(--wk-ink);
+    letter-spacing: -0.01em;
+
+    &.dash {
+      color: var(--wk-muted);
+    }
+
+    .u {
+      margin-left: 0.15em;
+      color: var(--wk-muted);
+      font-size: 0.72rem;
+      font-weight: 500;
+    }
+  }
+
+  .label {
+    margin-top: 0.28rem;
+    color: var(--wk-muted);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.wk-hr-scrub {
+  flex-shrink: 0;
+  margin: 0.85rem 0 0;
+  border: 1px solid var(--wk-line);
+  border-radius: 12px;
+  background: var(--wk-sheet);
+  overflow: hidden;
+}
+
+.wk-hr-scrub-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0.7rem 0.8rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--wk-hover);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+}
+
+.wk-hr-scrub-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--wk-ink);
+}
+
+.wk-hr-scrub-chev {
+  display: inline-block;
+  color: var(--wk-muted);
+  font-size: 0.9rem;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+
+.wk-hr-scrub.is-open .wk-hr-scrub-chev {
+  transform: rotate(90deg);
+}
+
+
+.wk-hr-scrub-panel {
+  display: none;
+  padding: 0 0.8rem 0.85rem;
+  border-top: 1px solid var(--wk-line);
+}
+
+.wk-hr-scrub.is-open .wk-hr-scrub-panel {
+  display: block;
+}
+
+.wk-hr-scrub-readout {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0.6rem 0 0.35rem;
+  font-variant-numeric: tabular-nums;
+
+  .t {
+    color: var(--wk-muted);
+    font-size: 0.78rem;
+  }
+
+  .bpm {
+    color: #d4534a;
+    font-size: 1.02rem;
+    font-weight: 700;
+  }
+}
+
+.wk-hr-scrub-wrap {
+  position: relative;
+  height: 88px;
+  user-select: none;
+  touch-action: none;
+  cursor: crosshair;
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(212, 83, 74, 0.04), transparent 70%);
+  }
+}
+
+.wk-hr-scrub-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.25rem;
+  color: var(--wk-muted);
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.wk-legend {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  align-self: start;
+  align-items: flex-start;
+  width: unquote("min(100%, 380px, calc(100cqh - var(--wk-legend-stack)))");
+  max-width: 100%;
+  margin-top: 12px;
+  color: var(--wk-muted);
+  font-size: 0.76rem;
+}
+
+// Keep leftover height stable when tabs or the legend are hidden, so the
+// chart frame does not jump between map/clock or run/strength.
+.wk-viz-tools[hidden],
+.wk-legend[hidden] {
+  display: flex;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.wk-legend-keys {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.25rem;
+}
+
+.wk-legend-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  svg {
+    display: block;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: var(--wk-hover);
+    }
+  }
+
+  &.is-on {
+    border-color: var(--wk-line);
+    background: var(--wk-hover-strong);
+  }
+
+  &.is-weak {
+    opacity: 0.4;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+}
+
+.wk-legend-slot {
+  box-sizing: border-box;
+  min-height: calc(2 * 1.5em);
+  margin-top: 0.25rem;
+  width: 100%;
+  color: var(--wk-muted);
+  font-size: 0.76rem;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: start;
+  overflow-wrap: break-word;
+}
+
+.wk-legend-hint {
+  color: var(--wk-muted);
+}
+
+.wk-legend-line {
+  color: var(--wk-muted);
+
+  strong {
+    display: inline;
+    margin-right: 0.4rem;
+    color: var(--wk-ink);
+    font-weight: 650;
+  }
+}
+
+.wk-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 14px;
+  flex: 0 0 auto;
+  // Desktop: sit at the bottom of the right column, outside the scroller.
+  position: relative;
+  z-index: 1;
+  background: var(--wk-sheet);
+}
+
+.wk-pager-btn {
+  display: block;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--wk-line);
+  border-radius: 12px;
+  background: var(--wk-soft);
+  color: var(--wk-ink);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  overflow: hidden;
+
+  &.right {
+    text-align: right;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  &:not(:disabled):hover {
+    border-color: var(--wk-ink);
+  }
+
+  .dir {
+    display: block;
+    margin-bottom: 0.15rem;
+    color: var(--wk-muted);
+    font-size: 0.68rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ttl {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+}
+
+
+.wk-metric-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.wk-info-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 0 0.15rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--wk-muted);
+  font-size: inherit;
+  font-weight: 500;
+  font-family: inherit;
+  line-height: 1;
+  cursor: pointer;
+  vertical-align: baseline;
+
+  &:hover,
+  &.is-open {
+    color: var(--wk-ink);
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    color: var(--wk-ink);
+  }
+}
+
+.wk-info-tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  z-index: 6;
+  width: max-content;
+  max-width: 14rem;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--wk-line, #{$rule});
+  border-radius: 6px;
+  background: var(--wk-sheet, #fff);
+  color: var(--wk-ink, #{$text-base-color});
+  font-size: 0.68rem;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: normal;
+  text-align: left;
+  text-transform: none;
+  font-variant: normal;
+  white-space: pre-wrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%);
+
+  @media (hover: hover) and (pointer: fine) {
+    .wk-info-btn:hover & {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  .wk-info-btn.is-open & {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+// 用时 / 能耗 sit in the right column; keep the floating copy inside the card.
+.wk-metric:nth-child(even) .wk-info-tip {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
+@include media-query($on-mobile) {
+  .wk-detail {
+    width: calc(100vw - 1rem);
+    max-width: none;
+    max-height: calc(100vh - 0.5rem);
+    max-height: calc(100dvh - 0.5rem);
+    overflow: hidden;
+  }
+
+  .wk-detail-sheet {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: none;
+    grid-template-rows: none;
+    column-gap: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0.5rem auto;
+    max-height: calc(100vh - 1rem);
+    max-height: calc(100dvh - 1rem);
+    padding: calc(0.75rem + env(safe-area-inset-top, 0px)) 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
+    height: auto;
+    overflow: hidden;
+  }
+
+  // Real two-zone chrome, in flow, not absolutely covering the tabs.
+  .wk-detail-topbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    min-height: 44px;
+    background: var(--wk-sheet);
+    z-index: 3;
+  }
+
+  .wk-detail-topbar-start {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .wk-detail-close {
+    position: static;
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    margin-left: auto;
+    top: auto;
+    right: auto;
+  }
+
+  .wk-viz-tools {
+    grid-column: auto;
+    grid-row: auto;
+    margin-bottom: 0;
+    max-width: 100%;
+  }
+
+  // The only scroller: everything below the top bar.
+  .wk-detail-body {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .wk-detail-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "identity"
+      "chart"
+      "legend"
+      "metrics"
+      "hr"
+      "pager";
+    gap: 0.55rem 0;
+    flex: 0 0 auto;
+    min-height: auto;
+    height: auto;
+    align-items: start;
+  }
+
+  .wk-detail-viz,
+  .wk-detail-meta,
+  .wk-detail-meta-scroll {
+    display: contents;
+  }
+
+  .wk-detail-meta-head {
+    grid-area: identity;
+    padding-top: 0.2rem;
+    padding-right: 0;
+    padding-left: 0.65rem;
+    margin-left: -0.65rem;
+    overflow: visible;
+  }
+
+  .wk-detail-when {
+    margin-bottom: 0.2rem;
+  }
+
+  .wk-viz-stage-wrap {
+    grid-area: chart;
+    flex: none;
+    width: 100%;
+    min-height: auto;
+    justify-content: center;
+    overflow: visible;
+    container-type: normal;
+  }
+
+  .wk-viz-tools[hidden],
+  .wk-legend[hidden] {
+    display: none;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .wk-viz-stage {
+    width: unquote("min(100%, 280px, 36dvh)");
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    flex: none;
+  }
+
+  .wk-legend {
+    grid-area: legend;
+    width: auto;
+    max-width: 100%;
+    align-self: stretch;
+    align-items: stretch;
+    margin-top: 0.15rem;
+  }
+
+  .wk-legend-keys {
+    justify-content: flex-start;
+  }
+
+  .wk-legend-slot {
+    text-align: start;
+  }
+
+  .wk-legend-key {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .wk-metrics {
+    grid-area: metrics;
+  }
+
+  .wk-hr-scrub {
+    grid-area: hr;
+    margin-top: 0.35rem;
+  }
+
+  .wk-pager {
+    grid-area: pager;
+    position: static;
+    margin-top: 0.55rem;
+    padding-top: 0.7rem;
+    gap: 0.5rem;
+  }
+
+  .wk-pager-btn {
+    padding: 0.55rem 0.7rem;
+  }
+}
+
+// Desktop short viewport or large text (35rem = 560px at 16px, 1120px at 200%):
+// stack to a single body scroller rather than clip or double-scroll.
+// Does not apply at 768px-and-under (phone layout) or 1024x600 at 16px.
+@media screen and (min-width: $on-tablet) and (max-height: 34.99rem) {
+  .wk-detail {
+    width: auto;
+    max-width: none;
+    height: auto;
+    max-height: unquote("min(100dvh, 625px)");
+    overflow: hidden;
+  }
+
+  .wk-detail-sheet {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: none;
+    grid-template-rows: none;
+    column-gap: 0;
+    width: unquote("min(960px, calc(100vw - 64px))");
+    height: auto;
+    max-height: unquote("min(625px, 84dvh, 100dvh - 1rem)");
+    overflow: hidden;
+  }
+
+  .wk-detail-topbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    min-height: 36px;
+    background: var(--wk-sheet);
+    z-index: 3;
+  }
+
+  .wk-detail-topbar-start {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .wk-detail-close {
+    position: static;
+    flex: 0 0 auto;
+    width: 2rem;
+    height: 2rem;
+    margin-left: auto;
+    top: auto;
+    right: auto;
+  }
+
+  .wk-viz-tools {
+    grid-column: auto;
+    grid-row: auto;
+    margin-bottom: 0;
+    max-width: 100%;
+  }
+
+  .wk-detail-body {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .wk-detail-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "identity"
+      "chart"
+      "legend"
+      "metrics"
+      "hr"
+      "pager";
+    gap: 0.55rem 0;
+    flex: 0 0 auto;
+    min-height: auto;
+    height: auto;
+    align-items: start;
+  }
+
+  .wk-detail-viz,
+  .wk-detail-meta,
+  .wk-detail-meta-scroll {
+    display: contents;
+  }
+
+  .wk-detail-meta-head {
+    grid-area: identity;
+    padding-top: 0.2rem;
+    padding-right: 0;
+  }
+
+  .wk-viz-stage-wrap {
+    grid-area: chart;
+    flex: none;
+    width: 100%;
+    min-height: auto;
+    justify-content: center;
+    overflow: visible;
+    container-type: normal;
+  }
+
+  .wk-viz-tools[hidden],
+  .wk-legend[hidden] {
+    display: none;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .wk-viz-stage {
+    width: unquote("min(100%, 280px, 36dvh)");
+    max-width: 100%;
+    max-height: none;
+    height: auto;
+    aspect-ratio: 1;
+    flex: none;
+  }
+
+  .wk-legend {
+    grid-area: legend;
+    width: auto;
+    max-width: 100%;
+    align-self: stretch;
+    align-items: stretch;
+    margin-top: 0.15rem;
+  }
+
+  .wk-legend-keys {
+    justify-content: flex-start;
+  }
+
+  .wk-legend-slot {
+    text-align: start;
+  }
+
+  .wk-metrics { grid-area: metrics; }
+  .wk-hr-scrub { grid-area: hr; }
+
+  .wk-pager {
+    grid-area: pager;
+    position: static;
+    margin-top: 0.55rem;
+    padding-top: 0.7rem;
+  }
+}
+
+html.dark {
+  .wk-detail {
+    color: $dark-white;
+    --wk-sheet: #{$surface-dark};
+    --wk-stage: #0f1116;
+    --wk-ink: #{$dark-white};
+    --wk-muted: #{$dark-gray};
+    --wk-line: #{$rule-dark};
+    --wk-soft: #{$dark-light};
+    --wk-hover: rgba(255, 255, 255, 0.04);
+    --wk-hover-strong: rgba(255, 255, 255, 0.07);
+    --wk-tab-on-bg: rgba(255, 255, 255, 0.92);
+    --wk-tab-on-fg: #111;
+
+    &::backdrop {
+      background: rgba(0, 0, 0, 0.62);
+    }
+  }
+
+  .wk-detail-sheet {
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.04) inset,
+      0 18px 48px rgba(0, 0, 0, 0.45);
+  }
+
+  .wk-viz-stage {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
   }
 }

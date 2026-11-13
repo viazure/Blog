@@ -25,3 +25,5 @@ data/neodb.json
 data/workouts.json
 static/trails.json
 static/data/
+# local scratch (previews, puppeteer, extracted assets)
+_tmp/

@@ -145,3 +145,12 @@ theme = "hugo-blog-awesome"
 [[params.socialIcons]]
   name = "Rss"
   url = "/index.xml"
+
+# 运动页 Session Clock：外圈心率分档在构建时计算（改完后需重新运行
+# python scripts/build_workouts.py，下次部署才生效）。前端不读此配置。
+# 六个边界按半数进位(阈值 × 0.65/0.80/0.89/0.95/1.00/1.07)；
+# 顶界（107%）与 Garmin 显示对齐：max(半数进位(阈值×1.07), 阈值+ceil(阈值×0.07))。
+# 默认 176 → 114/141/157/167/176/189。低于最低边界按 Z1，高于最高按 Z5。
+[params.workouts]
+  lactateThresholdBpm = 176
+

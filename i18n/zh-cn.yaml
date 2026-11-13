@@ -49,10 +49,10 @@
   translation: "排除"
 
 - id: "search.no_results"
-  translation: "没有匹配的文章"
+  translation: "没有找到相关文章"
 
 - id: "search.error"
-  translation: "搜索暂时不可用，请稍后重试"
+  translation: "搜索开小差了，稍后再试吧"
 
 - id: "search.close"
   translation: "关闭"

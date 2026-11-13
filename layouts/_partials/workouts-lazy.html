@@ -1,8 +1,9 @@
 {{/* 运动页：年份懒加载。热力与记录各自独立筛选，不互相同步。
      分片路径：/data/workouts/year-YYYY.json（由 scripts/emit_page_shards.py 产出）。
 
-     SSR/JS: workout-card.html <-> renderCard；见 docs/ssr-js-fields.md
+     SSR/JS: workout-card.html <-> renderCard；见 docs/ssr-js-fields.md、docs/session-clock.md
      clock/clock_unit = 运动时长（duration），勿当会话状态。
+     Session 字段：run_id、hr_max、kcal、session{bars,hr,moving,...}。
      After load: dispatch workouts:year-loaded for track-script. */}}
 <script>
 (function () {
@@ -42,7 +43,7 @@
           if (cell.pie) style += ";--pie:" + esc(cell.pie);
           style += '"';
         }
-        var tip = cell.title ? ' data-tip="' + esc(cell.title) + '"' : "";
+        var tip = cell.title ? ' data-tip="' + esc(cell.title) + '" tabindex="0"' : "";
         html += '<span class="' + esc(cell.class || "") + '"' + tip + style + "></span>";
       });
       html += "</div>";
@@ -62,6 +63,19 @@
     return html;
   }
 
+  /** List data-wk: drop bars/hr arrays; detail resolves from year shard. */
+  function slimSession(s) {
+    if (!s) return null;
+    return {
+      has_session: true,
+      moving: s.moving,
+      hr_avg: s.hr_avg,
+      hr_max: s.hr_max,
+      kcal: s.kcal,
+      elev: s.elev
+    };
+  }
+
   function renderCard(c) {
     var tips = [];
     if (c.km > 0) tips.push({ k: "距离", v: Number(c.km).toFixed(2) + " km" });
@@ -73,7 +87,31 @@
     if (c.hr) tips.push({ k: "心率", v: Math.round(c.hr) + " bpm" });
     if (c.elev) tips.push({ k: "爬升", v: Math.round(c.elev) + " m" });
 
-    var html = '<article class="run-card kind-' + esc(c.name) + '" tabindex="0">';
+    var wk = {
+      idx: c.idx,
+      label: c.label,
+      name: c.name,
+      date: c.date,
+      time: c.time,
+      icon: c.icon,
+      has_trail: !!c.has_trail,
+      km: c.km,
+      moving: c.moving,
+      hr: c.hr,
+      elev: c.elev,
+      pace: c.pace,
+      clock: c.clock,
+      clock_unit: c.clock_unit,
+      run_id: c.run_id,
+      hr_max: c.hr_max,
+      kcal: c.kcal,
+      session: slimSession(c.session)
+    };
+
+    var html = '<article class="run-card kind-' + esc(c.name) +
+      '" tabindex="0" role="button" data-idx="' + esc(c.idx) +
+      '" data-wk="' + esc(JSON.stringify(wk)) +
+      '" aria-label="查看 ' + esc(c.label) + ' 详情">';
     html += '<div class="mark">';
     if (c.has_trail) {
       html += '<svg class="rmap" data-i="' + esc(c.idx) + '" data-glyph="' + esc(c.icon) +
@@ -92,16 +130,16 @@
         '</span><span class="unit">km</span></span>';
     }
     if (c.clock) {
-      html += '<span class="metric' + (c.km ? " sub" : "") + '"><span class="num">' +
+      html += '<span class="metric' + (c.km ? ' sub' : '') + '"><span class="num">' +
         esc(c.clock) + "</span>";
       if (c.clock_unit) html += '<span class="unit">' + esc(c.clock_unit) + "</span>";
       html += "</span>";
     }
-    if (c.pace) {
+    if (c.km && c.pace) {
       html += '<span class="metric sub"><span class="num">' + paceLabel(c.pace) +
         '</span><span class="unit">/km</span></span>';
     }
-    html += '</div></div><div class="card-tip" aria-hidden="true">';
+    html += '</div></div><div class="card-tip" role="tooltip" aria-hidden="true">';
     html += '<div class="card-tip-when">' + esc((c.date || "").slice(5));
     if (c.time) html += " " + esc(c.time);
     html += "</div>";
@@ -149,7 +187,8 @@
       var items = (payload.group && payload.group.items) || [];
       if (box) box.innerHTML = items.map(renderCard).join("");
       panel.removeAttribute("data-pending");
-      // 通知轨迹脚本重扫新卡片
+      if (window.__wkIndexItems) window.__wkIndexItems(items);
+      // 通知轨迹脚本重扫新卡片；Session Clock 也会 hydrate mini
       document.dispatchEvent(new CustomEvent("workouts:year-loaded", { detail: { year: year } }));
     }
   }
@@ -233,7 +272,36 @@
   });
 
   // 预取相邻年：热力与记录各自按当前选中 ±1
+
+  // SSR 默认年：DOM 已有卡片，但 data-wk 已瘦身；拉年分片写入全量 index 供 Clock / mini
+  function indexYearData(year) {
+    if (!year || cache[year]) {
+      if (year && cache[year] && window.__wkIndexItems) {
+        window.__wkIndexItems((cache[year].group && cache[year].group.items) || []);
+        document.dispatchEvent(new CustomEvent("workouts:year-loaded", { detail: { year: year } }));
+      }
+      return Promise.resolve(cache[year]);
+    }
+    return fetch(BASE + "year-" + year + ".json")
+      .then(function (res) { return res.ok ? res.json() : null; })
+      .then(function (json) {
+        if (!json) return null;
+        cache[year] = json;
+        if (window.__wkIndexItems) {
+          window.__wkIndexItems((json.group && json.group.items) || []);
+        }
+        document.dispatchEvent(new CustomEvent("workouts:year-loaded", { detail: { year: year } }));
+        return json;
+      })
+      .catch(function (err) {
+        console.warn("[workouts] indexYearData failed", year, err);
+        return null;
+      });
+  }
+
   prefetchNeighbors("heatyear");
   prefetchNeighbors("actyear");
+  var actChecked = document.querySelector('input[name="actyear"]:checked');
+  if (actChecked) indexYearData(actChecked.getAttribute("data-year"));
 })();
 </script>

@@ -3,7 +3,7 @@
 
      SSR/JS 字段对照：docs/ssr-js-fields.md
      note_html: SSR safeHTML (build paths.note_html); client MUST use safeNoteHtml.
-     cover onerror: same as SSR (cover-broken + 1x1 gif). */}}
+     cover onerror: replace img with span.cover-broken (glyph via CSS ::after). */}}
 <script>
 (function () {
   var LASTFM_BASE = {{ "data/media/lastfm/" | relURL }};
@@ -42,7 +42,7 @@
       return '<span class="rank-cover rank-cover-blank" aria-hidden="true"></span>';
     }
     return '<img class="rank-cover" src="' + esc(src) + '" alt="' + esc(alt) +
-      '" width="28" height="28" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.classList.add(\'cover-broken\');this.src=\'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\'">';
+      '" width="28" height="28" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\'rank-cover cover-broken\',\'aria-hidden\':\'true\'}))">';
   }
 
   function lovedMark(loved) {
@@ -87,7 +87,7 @@
     if (!item.image) return '<span class="timeline-cover timeline-cover-blank" aria-hidden="true"></span>';
     var alt = (item.track || "") + " — " + (item.artist || "") + " 封面";
     return '<img class="timeline-cover" src="' + esc(item.image) + '" alt="' + esc(alt) +
-      '" width="28" height="28" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.classList.add(\'cover-broken\');this.src=\'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7\'">';
+      '" width="28" height="28" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement(\'span\'),{className:\'timeline-cover cover-broken\',\'aria-hidden\':\'true\'}))">';
   }
 
   function renderMusicShell(meta, firstPeriod) {
