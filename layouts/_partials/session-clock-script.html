@@ -1,31 +1,64 @@
 {{/* Session Clock + unified activity detail shell.
      clock/clock_unit on cards = duration; this component is sessionClock.
-     Requires trails.json (via window.__wkTrails or fetch) for GPS map slot.
+     Requires trails-detail.json (via fetch, on demand) for the detail GPS map;
+     list thumbnails keep using trails.json in track-script.html.
      Listens workouts:year-loaded to index lazy items.
      Visual grammar aligned to activities.geekplux.com (reimplemented, not scraped). */}}
 <dialog class="wk-detail" id="wk-detail" aria-labelledby="wk-detail-title">
   <div class="wk-detail-sheet">
-    <button type="button" class="wk-detail-close" aria-label="关闭" data-wk-close>&times;</button>
-    <div class="wk-detail-layout">
-      <section class="wk-detail-viz" aria-label="活动可视化">
+    <div class="wk-detail-topbar">
+      <div class="wk-detail-topbar-start">
         <div class="wk-viz-tools" hidden>
           <button type="button" class="wk-viz-tab is-on" data-viz="map">轨迹</button>
           <button type="button" class="wk-viz-tab" data-viz="clock" aria-label="Session Clock" title="Session Clock">Clock</button>
         </div>
-        <div class="wk-viz-stage">
-          <div class="wk-viz-panel" data-panel="map" hidden>
-            <svg class="wk-map" viewBox="0 0 400 400" role="img" aria-label="活动轨迹"></svg>
+      </div>
+      <button type="button" class="wk-detail-close" aria-label="关闭" data-wk-close>&times;</button>
+    </div>
+    <div class="wk-detail-body">
+    <div class="wk-detail-layout">
+      <section class="wk-detail-viz" aria-label="活动可视化">
+        <div class="wk-viz-stage-wrap">
+          <div class="wk-viz-stage">
+            <div class="wk-viz-panel" data-panel="map" hidden>
+              <svg class="wk-map" viewBox="0 0 400 400" role="img" aria-label="活动轨迹"></svg>
+            </div>
+            <div class="wk-viz-panel" data-panel="clock">
+              <svg class="wk-sclock" viewBox="0 0 400 400" role="img" aria-label="Session Clock" aria-describedby="wk-legend-slot"></svg>
+            </div>
           </div>
-          <div class="wk-viz-panel" data-panel="clock">
-            <svg class="wk-sclock" viewBox="0 0 400 400" role="img" aria-label="Session Clock"></svg>
+        </div>
+        <div class="wk-legend" hidden data-wk-legend aria-label="图例">
+          <div class="wk-legend-keys">
+            <button type="button" class="wk-legend-key" data-layer="outer" aria-label="外圈" aria-pressed="false">
+              <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+                <path d="M6 18 A12 12 0 0 1 30 18" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                <path d="M8 22 A10 10 0 0 1 16 10" fill="none" stroke="currentColor" stroke-width="6" opacity=".5" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <button type="button" class="wk-legend-key" data-layer="inner" data-legend="inner" aria-label="中圈" aria-pressed="false">
+              <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+                <path d="M6 24 L12 16 L18 20 L24 10 L30 14 L30 28 L6 28 Z" fill="currentColor" fill-opacity=".28" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+              <span hidden data-legend-inner-copy></span>
+            </button>
+            <button type="button" class="wk-legend-key" data-layer="core" aria-label="核心" aria-pressed="false">
+              <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+                <circle cx="18" cy="18" r="5" fill="currentColor"/>
+              </svg>
+            </button>
           </div>
+          <div class="wk-legend-slot" id="wk-legend-slot" data-wk-legend-slot aria-live="polite"></div>
         </div>
       </section>
       <section class="wk-detail-meta">
-        <div class="wk-sport-pill"><span class="wk-sport-dot" aria-hidden="true"></span><span class="wk-sport-name"></span></div>
-        <h2 class="wk-detail-title display" id="wk-detail-title"></h2>
-        <p class="wk-detail-when mono"></p>
+        <header class="wk-detail-meta-head">
+          <div class="wk-sport-pill"><span class="wk-sport-dot" aria-hidden="true"></span><span class="wk-sport-name"></span></div>
+          <h2 class="wk-detail-title display" id="wk-detail-title"></h2>
+          <p class="wk-detail-when mono"></p>
+        </header>
         <div class="wk-metrics" role="list"></div>
+        <div class="wk-detail-meta-scroll">
         <div class="wk-hr-scrub" id="wk-hr-scrub" hidden data-wk-hr-scrub>
           <button type="button" class="wk-hr-scrub-toggle" data-wk-hr-toggle aria-expanded="false" aria-controls="wk-hr-scrub-panel" aria-label="展开心率趋势">
             <span class="wk-hr-scrub-left"><span class="wk-hr-scrub-chev" aria-hidden="true">&rsaquo;</span>心率趋势</span>
@@ -45,30 +78,6 @@
             </div>
           </div>
         </div>
-        <div class="wk-legend-head" hidden data-wk-legend-head>
-          <p class="wk-legend-title">图例</p>
-          <button type="button" class="wk-info-btn" data-wk-tip="sclock" aria-label="如何阅读图例">ⓘ</button>
-        </div>
-        <div class="wk-legend" aria-label="图例" hidden>
-          <button type="button" class="wk-legend-row" data-layer="outer">
-            <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
-              <path d="M6 18 A12 12 0 0 1 30 18" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-              <path d="M8 22 A10 10 0 0 1 16 10" fill="none" stroke="currentColor" stroke-width="6" opacity=".5" stroke-linecap="round"/>
-            </svg>
-            <div><strong>外圈</strong><span class="wk-legend-desc">整场强度，沿时间展开</span></div>
-          </button>
-          <button type="button" class="wk-legend-row" data-layer="inner" data-legend="inner">
-            <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
-              <path d="M6 24 L12 16 L18 20 L24 10 L30 14 L30 28 L6 28 Z" fill="currentColor" fill-opacity=".28" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-            </svg>
-            <div data-legend-inner-copy><strong>中圈</strong><span class="wk-legend-desc">整场心率，越靠外越高</span></div>
-          </button>
-          <button type="button" class="wk-legend-row" data-layer="core">
-            <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
-              <circle cx="18" cy="18" r="5" fill="currentColor"/>
-            </svg>
-            <div><strong>核心</strong><span class="wk-legend-desc">用时，不满 1 小时亦为满圆；每满 1 小时多一环</span></div>
-          </button>
         </div>
         <nav class="wk-pager" aria-label="相邻活动" hidden>
           <button type="button" class="wk-pager-btn" data-wk-prev>
@@ -82,23 +91,17 @@
         </nav>
       </section>
     </div>
-  </div>
-</dialog>
-<dialog class="wk-tip-sheet" id="wk-tip-sheet" aria-labelledby="wk-tip-sheet-title">
-  <div class="wk-tip-sheet-panel">
-    <span class="wk-tip-sheet-handle" aria-hidden="true"></span>
-    <div class="wk-tip-sheet-top">
-      <h3 class="wk-tip-sheet-title" id="wk-tip-sheet-title"></h3>
-      <button type="button" class="wk-tip-sheet-close" aria-label="关闭说明" data-wk-tip-close>&times;</button>
     </div>
-    <p class="wk-tip-sheet-body" data-wk-tip-body></p>
   </div>
 </dialog>
 <script>
 (function () {
+  var DETAIL_TRAIL_URL = {{ "data/workouts/trails-detail.json" | relURL }};
   var TRAIL_URL = {{ "trails.json" | relURL }};
+  var YEAR_BASE = {{ "data/workouts/" | relURL }};
   var itemsByIdx = Object.create(null);
-  var trails = (window.__wkTrails && window.__wkTrails.points) || null;
+  var trails = null;
+  var trailSize = 400;
   var trailPromise = null;
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -110,17 +113,14 @@
   var sportPill = dialog.querySelector(".wk-sport-pill");
   var metricsEl = dialog.querySelector(".wk-metrics");
   var legendEl = dialog.querySelector(".wk-legend");
+  var legendSlot = dialog.querySelector("[data-wk-legend-slot]");
   var toolsEl = dialog.querySelector(".wk-viz-tools");
   var mapPanel = dialog.querySelector('[data-panel="map"]');
   var clockPanel = dialog.querySelector('[data-panel="clock"]');
   var mapSvg = dialog.querySelector("svg.wk-map");
   var clockSvg = dialog.querySelector("svg.wk-sclock");
   var pager = dialog.querySelector(".wk-pager");
-  // Tip sheet DOM stays with other shell queries -- keep away from TIP_COPY edits.
-  var tipSheet = document.getElementById("wk-tip-sheet");
-  var tipTitle = tipSheet ? tipSheet.querySelector("#wk-tip-sheet-title") : null;
-  var tipBody = tipSheet ? tipSheet.querySelector("[data-wk-tip-body]") : null;
-  var legendHead = dialog.querySelector("[data-wk-legend-head]");
+  var activeTipBtn = null;
   var hrScrubEl = dialog.querySelector("[data-wk-hr-scrub]");
   var hrToggleBtn = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-toggle]") : null;
   var hrTimeEl = hrScrubEl ? hrScrubEl.querySelector("[data-wk-hr-time]") : null;
@@ -139,6 +139,13 @@
   var currentIdx = null;
   var currentList = [];
   var legendFocus = null;
+  var legendHover = null;
+  var LEGEND_LABEL = { outer: "外圈", inner: "中圈", core: "核心" };
+  var legendCopy = {
+    outer: "整场铺满一圈，从正上方顺时针展开。格子越高越亮，对应更高的心率区间（Z1 到 Z5）。",
+    inner: "同一圈上的心率，越高越靠外。",
+    core: "不满 1 小时是一颗实心圆点；每满 1 小时多一环。"
+  };
   // Remember viz tab across detail pager / reopen (map|clock); null = default by has_trail
   var preferredViz = null;
 
@@ -228,14 +235,35 @@
     return "#a78bfa";
   }
 
+  function canHoverLegend() {
+    try {
+      return !!(window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches);
+    } catch (e) { return false; }
+  }
+
+  function isFinePointer(ev) {
+    if (!canHoverLegend()) return false;
+    var t = ev && ev.pointerType;
+    return !t || t === "mouse" || t === "pen";
+  }
+
+  function isLegendVisible() {
+    return !!(legendEl && !legendEl.hidden && clockPanel && !clockPanel.hidden);
+  }
+
+  function legendEffective() {
+    return legendHover || legendFocus;
+  }
+
   function applyLegendFocus(svg) {
     if (!svg) return;
+    var focus = legendEffective();
     ["outer", "inner", "core"].forEach(function (layer) {
       var g = svg.querySelector(".sc-layer-" + layer);
       if (!g) return;
-      if (!legendFocus) {
+      if (!focus) {
         g.classList.remove("is-dim", "is-focus");
-      } else if (legendFocus === layer) {
+      } else if (focus === layer) {
         g.classList.add("is-focus");
         g.classList.remove("is-dim");
       } else {
@@ -243,9 +271,69 @@
         g.classList.remove("is-focus");
       }
     });
-    legendEl.querySelectorAll(".wk-legend-row").forEach(function (row) {
-      row.classList.toggle("is-on", legendFocus && row.getAttribute("data-layer") === legendFocus);
+    if (!legendEl) return;
+    legendEl.querySelectorAll(".wk-legend-key[data-layer]").forEach(function (row) {
+      var on = !!(focus && row.getAttribute("data-layer") === focus);
+      row.classList.toggle("is-on", on);
+      row.setAttribute("aria-pressed", on ? "true" : "false");
     });
+  }
+
+  function renderLegendSlot() {
+    if (!legendSlot) return;
+    var html = "";
+    var layer = legendHover || legendFocus;
+    if (layer) {
+      html = '<div class="wk-legend-line"><strong>' + esc(LEGEND_LABEL[layer]) + "</strong>" +
+        esc(legendCopy[layer] || "") + "</div>";
+    } else {
+      html = '<div class="wk-legend-hint">点按图标查看说明</div>';
+    }
+    legendSlot.innerHTML = html;
+    legendSlot.classList.toggle("is-filled", !!layer);
+  }
+
+  function refreshLegendChrome() {
+    applyLegendFocus(clockSvg);
+    renderLegendSlot();
+  }
+
+  function clearLegendExplain() {
+    var had = !!(legendHover || legendFocus);
+    if (!had) return false;
+    legendHover = null;
+    legendFocus = null;
+    refreshLegendChrome();
+    return true;
+  }
+
+  function pinLegendLayer(layer) {
+    if (!layer) return;
+    if (legendFocus === layer) {
+      legendFocus = null;
+    } else {
+      legendFocus = layer;
+    }
+    legendHover = null;
+    refreshLegendChrome();
+  }
+
+  function legendLayerFromPoint(clientX, clientY) {
+    if (!clockSvg) return null;
+    var rect = clockSvg.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+    var dx = clientX - (rect.left + rect.width / 2);
+    var dy = clientY - (rect.top + rect.height / 2);
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    var scale = rect.width / 400;
+    // Core hit at least 44px diameter; stay inside the inner floor when the clock is large.
+    var coreR = Math.max(22, 48 * scale);
+    var innerOuter = 115 * scale;
+    var outerR = 190 * scale;
+    if (dist <= coreR) return "core";
+    if (dist <= innerOuter) return "inner";
+    if (dist <= outerR) return "outer";
+    return null;
   }
 
   /** Polar Session Clock (geekplux-aligned):
@@ -253,7 +341,7 @@
    * Core: full-circle seed when <1h; one growth ring per completed hour when ≥1h (geekplux pc()).
    * Whole graphic draws in sync.
    */
-  function drawSessionClock(svg, session, accent, mini) {
+  function drawSessionClock(svg, session, accent, mini, drawMs) {
     clearSvg(svg);
     session = session || {};
     try { svg.removeAttribute("data-sweep"); svg.removeAttribute("data-moving"); } catch (e) {}
@@ -286,7 +374,7 @@
     var hours = Math.floor(moving / 3600);
     var soft = accent || "#a78bfa";
     var ink = soft;
-    var DRAW_MS = 900;
+    var DRAW_MS = (drawMs > 0) ? drawMs : 900;
 
     function rad(d) { return d * Math.PI / 180; }
     function pt(r, a) {
@@ -325,27 +413,11 @@
     // Geometry: geekplux-like stepped crown — detail R=120 / 0.10–0.45R; mini ~0.9×
     var hrFloorR = mini ? 44 : 48;
     var hrSpan = mini ? 54 : 60;
-    var guideR = hrFloorR;
     var baseR = mini ? 110 : 120;
     var barMinH = mini ? 11 : 12;
-    var barMaxH = mini ? 48 : 54;
-    var tierH = mini ? [11, 20, 29, 38, 48] : [12, 22, 33, 43, 54];
+    var barMaxH = mini ? 36 : 40;
+    var tierH = mini ? [11, 17, 23, 30, 36] : [12, 19, 26, 33, 40];
     var TARGET_N = 48;
-
-    // ~70 bpm guide — full ring (outer/inner are full-session maps)
-    var guideStroke = mini
-      ? "#e8e4de"
-      : themeTok("--wk-guide", isDarkTheme() ? "rgba(255,255,255,0.16)" : "rgba(0,0,0,0.12)");
-    var guide = ns("g");
-    guide.setAttribute("class", "sc-layer-guide");
-    var ref = ns("circle");
-    ref.setAttribute("cx", cx); ref.setAttribute("cy", cy); ref.setAttribute("r", String(guideR));
-    ref.setAttribute("fill", "none");
-    ref.setAttribute("stroke", guideStroke);
-    ref.setAttribute("stroke-width", mini ? "1.6" : "1.1");
-    if (mini) ref.setAttribute("stroke-dasharray", "2 4");
-    guide.appendChild(ref);
-    svg.appendChild(guide);
 
     // Layers drawn together (sync reveal).
     var outer = ns("g");
@@ -368,35 +440,26 @@
     var N = bars.length || 0;
     var slot = fullDeg / Math.max(N, 1);
     var gapDeg = 0.8;
-    var bMin = Infinity, bMax = -Infinity;
-    for (var bi = 0; bi < N; bi++) {
-      var bv = Number(bars[bi]) || 0;
-      if (bv < bMin) bMin = bv;
-      if (bv > bMax) bMax = bv;
-    }
-    if (!isFinite(bMin)) { bMin = tierH[0]; bMax = tierH[tierH.length - 1]; }
-    var legacy = bMax <= 24;
+    // Stored bars are absolute Z1-Z5 heights (12/19/26/33/40). Snap to that
+    // global ladder; never stretch a chart to its own min/max.
+    var srcTiers = [12, 19, 26, 33, 40];
     var barPaths = [];
     for (var i = 0; i < N; i++) {
       var a0 = aStart + i * slot + gapDeg * 0.5;
       var a1 = aStart + (i + 1) * slot - gapDeg * 0.5;
       if (a1 <= a0) continue;
       var h = Number(bars[i]) || 0;
-      var tNorm;
-      if (legacy) {
-        tNorm = Math.pow(Math.max(0, Math.min(1, h / 24)), 0.85);
-      } else {
-        tNorm = Math.max(0, Math.min(1, (h - 12) / (54 - 12)));
+      var tIdx = 0, best = Infinity;
+      for (var ti = 0; ti < srcTiers.length; ti++) {
+        var d = Math.abs(h - srcTiers[ti]);
+        if (d < best) { best = d; tIdx = ti; }
       }
-      var tIdx = Math.round(tNorm * (tierH.length - 1));
-      if (tIdx < 0) tIdx = 0;
-      if (tIdx > tierH.length - 1) tIdx = tierH.length - 1;
       var barH = tierH[tIdx];
       var t = (barH - barMinH) / Math.max(barMaxH - barMinH, 1);
       var r0 = baseR;
       var r1 = baseR + barH;
       var p0 = pt(r0, a0), p1 = pt(r0, a1), p2 = pt(r1, a1), p3 = pt(r1, a0);
-      var op = 0.22 + t * 0.78;
+      var op = 0.32 + t * 0.63;
       var path = ns("path");
       path.setAttribute("d",
         "M" + p0[0] + " " + p0[1] +
@@ -460,14 +523,27 @@
     // Core: full-circle seed (<1h) or growth rings (≥1h) — matches geekplux pc(min)
     var coreStrokeEls = [];
     if (hours >= 1) {
+      var coreStrokeW = mini ? 2.4 : 2.8;
+      var coreMaxR = hrFloorR - coreStrokeW / 2 - 2;
+      var coreMinR = 15;
+      if (coreMaxR < coreMinR) coreMaxR = coreMinR;
+      var packCore = (8 + hours * 7) > coreMaxR;
       for (var ring = hours; ring >= 1; ring--) {
+        var ringR = packCore
+          ? (coreMinR + (coreMaxR - coreMinR) * (ring / hours))
+          : (8 + ring * 7);
+        var ringOp = hours <= 4
+          ? (0.32 + ring * 0.16)
+          : (0.32 + 0.60 * (ring / hours));
+        if (ringOp > 0.95) ringOp = 0.95;
+        if (ringOp < 0.28) ringOp = 0.28;
         var c = ns("circle");
         c.setAttribute("cx", cx); c.setAttribute("cy", cy);
-        c.setAttribute("r", String(8 + ring * 7));
+        c.setAttribute("r", String(ringR));
         c.setAttribute("fill", "none");
         c.setAttribute("stroke", soft);
-        c.setAttribute("stroke-width", mini ? "2.4" : "2.8");
-        c.setAttribute("opacity", String(0.32 + ring * 0.16));
+        c.setAttribute("stroke-width", String(coreStrokeW));
+        c.setAttribute("opacity", String(ringOp));
         coreG.appendChild(c);
         coreStrokeEls.push(c);
       }
@@ -554,11 +630,22 @@
     if (nums.length < 4) return false;
 
     var coords = [];
+    var maxV = 0;
+    for (var ni = 0; ni < nums.length; ni++) {
+      if (Math.abs(nums[ni]) > maxV) maxV = Math.abs(nums[ni]);
+    }
+    // Detail tracks are already in ~400 viewBox units. Legacy list trails
+    // (40-grid integers) keep the old upscale only as a fallback.
+    var useDetail = (trailSize && trailSize > 48) || maxV > 48;
     for (var i = 0; i + 1 < nums.length; i += 2) {
-      coords.push([
-        (nums[i] / 40) * 340 + 30,
-        (nums[i + 1] / 40) * 340 + 30
-      ]);
+      if (useDetail) {
+        coords.push([nums[i], nums[i + 1]]);
+      } else {
+        coords.push([
+          (nums[i] / 40) * 340 + 30,
+          (nums[i + 1] / 40) * 340 + 30
+        ]);
+      }
     }
 
     var defs = ns("defs");
@@ -634,17 +721,23 @@
   function ensureTrails() {
     if (trails) return Promise.resolve(trails);
     if (trailPromise) return trailPromise;
-    trailPromise = fetch(TRAIL_URL)
-      .then(function (r) { return r.ok ? r.json() : null; })
+    trailPromise = fetch(DETAIL_TRAIL_URL)
+      .then(function (r) {
+        if (!r.ok) throw new Error("trails " + r.status);
+        return r.json();
+      })
       .then(function (json) {
-        trails = (json && json.points) || {};
-        window.__wkTrails = { points: trails };
+        if (!json || !json.points) throw new Error("trails empty");
+        trails = json.points;
+        trailSize = Number(json.size) || 400;
+        window.__wkTrails = { points: trails, size: trailSize };
         return trails;
       })
       .catch(function (err) {
         console.warn("[session-clock] trails fetch failed", err);
-        trails = {};
-        return trails;
+        trails = null;
+        trailPromise = null;
+        return {};
       });
     return trailPromise;
   }
@@ -660,12 +753,13 @@
     var year = (cur.date || item.date || "").slice(0, 4);
     if (!year) return Promise.resolve(cur);
     var hit = yearCache[year];
-    var p = hit || fetch("/data/workouts/year-" + year + ".json")
+    var p = hit || fetch(YEAR_BASE + "year-" + year + ".json")
       .then(function (res) {
         if (!res.ok) throw new Error("year " + year);
         return res.json();
       })
       .then(function (json) {
+        if (!json || !json.group) throw new Error("year " + year + " empty");
         yearCache[year] = Promise.resolve(json);
         indexMany((json.group && json.group.items) || []);
         return json;
@@ -675,60 +769,65 @@
         delete yearCache[year];
         return null;
       });
-    yearCache[year] = p;
+    if (!hit) yearCache[year] = p;
     return p.then(function () {
       return itemsByIdx[key] || cur;
     });
   }
 
   var TIP_COPY = {
-    sclock: {
-      title: "图例",
-      body: "外圈为强度，中圈为心率，核心为用时，均铺满整场。"
-    },
-    moving: {
-      title: "用时",
-      body: "实际移动时长，不含暂停。"
-    },
     kcal: {
       title: "能耗",
-      body: "手表估算消耗，非实测。"
-    },
-    hr_avg: {
-      title: "均心率",
-      body: "整场平均心率。"
-    },
-    hr_max: {
-      title: "最大心率",
-      body: "整场最高心率。"
+      body: "估算消耗，非实测。"
     }
   };
   function openTipSheet(key) {
+    var btn = arguments.length > 1 ? arguments[1] : null;
     var copy = TIP_COPY[key];
-    if (!copy || !tipSheet || !tipTitle || !tipBody) return;
-    tipTitle.textContent = copy.title;
-    tipBody.textContent = copy.body;
-    if (typeof tipSheet.showModal === "function") tipSheet.showModal();
-    else tipSheet.setAttribute("open", "");
+    if (!copy) return;
+    if (btn && activeTipBtn === btn) {
+      closeTipSheet();
+      return;
+    }
+    if (activeTipBtn && activeTipBtn !== btn) {
+      activeTipBtn.classList.remove("is-open");
+      activeTipBtn.setAttribute("aria-expanded", "false");
+      activeTipBtn = null;
+    }
+    if (btn) {
+      activeTipBtn = btn;
+      btn.classList.add("is-open");
+      btn.setAttribute("aria-expanded", "true");
+    }
   }
 
   function closeTipSheet() {
-    if (!tipSheet) return;
-    if (typeof tipSheet.close === "function") tipSheet.close();
-    else tipSheet.removeAttribute("open");
+    if (activeTipBtn) {
+      activeTipBtn.classList.remove("is-open");
+      activeTipBtn.setAttribute("aria-expanded", "false");
+      activeTipBtn = null;
+    }
   }
 
   function syncLegendVis(hidden) {
-    legendEl.hidden = !!hidden;
-    if (legendHead) legendHead.hidden = !!hidden;
+    if (legendEl) legendEl.hidden = !!hidden;
+    if (hidden) {
+      legendHover = null;
+      legendFocus = null;
+      renderLegendSlot();
+    }
   }
 
   function metricHtml(label, value, unit, tipKey) {
     var isDash = value === "—";
-    var info = tipKey && TIP_COPY[tipKey]
-      ? '<button type="button" class="wk-info-btn" data-wk-tip="' + tipKey +
-        '" aria-label="' + esc(label) + ' 说明">ⓘ</button>'
-      : "";
+    var info = "";
+    if (tipKey && TIP_COPY[tipKey]) {
+      info = '<button type="button" class="wk-info-btn" data-wk-tip="' + tipKey +
+        '" aria-expanded="false" aria-label="' + esc(label) + ' 说明">' +
+        'ⓘ' +
+        '<span class="wk-info-tip" role="tooltip">' + esc(TIP_COPY[tipKey].body) + "</span>" +
+        "</button>";
+    }
     return '<div class="wk-metric" role="listitem">' +
       '<div class="value' + (isDash ? " dash" : "") + '">' + esc(value) +
       (unit && !isDash ? ' <span class="u">' + esc(unit) + "</span>" : "") +
@@ -738,14 +837,27 @@
   }
 
   function updateLegend(session) {
-    var copy = legendEl.querySelector("[data-legend-inner-copy]");
-    if (!copy) return;
-    var hr = (session && session.hr) || [];
-    if (hr.length) {
-      copy.innerHTML = "<strong>中圈</strong><span class=\"wk-legend-desc\">整场心率，越靠外越高</span>";
-    } else {
-      copy.innerHTML = "<strong>中圈</strong><span class=\"wk-legend-desc\">无逐点心率，仅外圈有效</span>";
+    session = session || {};
+    var hr = session.hr || [];
+    var hasHr = !!(hr && hr.length);
+    var moving = Number(session.moving);
+    if (!isFinite(moving) || moving <= 0) {
+      var it = (typeof currentIdx !== "undefined" && itemsByIdx) ? itemsByIdx[currentIdx] : null;
+      moving = Number(it && (it.session && it.session.moving != null ? it.session.moving : it.moving)) || 0;
     }
+    var dur = moving > 0 ? elapsedLabel(moving) : "";
+    legendCopy.outer = dur
+      ? "整场铺满一圈（" + dur + "），从正上方顺时针展开。格子越高越亮，对应更高的心率区间（Z1 到 Z5）。"
+      : "整场铺满一圈，从正上方顺时针展开。格子越高越亮，对应更高的心率区间（Z1 到 Z5）。";
+    legendCopy.inner = hasHr
+      ? "同一圈上的心率，越高越靠外。"
+      : "没有逐点心率，中圈不显示，请看外圈。";
+    legendCopy.core = "不满 1 小时是一颗实心圆点；每满 1 小时多一环。";
+    var copy = legendEl ? legendEl.querySelector("[data-legend-inner-copy]") : null;
+    if (copy) copy.textContent = legendCopy.inner;
+    var innerKey = legendEl ? legendEl.querySelector('.wk-legend-key[data-layer="inner"]') : null;
+    if (innerKey) innerKey.classList.toggle("is-weak", !hasHr);
+    renderLegendSlot();
   }
 
 
@@ -920,6 +1032,7 @@
   }
 
   function fillMeta(item, accent) {
+    closeTipSheet();
     var s = item.session || {};
     sportName.textContent = String(item.name || "").toUpperCase();
     sportPill.style.color = accent || "#a78bfa";
@@ -935,22 +1048,50 @@
     var moving = Number(s.moving != null ? s.moving : item.moving) || 0;
 
     var metricParts = [];
-    if (km > 0) metricParts.push(metricHtml("距离", km.toFixed(2), "km"));
-    metricParts.push(metricHtml("用时", moving > 0 ? elapsedLabel(moving) : "—", "", "moving"));
-    if (elev > 0) metricParts.push(metricHtml("爬升", String(Math.round(elev)), "m"));
-    metricParts.push(metricHtml("均心率", hrAvg > 0 ? String(Math.round(hrAvg)) : "—", hrAvg > 0 ? "bpm" : "", "hr_avg"));
-    metricParts.push(metricHtml("最大心率", hrMax > 0 ? String(Math.round(hrMax)) : "—", hrMax > 0 ? "bpm" : "", "hr_max"));
+    metricParts.push(metricHtml("距离", km > 0 ? km.toFixed(2) : "—", km > 0 ? "km" : ""));
+    metricParts.push(metricHtml("用时", moving > 0 ? elapsedLabel(moving) : "—", ""));
+    metricParts.push(metricHtml("爬升", elev > 0 ? String(Math.round(elev)) : "—", elev > 0 ? "m" : ""));
+    metricParts.push(metricHtml("平均心率", hrAvg > 0 ? String(Math.round(hrAvg)) : "—", hrAvg > 0 ? "bpm" : ""));
+    metricParts.push(metricHtml("最大心率", hrMax > 0 ? String(Math.round(hrMax)) : "—", hrMax > 0 ? "bpm" : ""));
     metricParts.push(metricHtml("能耗", kcal > 0 ? String(Math.round(kcal)) : "—", kcal > 0 ? "kcal" : "", "kcal"));
     metricsEl.innerHTML = metricParts.join("");
   }
 
+  function resetDetailScroll() {
+    var metaScroll = dialog.querySelector(".wk-detail-meta-scroll");
+    if (metaScroll) metaScroll.scrollTop = 0;
+    var bodyScroll = dialog.querySelector(".wk-detail-body");
+    if (bodyScroll) bodyScroll.scrollTop = 0;
+  }
+
   function setViz(mode) {
+    closeTipSheet();
     var isMap = mode === "map";
     mapPanel.hidden = !isMap;
     clockPanel.hidden = isMap;
     dialog.querySelectorAll(".wk-viz-tab").forEach(function (btn) {
       btn.classList.toggle("is-on", btn.getAttribute("data-viz") === mode);
     });
+  }
+
+  // Map → Clock in the same detail: keep the already-drawn clock, only a
+  // ≤150ms opacity appear. No redraw, no panel crossfade, no sliding pill.
+  // First open / pager still use the 900ms draw in openDetail.
+  function appearDrawnClock() {
+    if (!clockPanel || !clockSvg || reduceMotion) return;
+    try {
+      clockPanel.classList.remove("wk-clock-appear");
+      try { clockPanel.offsetWidth; } catch (e2) {}
+      clockPanel.classList.add("wk-clock-appear");
+      clockSvg.style.opacity = "";
+      if (typeof clockSvg.addEventListener === "function") {
+        var done = function () {
+          clockPanel.classList.remove("wk-clock-appear");
+          clockSvg.removeEventListener("animationend", done);
+        };
+        clockSvg.addEventListener("animationend", done);
+      }
+    } catch (e) {}
   }
 
   function updatePager(item) {
@@ -966,8 +1107,14 @@
     var nextBtn = pager.querySelector("[data-wk-next]");
     prevBtn.disabled = !prevItem;
     nextBtn.disabled = !nextItem;
-    prevBtn.querySelector("[data-prev-title]").textContent = prevItem ? (prevItem.label || "") : "";
-    nextBtn.querySelector("[data-next-title]").textContent = nextItem ? (nextItem.label || "") : "";
+    var prevLabel = prevItem ? (prevItem.label || "") : "";
+    var nextLabel = nextItem ? (nextItem.label || "") : "";
+    prevBtn.querySelector("[data-prev-title]").textContent = prevLabel;
+    nextBtn.querySelector("[data-next-title]").textContent = nextLabel;
+    prevBtn.setAttribute("title", prevLabel);
+    nextBtn.setAttribute("title", nextLabel);
+    prevBtn.setAttribute("aria-label", prevLabel ? ("上一条：" + prevLabel) : "没有上一条");
+    nextBtn.setAttribute("aria-label", nextLabel ? ("下一条：" + nextLabel) : "没有下一条");
     prevBtn.setAttribute("data-go-idx", prevIdx || "");
     nextBtn.setAttribute("data-go-idx", nextIdx || "");
   }
@@ -975,11 +1122,13 @@
   function openDetail(item, cardEl) {
     if (!item) return;
     legendFocus = null;
+    legendHover = null;
     ensureFullSession(item).then(function (full) {
       item = full || item;
       currentIdx = String(item.idx);
       var accent = accentOf(cardEl) || "#a78bfa";
       fillMeta(item, accent);
+      resetDetailScroll();
       var hasTrail = !!item.has_trail;
       var session = Object.assign({}, item.session || {});
       session.moving = Number(session.moving != null ? session.moving : item.moving) || 0;
@@ -987,10 +1136,12 @@
       if (!session.hr) session.hr = [];
       updateLegend(session);
       setHrScrub(session, item);
-      legendEl.querySelectorAll(".wk-legend-row").forEach(function (row) {
+      legendEl.querySelectorAll(".wk-legend-key[data-layer]").forEach(function (row) {
         row.classList.remove("is-on");
         row.style.color = accent;
+        row.setAttribute("aria-pressed", "false");
       });
+      renderLegendSlot();
 
       // GPS → tabs (keep preferredViz across pager). No GPS → clock only (ignore map pref).
       toolsEl.hidden = !hasTrail;
@@ -998,22 +1149,35 @@
       drawSessionClock(clockSvg, session, accent, false);
 
       function show() {
-        if (typeof dialog.showModal === "function") dialog.showModal();
-        else dialog.setAttribute("open", "");
+        // Already-open <dialog>.showModal() throws InvalidStateError (HTML spec,
+        // WebKit/iPad included). That aborted updatePager, so the buttons kept
+        // the previous activity's data-go-idx and a second click looked dead.
+        try {
+          if (typeof dialog.showModal === "function") {
+            if (!dialog.open) dialog.showModal();
+          } else if (!dialog.hasAttribute("open")) {
+            dialog.setAttribute("open", "");
+          }
+        } catch (e) {}
+        setPageScrollLock(true);
         updatePager(item);
+        resetDetailScroll();
+        if (typeof requestAnimationFrame === "function") {
+          requestAnimationFrame(function () { resetDetailScroll(); });
+        }
       }
 
       function applyPreferredClock() {
         setViz("clock");
         syncLegendVis(false);
-        applyLegendFocus(clockSvg);
+        refreshLegendChrome();
       }
 
       if (hasTrail) {
         var mode = (preferredViz === "clock") ? "clock" : "map";
         setViz(mode);
         syncLegendVis(mode !== "clock");
-        if (mode === "clock") applyLegendFocus(clockSvg);
+        if (mode === "clock") refreshLegendChrome();
         ensureTrails().then(function (pts) {
           var ok = drawMap(mapSvg, pts[String(item.idx)], accent);
           if (!ok) {
@@ -1023,7 +1187,7 @@
             // map drawn in background; stay on clock tab
             setViz("clock");
             syncLegendVis(false);
-            applyLegendFocus(clockSvg);
+            refreshLegendChrome();
           }
           show();
         });
@@ -1034,11 +1198,25 @@
     });
   }
 
+  function setPageScrollLock(on) {
+    try {
+      document.documentElement.classList.toggle("wk-detail-open", !!on);
+      document.body.classList.toggle("wk-detail-open", !!on);
+    } catch (e) {}
+  }
+
   function closeDetail() {
     closeTipSheet();
     collapseHrScrub();
+    setPageScrollLock(false);
     if (typeof dialog.close === "function") dialog.close();
     else dialog.removeAttribute("open");
+  }
+
+  if (dialog && typeof dialog.addEventListener === "function") {
+    dialog.addEventListener("close", function () {
+      setPageScrollLock(false);
+    });
   }
 
   function itemFromCard(card) {
@@ -1075,11 +1253,38 @@
     });
   }
 
-  document.addEventListener("click", function (ev) {
-    var tipClose = ev.target.closest && ev.target.closest("[data-wk-tip-close]");
-    if (tipClose) { closeTipSheet(); return; }
-    if (tipSheet && ev.target === tipSheet) { closeTipSheet(); return; }
+  function setLegendHover(layer) {
+    if (legendHover === layer) return;
+    legendHover = layer;
+    refreshLegendChrome();
+  }
 
+  if (clockSvg && typeof clockSvg.addEventListener === "function") {
+    clockSvg.addEventListener("pointermove", function (ev) {
+      if (!isLegendVisible() || !isFinePointer(ev)) return;
+      setLegendHover(legendLayerFromPoint(ev.clientX, ev.clientY));
+    });
+    clockSvg.addEventListener("pointerleave", function () {
+      if (!legendHover) return;
+      legendHover = null;
+      refreshLegendChrome();
+    });
+  }
+  if (legendEl && typeof legendEl.addEventListener === "function") {
+    legendEl.addEventListener("pointermove", function (ev) {
+      if (!isLegendVisible() || !isFinePointer(ev)) return;
+      var key = ev.target.closest && ev.target.closest(".wk-legend-key[data-layer]");
+      var layer = (key && legendEl.contains(key)) ? key.getAttribute("data-layer") : null;
+      setLegendHover(layer);
+    });
+    legendEl.addEventListener("pointerleave", function () {
+      if (!legendHover) return;
+      legendHover = null;
+      refreshLegendChrome();
+    });
+  }
+
+  document.addEventListener("click", function (ev) {
     var hrToggle = ev.target.closest && ev.target.closest("[data-wk-hr-toggle]");
     if (hrToggle && hrScrubEl && hrScrubEl.contains(hrToggle)) {
       ev.preventDefault();
@@ -1091,32 +1296,51 @@
     if (tipBtn) {
       ev.preventDefault();
       ev.stopPropagation();
-      openTipSheet(tipBtn.getAttribute("data-wk-tip"));
+      openTipSheet(tipBtn.getAttribute("data-wk-tip"), tipBtn);
       return;
+    }
+
+    if (activeTipBtn) closeTipSheet();
+
+    var legendRow = ev.target.closest && ev.target.closest(".wk-legend-key[data-layer]");
+    if (legendRow && legendEl && legendEl.contains(legendRow) && !legendEl.hidden) {
+      ev.preventDefault();
+      pinLegendLayer(legendRow.getAttribute("data-layer"));
+      return;
+    }
+
+    if (isLegendVisible() && ev.target.closest && ev.target.closest("svg.wk-sclock")) {
+      var ringLayer = legendLayerFromPoint(ev.clientX, ev.clientY);
+      if (ringLayer) {
+        ev.preventDefault();
+        pinLegendLayer(ringLayer);
+        return;
+      }
     }
 
     var closeBtn = ev.target.closest && ev.target.closest("[data-wk-close]");
     if (closeBtn) { closeDetail(); return; }
-    if (ev.target === dialog) { closeDetail(); return; }
-
-    var legendRow = ev.target.closest && ev.target.closest(".wk-legend-row[data-layer]");
-    if (legendRow && legendEl.contains(legendRow) && !legendEl.hidden) {
-      var layer = legendRow.getAttribute("data-layer");
-      legendFocus = legendFocus === layer ? null : layer;
-      applyLegendFocus(clockSvg);
-      return;
-    }
 
     var tab = ev.target.closest && ev.target.closest(".wk-viz-tab");
     if (tab) {
       var mode = tab.getAttribute("data-viz");
+      var wasClock = clockPanel && !clockPanel.hidden;
+      var shouldAppear = mode === "clock" && !wasClock && !reduceMotion && clockSvg;
+      if (shouldAppear) clockSvg.style.opacity = "0";
       preferredViz = mode;
       setViz(mode);
       var item = itemsByIdx[currentIdx] || {};
       syncLegendVis(item.has_trail ? mode !== "clock" : false);
       if (!legendEl.hidden) {
         updateLegend(item.session || {});
-        applyLegendFocus(clockSvg);
+        refreshLegendChrome();
+      }
+      if (shouldAppear) {
+        if (typeof requestAnimationFrame === "function") {
+          requestAnimationFrame(function () { appearDrawnClock(); });
+        } else {
+          appearDrawnClock();
+        }
       }
       return;
     }
@@ -1134,12 +1358,25 @@
     var card = ev.target.closest && ev.target.closest(".run-card[data-idx]");
     if (card && card.closest(".act-switcher")) {
       openDetail(itemFromCard(card), card);
+      return;
+    }
+
+    // Blank / backdrop: dismiss legend copy first; don't swallow pager/tab/close.
+    if (ev.target === dialog) {
+      if (clearLegendExplain()) { ev.preventDefault(); return; }
+      closeDetail();
+      return;
+    }
+    if (dialog.open && dialog.contains && dialog.contains(ev.target)) {
+      var inLegend = legendEl && !legendEl.hidden && legendEl.contains(ev.target);
+      if (!inLegend && clearLegendExplain()) ev.preventDefault();
     }
   });
 
   document.addEventListener("keydown", function (ev) {
     if (ev.key === "Escape") {
-      if (tipSheet && tipSheet.open) { closeTipSheet(); return; }
+      if (activeTipBtn) { closeTipSheet(); return; }
+      if (dialog.open && clearLegendExplain()) { ev.preventDefault(); return; }
       if (dialog.open) closeDetail();
       return;
     }
@@ -1178,6 +1415,6 @@
     hydrateFromDom();
   }
 
-  ensureTrails();
+  // Detail trails load on first open of a trail activity.
 })();
 </script>

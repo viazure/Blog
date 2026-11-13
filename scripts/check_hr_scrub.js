@@ -1,5 +1,5 @@
 /**
- * Regression: HR scrub under metrics — has/no HR, expand/collapse, tipSheet intact.
+ * Regression: HR scrub under metrics — has/no HR, expand/collapse, in-page tips intact.
  * Not a real browser/phone test. Run: node scripts/check_hr_scrub.js
  */
 const fs = require("fs");
@@ -25,8 +25,6 @@ function staticChecks(html) {
     'data-wk-hr-toggle',
     'data-wk-hr-canvas',
     'aria-label="展开心率趋势"',
-    'id="wk-tip-sheet"',
-    'var tipSheet = document.getElementById("wk-tip-sheet")',
     'var hrScrubEl = dialog.querySelector("[data-wk-hr-scrub]")',
     "function setHrScrub(",
     "function toggleHrScrub(",
@@ -36,8 +34,12 @@ function staticChecks(html) {
   for (const n of need) {
     if (!html.includes(n)) fail("missing " + n);
   }
-  const tipDecls = html.match(/var tipSheet = document\.getElementById\("wk-tip-sheet"\);/g) || [];
-  if (tipDecls.length !== 1) fail("tipSheet decls=" + tipDecls.length);
+  if (html.includes("wk-tip-sheet") || /\btipSheet\b/.test(html)) {
+    fail("leftover #wk-tip-sheet / tipSheet dependency");
+  }
+  if (!html.includes("openTipSheet") || !html.includes('class="wk-info-tip"')) {
+    fail("in-page tip helpers damaged");
+  }
   if (!/updateLegend\(session\);\r?\n\s*setHrScrub\(session, item\);/.test(html)) {
     fail("openDetail missing setHrScrub");
   }
@@ -49,16 +51,25 @@ function staticChecks(html) {
   if (tipIdx < 0) fail("TIP_COPY missing");
   const tipChunk = html.slice(tipIdx, tipIdx + 900);
   const metricBodies = {
-    moving: "实际移动时长，不含暂停。",
-    kcal: "手表估算消耗，非实测。",
-    hr_avg: "整场平均心率。",
-    hr_max: "整场最高心率。",
+    kcal: "估算消耗，非实测。",
   };
   for (const [key, body] of Object.entries(metricBodies)) {
     if (!tipChunk.includes('body: "' + body + '"')) fail("TIP_COPY body mismatch for " + key);
   }
-  if (!tipChunk.includes('body: "外圈为强度，中圈为心率，核心为用时，均铺满整场。"')) {
-    fail("sclock legend tip changed unexpectedly");
+  if (/moving\s*:/.test(tipChunk) || tipChunk.includes("实际移动时长") || tipChunk.includes("手表")) {
+    fail("用时 tip / 手表 wording should be removed from TIP_COPY");
+  }
+  if (tipChunk.includes('body: "外圈为强度，中圈为心率，核心为用时，均铺满整场。"')) {
+    fail("short sclock tip-sheet copy should be removed; full sentences live in the legend slot");
+  }
+  if (!html.includes("data-wk-legend-slot")) {
+    fail("clock legend slot markup missing");
+  }
+  if (html.includes("data-wk-legend-info")) {
+    fail("legend info mark should be removed");
+  }
+  if (html.includes('data-wk-tip="sclock"')) {
+    fail("sclock should not open a metric tip");
   }
   const drawChunk = html.split("function drawHrScrub")[1].split("function setHrIdxFromClientX")[0];
   if (!drawChunk.includes('fillStyle = "#d4534a"')) fail("solid scrub fill missing");
@@ -189,25 +200,22 @@ function buildDom() {
   const hrAxisMid = makeEl("", { "data-wk-hr-axis-mid": "" });
   const hrAxisEnd = makeEl("", { "data-wk-hr-axis-end": "" });
   const legend = makeEl("", { class: "wk-legend" });
-  const legendHead = makeEl("", { "data-wk-legend-head": "" });
+  const legendSlot = makeEl("wk-legend-slot", { "data-wk-legend-slot": "" });
   const legendInner = makeEl("", { "data-legend-inner-copy": "" });
+  const legendInnerKey = makeEl("", { class: "wk-legend-key", "data-layer": "inner" });
   const tools = makeEl("", { class: "wk-viz-tools" });
   const mapPanel = makeEl("", { "data-panel": "map" });
   const clockPanel = makeEl("", { "data-panel": "clock" });
   const mapSvg = makeEl("", { class: "wk-map", tag: "svg" });
   const clockSvg = makeEl("", { class: "wk-sclock", tag: "svg" });
   const pager = makeEl("", { class: "wk-pager" });
-  const tip = makeEl("wk-tip-sheet");
-  tip.tag = "dialog";
-  const tipTitle = makeEl("wk-tip-sheet-title");
-  const tipBody = makeEl("", { "data-wk-tip-body": "" });
 
   function adopt(parent, child) {
     child.parent = parent;
     parent.children.push(child);
   }
   [
-    title, when, sportName, sportPill, metrics, hr, legendHead, legend, tools,
+    title, when, sportName, sportPill, metrics, hr, legend, tools,
     mapPanel, clockPanel, mapSvg, clockSvg, pager
   ].forEach((c) => adopt(dialog, c));
   adopt(hr, hrToggle);
@@ -221,17 +229,15 @@ function buildDom() {
   adopt(panel, hrAxisStart);
   adopt(panel, hrAxisMid);
   adopt(panel, hrAxisEnd);
-  adopt(legend, legendInner);
-  adopt(tip, tipTitle);
-  adopt(tip, tipBody);
+  adopt(legend, legendSlot);
+  adopt(legend, legendInnerKey);
+  adopt(legendInnerKey, legendInner);
 
   const byId = {
     "wk-detail": dialog,
     "wk-detail-title": title,
     "wk-hr-scrub": hr,
     "wk-hr-scrub-panel": panel,
-    "wk-tip-sheet": tip,
-    "wk-tip-sheet-title": tipTitle,
   };
 
   const document = {
@@ -240,13 +246,12 @@ function buildDom() {
     getElementById(id) { return byId[id] || null; },
     querySelector(sel) {
       if (sel === "#wk-detail-title") return title;
-      return find(dialog, sel) || find(tip, sel);
+      return find(dialog, sel);
     },
     querySelectorAll(sel) {
       if (sel.startsWith(".run-card")) return [];
       const out = [];
       walk(dialog, (n) => { if (match(n, sel)) out.push(n); });
-      walk(tip, (n) => { if (match(n, sel)) out.push(n); });
       return out;
     },
     addEventListener() {},
@@ -255,10 +260,6 @@ function buildDom() {
   dialog.querySelector = function (sel) {
     if (sel === "#wk-detail-title") return title;
     return find(dialog, sel);
-  };
-  tip.querySelector = function (sel) {
-    if (sel === "#wk-tip-sheet-title") return tipTitle;
-    return find(tip, sel);
   };
 
   const windowObj = {
@@ -269,7 +270,7 @@ function buildDom() {
     requestAnimationFrame(fn) { fn(); },
   };
 
-  return { document, window: windowObj, dialog, hr, hrToggle, tip, tipTitle, tipBody, metrics };
+  return { document, window: windowObj, dialog, hr, hrToggle, metrics };
 }
 
 function runVm(script, extra) {
@@ -385,12 +386,13 @@ function __toggle(){ toggleHrScrub(); return { open: hrScrubEl.classList.contain
   if (no.open) fail("no HR should not stay open");
   pass("no HR: hidden (no empty shell)");
 
-  // tipSheet still present after HR patch
-  if (!html.includes('id="wk-tip-sheet"') || !html.includes("openTipSheet")) fail("tip sheet damaged");
-  pass("tipSheet markup/helpers intact");
+  if (html.includes("wk-tip-sheet") || !html.includes("openTipSheet") || !html.includes('class="wk-info-tip"')) {
+    fail("in-page tip helpers damaged");
+  }
+  pass("in-page tip helpers intact");
 
   if (process.exitCode) fail("had failures");
-  console.log("ALL PASS — HR scrub has/no + expand/collapse; tip bindings kept");
+  console.log("ALL PASS — HR scrub has/no + expand/collapse; in-page tips kept");
 }
 
 main();

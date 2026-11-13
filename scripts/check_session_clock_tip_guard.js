@@ -1,16 +1,17 @@
 #!/usr/bin/env node
 /**
- * Session Clock tip-sheet regression guard.
+ * Session Clock in-page tip regression guard.
  *
- * Catches the a98a750-class failure: editing TIP_COPY accidentally deletes
- * tipSheet/tipTitle/tipBody DOM bindings so every detail click throws
- * ReferenceError and the page looks "dead" on mobile.
+ * Catches failures where editing TIP_COPY or metric tips accidentally
+ * reintroduces a #wk-tip-sheet dialog, drops .wk-info-tip markup, or
+ * breaks click-to-toggle .is-open so detail tips stop working.
  *
  * This is NOT a real browser / phone test. It only:
- *   1) static-checks the Hugo partial (markup + binding placement)
+ *   1) static-checks the Hugo partial (markup + helpers, no tip-sheet)
  *   2) syntax-checks the extracted component script (Hugo stubs replaced)
  *   3) runs the script in node:vm with a minimal DOM mock
- *   4) negative-controls that removing the three bindings fails the suite
+ *   4) negative-controls that a leftover tipSheet dependency or a
+ *      stripped is-open toggle fails the suite
  *
  * Usage (repo root): node scripts/check_session_clock_tip_guard.js
  */
@@ -47,11 +48,10 @@ function extractScript(html) {
 
 function assertStatic(html, script) {
   const requiredMarkup = [
-    'id="wk-tip-sheet"',
-    'id="wk-tip-sheet-title"',
-    "data-wk-tip-body",
-    "data-wk-tip-close",
-    'data-wk-tip="sclock"',
+    'class="wk-info-tip"',
+    'class="wk-metrics"',
+    'class="wk-detail-meta-scroll"',
+    "data-wk-legend-slot",
     'id="wk-detail"',
     'data-viz="map"',
     'data-viz="clock"',
@@ -59,40 +59,68 @@ function assertStatic(html, script) {
   for (const needle of requiredMarkup) {
     if (!html.includes(needle)) throw new Error("markup missing " + needle);
   }
-  pass("partial markup has tip sheet + detail shell selectors");
-
-  const decls = script.match(/var tipSheet = document\.getElementById\("wk-tip-sheet"\);/g) || [];
-  if (decls.length !== 1) {
-    throw new Error("expected exactly one tipSheet binding, got " + decls.length);
+  const forbidden = [
+    "wk-tip-sheet",
+    "data-wk-tip-body",
+    "data-wk-tip-close",
+    "tipSheet",
+    "tipTitle",
+    "tipBody",
+    "showModal()",
+  ];
+  for (const needle of forbidden) {
+    // showModal() is still used for the detail dialog; only reject tip-sheet usage later.
+    if (needle === "showModal()") continue;
+    if (html.includes(needle) || script.includes(needle)) {
+      throw new Error("leftover tip-sheet dependency: " + needle);
+    }
   }
-  for (const name of ["tipTitle", "tipBody", "legendHead"]) {
-    const re = new RegExp("var " + name + " = ");
-    if (!re.test(script)) throw new Error("missing binding " + name);
+  if (/\btipSheet\b/.test(script) || /\btipTitle\b/.test(script) || /\btipBody\b/.test(script)) {
+    throw new Error("script still references tip-sheet bindings");
   }
-  pass("tipSheet/tipTitle/tipBody/legendHead bindings present once");
+  pass("partial has in-page tips and no #wk-tip-sheet");
 
-  const bindAt = script.indexOf('var tipSheet = document.getElementById("wk-tip-sheet")');
+  const metricsAt = html.indexOf('class="wk-metrics"');
+  const scrollAt = html.indexOf('class="wk-detail-meta-scroll"');
+  if (metricsAt < 0 || scrollAt < 0 || !(metricsAt < scrollAt)) {
+    throw new Error("wk-metrics must sit above .wk-detail-meta-scroll so tips are not clipped");
+  }
+  pass("metrics sit above the meta scroller");
+
   const copyAt = script.indexOf("var TIP_COPY =");
-  const pagerAt = script.indexOf('var pager = dialog.querySelector(".wk-pager")');
-  if (bindAt < 0 || copyAt < 0 || pagerAt < 0) {
-    throw new Error("could not locate tipSheet / TIP_COPY / pager anchors");
+  if (copyAt < 0) throw new Error("TIP_COPY missing");
+  const copyMatch = script.match(/var TIP_COPY = \{([\s\S]*?)\n  \};/);
+  if (!copyMatch) throw new Error("could not parse TIP_COPY");
+  const keys = [...copyMatch[1].matchAll(/^\s{4}([A-Za-z0-9_]+):/gm)].map((m) => m[1]);
+  if (keys.join(",") !== "kcal") {
+    throw new Error("TIP_COPY keys should be only kcal; got " + keys.join(","));
   }
-  if (!(pagerAt < bindAt && bindAt < copyAt)) {
-    throw new Error(
-      "tip bindings must sit with top DOM queries (after pager, before TIP_COPY); " +
-        JSON.stringify({ pagerAt, bindAt, copyAt })
-    );
+  if (!copyMatch[1].includes("估算消耗，非实测。")) throw new Error("kcal tip copy changed");
+  if (copyMatch[1].includes("moving") || copyMatch[1].includes("实际移动时长") || copyMatch[1].includes("手表")) {
+    throw new Error("用时 tip / 手表 wording should be removed from TIP_COPY");
   }
-  // Keep bindings near the top shell queries — far from TIP_COPY edit surface.
-  const head = script.slice(0, bindAt);
-  const earlyDialog = head.indexOf('var dialog = document.getElementById("wk-detail")');
-  if (earlyDialog < 0 || bindAt - earlyDialog > 1200) {
-    throw new Error("tip bindings drifted too far from dialog shell queries");
+  pass("TIP_COPY is only 能耗");
+
+  if (/metricHtml\("用时"[^;]*,\s*["']moving["']\s*\)/.test(script)) {
+    throw new Error("用时 should not have a tip key");
   }
-  pass("tip bindings colocated with top DOM queries, before TIP_COPY");
+  if (!/metricHtml\("能耗"[^;]*,\s*["']kcal["']\s*\)/.test(script)) {
+    throw new Error("能耗 should keep a kcal tip key");
+  }
+  if (/metricHtml\("平均心率"[^;]*,\s*["'][^"']+["']\s*\)/.test(script)) {
+    throw new Error("平均心率 should not have a tip key");
+  }
+  if (/metricHtml\("最大心率"[^;]*,\s*["'][^"']+["']\s*\)/.test(script)) {
+    throw new Error("最大心率 should not have a tip key");
+  }
+  if (!/wk-info-tip/.test(script) || !/function metricHtml\(label, value, unit, tipKey\)/.test(script)) {
+    throw new Error("metricHtml must render .wk-info-tip");
+  }
+  pass("用时 / HR metrics have no ⓘ; only 能耗 keeps a tip");
 
   if (!/function openTipSheet\(key\)/.test(script)) throw new Error("openTipSheet missing");
   if (!/function closeTipSheet\(/.test(script)) throw new Error("closeTipSheet missing");
+  if (!/classList\.add\("is-open"\)/.test(script)) throw new Error("openTipSheet must toggle .is-open");
   if (!/document\.addEventListener\("click"/.test(script)) throw new Error("click listener missing");
   if (!/document\.addEventListener\("keydown"/.test(script)) throw new Error("keydown listener missing");
   pass("open/close tip helpers and click/keydown listeners present");
@@ -186,12 +214,19 @@ function runScript(script, mock) {
   vm.runInNewContext(script, mock.ctx, { filename: "session-clock-script.js" });
 }
 
-function fireClick(listeners, selector, attrs) {
-  const target = {
+function fireClick(listeners, selector, attrs, existing) {
+  const target = existing || {
     attrs: Object.assign(Object.create(null), attrs || {}),
+    _selector: selector,
     getAttribute(k) { return Object.prototype.hasOwnProperty.call(this.attrs, k) ? this.attrs[k] : null; },
-    closest(sel) { return sel === selector ? target : null; },
-    classList: { contains() { return false; } },
+    setAttribute(k, v) { this.attrs[k] = String(v); },
+    closest(sel) { return sel === this._selector ? target : null; },
+    classList: {
+      _set: new Set(),
+      add(c) { this._set.add(c); },
+      remove(c) { this._set.delete(c); },
+      contains(c) { return this._set.has(c); },
+    },
   };
   const ev = {
     target,
@@ -200,6 +235,10 @@ function fireClick(listeners, selector, attrs) {
   };
   for (const fn of listeners.click || []) fn(ev);
   return target;
+}
+
+function tipIsOpen(btn) {
+  return !!(btn && btn.classList.contains("is-open") && btn.getAttribute("aria-expanded") === "true");
 }
 
 function assertVmHappy(script) {
@@ -219,33 +258,39 @@ function assertVmHappy(script) {
   }
   pass("vm init binds click/keydown/year-loaded (minimal DOM mock)");
 
-  fireClick(mock.listeners, "[data-wk-tip]", { "data-wk-tip": "sclock" });
-  const sheet = mock.el("wk-tip-sheet");
-  const title = mock.el("wk-tip-sheet #wk-tip-sheet-title");
-  const body = mock.el("wk-tip-sheet [data-wk-tip-body]");
-  if (!sheet.open) throw new Error("ⓘ click did not open tip sheet");
-  if (title.textContent !== "图例") throw new Error("unexpected tip title: " + title.textContent);
-  if (!String(body.textContent).includes("外圈")) throw new Error("tip body missing expected copy");
-  pass("vm ⓘ click opens tip sheet with TIP_COPY");
+  fireClick(mock.listeners, ".wk-legend-key[data-layer]", { "data-layer": "outer" });
+  pass("vm legend key does not open a metric tip");
 
-  fireClick(mock.listeners, "[data-wk-tip-close]");
-  if (sheet.open) throw new Error("tip close did not close sheet");
-  pass("vm tip close");
+  const tipBtn = fireClick(mock.listeners, "[data-wk-tip]", { "data-wk-tip": "kcal" });
+  if (!tipIsOpen(tipBtn)) throw new Error("metric ? click did not open floating tip");
+  pass("vm metric ? click opens in-page tip via .is-open");
 
+  fireClick(mock.listeners, "[data-wk-tip]", { "data-wk-tip": "kcal" }, tipBtn);
+  if (tipIsOpen(tipBtn)) throw new Error("second click did not close floating tip");
+  pass("vm metric tip toggles closed on second click");
+
+  fireClick(mock.listeners, "[data-wk-tip]", { "data-wk-tip": "kcal" }, tipBtn);
+  if (!tipIsOpen(tipBtn)) throw new Error("metric tip did not reopen");
   fireClick(mock.listeners, ".wk-viz-tab", { "data-viz": "map" });
+  if (tipIsOpen(tipBtn)) throw new Error("map tab did not dismiss floating tip");
   if (mock.el('wk-detail [data-panel="map"]').hidden !== false) throw new Error("map tab failed");
   if (mock.el('wk-detail [data-panel="clock"]').hidden !== true) throw new Error("clock hide failed");
   fireClick(mock.listeners, ".wk-viz-tab", { "data-viz": "clock" });
   if (mock.el('wk-detail [data-panel="clock"]').hidden !== false) throw new Error("clock tab failed");
-  pass("vm Map/Clock tab toggles panel.hidden");
+  pass("vm Map/Clock tab toggles panel.hidden and dismisses tip");
 
-  fireClick(mock.listeners, "[data-wk-tip]", { "data-wk-tip": "moving" });
-  if (!sheet.open) throw new Error("metric tip did not open");
+  fireClick(mock.listeners, "[data-wk-tip]", { "data-wk-tip": "kcal" }, tipBtn);
+  if (!tipIsOpen(tipBtn)) throw new Error("metric tip did not open");
   mock.listeners.keydown[0]({ key: "Escape" });
-  if (sheet.open) throw new Error("Escape did not close tip sheet");
+  if (tipIsOpen(tipBtn)) throw new Error("Escape did not close floating tip");
   pass("vm metric tip + Escape close");
 
-  // Card path: ensure click routing does not throw ReferenceError on tip bindings.
+  fireClick(mock.listeners, "[data-wk-tip]", { "data-wk-tip": "kcal" }, tipBtn);
+  fireClick(mock.listeners, ".wk-detail-title");
+  if (tipIsOpen(tipBtn)) throw new Error("outside click did not dismiss floating tip");
+  pass("vm outside click dismisses floating tip");
+
+  // Card path: ensure click routing does not throw on tip helpers.
   // Full openDetail / SVG / shard fetch is out of scope for this mock.
   let cardErr = null;
   try {
@@ -253,48 +298,34 @@ function assertVmHappy(script) {
   } catch (e) {
     cardErr = e;
   }
-  if (cardErr && /tipSheet|tipTitle|tipBody/.test(String(cardErr.message || cardErr))) {
+  if (cardErr && /tipSheet|tipTitle|tipBody|openTipSheet/.test(String(cardErr.message || cardErr))) {
     throw cardErr;
   }
-  pass("vm card click path does not hit tip binding ReferenceError (openDetail/SVG not asserted)");
+  pass("vm card click path does not hit tip helper ReferenceError (openDetail/SVG not asserted)");
 }
 
-function stripTipBindings(script) {
-  return script
-    .replace(/^[ \t]*var tipSheet = document\.getElementById\("wk-tip-sheet"\);\r?\n/m, "")
-    .replace(/^[ \t]*var tipTitle = tipSheet \? tipSheet\.querySelector\("#wk-tip-sheet-title"\) : null;\r?\n/m, "")
-    .replace(/^[ \t]*var tipBody = tipSheet \? tipSheet\.querySelector\("\[data-wk-tip-body\]"\) : null;\r?\n/m, "");
-}
-
-function assertNegative(script) {
-  const broken = stripTipBindings(script);
-  const decls = broken.match(/var tipSheet = document\.getElementById\("wk-tip-sheet"\);/g) || [];
-  if (decls.length !== 0) throw new Error("negative control failed to strip tipSheet");
-  if (/var tipTitle = /.test(broken) && /tipSheet \? tipSheet\.querySelector\("#wk-tip-sheet-title"\)/.test(broken)) {
-    throw new Error("negative control failed to strip tipTitle");
-  }
-  // The suite's static invariant: exactly one tipSheet binding colocated at top.
+function assertNegative(html, script) {
+  const polluted = script.replace(
+    /if \(!copy\) return;/,
+    "if (!copy || !tipSheet) return;"
+  );
+  if (polluted === script) throw new Error("negative control failed to inject tipSheet guard");
   let rejected = false;
   try {
-    if (decls.length !== 1) throw new Error("expected exactly one tipSheet binding, got " + decls.length);
+    assertStatic(html, polluted);
   } catch (e) {
-    rejected = /exactly one tipSheet binding/.test(String(e.message || e));
+    rejected = /tip-sheet|tipSheet/.test(String(e.message || e));
   }
-  if (!rejected) throw new Error("negative control: static check should reject missing tipSheet");
-  pass("negative control: static check rejects stripped tipSheet bindings");
+  if (!rejected) throw new Error("negative control: static check should reject tipSheet dependency");
+  pass("negative control: static check rejects leftover tipSheet dependency");
 
+  const stripped = script.replace('btn.classList.add("is-open");', "");
+  if (stripped === script) throw new Error("negative control failed to strip is-open toggle");
   const mock = makeDomMock();
-  runScript(broken, mock);
-  let threw = null;
-  try {
-    fireClick(mock.listeners, "[data-wk-tip]", { "data-wk-tip": "sclock" });
-  } catch (e) {
-    threw = e;
-  }
-  if (!threw || threw.name !== "ReferenceError" || !/tipSheet/.test(String(threw.message))) {
-    throw new Error("negative control expected ReferenceError tipSheet, got " + threw);
-  }
-  pass("negative control: vm tip click throws ReferenceError: tipSheet is not defined");
+  runScript(stripped, mock);
+  const tipBtn = fireClick(mock.listeners, "[data-wk-tip]", { "data-wk-tip": "kcal" });
+  if (tipIsOpen(tipBtn)) throw new Error("negative control: stripped is-open should not open the tip");
+  pass("negative control: vm tip click fails when .is-open toggle is stripped");
 }
 
 function main() {
@@ -304,12 +335,12 @@ function main() {
   assertStatic(html, script);
   syntaxCheck(script, "extracted component script");
   assertVmHappy(script);
-  assertNegative(script);
+  assertNegative(html, script);
   if (process.exitCode) {
     console.error("tip guard FAILED");
     process.exit(process.exitCode);
   }
-  console.log("ALL PASS — safe against TIP_COPY-edit deleting tip DOM bindings");
+  console.log("ALL PASS — in-page .wk-info-tip click/hover tips have no #wk-tip-sheet dependency");
 }
 
 main();

@@ -2,14 +2,16 @@
 """Build the workouts page data: activities, heatmap, year groups, sport stats.
 
 Everything the template needs is computed here, so the Hugo side only loops.
-Outputs two files:
+Outputs three files:
 
   data/workouts.json  — page data (no polylines)
-  static/trails.json  — simplified track outlines, rendered on demand by the page
+  static/trails.json  — 40px integer outlines for list thumbnails
+  static/data/workouts/trails-detail.json — finer tracks for the detail map
 
-The track geometry is simplified with Douglas-Peucker at a tolerance suited to a
-40px thumbnail (1px in a 40px box is about 2.5e-4 degrees), which takes ~394
-tracks from ~980k points down to about 65 KB.
+List tracks use Douglas-Peucker at 3e-4 deg (~30 m) and integer coordinates in
+a 40-unit box. Detail tracks use a tighter ~9 m tolerance and one-decimal
+coordinates in a 400-unit box, loaded on demand. Do not upscale the 40-grid
+path for the detail map.
 """
 
 from __future__ import annotations
@@ -33,7 +35,11 @@ DISPLAY_TZ = timezone(timedelta(hours=8))
 RUN_PAGE = "https://run.viazure.cc"
 TRACK_TOLERANCE = 3e-4
 TRACK_SIZE = 40
-TRAIL_BUDGET = 120000  # bytes; keep the whole trail file bounded
+TRAIL_BUDGET = 120000  # bytes; keep the list thumbnail file bounded
+# Detail map: ~9 m (1 deg ~ 111 km). Not the raw GPS trace.
+DETAIL_TRACK_TOLERANCE = 8e-5
+DETAIL_TRACK_SIZE = 400
+DETAIL_TRAIL_BUDGET = 800000  # bytes; separate from the list budget
 # Must match assets/sass/_page-vars.scss $switcher-slots: extra sport
 # panels have no :has() rule, so they would render as a blank page.
 SWITCHER_SLOTS = 20
@@ -200,19 +206,29 @@ def hours_label(seconds: float) -> str:
 
 
 def title_for(hour: int, name: str, km: float) -> str:
-    """Same hour buckets as running_page titleForRun, with Chinese labels."""
+    """Period + sport title. Seven hour buckets in DISPLAY_TZ (UTC+8), taken
+    from start_date_local: 凌晨 00-04, 清晨 05-08, 上午 09-10, 午间 11-13,
+    午后 14-17, 傍晚 18-19, 夜晚 20-23.
+
+    All sports keep the period prefix (e.g. 凌晨力量训练). Marathon exceptions
+    apply only to 跑步 (20<km<40 半程马拉松, km>=40 全程马拉松) and omit the period.
+    """
     if name == "跑步":
         if 20 < km < 40:
             return "半程马拉松"
         if km >= 40:
             return "全程马拉松"
-    if hour <= 10:
-        period = "晨间"
-    elif hour <= 14:
+    if 0 <= hour <= 4:
+        period = "凌晨"
+    elif 5 <= hour <= 8:
+        period = "清晨"
+    elif 9 <= hour <= 10:
+        period = "上午"
+    elif 11 <= hour <= 13:
         period = "午间"
-    elif hour <= 18:
+    elif 14 <= hour <= 17:
         period = "午后"
-    elif hour <= 21:
+    elif 18 <= hour <= 19:
         period = "傍晚"
     else:
         period = "夜晚"
@@ -268,7 +284,27 @@ def simplify(points: list[tuple[float, float]], tolerance: float) -> list[tuple[
     return [p for p, k in zip(points, keep, strict=False) if k]
 
 
-def trail_points(polyline: str) -> str:
+def _fmt_xy(x: float, y: float, fmt: str) -> str:
+    """Format a pair; trim trailing zeros for the decimal (detail) format."""
+    if fmt == "%.0f %.0f":
+        return fmt % (x, y)
+
+    def one(v: float) -> str:
+        s = "%.1f" % v
+        if "." in s:
+            s = s.rstrip("0").rstrip(".")
+        return s or "0"
+
+    return one(x) + " " + one(y)
+
+
+def trail_points(
+    polyline: str,
+    *,
+    tolerance: float = TRACK_TOLERANCE,
+    size: int = TRACK_SIZE,
+    fmt: str = "%.0f %.0f",
+) -> str:
     """Normalised "x y" pairs for one track, or '' when unusable."""
     if not polyline:
         return ""
@@ -281,7 +317,7 @@ def trail_points(polyline: str) -> str:
     for lat, lng in pts:
         if not (-90 <= lat <= 90 and -180 <= lng <= 180):
             return ""
-    pts = simplify(pts, TRACK_TOLERANCE)
+    pts = simplify(pts, tolerance)
     if len(pts) < 2:
         return ""
     lats = [p[0] for p in pts]
@@ -289,13 +325,16 @@ def trail_points(polyline: str) -> str:
     min_lat, max_lat, min_lng, max_lng = min(lats), max(lats), min(lngs), max(lngs)
     lat_range = (max_lat - min_lat) or 1e-6
     lng_range = (max_lng - min_lng) or 1e-6
-    pad = 4
-    scale = min((TRACK_SIZE - pad * 2) / lng_range, (TRACK_SIZE - pad * 2) / lat_range)
-    off_x = (TRACK_SIZE - lng_range * scale) / 2
-    off_y = (TRACK_SIZE - lat_range * scale) / 2
+    pad = size * 0.1
+    scale = min((size - pad * 2) / lng_range, (size - pad * 2) / lat_range)
+    off_x = (size - lng_range * scale) / 2
+    off_y = (size - lat_range * scale) / 2
     return " ".join(
-        "%.0f %.0f"
-        % ((lng - min_lng) * scale + off_x, TRACK_SIZE - ((lat - min_lat) * scale + off_y))
+        _fmt_xy(
+            (lng - min_lng) * scale + off_x,
+            size - ((lat - min_lat) * scale + off_y),
+            fmt,
+        )
         for lat, lng in pts
     )
 
@@ -606,6 +645,7 @@ def main() -> None:
 
     rows = []
     trails = {}
+    detail_trails = {}
     for index, entry in enumerate(raw):
         stamp = (entry.get("start_date_local") or "")[:16]
         started = ""
@@ -652,9 +692,18 @@ def main() -> None:
         if run_id is not None:
             row["run_id"] = run_id
         rows.append(row)
-        points = trail_points(str(entry.get("summary_polyline") or ""))
+        raw_poly = str(entry.get("summary_polyline") or "")
+        points = trail_points(raw_poly)
         if points:
             trails[str(index)] = points
+        detail_points = trail_points(
+            raw_poly,
+            tolerance=DETAIL_TRACK_TOLERANCE,
+            size=DETAIL_TRACK_SIZE,
+            fmt="%.1f %.1f",
+        )
+        if detail_points:
+            detail_trails[str(index)] = detail_points
     if not rows:
         raise SystemExit("no activities parsed")
 
@@ -700,6 +749,31 @@ def main() -> None:
     static_dir.mkdir(parents=True, exist_ok=True)
     (static_dir / "trails.json").write_text(
         json.dumps({"points": trimmed}, ensure_ascii=False, separators=(",", ":")) + "\n",
+        encoding="utf-8",
+    )
+
+    # Detail tracks: same keys as the list set, then any leftover budget.
+    detail_dir = static_dir / "data" / "workouts"
+    detail_dir.mkdir(parents=True, exist_ok=True)
+    detail_trimmed, detail_used = {}, 0
+    detail_keys = list(trimmed.keys()) + [
+        k for k in sorted(detail_trails, key=lambda x: int(x)) if k not in trimmed
+    ]
+    for key in detail_keys:
+        pts = detail_trails.get(key)
+        if not pts:
+            continue
+        if detail_used + len(pts) > DETAIL_TRAIL_BUDGET:
+            continue
+        detail_trimmed[key] = pts
+        detail_used += len(pts)
+    (detail_dir / "trails-detail.json").write_text(
+        json.dumps(
+            {"size": DETAIL_TRACK_SIZE, "points": detail_trimmed},
+            ensure_ascii=False,
+            separators=(",", ":"),
+        )
+        + "\n",
         encoding="utf-8",
     )
 
@@ -805,8 +879,8 @@ def main() -> None:
         },
     )
     print(
-        "workouts ok (%d activities, %d trails, %.0f KB of track data)"
-        % (len(rows), len(trimmed), used / 1024)
+        "workouts ok (%d activities, %d trails, %.0f KB list / %d detail, %.0f KB detail)"
+        % (len(rows), len(trimmed), used / 1024, len(detail_trimmed), detail_used / 1024)
     )
     from emit_page_shards import emit_workouts
 
