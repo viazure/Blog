@@ -80,12 +80,13 @@ function assertStatic(html, script) {
   }
   pass("partial has in-page tips and no #wk-tip-sheet");
 
-  const metricsAt = html.indexOf('class="wk-metrics"');
   const scrollAt = html.indexOf('class="wk-detail-meta-scroll"');
-  if (metricsAt < 0 || scrollAt < 0 || !(metricsAt < scrollAt)) {
-    throw new Error("wk-metrics must sit above .wk-detail-meta-scroll so tips are not clipped");
+  const metricsAt = html.indexOf('class="wk-metrics"');
+  const hrAt = html.indexOf('id="wk-hr-scrub"');
+  if (scrollAt < 0 || metricsAt < 0 || hrAt < 0 || !(scrollAt < metricsAt && metricsAt < hrAt)) {
+    throw new Error("wk-metrics must sit inside .wk-detail-meta-scroll with the HR trend");
   }
-  pass("metrics sit above the meta scroller");
+  pass("metrics sit inside the meta scroller with HR");
 
   const copyAt = script.indexOf("var TIP_COPY =");
   if (copyAt < 0) throw new Error("TIP_COPY missing");

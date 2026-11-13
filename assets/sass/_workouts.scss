@@ -34,13 +34,6 @@
   margin-top: 0.35rem;
 }
 
-.sec-sub {
-  margin-left: 0.35em;
-  color: $gray;
-  font-size: 0.72em;
-  font-weight: 400;
-}
-
 .stv-recent {
   display: grid;
   grid-template-columns: max-content 11.25rem minmax(0, 1fr);
@@ -395,24 +388,6 @@
   min-width: 0;
 }
 
-.heat-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.6rem 1rem;
-  margin-bottom: 0.75rem;
-}
-
-.hm-label {
-  margin: 0;
-  color: $gray;
-  font-size: 0.75rem;
-  font-weight: $normal-weight;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
 .heat-switcher {
   position: relative;
 }
@@ -422,16 +397,6 @@
   flex-direction: column;
   gap: 0.35rem;
   min-width: 0;
-}
-
-.year-nav-label {
-  margin: 0;
-  color: $gray;
-  font-size: 0.68rem;
-  font-weight: $normal-weight;
-  letter-spacing: 0.08em;
-  text-transform: none;
-  opacity: 0.85;
 }
 
 .act-year-nav {
@@ -884,6 +849,7 @@
 .stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
   gap: 1.5rem;
 
   @include media-query($on-mobile) {
@@ -907,12 +873,15 @@
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
+    margin: 0;
+    padding: 0;
     cursor: pointer;
     list-style: none;
     color: $text-base-color;
     font-size: 0.75rem;
     font-weight: $normal-weight;
     font-variant-numeric: tabular-nums;
+    line-height: 1.55rem;
 
     &::marker,
     &::-webkit-details-marker {
@@ -976,6 +945,8 @@
   margin: 0;
 }
 
+/* Beat article .page-content h4 so stat titles stay compact and aligned. */
+article .page-content .block h4,
 .block h4 {
   display: flex;
   align-items: center;
@@ -983,7 +954,13 @@
   margin: 0 0 0.5rem;
   font-size: 0.75rem;
   font-weight: $normal-weight;
+  line-height: 1.55rem;
   color: $text-base-color;
+}
+
+.block h4 > .year-dd {
+  margin: 0;
+  min-height: 0;
 }
 
 .kv {
@@ -1069,7 +1046,7 @@
   transition: background-color 0.16s ease-out, border-color 0.16s ease-out;
 
   &:hover,
-  &:focus-within {
+  &:focus-visible {
     background: rgba(0, 0, 0, 0.04);
     border-color: rgba(0, 0, 0, 0.14);
   }
@@ -1080,7 +1057,7 @@
 
   @media (hover: hover) and (pointer: fine) {
     &:hover > .card-tip,
-    &:focus-within > .card-tip {
+    &:focus-visible > .card-tip {
       opacity: 1;
     }
   }
@@ -1594,8 +1571,9 @@ body.wk-detail-open {
 }
 
 .wk-detail-meta-scroll {
-  // Metrics sit above this scroller so in-page .wk-info-tip can overflow
-  // into the header gap instead of being clipped here.
+  // Metrics + HR trend scroll together; head and pager stay fixed.
+  // The remaining kcal tip sits on the last metric and opens upward
+  // over its own value, so it no longer needs to escape this box.
   flex: 1 1 auto;
   min-height: 0;
   overflow-x: hidden;

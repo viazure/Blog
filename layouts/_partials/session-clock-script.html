@@ -57,8 +57,8 @@
           <h2 class="wk-detail-title display" id="wk-detail-title"></h2>
           <p class="wk-detail-when mono"></p>
         </header>
-        <div class="wk-metrics" role="list"></div>
         <div class="wk-detail-meta-scroll">
+        <div class="wk-metrics" role="list"></div>
         <div class="wk-hr-scrub" id="wk-hr-scrub" hidden data-wk-hr-scrub>
           <button type="button" class="wk-hr-scrub-toggle" data-wk-hr-toggle aria-expanded="false" aria-controls="wk-hr-scrub-panel" aria-label="展开心率趋势">
             <span class="wk-hr-scrub-left"><span class="wk-hr-scrub-chev" aria-hidden="true">&rsaquo;</span>心率趋势</span>
@@ -1213,9 +1213,18 @@
     else dialog.removeAttribute("open");
   }
 
+  var detailClosedByKey = false;
   if (dialog && typeof dialog.addEventListener === "function") {
     dialog.addEventListener("close", function () {
       setPageScrollLock(false);
+      // Mouse close restores focus to the card; drop it so the hover tip
+      // does not stay up as a leftover selected state. Keyboard (Escape)
+      // keeps focus so the user can continue from that card.
+      var active = document.activeElement;
+      if (!detailClosedByKey && active && active.classList && active.classList.contains("run-card")) {
+        active.blur();
+      }
+      detailClosedByKey = false;
     });
   }
 
@@ -1377,7 +1386,10 @@
     if (ev.key === "Escape") {
       if (activeTipBtn) { closeTipSheet(); return; }
       if (dialog.open && clearLegendExplain()) { ev.preventDefault(); return; }
-      if (dialog.open) closeDetail();
+      if (dialog.open) {
+        detailClosedByKey = true;
+        closeDetail();
+      }
       return;
     }
     if (ev.key === "Enter" && ev.target.classList && ev.target.classList.contains("run-card")) {

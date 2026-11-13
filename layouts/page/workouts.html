@@ -14,7 +14,7 @@
                     {{ end }}
                     <div class="stv-row">
                         {{ range $i, $y := .years }}
-                        <div class="stv-year sy-{{ add $i 1 }}" title="展示用，请用下方热力年份切换" role="status">
+                        <div class="stv-year sy-{{ add $i 1 }}" title="展示用，请用下方年份切换" role="status">
                             <p class="stv-label">{{ $y.year }} 年</p>
                             <p class="stv-n">{{ printf "%.0f" $y.km }}<span class="unit">km</span></p>
                             <p class="stv-cap">{{ $y.hours }} · {{ $y.n }} 次</p>
@@ -63,11 +63,7 @@
                     </div>
 
                     <div class="heatwrap">
-                        <div class="heat-head">
-                            <p class="hm-label">热力图</p>
-                        </div>
                         <div class="year-nav heat-year-nav">
-                            <p class="year-nav-label">热力年份</p>
                             <nav class="heat-chips" aria-label="热力年份">
                                 {{ range .years }}<label for="heat-{{ .year }}" tabindex="0">{{ .year }}</label>{{ end }}
                             </nav>
@@ -138,7 +134,7 @@
 
                 {{/* 统计：先选运动；中间列年份做成内联下拉 */}}
                 <section class="sec">
-                    <h2>统计 <span class="sec-sub">按运动</span></h2>
+                    <h2>统计</h2>
                     <div class="switcher sport-switcher">
                         {{ $top := 3 }}
                         {{ $n := len .panels }}
