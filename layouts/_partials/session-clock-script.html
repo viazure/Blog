@@ -142,7 +142,7 @@
   var legendHover = null;
   var LEGEND_LABEL = { outer: "外圈", inner: "中圈", core: "核心" };
   var legendCopy = {
-    outer: "整场铺满一圈，从正上方顺时针展开。格子越高越亮，对应更高的心率区间（Z1 到 Z5）。",
+    outer: "整场铺满一圈，从正上方顺时针展开。外圈是心率区间分档（低于 Z1 到 Z5），跨档才变高低，不是第二条心率曲线。",
     inner: "同一圈上的心率，越高越靠外。",
     core: "不满 1 小时是一颗实心圆点；每满 1 小时多一环。"
   };
@@ -416,7 +416,7 @@
     var baseR = mini ? 110 : 120;
     var barMinH = mini ? 11 : 12;
     var barMaxH = mini ? 36 : 40;
-    var tierH = mini ? [11, 17, 23, 30, 36] : [12, 19, 26, 33, 40];
+    var tierH = mini ? [5, 11, 17, 23, 30, 36] : [5, 12, 19, 26, 33, 40];
     var TARGET_N = 48;
 
     // Layers drawn together (sync reveal).
@@ -440,9 +440,10 @@
     var N = bars.length || 0;
     var slot = fullDeg / Math.max(N, 1);
     var gapDeg = 0.8;
-    // Stored bars are absolute Z1-Z5 heights (12/19/26/33/40). Snap to that
+    // Stored bars are absolute Z0-Z5 heights (5/12/19/26/33/40). Snap to that
     // global ladder; never stretch a chart to its own min/max.
-    var srcTiers = [12, 19, 26, 33, 40];
+    // barMinH stays at Z1 so Z1–Z5 opacity is unchanged; Z0 is shorter and dimmer.
+    var srcTiers = [5, 12, 19, 26, 33, 40];
     var barPaths = [];
     for (var i = 0; i < N; i++) {
       var a0 = aStart + i * slot + gapDeg * 0.5;
@@ -459,6 +460,7 @@
       var r0 = baseR;
       var r1 = baseR + barH;
       var p0 = pt(r0, a0), p1 = pt(r0, a1), p2 = pt(r1, a1), p3 = pt(r1, a0);
+      // Z1 t=0 → 0.32; Z5 t=1 → 0.95. Z0 (height 5) yields ~0.16, clearly below Z1.
       var op = 0.32 + t * 0.63;
       var path = ns("path");
       path.setAttribute("d",
@@ -847,8 +849,8 @@
     }
     var dur = moving > 0 ? elapsedLabel(moving) : "";
     legendCopy.outer = dur
-      ? "整场铺满一圈（" + dur + "），从正上方顺时针展开。格子越高越亮，对应更高的心率区间（Z1 到 Z5）。"
-      : "整场铺满一圈，从正上方顺时针展开。格子越高越亮，对应更高的心率区间（Z1 到 Z5）。";
+      ? "整场铺满一圈（" + dur + "），从正上方顺时针展开。外圈是心率区间分档（低于 Z1 到 Z5），跨档才变高低，不是第二条心率曲线。"
+      : "整场铺满一圈，从正上方顺时针展开。外圈是心率区间分档（低于 Z1 到 Z5），跨档才变高低，不是第二条心率曲线。";
     legendCopy.inner = hasHr
       ? "同一圈上的心率，越高越靠外。"
       : "没有逐点心率，中圈不显示，请看外圈。";
