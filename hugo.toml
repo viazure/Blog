@@ -146,10 +146,14 @@ theme = "hugo-blog-awesome"
   name = "Rss"
   url = "/index.xml"
 
-# 运动页 Session Clock：外圈心率分档在构建时计算（改完 LTHR 后需重新运行
-# python scripts/build_workouts.py，下次部署才生效）。前端不读乳酸阈。
-# 乳酸阈从环境变量 LTHR_BPM 或仓库根目录已忽略提交的 .env 读取，见 docs/session-clock.md。
+# 运动页 Session Clock：外圈心率分档在构建时计算（改完 LTHR 或出生年月后需
+# 重新运行 python scripts/build_workouts.py，下次部署才生效）。前端不读这些配置。
+# 乳酸阈可选：从环境变量 LTHR_BPM 或仓库根目录已忽略提交的 .env 读取，不要写进仓库。
+# 未配置时按 birthday_month 做年龄估算；两者都没有则不画区间齿，构建仍成功。
+# 见 docs/session-clock.md。
 [params.workouts]
+  # 公开身份（YYYY-MM）。没有设备区间和乳酸阈时，按活动当日年龄用 220−年龄估算。
+  birthday_month = "1995-02"
   # 运动详情「分段分析」深链的 Running Page 根地址。前端拼 #run_<id>/analysis。
   # 有 run_id 且构建期 has_splits 才渲染按钮；改完根地址无需重跑 build_workouts.py。
   runningPage = "https://run.viazure.cc"

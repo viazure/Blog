@@ -26,7 +26,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from paths import dump_data, life_data_root, load_json
-from session_clock import build_session
+from session_clock import build_session, get_lactate_threshold, get_workouts_site_config
 
 ROOT = Path(__file__).resolve().parents[1]
 # Workouts are dated in local time. China has no DST, so a fixed offset
@@ -728,6 +728,10 @@ def main() -> None:
     splits_dir = life_data_root() / "data" / "workouts" / "splits"
     if not splits_dir.is_dir():
         splits_dir = None
+    site = get_workouts_site_config()
+    lthr = get_lactate_threshold()
+    birthday_month = site.get("birthday_month")
+    config_lthr = site.get("lthr")
     for row in rows:
         session = build_session(
             run_id=row.get("run_id"),
@@ -735,6 +739,10 @@ def main() -> None:
             hr_avg=float(row.get("hr") or 0),
             elev=float(row.get("elev") or 0),
             splits_dir=splits_dir,
+            lthr=lthr,
+            birthday_month=birthday_month,
+            activity_date=row.get("date"),
+            config_lthr=config_lthr,
         )
         if session:
             row["session"] = session

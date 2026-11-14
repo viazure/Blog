@@ -37,6 +37,8 @@ jobs:
 
       - name: Build data pages
         env:
+          # Optional. An empty Actions variable is treated as unset
+          # and the build still succeeds (age estimate or no zone teeth).
           LTHR_BPM: ${{ vars.LTHR_BPM }}
         run: |
           python scripts/build_lastfm.py

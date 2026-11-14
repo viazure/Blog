@@ -18,7 +18,7 @@
 | `run_id` / `hr_max` / `kcal` | `data-wk` JSON | renderCard 同左 | Session Clock 的 id / 指标 |
 | `has_splits` | `data-wk`（仅 true 时写入） | renderCard 写入 `!!c.has_splits` | 仅跑步，且构建期确认 `splits/{run_id}.json` 存在；详情「分段分析」用 |
 | `session`（精简） | `data-wk`：`has_session`、`moving`、`hr_avg`、`hr_max`、`kcal`、`elev`，**不含 bars/hr** | `slimSession()` | 仅列表摘要 |
-| `session`（完整） | 不在 attribute 里；年份分片 → `__wkIndexItems` | 同左 | Clock 用的 `bars`（28）+ `hr`（28） |
+| `session`（完整） | 不在 attribute 里；年份分片 → `__wkIndexItems` | 同左 | Clock 用的 `bars`（48）+ `hr`（48），以及 `source` / `estimated` / `empty_reason` |
 | `moving` | 写入 `data-wk` | 同左 | 秒，用于 elapsed / core |
 
 事件：`fillYear` 或 SSR `indexYearData` 后派发 `workouts:year-loaded`（`detail.year`）；`track-script` 重新 observe `.rmap`；Clock 会 hydrate mini 时钟。
