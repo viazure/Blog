@@ -15,7 +15,8 @@ Zone baseline priority (aligned with running_page resolveHrZones):
      as the 100% anchor, and never introduce a max-HR environment variable.
   4. Else no baseline: do not paint zone teeth or an all-zero placeholder.
      If a baseline exists but there is no HR series and no real device table:
-     do not paint teeth; the front end shows that this activity has no HR.
+     do not paint teeth. The front end leaves the idle legend slot empty
+     and does not explain the missing series.
 
 Series used to paint teeth when a baseline exists:
   1. chart.hr — aggregated series from gen_splits (up to ~200 pts),
