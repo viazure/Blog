@@ -42,6 +42,21 @@ jobs:
       - name: Ruff format
         run: ruff format --check scripts
 
+      - name: LTHR zone tests
+        run: python scripts/test_lthr_zones.py
+
+  tip-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+
+      - name: Session clock tip guard
+        run: node scripts/check_session_clock_tip_guard.js
+
   worker:
     runs-on: ubuntu-latest
     defaults:
