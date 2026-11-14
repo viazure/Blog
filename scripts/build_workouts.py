@@ -744,6 +744,17 @@ def main() -> None:
                 row["kcal"] = session["kcal"]
             if session.get("elev") and not row.get("elev"):
                 row["elev"] = session["elev"]
+        # Running Page「分段分析」：仅跑步，且 life-data/.../splits/{run_id}.json
+        # 在构建时存在才打 has_splits。其它运动或文件缺失视为没有，不编造。
+        run_id = row.get("run_id")
+        is_run = row.get("name") == "跑步" or row.get("bucket") == "跑步"
+        if (
+            is_run
+            and splits_dir
+            and run_id is not None
+            and (splits_dir / f"{run_id}.json").is_file()
+        ):
+            row["has_splits"] = True
 
     static_dir = ROOT / "static"
     static_dir.mkdir(parents=True, exist_ok=True)

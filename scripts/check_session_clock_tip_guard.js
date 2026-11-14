@@ -24,6 +24,7 @@ const { spawnSync } = require("child_process");
 
 const ROOT = path.resolve(__dirname, "..");
 const PARTIAL = path.join(ROOT, "layouts", "_partials", "session-clock-script.html");
+const SCRIPT = path.join(ROOT, "assets", "js", "session-clock.js");
 
 function fail(msg) {
   console.error("FAIL:", msg);
@@ -39,14 +40,13 @@ function readPartial() {
   return fs.readFileSync(PARTIAL, "utf8");
 }
 
-function extractScript(html) {
-  const m = html.match(/<script>\s*([\s\S]*?)\s*<\/script>\s*$/);
-  if (!m) throw new Error("component <script> not found in partial");
-  // Stub Hugo expressions so the extracted JS is valid outside Hugo.
-  return m[1].replace(/\{\{[\s\S]*?\}\}/g, '"/trails.json"');
+function readScript() {
+  if (!fs.existsSync(SCRIPT)) fail("missing " + SCRIPT);
+  return fs.readFileSync(SCRIPT, "utf8");
 }
 
 function assertStatic(html, script) {
+  const src = html + "\n" + script;
   const requiredMarkup = [
     'class="wk-info-tip"',
     'class="wk-metrics"',
@@ -55,9 +55,12 @@ function assertStatic(html, script) {
     'id="wk-detail"',
     'data-viz="map"',
     'data-viz="clock"',
+    "data-wk-split-link",
+    "data-running-page",
+    "js/session-clock.js",
   ];
   for (const needle of requiredMarkup) {
-    if (!html.includes(needle)) throw new Error("markup missing " + needle);
+    if (!src.includes(needle)) throw new Error("markup missing " + needle);
   }
   const forbidden = [
     "wk-tip-sheet",
@@ -332,7 +335,7 @@ function assertNegative(html, script) {
 function main() {
   console.log("session-clock tip guard — NOT a real browser/phone test");
   const html = readPartial();
-  const script = extractScript(html);
+  const script = readScript();
   assertStatic(html, script);
   syntaxCheck(script, "extracted component script");
   assertVmHappy(script);
