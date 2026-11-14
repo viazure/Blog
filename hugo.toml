@@ -146,13 +146,10 @@ theme = "hugo-blog-awesome"
   name = "Rss"
   url = "/index.xml"
 
-# 运动页 Session Clock：外圈心率分档在构建时计算（改完后需重新运行
-# python scripts/build_workouts.py，下次部署才生效）。前端不读此配置。
-# 六个边界按半数进位(阈值 × 0.65/0.80/0.89/0.95/1.00/1.07)；
-# 顶界（107%）与 Garmin 显示对齐：max(半数进位(阈值×1.07), 阈值+ceil(阈值×0.07))。
-# 默认 176 → 114/141/157/167/176/189。低于最低边界按 Z1，高于最高按 Z5。
+# 运动页 Session Clock：外圈心率分档在构建时计算（改完 LTHR 后需重新运行
+# python scripts/build_workouts.py，下次部署才生效）。前端不读乳酸阈。
+# 乳酸阈从环境变量 LTHR_BPM 或仓库根目录已忽略提交的 .env 读取，见 docs/session-clock.md。
 [params.workouts]
-  lactateThresholdBpm = 176
   # 运动详情「分段分析」深链的 Running Page 根地址。前端拼 #run_<id>/analysis。
   # 有 run_id 且构建期 has_splits 才渲染按钮；改完根地址无需重跑 build_workouts.py。
   runningPage = "https://run.viazure.cc"

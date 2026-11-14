@@ -27,3 +27,6 @@ static/trails.json
 static/data/
 # local scratch (previews, puppeteer, extracted assets)
 _tmp/
+
+# local lactate threshold and other private build config
+.env

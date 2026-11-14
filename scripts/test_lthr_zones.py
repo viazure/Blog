@@ -6,30 +6,43 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from session_clock import (  # noqa: E402
     BAR_TIERS,
-    DEFAULT_LTHR_BPM,
     N_SAMPLES,
+    LactateThresholdConfigError,
     _bars_from_zone_durations,
     _zone_durations_from_seconds,
     _zone_index,
     build_session,
+    get_lactate_threshold,
     is_device_hr_zone,
     is_estimated_hr_zone,
     load_lactate_threshold,
     lthr_boundaries,
+    reset_lactate_threshold_cache,
 )
+
+# Fixture only — not a repo default. Production code must be given LTHR explicitly.
+FIXTURE_LTHR_BPM = 176
+FIXTURE_BOUNDS = [114, 141, 157, 167, 176, 189]
 
 
 class TestBoundaries(unittest.TestCase):
-    def test_default_176_matches_garmin_screenshot(self):
-        self.assertEqual(DEFAULT_LTHR_BPM, 176)
-        self.assertEqual(lthr_boundaries(176), [114, 141, 157, 167, 176, 189])
-        self.assertEqual(lthr_boundaries(None), [114, 141, 157, 167, 176, 189])
+    def test_176_matches_garmin_screenshot(self):
+        self.assertEqual(lthr_boundaries(FIXTURE_LTHR_BPM), FIXTURE_BOUNDS)
+
+    def test_missing_or_invalid_lthr_does_not_fall_back(self):
+        with self.assertRaises(ValueError):
+            lthr_boundaries(None)
+        with self.assertRaises(ValueError):
+            lthr_boundaries(0)
+        with self.assertRaises(ValueError):
+            lthr_boundaries(-1)
 
     def test_another_threshold_170(self):
         # 170×0.65=110.5 → 111 (half-up, not banker's 110)
@@ -99,38 +112,78 @@ class TestZoneIndex(unittest.TestCase):
 
 
 class TestConfigLoad(unittest.TestCase):
-    def test_reads_camel_case_field(self):
+    def setUp(self):
+        reset_lactate_threshold_cache()
+
+    def tearDown(self):
+        reset_lactate_threshold_cache()
+
+    def test_reads_dotenv(self):
         with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "hugo.toml"
+            path = Path(tmp) / ".env"
+            path.write_text("LTHR_BPM=170\n", encoding="utf-8")
+            self.assertEqual(load_lactate_threshold(environ={}, env_file=path), 170)
+
+    def test_dotenv_quotes_comments_and_blanks(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / ".env"
             path.write_text(
-                "[params.workouts]\n  lactateThresholdBpm = 170\n",
+                '# comment\n\nLTHR_BPM="165"\nOTHER=1\n',
                 encoding="utf-8",
             )
-            self.assertEqual(load_lactate_threshold(path), 170)
+            self.assertEqual(load_lactate_threshold(environ={}, env_file=path), 165)
 
-    def test_reads_snake_case_alias(self):
+    def test_env_var_wins_over_dotenv(self):
         with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "hugo.toml"
-            path.write_text(
-                "[params.workouts]\n  lactate_threshold_bpm = 165\n",
-                encoding="utf-8",
+            path = Path(tmp) / ".env"
+            path.write_text("LTHR_BPM=170\n", encoding="utf-8")
+            self.assertEqual(
+                load_lactate_threshold(environ={"LTHR_BPM": "160"}, env_file=path),
+                160,
             )
-            self.assertEqual(load_lactate_threshold(path), 165)
 
-    def test_missing_or_invalid_defaults_to_176(self):
+    def test_empty_invalid_or_nonpositive_env_falls_through_to_dotenv(self):
         with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "hugo.toml"
-            path.write_text('title = "x"\n', encoding="utf-8")
-            self.assertEqual(load_lactate_threshold(path), 176)
-            path.write_text(
-                "[params.workouts]\n  lactateThresholdBpm = 0\n",
-                encoding="utf-8",
-            )
-            self.assertEqual(load_lactate_threshold(path), 176)
-            self.assertEqual(load_lactate_threshold(path / "nope.toml"), 176)
+            path = Path(tmp) / ".env"
+            path.write_text("LTHR_BPM=170\n", encoding="utf-8")
+            for raw in ("", "  ", "abc", "0", "-1", "1.5"):
+                self.assertEqual(
+                    load_lactate_threshold(environ={"LTHR_BPM": raw}, env_file=path),
+                    170,
+                    msg=repr(raw),
+                )
 
-    def test_repo_hugo_toml_is_176(self):
-        self.assertEqual(load_lactate_threshold(ROOT / "hugo.toml"), 176)
+    def test_missing_or_invalid_values_raise(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            missing = Path(tmp) / "missing.env"
+            with self.assertRaises(LactateThresholdConfigError) as ctx:
+                load_lactate_threshold(environ={}, env_file=missing)
+            message = str(ctx.exception)
+            self.assertIn("LTHR_BPM", message)
+            self.assertIn("docs/session-clock.md", message)
+
+            path = Path(tmp) / ".env"
+            for body in ("", "LTHR_BPM=\n", "LTHR_BPM=abc\n", "LTHR_BPM=0\n", "LTHR_BPM=-8\n"):
+                path.write_text(body, encoding="utf-8")
+                with self.assertRaises(LactateThresholdConfigError):
+                    load_lactate_threshold(environ={}, env_file=path)
+
+    def test_does_not_fall_back_to_176_or_hugo_toml(self):
+        text = (ROOT / "hugo.toml").read_text(encoding="utf-8")
+        self.assertNotIn("lactateThresholdBpm", text)
+        self.assertNotIn("lactate_threshold_bpm", text)
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(LactateThresholdConfigError):
+                load_lactate_threshold(environ={}, env_file=Path(tmp) / ".env")
+
+    def test_get_lactate_threshold_caches_until_reset(self):
+        with patch("session_clock.load_lactate_threshold", side_effect=[170, 165]) as mocked:
+            self.assertEqual(get_lactate_threshold(), 170)
+            self.assertEqual(get_lactate_threshold(), 170)
+            mocked.assert_called_once_with()
+            reset_lactate_threshold_cache()
+            self.assertEqual(get_lactate_threshold(), 165)
+            self.assertEqual(mocked.call_count, 2)
 
 
 class TestDeviceZoneDetection(unittest.TestCase):

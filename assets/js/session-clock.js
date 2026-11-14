@@ -46,7 +46,7 @@
   var legendHover = null;
   var LEGEND_LABEL = { outer: "外圈", inner: "中圈", core: "核心" };
   var legendCopy = {
-    outer: "整场铺满一圈，从正上方顺时针展开。外圈是心率区间分档（低于 Z1 到 Z5），跨档才变高低，不是第二条心率曲线。",
+    outer: "一圈代表整场训练，从正上方开始，沿顺时针方向展开。外圈的每一格对应一段时间，高度和亮度随心率区间的升高而变化。",
     inner: "同一圈上的心率，越高越靠外。",
     core: "不满 1 小时是一颗实心圆点；每满 1 小时多一环。"
   };
@@ -757,15 +757,7 @@
     session = session || {};
     var hr = session.hr || [];
     var hasHr = !!(hr && hr.length);
-    var moving = Number(session.moving);
-    if (!isFinite(moving) || moving <= 0) {
-      var it = (typeof currentIdx !== "undefined" && itemsByIdx) ? itemsByIdx[currentIdx] : null;
-      moving = Number(it && (it.session && it.session.moving != null ? it.session.moving : it.moving)) || 0;
-    }
-    var dur = moving > 0 ? elapsedLabel(moving) : "";
-    legendCopy.outer = dur
-      ? "整场铺满一圈（" + dur + "），从正上方顺时针展开。外圈是心率区间分档（低于 Z1 到 Z5），跨档才变高低，不是第二条心率曲线。"
-      : "整场铺满一圈，从正上方顺时针展开。外圈是心率区间分档（低于 Z1 到 Z5），跨档才变高低，不是第二条心率曲线。";
+    legendCopy.outer = "一圈代表整场训练，从正上方开始，沿顺时针方向展开。外圈的每一格对应一段时间，高度和亮度随心率区间的升高而变化。";
     legendCopy.inner = hasHr
       ? "同一圈上的心率，越高越靠外。"
       : "没有逐点心率，中圈不显示，请看外圈。";
