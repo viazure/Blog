@@ -50,14 +50,12 @@ Visual reference: [activities.geekplux.com](https://activities.geekplux.com/) (s
 | 3 | activity `average_heartrate` | flat bars at the zone height of that average under the configured LTHR table, only when there is no real device zone table |
 | — | `zones.hr` (device) | Real device time-in-zone (`high_boundary` + `seconds`, `calc_type` not `estimated`/`derived`, e.g. Garmin `percent_lthr` / `percent_max_hr`) is preferred: the HR series is mapped to those bounds, and if there is no series the outer `bars` come from the device seconds (Z0=`seconds[0]`, Z1=`seconds[1]`, Z2–Z4=`seconds[2:5]`, Z5=`seconds[5]` plus any overflow; do not merge `seconds[0]+seconds[1]` into Z1). `percent_max_hr_estimated` (and similar) is not a device table — those seconds are ignored and the configured LTHR is used instead. |
 
-Lactate threshold is set once in `hugo.toml`:
+Lactate threshold is injected at build time and is not stored in the repo.
 
-```toml
-[params.workouts]
-  lactateThresholdBpm = 176
-```
+- Locally: set `LTHR_BPM` in a gitignored `.env` at the repo root (see `.env.example`), or export the same variable in the shell.
+- Production: set the GitHub Actions variable `LTHR_BPM` (Actions → Variables, not Secrets). `deploy.yml` passes it into the "Build data pages" step.
 
-Default `176` produces boundaries `[114, 141, 157, 167, 176, 189]` (65/80/89/95/100/107%). The first five bounds use half-up rounding; the 107% cap is `max(half-up(LTHR×1.07), LTHR+ceil(LTHR×0.07))` because `176×1.07 = 188.32` would otherwise become 188, not Garmin's displayed 189. This LTHR table is used when the activity has no real device zones (for example Xiaomi TCX, or `percent_max_hr_estimated`). Change `lactateThresholdBpm` in `hugo.toml`, rerun `python scripts/build_workouts.py`, and deploy; the next build is when it takes effect. The front end does not read this setting — it only draws the stored `session.bars` heights (`5/12/19/26/33/40`). Inclusive on each zone's high edge: 114 is Z0, 115–141 is Z1, 142 is Z2. The same 6-tier cut applies to a device 6-bound `percent_lthr` / `percent_max_hr` table. A 5-bound device table has no separate Z0 slot (`bounds[0]` is Z1 high).
+An example value of `176` produces boundaries `[114, 141, 157, 167, 176, 189]` (65/80/89/95/100/107%). The first five bounds use half-up rounding; the 107% cap is `max(half-up(LTHR×1.07), LTHR+ceil(LTHR×0.07))` because `176×1.07 = 188.32` would otherwise become 188, not Garmin's displayed 189. This LTHR table is used when the activity has no real device zones (for example Xiaomi TCX, or `percent_max_hr_estimated`). After changing `LTHR_BPM`, rerun `python scripts/build_workouts.py` and deploy; the next build is when it takes effect. The front end does not read this setting — it only draws the stored `session.bars` heights (`5/12/19/26/33/40`). Inclusive on each zone's high edge: 114 is Z0, 115–141 is Z1, 142 is Z2. The same 6-tier cut applies to a device 6-bound `percent_lthr` / `percent_max_hr` table. A 5-bound device table has no separate Z0 slot (`bounds[0]` is Z1 high).
 
 `scripts/build_workouts.py` attaches per item:
 

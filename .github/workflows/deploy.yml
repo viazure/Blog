@@ -36,6 +36,8 @@ jobs:
           python-version: "3.12"
 
       - name: Build data pages
+        env:
+          LTHR_BPM: ${{ vars.LTHR_BPM }}
         run: |
           python scripts/build_lastfm.py
           python scripts/build_neodb.py

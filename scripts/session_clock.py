@@ -23,7 +23,9 @@ stepped rim (geekplux-aligned), not a fine sawtooth.
 
 from __future__ import annotations
 
+import os
 import re
+from collections.abc import Mapping
 from decimal import ROUND_CEILING, ROUND_HALF_UP, Decimal
 from pathlib import Path
 from typing import Any
@@ -34,10 +36,12 @@ N_SAMPLES = 48
 BAR_TIERS = [5, 12, 19, 26, 33, 40]  # Z0 .. Z5
 BAR_MAX = BAR_TIERS[-1]
 # Zone BPM boundaries come from a single configured lactate threshold
-# (hugo.toml params.workouts.lactateThresholdBpm, default 176), not from
-# each activity's high_boundary or max_hr. See lthr_boundaries().
-DEFAULT_LTHR_BPM = 176
+# (LTHR_BPM in the environment or a gitignored repo-root .env), not from
+# each activity's high_boundary or max_hr. See lthr_boundaries() and
+# docs/session-clock.md.
 ZONE_PCTS = (0.65, 0.80, 0.89, 0.95, 1.00, 1.07)
+REPO_ROOT = Path(__file__).resolve().parents[1]
+LTHR_ENV_KEY = "LTHR_BPM"
 
 
 def _resample(values: list[float], n: int) -> list[float]:
@@ -63,16 +67,61 @@ def _round_half_up(value) -> int:
     return int(Decimal(str(value)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
-def lthr_boundaries(lthr: float | int | None = None) -> list[int]:
+class LactateThresholdConfigError(ValueError):
+    """Raised when LTHR_BPM is missing from the environment and repo-root .env."""
+
+
+def _parse_positive_bpm(raw: object) -> int | None:
+    if raw is None:
+        return None
+    text = str(raw).strip()
+    if not text:
+        return None
+    try:
+        val = int(text)
+    except (TypeError, ValueError):
+        return None
+    return val if val > 0 else None
+
+
+def _parse_dotenv(path: Path) -> dict[str, str]:
+    """Parse a simple KEY=VALUE .env (blanks and # comments ignored)."""
+    out: dict[str, str] = {}
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError:
+        return out
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
+            value = value[1:-1]
+        if key:
+            out[key] = value
+    return out
+
+
+def lthr_boundaries(lthr: float | int) -> list[int]:
     """Six BPM boundaries from LTHR × ZONE_PCTS.
 
     The first five use half-up rounding. The 107% cap uses
-    max(half-up(LTHR×1.07), LTHR+ceil(LTHR×0.07)) so the default 176
+    max(half-up(LTHR×1.07), LTHR+ceil(LTHR×0.07)) so an LTHR of 176
     matches Garmin Connect's displayed [114, 141, 157, 167, 176, 189]
     (176×1.07 = 188.32, which half-up alone would be 188).
+    Callers must pass LTHR explicitly; there is no built-in default.
     """
-    if lthr is None or float(lthr) <= 0:
-        lthr = DEFAULT_LTHR_BPM
+    try:
+        lthr_f = float(lthr)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("lthr must be a positive number; pass it explicitly") from exc
+    if lthr_f <= 0:
+        raise ValueError("lthr must be a positive number; pass it explicitly")
     lthr_d = Decimal(str(lthr))
     bounds: list[int] = []
     for pct in ZONE_PCTS:
@@ -85,26 +134,43 @@ def lthr_boundaries(lthr: float | int | None = None) -> list[int]:
     return bounds
 
 
-def load_lactate_threshold(config_path: Path | None = None) -> int:
-    """Read params.workouts.lactateThresholdBpm from hugo.toml. Default 176."""
-    import tomllib
+def load_lactate_threshold(
+    *,
+    environ: Mapping[str, str] | None = None,
+    env_file: Path | None = None,
+) -> int:
+    """Read LTHR_BPM from the environment, then a repo-root .env.
 
-    path = config_path or (Path(__file__).resolve().parents[1] / "hugo.toml")
-    try:
-        with path.open("rb") as fh:
-            data = tomllib.load(fh)
-    except (OSError, tomllib.TOMLDecodeError):
-        return DEFAULT_LTHR_BPM
-    workouts = (data.get("params") or {}).get("workouts") or {}
-    raw = workouts.get("lactateThresholdBpm", workouts.get("lactate_threshold_bpm"))
-    try:
-        val = int(raw)
-    except (TypeError, ValueError):
-        return DEFAULT_LTHR_BPM
-    return val if val > 0 else DEFAULT_LTHR_BPM
+    The environment variable wins. Empty, non-integer, or non-positive
+    values are treated as unset. There is no fallback to a hardcoded
+    personal threshold; set LTHR_BPM or add it to a gitignored .env.
+    See docs/session-clock.md.
+    """
+    env = os.environ if environ is None else environ
+    val = _parse_positive_bpm(env.get(LTHR_ENV_KEY))
+    if val is not None:
+        return val
+
+    path = REPO_ROOT / ".env" if env_file is None else env_file
+    if path.is_file():
+        val = _parse_positive_bpm(_parse_dotenv(path).get(LTHR_ENV_KEY))
+        if val is not None:
+            return val
+
+    raise LactateThresholdConfigError(
+        "LTHR_BPM is not set. Set the LTHR_BPM environment variable, or add "
+        "LTHR_BPM=<your lactate threshold in bpm> to a gitignored .env at the "
+        "repo root. See docs/session-clock.md."
+    )
 
 
 _lthr_cache: int | None = None
+
+
+def reset_lactate_threshold_cache() -> None:
+    """Clear the cached threshold so tests can reload configuration."""
+    global _lthr_cache
+    _lthr_cache = None
 
 
 def get_lactate_threshold() -> int:
