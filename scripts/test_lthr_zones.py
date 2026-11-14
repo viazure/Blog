@@ -1,4 +1,4 @@
-"""Build-time LTHR zone boundaries and fallback tests. Not a browser test."""
+"""Build-time zone boundaries and fallback tests. Not a browser test."""
 
 from __future__ import annotations
 
@@ -13,27 +13,37 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from session_clock import (  # noqa: E402
     BAR_TIERS,
+    LTHR_PERCENTS,
+    MAXHR_PERCENTS,
     N_SAMPLES,
-    LactateThresholdConfigError,
     _bars_from_zone_durations,
     _zone_durations_from_seconds,
     _zone_index,
+    age_on_activity_date,
     build_session,
+    estimated_max_hr_from_birthday,
     get_lactate_threshold,
     is_device_hr_zone,
     is_estimated_hr_zone,
+    load_birthday_month,
     load_lactate_threshold,
+    load_workouts_site_config,
     lthr_boundaries,
+    maxhr_age_boundaries,
     reset_lactate_threshold_cache,
 )
 
-# Fixture only — not a repo default. Production code must be given LTHR explicitly.
+# Fixture only — not a repo default. Production code must be given LTHR explicitly
+# or via LTHR_BPM / .env; missing LTHR is allowed and falls through to age / none.
 FIXTURE_LTHR_BPM = 176
-FIXTURE_BOUNDS = [114, 141, 157, 167, 176, 189]
+# running_page lthrHighBounds with no max-HR cap: 176×107% = 188.32 → 188.
+FIXTURE_BOUNDS = [114, 141, 157, 167, 176, 188]
+FIXTURE_BIRTHDAY = "1995-02"
 
 
 class TestBoundaries(unittest.TestCase):
-    def test_176_matches_garmin_screenshot(self):
+    def test_176_matches_running_page_without_max_hr_cap(self):
+        self.assertEqual(tuple(LTHR_PERCENTS), (65, 80, 89, 95, 100, 107))
         self.assertEqual(lthr_boundaries(FIXTURE_LTHR_BPM), FIXTURE_BOUNDS)
 
     def test_missing_or_invalid_lthr_does_not_fall_back(self):
@@ -47,13 +57,18 @@ class TestBoundaries(unittest.TestCase):
     def test_another_threshold_170(self):
         # 170×0.65=110.5 → 111 (half-up, not banker's 110)
         # 170×0.80=136; ×0.89=151.3 → 151; ×0.95=161.5 → 162
-        # 170×1.07=181.9 → 182, and 170+ceil(11.9)=182
+        # 170×1.07=181.9 → 182
         self.assertEqual(lthr_boundaries(170), [111, 136, 151, 162, 170, 182])
 
     def test_half_up_not_bankers(self):
         # builtin round(110.5) == 110 on Python 3; we need 111
         self.assertNotEqual(round(170 * 0.65), 111)
         self.assertEqual(lthr_boundaries(170)[0], 111)
+
+    def test_optional_max_hr_cap_only_replaces_z5(self):
+        self.assertEqual(lthr_boundaries(176, max_hr_cap=195)[-1], 195)
+        self.assertEqual(lthr_boundaries(176, max_hr_cap=195)[:5], FIXTURE_BOUNDS[:5])
+        self.assertEqual(lthr_boundaries(176, max_hr_cap=None), FIXTURE_BOUNDS)
 
 
 class TestZoneIndex(unittest.TestCase):
@@ -76,6 +91,7 @@ class TestZoneIndex(unittest.TestCase):
             168: 4,
             176: 4,
             177: 5,
+            188: 5,
             189: 5,
             190: 5,
             220: 5,
@@ -153,28 +169,23 @@ class TestConfigLoad(unittest.TestCase):
                     msg=repr(raw),
                 )
 
-    def test_missing_or_invalid_values_raise(self):
+    def test_missing_or_invalid_values_are_optional(self):
         with tempfile.TemporaryDirectory() as tmp:
             missing = Path(tmp) / "missing.env"
-            with self.assertRaises(LactateThresholdConfigError) as ctx:
-                load_lactate_threshold(environ={}, env_file=missing)
-            message = str(ctx.exception)
-            self.assertIn("LTHR_BPM", message)
-            self.assertIn("docs/session-clock.md", message)
+            self.assertIsNone(load_lactate_threshold(environ={}, env_file=missing))
 
             path = Path(tmp) / ".env"
             for body in ("", "LTHR_BPM=\n", "LTHR_BPM=abc\n", "LTHR_BPM=0\n", "LTHR_BPM=-8\n"):
                 path.write_text(body, encoding="utf-8")
-                with self.assertRaises(LactateThresholdConfigError):
-                    load_lactate_threshold(environ={}, env_file=path)
+                self.assertIsNone(load_lactate_threshold(environ={}, env_file=path))
 
-    def test_does_not_fall_back_to_176_or_hugo_toml(self):
+    def test_does_not_fall_back_to_hardcoded_or_hugo_toml_lthr(self):
         text = (ROOT / "hugo.toml").read_text(encoding="utf-8")
         self.assertNotIn("lactateThresholdBpm", text)
         self.assertNotIn("lactate_threshold_bpm", text)
+        self.assertNotRegex(text, r"(?m)^\s*lthr\s*=")
         with tempfile.TemporaryDirectory() as tmp:
-            with self.assertRaises(LactateThresholdConfigError):
-                load_lactate_threshold(environ={}, env_file=Path(tmp) / ".env")
+            self.assertIsNone(load_lactate_threshold(environ={}, env_file=Path(tmp) / ".env"))
 
     def test_get_lactate_threshold_caches_until_reset(self):
         with patch("session_clock.load_lactate_threshold", side_effect=[170, 165]) as mocked:
@@ -184,6 +195,32 @@ class TestConfigLoad(unittest.TestCase):
             reset_lactate_threshold_cache()
             self.assertEqual(get_lactate_threshold(), 165)
             self.assertEqual(mocked.call_count, 2)
+
+    def test_missing_lthr_does_not_fail_a_session_build(self):
+        with (
+            patch("session_clock.get_lactate_threshold", return_value=None),
+            tempfile.TemporaryDirectory() as tmp,
+        ):
+            splits = Path(tmp)
+            (splits / "opt.json").write_text(
+                """{"summary": {}, "chart": {"hr": [120, 120, 120, 120]}}""",
+                encoding="utf-8",
+            )
+            out = build_session(
+                run_id="opt",
+                moving=600,
+                hr_avg=120,
+                elev=0,
+                splits_dir=splits,
+                lthr=None,
+                birthday_month=None,
+                activity_date="2026-11-12",
+            )
+            self.assertIsNotNone(out)
+            self.assertEqual(out["bars"], [])
+            self.assertEqual(out["source"], "none")
+            self.assertEqual(out["empty_reason"], "no_baseline")
+            self.assertFalse(out["estimated"])
 
 
 class TestDeviceZoneDetection(unittest.TestCase):
@@ -197,7 +234,7 @@ class TestDeviceZoneDetection(unittest.TestCase):
     def test_device_requires_bounds_seconds_and_not_estimated(self):
         base = {
             "seconds": [10, 20, 30, 40, 50, 0, 0],
-            "high_boundary": [114, 141, 157, 167, 176, 189],
+            "high_boundary": [114, 141, 157, 167, 176, 188],
             "calc_type": "percent_lthr",
         }
         self.assertTrue(is_device_hr_zone(base))
@@ -230,6 +267,9 @@ class TestBuildFallback(unittest.TestCase):
             # and not a mix of the mostly-Z3/Z4 device seconds.
             self.assertEqual(out["bars"], [19] * N_SAMPLES)
             self.assertEqual(out["hr"][0], 120)
+            self.assertEqual(out["source"], "device")
+            self.assertFalse(out["estimated"])
+            self.assertNotIn("empty_reason", out)
 
     def test_device_seconds_used_when_no_hr_series(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -252,6 +292,7 @@ class TestBuildFallback(unittest.TestCase):
             self.assertEqual(out["bars"], expected)
             self.assertEqual(len(out["bars"]), N_SAMPLES)
             self.assertNotIn("hr", out)
+            self.assertEqual(out["source"], "device")
 
     def test_device_seconds_win_over_hr_avg_flat(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -278,6 +319,7 @@ class TestBuildFallback(unittest.TestCase):
             self.assertEqual(out["bars"].count(12), 33)
             self.assertEqual(out["bars"].count(19), 1)
             self.assertNotIn("hr", out)
+            self.assertEqual(out["source"], "device")
 
     def test_chart_hr_time_series_drives_ordered_bars(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -305,6 +347,7 @@ class TestBuildFallback(unittest.TestCase):
             self.assertEqual(set(out["bars"][: mid // 2]), {12})
             self.assertEqual(set(out["bars"][-(mid // 2) :]), {19})
             self.assertIn("hr", out)
+            self.assertEqual(out["source"], "device")
 
     def test_estimated_zones_are_rebinned_to_lthr(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -326,6 +369,8 @@ class TestBuildFallback(unittest.TestCase):
                 run_id=5, moving=600, hr_avg=120, elev=0, splits_dir=splits, lthr=176
             )
             self.assertEqual(out["bars"], [12] * N_SAMPLES)
+            self.assertEqual(out["source"], "lthr")
+            self.assertFalse(out["estimated"])
 
     def test_estimated_seconds_without_curve_do_not_paint_bars(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -343,19 +388,23 @@ class TestBuildFallback(unittest.TestCase):
             self.assertIsNotNone(out)
             self.assertEqual(out["bars"], [])
             self.assertNotIn("hr", out)
+            self.assertEqual(out["source"], "none")
+            self.assertEqual(out["empty_reason"], "no_hr_data")
 
-    def test_hr_avg_flat_uses_lthr_when_no_device_zones(self):
+    def test_hr_avg_without_curve_does_not_paint_flat_bars(self):
         with tempfile.TemporaryDirectory() as tmp:
             splits = Path(tmp)
             (splits / "3.json").write_text(
                 """{"summary": {}}""",
                 encoding="utf-8",
             )
-            # 168 is Z4 under 176-table (≤176 and >167) → 33
             out = build_session(
                 run_id=3, moving=600, hr_avg=168, elev=0, splits_dir=splits, lthr=176
             )
-            self.assertEqual(out["bars"], [33] * N_SAMPLES)
+            self.assertEqual(out["bars"], [])
+            self.assertEqual(out["source"], "none")
+            self.assertEqual(out["empty_reason"], "no_hr_data")
+            self.assertEqual(out["hr_avg"], 168)
 
     def test_seconds_folding_keeps_z0_separate(self):
         seconds = [48, 1866, 45, 0, 0, 0, 0]
@@ -399,6 +448,7 @@ class TestBuildFallback(unittest.TestCase):
             self.assertEqual(set(out["bars"]), {5, 12})
             self.assertEqual(out["bars"][0], 5)
             self.assertEqual(out["bars"][-1], 12)
+            self.assertEqual(out["source"], "lthr")
 
     def test_device_curve_warmup_is_z0(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -412,7 +462,7 @@ class TestBuildFallback(unittest.TestCase):
                   "zones": {"hr": {"seconds": [48, 1866, 45, 0, 0, 0, 0],
                                    "high_boundary": [117, 146, 162, 172, 181, 195],
                                    "calc_type": "percent_lthr",
-                                   "threshold": 176}},
+                                   "threshold_hr": 176}},
                   "chart": {"hr": %s}
                 }"""
                 % (hr,),
@@ -426,6 +476,208 @@ class TestBuildFallback(unittest.TestCase):
             self.assertEqual(out["bars"][N_SAMPLES // 2], 12)
             self.assertEqual(out["bars"][-1], 19)
             self.assertEqual(BAR_TIERS[_zone_index(97, [117, 146, 162, 172, 181, 195])], 5)
+            self.assertEqual(out["source"], "device")
+
+    def test_fit_threshold_hr_used_when_env_lthr_missing(self):
+        with (
+            patch("session_clock.get_lactate_threshold", return_value=None),
+            tempfile.TemporaryDirectory() as tmp,
+        ):
+            splits = Path(tmp)
+            (splits / "fit.json").write_text(
+                """{
+                  "summary": {"hr_avg": 120, "hr_max": 120},
+                  "zones": {"hr": {"seconds": [0, 10, 20, 300, 200, 100, 0],
+                                   "high_boundary": [90, 110, 130, 150, 170, 190],
+                                   "calc_type": "percent_max_hr_estimated",
+                                   "threshold_hr": 176}},
+                  "chart": {"hr": [120, 120, 120, 120]}
+                }""",
+                encoding="utf-8",
+            )
+            out = build_session(
+                run_id="fit",
+                moving=600,
+                hr_avg=120,
+                elev=0,
+                splits_dir=splits,
+                lthr=None,
+                birthday_month=FIXTURE_BIRTHDAY,
+                activity_date="2026-11-12",
+            )
+            self.assertEqual(out["bars"], [12] * N_SAMPLES)
+            self.assertEqual(out["source"], "lthr")
+            self.assertFalse(out["estimated"])
+
+
+class TestAgeEstimate(unittest.TestCase):
+    def test_maxhr_percents_match_running_page(self):
+        self.assertEqual(tuple(MAXHR_PERCENTS), (50, 60, 70, 80, 90, 100))
+
+    def test_age_uses_activity_date_not_today(self):
+        self.assertEqual(age_on_activity_date(FIXTURE_BIRTHDAY, "2024-01-31 08:00:00"), 28)
+        self.assertEqual(age_on_activity_date(FIXTURE_BIRTHDAY, "2024-02-01"), 29)
+        self.assertEqual(age_on_activity_date(FIXTURE_BIRTHDAY, "2026-11-12"), 31)
+
+    def test_estimated_max_hr_and_bounds(self):
+        # 2026-11-12 vs 1995-02 → age 31 → 189; 50/60/70/80/90/100%
+        self.assertEqual(estimated_max_hr_from_birthday(FIXTURE_BIRTHDAY, "2026-11-12"), 189)
+        self.assertEqual(maxhr_age_boundaries(189), [95, 113, 132, 151, 170, 189])
+        self.assertEqual(estimated_max_hr_from_birthday(FIXTURE_BIRTHDAY, "2024-01-31"), 192)
+
+    def test_age_path_rebins_curve_and_marks_estimated(self):
+        with (
+            patch("session_clock.get_lactate_threshold", return_value=None),
+            tempfile.TemporaryDirectory() as tmp,
+        ):
+            splits = Path(tmp)
+            # Easy aerobic: 120 is Z2 on the age table (≤132, >113), height 19.
+            # Peak 140 must not become the 100% anchor (that would lift 120).
+            (splits / "age.json").write_text(
+                """{
+                  "summary": {"hr_avg": 120, "hr_max": 140},
+                  "zones": {"hr": {"seconds": [0, 10, 20, 300, 200, 100, 0],
+                                   "high_boundary": [70, 84, 98, 112, 126, 140],
+                                   "calc_type": "percent_max_hr_estimated",
+                                   "max_hr": 140}},
+                  "chart": {"hr": [120, 120, 120, 120]}
+                }""",
+                encoding="utf-8",
+            )
+            out = build_session(
+                run_id="age",
+                moving=600,
+                hr_avg=120,
+                elev=0,
+                splits_dir=splits,
+                lthr=None,
+                birthday_month=FIXTURE_BIRTHDAY,
+                activity_date="2026-11-12",
+            )
+            self.assertEqual(out["bars"], [19] * N_SAMPLES)
+            self.assertEqual(out["source"], "maxhr_age")
+            self.assertTrue(out["estimated"])
+            self.assertNotIn("empty_reason", out)
+
+    def test_age_path_without_curve_is_no_hr_data(self):
+        with (
+            patch("session_clock.get_lactate_threshold", return_value=None),
+            tempfile.TemporaryDirectory() as tmp,
+        ):
+            splits = Path(tmp)
+            (splits / "age2.json").write_text(
+                """{
+                  "summary": {"hr_max": 140},
+                  "zones": {"hr": {"seconds": [0, 10, 20, 300, 200, 100, 0],
+                                   "high_boundary": [70, 84, 98, 112, 126, 140],
+                                   "calc_type": "percent_max_hr_estimated"}}
+                }""",
+                encoding="utf-8",
+            )
+            out = build_session(
+                run_id="age2",
+                moving=600,
+                hr_avg=0,
+                elev=0,
+                splits_dir=splits,
+                lthr=None,
+                birthday_month=FIXTURE_BIRTHDAY,
+                activity_date="2026-11-12",
+            )
+            self.assertEqual(out["bars"], [])
+            self.assertEqual(out["source"], "none")
+            self.assertEqual(out["empty_reason"], "no_hr_data")
+            self.assertFalse(out["estimated"])
+
+    def test_birthday_crosses_on_activity_date(self):
+        with (
+            patch("session_clock.get_lactate_threshold", return_value=None),
+            tempfile.TemporaryDirectory() as tmp,
+        ):
+            splits = Path(tmp)
+            (splits / "x.json").write_text(
+                """{"summary": {}, "chart": {"hr": [130, 130, 130, 130]}}""",
+                encoding="utf-8",
+            )
+            jan = build_session(
+                run_id="x",
+                moving=600,
+                hr_avg=130,
+                elev=0,
+                splits_dir=splits,
+                lthr=None,
+                birthday_month=FIXTURE_BIRTHDAY,
+                activity_date="2024-01-31",
+            )
+            feb = build_session(
+                run_id="x",
+                moving=600,
+                hr_avg=130,
+                elev=0,
+                splits_dir=splits,
+                lthr=None,
+                birthday_month=FIXTURE_BIRTHDAY,
+                activity_date="2024-02-01",
+            )
+            # Jan age 28 → 192, 130 is Z2 (≤134); Feb age 29 → 191, 130 is Z2 (≤134).
+            # Different anchors, same tooth here; bounds themselves must differ.
+            self.assertEqual(maxhr_age_boundaries(192)[2], 134)
+            self.assertEqual(maxhr_age_boundaries(191)[2], 134)
+            self.assertEqual(jan["source"], "maxhr_age")
+            self.assertEqual(feb["source"], "maxhr_age")
+            self.assertNotEqual(
+                estimated_max_hr_from_birthday(FIXTURE_BIRTHDAY, "2024-01-31"),
+                estimated_max_hr_from_birthday(FIXTURE_BIRTHDAY, "2024-02-01"),
+            )
+
+    def test_no_baseline_paints_no_teeth(self):
+        with (
+            patch("session_clock.get_lactate_threshold", return_value=None),
+            tempfile.TemporaryDirectory() as tmp,
+        ):
+            splits = Path(tmp)
+            (splits / "nb.json").write_text(
+                """{
+                  "summary": {"hr_max": 180},
+                  "zones": {"hr": {"seconds": [0, 10, 20, 300, 200, 100, 0],
+                                   "high_boundary": [90, 110, 130, 150, 170, 190],
+                                   "calc_type": "percent_max_hr_estimated"}},
+                  "chart": {"hr": [120, 120, 140, 160]}
+                }""",
+                encoding="utf-8",
+            )
+            out = build_session(
+                run_id="nb",
+                moving=600,
+                hr_avg=130,
+                elev=0,
+                splits_dir=splits,
+                lthr=None,
+                birthday_month=None,
+                activity_date="2026-11-12",
+            )
+            self.assertEqual(out["bars"], [])
+            self.assertEqual(out["source"], "none")
+            self.assertEqual(out["empty_reason"], "no_baseline")
+            # Curve is still kept for the inner ring; teeth stay empty.
+            self.assertIn("hr", out)
+
+    def test_reads_birthday_month_from_hugo_toml(self):
+        text = (ROOT / "hugo.toml").read_text(encoding="utf-8")
+        self.assertIn('birthday_month = "1995-02"', text)
+        self.assertEqual(load_birthday_month(), "1995-02")
+        cfg = load_workouts_site_config()
+        self.assertEqual(cfg["birthday_month"], "1995-02")
+        self.assertIsNone(cfg["lthr"])
+
+    def test_invalid_birthday_month_is_ignored(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "hugo.toml"
+            path.write_text(
+                '[params.workouts]\nbirthday_month = "1995-13"\n',
+                encoding="utf-8",
+            )
+            self.assertIsNone(load_birthday_month(path))
 
 
 if __name__ == "__main__":

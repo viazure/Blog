@@ -44,9 +44,21 @@
   var currentList = [];
   var legendFocus = null;
   var legendHover = null;
+  var currentZoneSession = {};
   var LEGEND_LABEL = { outer: "外圈", inner: "中圈", core: "核心" };
+  var OUTER_LEGEND_COPY = "一圈代表整场训练，从正上方开始，沿顺时针方向展开。外圈的每一格对应一段时间，高度和亮度随心率区间的升高而变化。";
+  var ZONE_COPY = {
+    title: "心率区间",
+    titleEstimated: "心率区间（估算）",
+    device: "按设备记录的心率区间。",
+    lthr: "按乳酸阈心率重新划分。",
+    maxhr_age: "按年龄估算的心率区间，非设备原始数据。",
+    noBaseline: "信息不足，无法计算心率区间。",
+    noBaselineHint: "需要设备记录的心率数据，或提供乳酸阈心率、出生年月来估算。",
+    noHrData: "这次活动没有记录到心率。"
+  };
   var legendCopy = {
-    outer: "一圈代表整场训练，从正上方开始，沿顺时针方向展开。外圈的每一格对应一段时间，高度和亮度随心率区间的升高而变化。",
+    outer: OUTER_LEGEND_COPY,
     inner: "同一圈上的心率，越高越靠外。",
     core: "不满 1 小时是一颗实心圆点；每满 1 小时多一环。"
   };
@@ -194,6 +206,35 @@
     });
   }
 
+  function zoneLegendHtml(session) {
+    session = session || {};
+    var source = session.source || "";
+    var reason = session.empty_reason || "";
+    var title = session.estimated ? ZONE_COPY.titleEstimated : ZONE_COPY.title;
+    if (reason === "no_baseline") {
+      return '<div class="wk-legend-line"><strong>' + esc(ZONE_COPY.title) + "</strong>" +
+        esc(ZONE_COPY.noBaseline) + "</div>" +
+        '<div class="wk-legend-hint">' + esc(ZONE_COPY.noBaselineHint) + "</div>";
+    }
+    if (reason === "no_hr_data") {
+      return '<div class="wk-legend-line"><strong>' + esc(ZONE_COPY.title) + "</strong>" +
+        esc(ZONE_COPY.noHrData) + "</div>";
+    }
+    if (source === "device") {
+      return '<div class="wk-legend-line"><strong>' + esc(title) + "</strong>" +
+        esc(ZONE_COPY.device) + "</div>";
+    }
+    if (source === "lthr") {
+      return '<div class="wk-legend-line"><strong>' + esc(title) + "</strong>" +
+        esc(ZONE_COPY.lthr) + "</div>";
+    }
+    if (source === "maxhr_age") {
+      return '<div class="wk-legend-line"><strong>' + esc(ZONE_COPY.titleEstimated) + "</strong>" +
+        esc(ZONE_COPY.maxhr_age) + "</div>";
+    }
+    return "";
+  }
+
   function renderLegendSlot() {
     if (!legendSlot) return;
     var html = "";
@@ -202,7 +243,8 @@
       html = '<div class="wk-legend-line"><strong>' + esc(LEGEND_LABEL[layer]) + "</strong>" +
         esc(legendCopy[layer] || "") + "</div>";
     } else {
-      html = '<div class="wk-legend-hint">点按图标查看说明</div>';
+      html = zoneLegendHtml(currentZoneSession) ||
+        '<div class="wk-legend-hint">点按图标查看说明</div>';
     }
     legendSlot.innerHTML = html;
     legendSlot.classList.toggle("is-filled", !!layer);
@@ -755,9 +797,12 @@
 
   function updateLegend(session) {
     session = session || {};
-    var hr = session.hr || [];
+    currentZoneSession = session;
+    var bars = session.bars;
+    var hr = session.hr;
+    var hasBars = !!(bars && bars.length);
     var hasHr = !!(hr && hr.length);
-    legendCopy.outer = "一圈代表整场训练，从正上方开始，沿顺时针方向展开。外圈的每一格对应一段时间，高度和亮度随心率区间的升高而变化。";
+    legendCopy.outer = OUTER_LEGEND_COPY;
     legendCopy.inner = hasHr
       ? "同一圈上的心率，越高越靠外。"
       : "没有逐点心率，中圈不显示，请看外圈。";
@@ -766,7 +811,10 @@
     if (copy) copy.textContent = legendCopy.inner;
     var innerKey = legendEl ? legendEl.querySelector('.wk-legend-key[data-layer="inner"]') : null;
     if (innerKey) innerKey.classList.toggle("is-weak", !hasHr);
+    var outerKey = legendEl ? legendEl.querySelector('.wk-legend-key[data-layer="outer"]') : null;
+    if (outerKey) outerKey.classList.toggle("is-weak", !hasBars);
     renderLegendSlot();
+
   }
 
 

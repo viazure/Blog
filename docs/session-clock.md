@@ -41,21 +41,30 @@ Visual reference: [activities.geekplux.com](https://activities.geekplux.com/) (s
 ## Data build
 
 `scripts/session_clock.py` reads **`life-data/data/workouts/splits/{run_id}.json`**
-(produced by life-archive `vendor/run_page/gen_splits.py` → private `life-data` checkout):
+(produced by life-archive `vendor/run_page/gen_splits.py` → private `life-data` checkout).
+
+Zone baseline (aligned with running_page `resolveHrZones`; never use this activity's peak HR as the 100% anchor):
+
+1. Prefer a real device time-in-zone table (`high_boundary` + `seconds`, `calc_type` not `estimated`/`derived`, for example `percent_lthr` / `percent_max_hr`). `percent_max_hr_estimated` is not a device table. The HR series is mapped to those bounds; if there is no series, outer `bars` come from the device seconds (Z0=`seconds[0]`, Z1=`seconds[1]`, Z2–Z4=`seconds[2:5]`, Z5=`seconds[5]` plus any overflow; do not merge `seconds[0]+seconds[1]` into Z1). Source: `device`.
+2. Else, if a lactate threshold can be resolved — `LTHR_BPM` (environment or gitignored `.env`), then an optional site `lthr` if one were ever present, then this activity's FIT `threshold_hr` — rebin the HR series onto the site LTHR table (65/80/89/95/100/107%). Source: `lthr`. There is no max-HR environment variable; Z5 is half-up(`LTHR×1.07`), so an example threshold of `176` yields `[114, 141, 157, 167, 176, 188]`.
+3. Else use the public `birthday_month` in `hugo.toml` (`YYYY-MM`). Age is calculated on the activity date in UTC+8 (the missing day is treated as the 1st of that month, not today): `220−age`, then `maxhr_percents` `[50, 60, 70, 80, 90, 100]`. Source: `maxhr_age`, marked `estimated`.
+4. Else do not paint zone teeth and do not invent an all-zero crown (`source: none`, `empty_reason: no_baseline`). If a baseline exists but there is no HR series and no real device table, also leave `bars` empty (`empty_reason: no_hr_data`). A lone session average is not turned into a flat crown.
+
+Series used to paint teeth (still resampled to **48**; this sampling is unchanged):
 
 | Priority | Source field | → |
 |----------|--------------|---|
-| 1 | `chart.hr` (aggregated series, up to ~200 pts from gen_splits) | inner `hr` + outer `bars` (resampled to **48**; each sample maps to Z0–Z5 via the **device** `high_boundary` when `zones.hr` is a real time-in-zone table, otherwise via the **configured lactate threshold**. Indoor FIT sessions with no advancing distance get a time-bucketed `chart.hr` from `gen_splits`. On a 6-bound table, at or below `bounds[0]` is Z0 / height 5; Z1 is up to `bounds[1]` / height 12; above `bounds[4]` (including the last bound and overflow) uses Z5 / 40 — there is no Z6 tooth) |
-| 2 | `splits[]` / `laps[]` `hr_avg` weighted by `time` | same, when chart.hr missing (these are actual BPM values) |
-| 3 | activity `average_heartrate` | flat bars at the zone height of that average under the configured LTHR table, only when there is no real device zone table |
-| — | `zones.hr` (device) | Real device time-in-zone (`high_boundary` + `seconds`, `calc_type` not `estimated`/`derived`, e.g. Garmin `percent_lthr` / `percent_max_hr`) is preferred: the HR series is mapped to those bounds, and if there is no series the outer `bars` come from the device seconds (Z0=`seconds[0]`, Z1=`seconds[1]`, Z2–Z4=`seconds[2:5]`, Z5=`seconds[5]` plus any overflow; do not merge `seconds[0]+seconds[1]` into Z1). `percent_max_hr_estimated` (and similar) is not a device table — those seconds are ignored and the configured LTHR is used instead. |
+| 1 | `chart.hr` (aggregated series, up to ~200 pts from gen_splits) | inner `hr` + outer `bars`. Indoor FIT sessions with no advancing distance get a time-bucketed `chart.hr` from `gen_splits`. On a 6-bound table, at or below `bounds[0]` is Z0 / height 5; Z1 is up to `bounds[1]` / height 12; above `bounds[4]` (including the last bound and overflow) uses Z5 / 40 — there is no Z6 tooth |
+| 2 | `splits[]` / `laps[]` `hr_avg` weighted by `time` | same, when chart.hr is missing (these are actual BPM values) |
+| — | `zones.hr` (device, no series) | outer `bars` from device seconds, as above |
 
-Lactate threshold is injected at build time and is not stored in the repo.
+Lactate threshold is optional and is not stored in the repo.
 
-- Locally: set `LTHR_BPM` in a gitignored `.env` at the repo root (see `.env.example`), or export the same variable in the shell.
-- Production: set the GitHub Actions variable `LTHR_BPM` (Actions → Variables, not Secrets). `deploy.yml` passes it into the "Build data pages" step.
+- Locally: set `LTHR_BPM` in a gitignored `.env` at the repo root (see `.env.example`), or export the same variable in the shell. Leaving it unset is valid.
+- Production: the GitHub Actions variable `LTHR_BPM` may be set (Actions → Variables, not Secrets). `deploy.yml` still injects it into the "Build data pages" step; an empty value is treated as unset.
+- Public identity `birthday_month` lives in `hugo.toml` under `[params.workouts]` (currently `1995-02`). Do not invent a birthday environment variable.
 
-An example value of `176` produces boundaries `[114, 141, 157, 167, 176, 189]` (65/80/89/95/100/107%). The first five bounds use half-up rounding; the 107% cap is `max(half-up(LTHR×1.07), LTHR+ceil(LTHR×0.07))` because `176×1.07 = 188.32` would otherwise become 188, not Garmin's displayed 189. This LTHR table is used when the activity has no real device zones (for example Xiaomi TCX, or `percent_max_hr_estimated`). After changing `LTHR_BPM`, rerun `python scripts/build_workouts.py` and deploy; the next build is when it takes effect. The front end does not read this setting — it only draws the stored `session.bars` heights (`5/12/19/26/33/40`). Inclusive on each zone's high edge: 114 is Z0, 115–141 is Z1, 142 is Z2. The same 6-tier cut applies to a device 6-bound `percent_lthr` / `percent_max_hr` table. A 5-bound device table has no separate Z0 slot (`bounds[0]` is Z1 high).
+After changing `LTHR_BPM` or `birthday_month`, rerun `python scripts/build_workouts.py` and deploy; the next build is when it takes effect. The front end does not read these settings — it draws the stored `session.bars` heights (`5/12/19/26/33/40`) and shows `session.source` / `session.estimated` / `session.empty_reason` in the legend. Inclusive on each zone's high edge: 114 is Z0, 115–141 is Z1, 142 is Z2. The same 6-tier cut applies to a device 6-bound table and to the age table. A 5-bound device table has no separate Z0 slot (`bounds[0]` is Z1 high).
 
 `scripts/build_workouts.py` attaches per item:
 
@@ -65,8 +74,11 @@ An example value of `176` produces boundaries `[114, 141, 157, 167, 176, 189]` (
 | `has_splits` | `true` only for 跑步 when `life-data/data/workouts/splits/{run_id}.json` exists at build time. Other sports, missing life-data, or a missing file are treated as no splits (the flag is omitted). Re-run `python scripts/build_workouts.py` after splits are available; emit then copies the flag into year shards. |
 | `hr_max` / `kcal` | from split summary when present |
 | `session.moving` | seconds |
-| `session.bars` | **48** outer heights — six tiers `5/12/19/26/33/40` (Z0–Z5) |
+| `session.bars` | **48** outer heights — six tiers `5/12/19/26/33/40` (Z0–Z5); empty when there is no baseline or no HR to draw |
 | `session.hr` | **48** bpm samples when chart/segments available |
+| `session.source` | `device` / `lthr` / `maxhr_age` / `none` |
+| `session.estimated` | `true` only for the age estimate |
+| `session.empty_reason` | `no_baseline` or `no_hr_data` when `bars` is empty |
 | `session.hr_avg` / `hr_max` / `kcal` / `elev` | detail metrics |
 
 Frontend maps outer `bars` and inner `hr` across a **full 360 deg** session lap. Core alone is a full seed (<1h) or hour growth rings (>=1h).
@@ -99,7 +111,7 @@ Also update [ux-p0-ssr-js-fields.md](./ux-p0-ssr-js-fields.md).
 
 - **Desktop (`hover: hover` + `pointer: fine`)**: keep floating tips — list `.card-tip` on hover/focus-visible; calendar / heatmap / stack-bar `data-tip` bubbles on hover/`focus-visible`. Prefer `role="tooltip"` on card tips.
 - **Touch / coarse pointer**: **no** floating tips (no long-press tip, no tap-to-float tip that covers content). List cards drop `.card-tip`; overview `data-tip` bubbles are CSS-gated off. Card tap still opens detail only.
-- **Detail**: Session Clock legend lives under the clock (icon keys only). Layer sentences appear in the reserved two-line slot on hover or pin; there is no info mark and the slot does not expand to show all three sentences. Outer copy states that one lap is the whole session, starting from the top and unfolding clockwise; each outer-ring slice is a stretch of time whose height and brightness change as the heart-rate zone rises. Core covers both the <1h solid seed disk and +1 ring per completed hour. The detail sheet is capped to the viewport: no native scrollbar on the rounded card; the clock stage shrinks to fit, and the right column's metrics and 心率趋势 scroll together with a thin thumb; the title and prev/next pager stay fixed. `能耗` exposes a small **ⓘ** that opens an in-page `.wk-info-tip` (hover on fine pointers, click to toggle `.is-open`) with the copy 「估算消耗，非实测。」. `用时` / 平均心率 / 最大心率 have no tip. There is no second `#wk-tip-sheet` dialog. Escape / blank click dismisses an open metric tip first, then the legend slot, then closes detail.
+- **Detail**: Session Clock legend lives under the clock (icon keys only). Layer sentences appear in the reserved two-line slot on hover or pin; there is no info mark and the slot does not expand to show all three sentences. Outer copy states that one lap is the whole session, starting from the top and unfolding clockwise; each outer-ring slice is a stretch of time whose height and brightness change as the heart-rate zone rises. When the slot is idle, it shows the heart-rate zone title and source (or the empty-state sentences) without replacing that settled outer sentence. The slot still reserves two lines of minimum height and has no max height. Core covers both the <1h solid seed disk and +1 ring per completed hour. The detail sheet is capped to the viewport: no native scrollbar on the rounded card; the clock stage shrinks to fit, and the right column's metrics and 心率趋势 scroll together with a thin thumb; the title and prev/next pager stay fixed. `能耗` exposes a small **ⓘ** that opens an in-page `.wk-info-tip` (hover on fine pointers, click to toggle `.is-open`) with the copy 「估算消耗，非实测。」. `用时` / 平均心率 / 最大心率 have no tip. There is no second `#wk-tip-sheet` dialog. Escape / blank click dismisses an open metric tip first, then the legend slot, then closes detail.
 - **HR scrub (v1)**: detail meta under metrics — collapsed 「心率趋势」 when `session.hr` exists; expand for area + scrub (elapsed/bpm). No map/clock linkage.
 - **Regression guard**: `node scripts/check_session_clock_tip_guard.js` — static + `node:vm` mock ensures click/hover tips keep working via `.wk-info-tip` / `.is-open` with no `#wk-tip-sheet` dependency. Not a real browser/phone test.
 

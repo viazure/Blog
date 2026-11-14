@@ -4,18 +4,24 @@ Outer ring = six-tier HR/zone crown (Z0–Z5) for the whole session (always a fu
 Inner polyline/area = same HR samples when chart.hr exists (also full lap).
 Core = full-circle seed (<1h) or growth rings (≥1h), matching geekplux pc(min).
 
-Source priority (life-data/data/workouts/splits/{run_id}.json):
-  Prefer a real device time-in-zone table (bounds + seconds, calc_type
-  not estimated/derived). Map HR samples to that table; if there is no
-  HR series, draw bars from the device seconds. Estimates such as
-  percent_max_hr_estimated, and activities with no device zones, use
-  the configured LTHR table instead. Never paste estimated or foreign
-  seconds onto the LTHR bounds.
-  1. chart.hr  — aggregated series from gen_splits (up to ~200 pts),
+Zone baseline priority (aligned with running_page resolveHrZones):
+  1. Real device time-in-zone (bounds + seconds, calc_type not estimated/derived).
+     percent_max_hr_estimated is not a device table.
+  2. Else a lactate threshold (LTHR_BPM env / gitignored .env, then an optional
+     site config lthr, then this activity's FIT threshold_hr) with method
+     percent_lthr: rebin the HR series onto the site LTHR table.
+  3. Else 220−age from the public birthday_month vs the activity date
+     (source maxhr_age, marked estimated). Never use this activity's peak HR
+     as the 100% anchor, and never introduce a max-HR environment variable.
+  4. Else no baseline: do not paint zone teeth or an all-zero placeholder.
+     If a baseline exists but there is no HR series and no real device table:
+     do not paint teeth; the front end shows that this activity has no HR.
+
+Series used to paint teeth when a baseline exists:
+  1. chart.hr — aggregated series from gen_splits (up to ~200 pts),
      including time-bucketed indoor FIT curves when distance is 0
   2. laps / km splits hr_avg sequence (actual BPM)
-  3. device zones.hr.seconds when no HR series exists
-  4. flat from average_heartrate at that BPM's LTHR-zone height
+  3. device zones.hr.seconds when no HR series exists (device path only)
 
 Bars/hr are resampled to N_SAMPLES (48) so the crown reads as a coarse
 stepped rim (geekplux-aligned), not a fine sawtooth.
@@ -25,8 +31,9 @@ from __future__ import annotations
 
 import os
 import re
+import tomllib
 from collections.abc import Mapping
-from decimal import ROUND_CEILING, ROUND_HALF_UP, Decimal
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 from typing import Any
 
@@ -35,13 +42,14 @@ from typing import Any
 N_SAMPLES = 48
 BAR_TIERS = [5, 12, 19, 26, 33, 40]  # Z0 .. Z5
 BAR_MAX = BAR_TIERS[-1]
-# Zone BPM boundaries come from a single configured lactate threshold
-# (LTHR_BPM in the environment or a gitignored repo-root .env), not from
-# each activity's high_boundary or max_hr. See lthr_boundaries() and
-# docs/session-clock.md.
-ZONE_PCTS = (0.65, 0.80, 0.89, 0.95, 1.00, 1.07)
+# LTHR high bounds from <Z1 upward, same percents as running_page.
+# Z5 is half-up(LTHR×107%); there is no max-HR env cap on this site.
+LTHR_PERCENTS = (65, 80, 89, 95, 100, 107)
+# Age-estimate high bounds (% of 220−age), same as running_page maxhr_percents.
+MAXHR_PERCENTS = (50, 60, 70, 80, 90, 100)
 REPO_ROOT = Path(__file__).resolve().parents[1]
 LTHR_ENV_KEY = "LTHR_BPM"
+_UNSET = object()
 
 
 def _resample(values: list[float], n: int) -> list[float]:
@@ -67,11 +75,8 @@ def _round_half_up(value) -> int:
     return int(Decimal(str(value)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
 
-class LactateThresholdConfigError(ValueError):
-    """Raised when LTHR_BPM is missing from the environment and repo-root .env."""
-
-
 def _parse_positive_bpm(raw: object) -> int | None:
+    """Strict integer BPM for environment / .env values."""
     if raw is None:
         return None
     text = str(raw).strip()
@@ -82,6 +87,20 @@ def _parse_positive_bpm(raw: object) -> int | None:
     except (TypeError, ValueError):
         return None
     return val if val > 0 else None
+
+
+def _positive_hr(raw: object) -> int | None:
+    """Accept int or whole-number BPM from FIT / optional site config."""
+    if raw is None or isinstance(raw, bool):
+        return None
+    if isinstance(raw, int):
+        return raw if raw > 0 else None
+    if isinstance(raw, float):
+        if raw <= 0 or raw != raw:  # NaN
+            return None
+        rounded = _round_half_up(raw)
+        return rounded if rounded > 0 else None
+    return _parse_positive_bpm(raw)
 
 
 def _parse_dotenv(path: Path) -> dict[str, str]:
@@ -107,30 +126,36 @@ def _parse_dotenv(path: Path) -> dict[str, str]:
     return out
 
 
-def lthr_boundaries(lthr: float | int) -> list[int]:
-    """Six BPM boundaries from LTHR × ZONE_PCTS.
-
-    The first five use half-up rounding. The 107% cap uses
-    max(half-up(LTHR×1.07), LTHR+ceil(LTHR×0.07)) so an LTHR of 176
-    matches Garmin Connect's displayed [114, 141, 157, 167, 176, 189]
-    (176×1.07 = 188.32, which half-up alone would be 188).
-    Callers must pass LTHR explicitly; there is no built-in default.
-    """
+def bounds_from_percents(anchor: float | int, pcts: list[int] | tuple[int, ...]) -> list[int]:
+    """High bounds from percent-of-anchor, half-up, kept non-decreasing."""
     try:
-        lthr_f = float(lthr)
+        anchor_f = float(anchor)
     except (TypeError, ValueError) as exc:
-        raise ValueError("lthr must be a positive number; pass it explicitly") from exc
-    if lthr_f <= 0:
-        raise ValueError("lthr must be a positive number; pass it explicitly")
-    lthr_d = Decimal(str(lthr))
-    bounds: list[int] = []
-    for pct in ZONE_PCTS:
-        bounds.append(_round_half_up(lthr_d * Decimal(str(pct))))
-    z5 = int(lthr_d) + int((lthr_d * Decimal("0.07")).to_integral_value(rounding=ROUND_CEILING))
-    bounds[5] = max(bounds[5], z5)
+        raise ValueError("anchor must be a positive number") from exc
+    if anchor_f <= 0:
+        raise ValueError("anchor must be a positive number")
+    anchor_d = Decimal(str(anchor))
+    bounds = [_round_half_up(anchor_d * Decimal(int(p)) / Decimal(100)) for p in pcts]
     for i in range(1, len(bounds)):
         if bounds[i] < bounds[i - 1]:
             bounds[i] = bounds[i - 1]
+    return bounds
+
+
+def lthr_boundaries(lthr: float | int, max_hr_cap: int | None = None) -> list[int]:
+    """Six BPM boundaries from LTHR × LTHR_PERCENTS.
+
+    Rounding matches running_page lthrHighBounds: half-up of LTHR×percent
+    for every bound. A max_hr_cap, when given and the last percent is above
+    100, only replaces the Z5 high bound. This site has no max-HR environment
+    variable, so production calls leave the cap unset.
+    """
+    bounds = bounds_from_percents(lthr, LTHR_PERCENTS)
+    if max_hr_cap is not None and max_hr_cap > 0 and LTHR_PERCENTS and LTHR_PERCENTS[-1] > 100:
+        bounds[-1] = _round_half_up(max_hr_cap)
+        for i in range(1, len(bounds)):
+            if bounds[i] < bounds[i - 1]:
+                bounds[i] = bounds[i - 1]
     return bounds
 
 
@@ -138,13 +163,12 @@ def load_lactate_threshold(
     *,
     environ: Mapping[str, str] | None = None,
     env_file: Path | None = None,
-) -> int:
+) -> int | None:
     """Read LTHR_BPM from the environment, then a repo-root .env.
 
-    The environment variable wins. Empty, non-integer, or non-positive
-    values are treated as unset. There is no fallback to a hardcoded
-    personal threshold; set LTHR_BPM or add it to a gitignored .env.
-    See docs/session-clock.md.
+    Optional: missing, empty, non-integer, or non-positive values are unset
+    and return None. There is no fallback to a hardcoded personal threshold,
+    and the value is never read from hugo.toml. See docs/session-clock.md.
     """
     env = os.environ if environ is None else environ
     val = _parse_positive_bpm(env.get(LTHR_ENV_KEY))
@@ -156,28 +180,141 @@ def load_lactate_threshold(
         val = _parse_positive_bpm(_parse_dotenv(path).get(LTHR_ENV_KEY))
         if val is not None:
             return val
-
-    raise LactateThresholdConfigError(
-        "LTHR_BPM is not set. Set the LTHR_BPM environment variable, or add "
-        "LTHR_BPM=<your lactate threshold in bpm> to a gitignored .env at the "
-        "repo root. See docs/session-clock.md."
-    )
+    return None
 
 
-_lthr_cache: int | None = None
+def parse_birthday_month(raw: str | None) -> tuple[int, int] | None:
+    """Public identity YYYY-MM; missing day is treated as the 1st."""
+    match = re.match(r"^(\d{4})-(\d{2})$", (raw or "").strip())
+    if not match:
+        return None
+    year = int(match.group(1))
+    month = int(match.group(2))
+    if month < 1 or month > 12:
+        return None
+    return year, month
+
+
+def parse_activity_date(raw: str | None) -> tuple[int, int, int] | None:
+    """Calendar date YYYY-MM-DD, optionally followed by a time."""
+    match = re.match(r"^(\d{4})-(\d{2})-(\d{2})", (raw or "").strip())
+    if not match:
+        return None
+    year = int(match.group(1))
+    month = int(match.group(2))
+    day = int(match.group(3))
+    if month < 1 or month > 12 or day < 1 or day > 31:
+        return None
+    return year, month, day
+
+
+def age_on_activity_date(
+    birthday_month: str | None,
+    activity_date: str | None,
+) -> int | None:
+    """Age in whole years on the activity date, not today.
+
+    birthday_month uses day 1 of that month (same rule as running_page).
+    """
+    born = parse_birthday_month(birthday_month)
+    on = parse_activity_date(activity_date)
+    if not born or not on:
+        return None
+    age = on[0] - born[0]
+    # born day is 1; `on[2] < 1` is kept to match running_page verbatim.
+    if on[1] < born[1] or (on[1] == born[1] and on[2] < 1):
+        age -= 1
+    if age <= 0 or age >= 220:
+        return None
+    return age
+
+
+def estimated_max_hr_from_age(age: int) -> int:
+    """220−age. No defaultMaxHeartRate / FIT profile age hook."""
+    return 220 - age
+
+
+def estimated_max_hr_from_birthday(
+    birthday_month: str | None,
+    activity_date: str | None,
+) -> int | None:
+    age = age_on_activity_date(birthday_month, activity_date)
+    if age is None:
+        return None
+    max_hr = estimated_max_hr_from_age(age)
+    return max_hr if max_hr > 0 else None
+
+
+def maxhr_age_boundaries(max_hr: float | int) -> list[int]:
+    return bounds_from_percents(max_hr, MAXHR_PERCENTS)
+
+
+def load_workouts_site_config(hugo_toml: Path | None = None) -> dict[str, Any]:
+    """Public workouts settings from hugo.toml [params.workouts].
+
+    birthday_month is public identity. An optional lthr would be accepted if
+    present, but personal thresholds belong in LTHR_BPM / .env, not the repo.
+    """
+    path = REPO_ROOT / "hugo.toml" if hugo_toml is None else hugo_toml
+    out: dict[str, Any] = {"birthday_month": None, "lthr": None}
+    try:
+        data = tomllib.loads(path.read_text(encoding="utf-8"))
+    except (OSError, tomllib.TOMLDecodeError):
+        return out
+    workouts = (data.get("params") or {}).get("workouts") or {}
+    born = parse_birthday_month(str(workouts.get("birthday_month") or "") or None)
+    if born:
+        out["birthday_month"] = f"{born[0]:04d}-{born[1]:02d}"
+    out["lthr"] = _positive_hr(workouts.get("lthr"))
+    return out
+
+
+def load_birthday_month(hugo_toml: Path | None = None) -> str | None:
+    return load_workouts_site_config(hugo_toml).get("birthday_month")
+
+
+_lthr_cache: Any = _UNSET
+_site_config_cache: dict[str, Any] | None = None
 
 
 def reset_lactate_threshold_cache() -> None:
-    """Clear the cached threshold so tests can reload configuration."""
-    global _lthr_cache
-    _lthr_cache = None
+    """Clear cached threshold / site config so tests can reload them."""
+    global _lthr_cache, _site_config_cache
+    _lthr_cache = _UNSET
+    _site_config_cache = None
 
 
-def get_lactate_threshold() -> int:
+def get_lactate_threshold() -> int | None:
     global _lthr_cache
-    if _lthr_cache is None:
+    if _lthr_cache is _UNSET:
         _lthr_cache = load_lactate_threshold()
     return _lthr_cache
+
+
+def get_workouts_site_config() -> dict[str, Any]:
+    global _site_config_cache
+    if _site_config_cache is None:
+        _site_config_cache = load_workouts_site_config()
+    return _site_config_cache
+
+
+def resolve_lactate_threshold(
+    *,
+    explicit: int | None = None,
+    config_lthr: int | None = None,
+    fit_threshold_hr: int | None = None,
+) -> int | None:
+    """LTHR_BPM (env / .env) → optional site config lthr → FIT threshold_hr."""
+    if explicit is not None and explicit > 0:
+        return int(explicit)
+    env_lthr = get_lactate_threshold()
+    if env_lthr is not None and env_lthr > 0:
+        return int(env_lthr)
+    if config_lthr is not None and config_lthr > 0:
+        return int(config_lthr)
+    if fit_threshold_hr is not None and fit_threshold_hr > 0:
+        return int(fit_threshold_hr)
+    return None
 
 
 def is_estimated_hr_zone(calc_type: Any) -> bool:
@@ -214,15 +351,20 @@ def _clean_bounds(bounds: Any) -> list[float]:
     return out
 
 
+def _fit_threshold_hr(zone_hr: Any) -> int | None:
+    if not isinstance(zone_hr, dict):
+        return None
+    return _positive_hr(zone_hr.get("threshold_hr"))
+
+
 def _zone_index(bpm: float, bounds: list[int] | list[float]) -> int:
     """Map a heart-rate sample to Z0..Z5 (0..5).
 
     Inclusive on each zone's high boundary.
-    For the 6-bound LTHR / Garmin table, Z0 is everything up to bounds[0]
-    (65% LTHR / first high), Z1 is up to bounds[1] (80% LTHR). Above
-    bounds[4] (100%) is Z5, including the last bound and overflow.
-    A 5-bound table has no separate below-Z1 slot: bounds[0] is Z1 high,
-    so values at or below it are Z1 (index 1).
+    For the 6-bound LTHR / Garmin / age table, Z0 is everything up to bounds[0]
+    (first high), Z1 is up to bounds[1]. Above bounds[4] is Z5, including the
+    last bound and overflow. A 5-bound table has no separate below-Z1 slot:
+    bounds[0] is Z1 high, so values at or below it are Z1 (index 1).
     """
     if len(bounds) >= 6:
         if bpm <= bounds[0]:
@@ -297,7 +439,7 @@ def _bars_from_zone_durations(durations: list[float]) -> list[int]:
 
 
 def _bars_from_hr(hr: list[float], bounds: list[int] | list[float]) -> list[int]:
-    """Fixed Z0–Z5 heights from the device or configured LTHR table."""
+    """Fixed Z0–Z5 heights from the resolved zone table."""
     return [BAR_TIERS[_zone_index(float(bpm), bounds)] for bpm in hr]
 
 
@@ -339,6 +481,40 @@ def _load_split(splits_dir: Path, run_id: Any) -> dict | None:
     return data if isinstance(data, dict) else None
 
 
+def _session_out(
+    *,
+    moving: int,
+    bars: list[int],
+    hr_series: list[float],
+    hr_avg: float,
+    hr_max: Any,
+    kcal: Any,
+    elev_gain: Any,
+    source: str,
+    estimated: bool,
+    empty_reason: str | None,
+) -> dict[str, Any]:
+    out: dict[str, Any] = {
+        "moving": int(moving or 0),
+        "bars": bars,
+        "source": source,
+        "estimated": bool(estimated),
+    }
+    if empty_reason:
+        out["empty_reason"] = empty_reason
+    if hr_series:
+        out["hr"] = [int(round(x)) for x in hr_series]
+    if hr_avg:
+        out["hr_avg"] = int(round(hr_avg))
+    if hr_max:
+        out["hr_max"] = int(round(float(hr_max)))
+    if kcal:
+        out["kcal"] = int(round(float(kcal)))
+    if elev_gain and float(elev_gain) > 0:
+        out["elev"] = int(round(float(elev_gain)))
+    return out
+
+
 def build_session(
     *,
     run_id: Any,
@@ -347,6 +523,9 @@ def build_session(
     elev: float,
     splits_dir: Path | None,
     lthr: int | None = None,
+    birthday_month: str | None = None,
+    activity_date: str | None = None,
+    config_lthr: int | None = None,
 ) -> dict | None:
     """Return a compact session dict, or None when nothing useful exists."""
     split = _load_split(splits_dir, run_id) if splits_dir else None
@@ -375,39 +554,59 @@ def build_session(
     zone_block = (split or {}).get("zones") if split else None
     zone_hr = zone_block.get("hr") if isinstance(zone_block, dict) else None
     device = zone_hr if is_device_hr_zone(zone_hr) else None
-    lthr_bounds = lthr_boundaries(lthr if lthr is not None else get_lactate_threshold())
+    resolved_lthr = resolve_lactate_threshold(
+        explicit=lthr,
+        config_lthr=config_lthr,
+        fit_threshold_hr=_fit_threshold_hr(zone_hr),
+    )
     device_bounds = _clean_bounds(device.get("high_boundary")) if device else []
-    bounds = device_bounds or lthr_bounds
-    bars: list[int]
-    if hr_series:
-        bars = _bars_from_hr(hr_series, bounds)
-    elif device:
-        bars = _bars_from_zone_durations(
-            _zone_durations_from_seconds(device.get("seconds"), len(device_bounds))
-        )
-        if not bars and hr_avg:
-            bars = [BAR_TIERS[_zone_index(float(hr_avg), bounds)]] * N_SAMPLES
-    elif hr_avg:
-        # Flat bars at the zone height of the session average under the LTHR table.
-        bars = [BAR_TIERS[_zone_index(float(hr_avg), lthr_bounds)]] * N_SAMPLES
+
+    bars: list[int] = []
+    source = "none"
+    estimated = False
+    empty_reason: str | None = None
+
+    if device:
+        if hr_series:
+            bars = _bars_from_hr(hr_series, device_bounds)
+        else:
+            bars = _bars_from_zone_durations(
+                _zone_durations_from_seconds(device.get("seconds"), len(device_bounds))
+            )
+        if bars:
+            source = "device"
+        else:
+            empty_reason = "no_hr_data"
+    elif resolved_lthr:
+        if hr_series:
+            bars = _bars_from_hr(hr_series, lthr_boundaries(resolved_lthr))
+            source = "lthr"
+        else:
+            empty_reason = "no_hr_data"
     else:
-        bars = []
+        age_max = estimated_max_hr_from_birthday(birthday_month, activity_date)
+        if age_max:
+            if hr_series:
+                bars = _bars_from_hr(hr_series, maxhr_age_boundaries(age_max))
+                source = "maxhr_age"
+                estimated = True
+            else:
+                empty_reason = "no_hr_data"
+        else:
+            empty_reason = "no_baseline"
 
     if not bars and not hr_series and not hr_avg and not moving:
         return None
 
-    out: dict[str, Any] = {
-        "moving": int(moving or 0),
-        "bars": bars,
-    }
-    if hr_series:
-        out["hr"] = [int(round(x)) for x in hr_series]
-    if hr_avg:
-        out["hr_avg"] = int(round(hr_avg))
-    if hr_max:
-        out["hr_max"] = int(round(float(hr_max)))
-    if kcal:
-        out["kcal"] = int(round(float(kcal)))
-    if elev_gain and float(elev_gain) > 0:
-        out["elev"] = int(round(float(elev_gain)))
-    return out
+    return _session_out(
+        moving=moving,
+        bars=bars,
+        hr_series=hr_series,
+        hr_avg=hr_avg,
+        hr_max=hr_max,
+        kcal=kcal,
+        elev_gain=elev_gain,
+        source=source,
+        estimated=estimated,
+        empty_reason=empty_reason,
+    )
