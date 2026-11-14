@@ -5,6 +5,13 @@ $dark-text: #babdc4;
 
 $switcher-slots: 20;
 
+
+/* 运动详情专用：心率曲线红、深色舞台（比 $surface-dark / $dark-light 更沉）、
+   强调色回退（与 $workout-kinds「其他」同色，避免再写未入表的紫）。 */
+$workout-hr: #d4534a;
+$workout-stage-dark: #0f1116;
+$workout-accent-fallback: #8b5cf6;
+
 $workout-kinds: (
   "跑步": #f97316,
   "骑行": #3b82f6,

@@ -3,7 +3,7 @@
 
      SSR/JS: workout-card.html <-> renderCard；见 docs/ssr-js-fields.md、docs/session-clock.md
      clock/clock_unit = 运动时长（duration），勿当会话状态。
-     Session 字段：run_id、hr_max、kcal、session{bars,hr,moving,...}。
+     Session 字段：run_id、has_splits、hr_max、kcal、session{bars,hr,moving,...}。
      After load: dispatch workouts:year-loaded for track-script. */}}
 <script>
 (function () {
@@ -107,6 +107,7 @@
       kcal: c.kcal,
       session: slimSession(c.session)
     };
+    if (c.has_splits) wk.has_splits = true;
 
     var html = '<article class="run-card kind-' + esc(c.name) +
       '" tabindex="0" role="button" data-idx="' + esc(c.idx) +

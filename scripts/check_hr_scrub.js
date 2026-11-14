@@ -9,17 +9,18 @@ const { spawnSync } = require("child_process");
 
 const ROOT = path.resolve(__dirname, "..");
 const PARTIAL = path.join(ROOT, "layouts", "_partials", "session-clock-script.html");
+const SCRIPT = path.join(ROOT, "assets", "js", "session-clock.js");
 
 function pass(msg) { console.log("PASS:", msg); }
 function fail(msg) { console.error("FAIL:", msg); process.exitCode = 1; throw new Error(msg); }
 
-function extractScript(html) {
-  const m = html.match(/<script>\s*([\s\S]*?)\s*<\/script>\s*$/);
-  if (!m) fail("no script block");
-  return m[1].replace(/\{\{[\s\S]*?\}\}/g, '"/trails.json"');
+function readScript() {
+  if (!fs.existsSync(SCRIPT)) fail("missing " + SCRIPT);
+  return fs.readFileSync(SCRIPT, "utf8");
 }
 
-function staticChecks(html) {
+function staticChecks(html, script) {
+  const src = html + "\n" + script;
   const need = [
     'id="wk-hr-scrub"',
     'data-wk-hr-toggle',
@@ -29,27 +30,27 @@ function staticChecks(html) {
     "function setHrScrub(",
     "function toggleHrScrub(",
     "function drawHrScrub(",
-    'ctx.fillStyle = "#d4534a"',
+    'ctx.fillStyle = themeTok("--wk-hr", "")',
   ];
   for (const n of need) {
-    if (!html.includes(n)) fail("missing " + n);
+    if (!src.includes(n)) fail("missing " + n);
   }
-  if (html.includes("wk-tip-sheet") || /\btipSheet\b/.test(html)) {
+  if (src.includes("wk-tip-sheet") || /\btipSheet\b/.test(src)) {
     fail("leftover #wk-tip-sheet / tipSheet dependency");
   }
-  if (!html.includes("openTipSheet") || !html.includes('class="wk-info-tip"')) {
+  if (!src.includes("openTipSheet") || !src.includes('class="wk-info-tip"')) {
     fail("in-page tip helpers damaged");
   }
-  if (!/updateLegend\(session\);\r?\n\s*setHrScrub\(session, item\);/.test(html)) {
+  if (!/updateLegend\(session\);\r?\n\s*setHrScrub\(session, item\);/.test(src)) {
     fail("openDetail missing setHrScrub");
   }
   pass("static markup + bindings + openDetail wire");
-  if (html.includes("data-wk-hr-hint") || html.includes("点开查看整场") || html.includes("再点收起")) {
+  if (src.includes("data-wk-hr-hint") || src.includes("点开查看整场") || src.includes("再点收起")) {
     fail("HR hint copy should be removed");
   }
-  const tipIdx = html.indexOf("var TIP_COPY =");
+  const tipIdx = script.indexOf("var TIP_COPY =");
   if (tipIdx < 0) fail("TIP_COPY missing");
-  const tipChunk = html.slice(tipIdx, tipIdx + 900);
+  const tipChunk = script.slice(tipIdx, tipIdx + 900);
   const metricBodies = {
     kcal: "估算消耗，非实测。",
   };
@@ -65,14 +66,17 @@ function staticChecks(html) {
   if (!html.includes("data-wk-legend-slot")) {
     fail("clock legend slot markup missing");
   }
-  if (html.includes("data-wk-legend-info")) {
+  if (src.includes("data-wk-legend-info")) {
     fail("legend info mark should be removed");
   }
-  if (html.includes('data-wk-tip="sclock"')) {
+  if (src.includes('data-wk-tip="sclock"')) {
     fail("sclock should not open a metric tip");
   }
-  const drawChunk = html.split("function drawHrScrub")[1].split("function setHrIdxFromClientX")[0];
-  if (!drawChunk.includes('fillStyle = "#d4534a"')) fail("solid scrub fill missing");
+  const drawChunk = script.split("function drawHrScrub")[1].split("function setHrIdxFromClientX")[0];
+  if (!drawChunk.includes('fillStyle = themeTok("--wk-hr"')) fail("solid scrub fill missing");
+  if (drawChunk.includes("#d4534a") || drawChunk.includes("rgba(212,83,74")) {
+    fail("HR canvas still hardcodes heart-rate hex");
+  }
   if (drawChunk.includes('fillStyle = themeTok("--wk-sheet"')) fail("hollow scrub fill still present");
 }
 
@@ -300,8 +304,8 @@ function runVm(script, extra) {
 function main() {
   console.log("HR scrub regression — NOT a real browser/phone test");
   const html = fs.readFileSync(PARTIAL, "utf8");
-  staticChecks(html);
-  const script = extractScript(html);
+  const script = readScript();
+  staticChecks(html, script);
   const syn = spawnSync(process.execPath, ["--check"], { input: script, encoding: "utf8" });
   if (syn.status !== 0) fail("node --check failed: " + syn.stderr);
   pass("extracted script node --check");
@@ -386,7 +390,7 @@ function __toggle(){ toggleHrScrub(); return { open: hrScrubEl.classList.contain
   if (no.open) fail("no HR should not stay open");
   pass("no HR: hidden (no empty shell)");
 
-  if (html.includes("wk-tip-sheet") || !html.includes("openTipSheet") || !html.includes('class="wk-info-tip"')) {
+  if (html.includes("wk-tip-sheet") || script.includes("wk-tip-sheet") || !script.includes("openTipSheet") || !script.includes('class="wk-info-tip"')) {
     fail("in-page tip helpers damaged");
   }
   pass("in-page tip helpers intact");

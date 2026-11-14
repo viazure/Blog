@@ -4,7 +4,7 @@ Branch: `feat/workouts-session-clock` (P0 lazy-render base). Merge after P0 → 
 
 ## Product
 
-- All activities open a unified detail shell that **follows the blog theme** (light sheet / `html.dark` sheet; not a forced near-black wall, not a full Activities wall).
+- All activities open a unified detail shell that **follows the blog theme** (light sheet / `html.dark` or system dark via `prefers-color-scheme`; not a forced near-black wall, not a full Activities wall).
 - No GPS: left slot = large Session Clock; icon-only legend keys under the SVG, with a reserved two-line slot that shows layer copy only on hover or pin.
 - With GPS: left slot = theme-stage silhouette trail (detail polyline from trails-detail.json; list thumbs stay on the coarse 40×40 trails.json), start→end draw on open, bright start dot. No clock⇄map tabs (GPS = silhouette only; trail missing → fall back to clock).
 - Three layers (geekplux-aligned):
@@ -25,7 +25,7 @@ Visual reference: [activities.geekplux.com](https://activities.geekplux.com/) (s
 
 | Layer | Holds |
 |-------|--------|
-| Card attribute `data-wk` | Summary only: idx, label, name, date/time, metrics, `has_trail`, `run_id`, and `session: { has_session, moving, hr_avg, hr_max, kcal, elev }` — **no** `bars` / `hr` arrays |
+| Card attribute `data-wk` | Summary only: idx, label, name, date/time, metrics, `has_trail`, `run_id`, `has_splits`, and `session: { has_session, moving, hr_avg, hr_max, kcal, elev }` — **no** `bars` / `hr` arrays |
 | Year shard `/data/workouts/year-YYYY.json` | Full items including `session.bars` (**48**) + `session.hr` (**48** when chart present) |
 | In-memory `itemsByIdx` | Prefer richer session (bars/hr) when indexing |
 
@@ -64,6 +64,7 @@ Default `176` produces boundaries `[114, 141, 157, 167, 176, 189]` (65/80/89/95/
 | Field | Meaning |
 |-------|---------|
 | `run_id` | Garmin/archive id |
+| `has_splits` | `true` only for 跑步 when `life-data/data/workouts/splits/{run_id}.json` exists at build time. Other sports, missing life-data, or a missing file are treated as no splits (the flag is omitted). Re-run `python scripts/build_workouts.py` after splits are available; emit then copies the flag into year shards. |
 | `hr_max` / `kcal` | from split summary when present |
 | `session.moving` | seconds |
 | `session.bars` | **48** outer heights — six tiers `5/12/19/26/33/40` (Z0–Z5) |
@@ -74,9 +75,14 @@ Frontend maps outer `bars` and inner `hr` across a **full 360 deg** session lap.
 
 ## Front-end
 
-- `layouts/_partials/session-clock-script.html` — `<dialog>` shell + SVG drawers
+- `layouts/_partials/session-clock-script.html` — `<dialog>` shell + a small config object via `data-*` (trail URLs, year shard base, Running Page root)
+- `assets/js/session-clock.js` — SVG drawers, detail logic, and the「分段分析」link
 - Cards: `role="button"` + `data-idx` + slim `data-wk`
 - After lazy fill / default-year index: `__wkIndexItems(items)` then `workouts:year-loaded`
+
+### Running Page 分段分析
+
+Detail (not the list card) may show a split-analysis control: on desktop, a 16px bar-chart icon in the 跑步 kind color (from `$workout-kinds`, slightly transparent at rest) immediately after the date (not right-aligned); on mobile, a text link under the date. It appears only when the activity is 跑步, has a `run_id`, **and** has build-time `has_splits`. Styles must override `.page-content a` link blue and the theme `target="_blank"` arrow. The href is `{runningPage}/#run_{id}/analysis` (e.g. `https://run.viazure.cc/#run_1794478711000/analysis`), opened in a new tab (`target="_blank"` `rel="noopener noreferrer"`). The root address is `params.workouts.runningPage` in `hugo.toml` (default `https://run.viazure.cc`). The front end does not fetch `https://run.viazure.cc/splits/index.json`. Until `build_workouts.py` is run against a life-data checkout that contains the split files, generated `data/workouts.json` will not carry `has_splits` and the button stays hidden.
 
 ## Sync rule
 
@@ -85,7 +91,7 @@ Changing **session shape** requires updating **all four**:
 1. emit / `build_workouts.py` (+ `session_clock.py`)
 2. SSR `workout-card.html` (slim summary fields)
 3. `workouts-lazy` `renderCard` / `slimSession`
-4. detail shell `session-clock-script.html` (`drawSessionClock` / `fillMeta` / `ensureFullSession`)
+4. detail shell `session-clock-script.html` + `assets/js/session-clock.js` (`drawSessionClock` / `fillMeta` / `ensureFullSession` / `syncSplitLink`)
 
 Also update [ux-p0-ssr-js-fields.md](./ux-p0-ssr-js-fields.md).
 

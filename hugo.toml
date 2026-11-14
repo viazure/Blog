@@ -153,4 +153,7 @@ theme = "hugo-blog-awesome"
 # 默认 176 → 114/141/157/167/176/189。低于最低边界按 Z1，高于最高按 Z5。
 [params.workouts]
   lactateThresholdBpm = 176
+  # 运动详情「分段分析」深链的 Running Page 根地址。前端拼 #run_<id>/analysis。
+  # 有 run_id 且构建期 has_splits 才渲染按钮；改完根地址无需重跑 build_workouts.py。
+  runningPage = "https://run.viazure.cc"
 

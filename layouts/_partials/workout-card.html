@@ -39,6 +39,7 @@
 }}
 {{ with $c.time }}{{ $wk = merge $wk (dict "time" .) }}{{ end }}
 {{ with $c.run_id }}{{ $wk = merge $wk (dict "run_id" .) }}{{ end }}
+{{ if $c.has_splits }}{{ $wk = merge $wk (dict "has_splits" true) }}{{ end }}
 {{ with $c.hr_max }}{{ $wk = merge $wk (dict "hr_max" .) }}{{ end }}
 {{ with $c.kcal }}{{ $wk = merge $wk (dict "kcal" .) }}{{ end }}
 {{ with $c.session }}
