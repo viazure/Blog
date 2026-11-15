@@ -59,6 +59,13 @@
   };
   // Remember viz tab across detail pager / reopen (map|clock); null = default by has_trail
   var preferredViz = null;
+  var moreBtn = dialog.querySelector("[data-wk-detail-more]");
+  var moreEndBtn = dialog.querySelector("[data-wk-detail-more-end]");
+  var extraEl = dialog.querySelector("#wk-detail-extra");
+  var sheetEl = dialog.querySelector(".wk-detail-sheet");
+  var pagerHome = pager && pager.parentNode;
+  var extraScrollY = 0;
+  var MOBILE_DETAIL_MQ = "(max-width: 768px), (max-height: 600px)";
 
   function themeTok(name, fallback) {
     try {
@@ -170,7 +177,7 @@
   }
 
   function isLegendVisible() {
-    return !!(legendEl && !legendEl.hidden && clockPanel && !clockPanel.hidden);
+    return !!(legendEl && !legendEl.hidden && !legendEl.classList.contains("is-reserved") && clockPanel && !clockPanel.hidden);
   }
 
   function legendEffective() {
@@ -745,7 +752,12 @@
   }
 
   function syncLegendVis(hidden) {
-    if (legendEl) legendEl.hidden = !!hidden;
+    if (!legendEl) return;
+    var reserve = !!hidden && isMobileDetail();
+    legendEl.hidden = !!hidden && !reserve;
+    legendEl.classList.toggle("is-reserved", reserve);
+    if (reserve) legendEl.setAttribute("aria-hidden", "true");
+    else legendEl.removeAttribute("aria-hidden");
     if (hidden) {
       legendHover = null;
       legendFocus = null;
@@ -1004,6 +1016,247 @@
     metricsEl.innerHTML = metricParts.join("");
   }
 
+  function isMobileDetail() {
+    try {
+      return !!(window.matchMedia && window.matchMedia(MOBILE_DETAIL_MQ).matches);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function bodyScroller() {
+    return dialog.querySelector(".wk-detail-body");
+  }
+
+  function syncPagerPlacement() {
+    if (!pager || !sheetEl) return;
+    if (isMobileDetail()) {
+      if (pager.parentNode !== sheetEl) sheetEl.appendChild(pager);
+    } else if (pagerHome && pager.parentNode !== pagerHome) {
+      pagerHome.appendChild(pager);
+    }
+  }
+
+  function setVizPadTop(px) {
+    var layout = dialog && dialog.querySelector(".wk-detail-layout");
+    if (!layout || !layout.style) return;
+    var val = Math.max(0, Math.floor(px || 0)) + "px";
+    if (typeof layout.style.setProperty === "function") {
+      layout.style.setProperty("--wk-viz-pad-top", val);
+    } else {
+      layout.style["--wk-viz-pad-top"] = val;
+    }
+  }
+
+  function clearVizPadTop() {
+    var layout = dialog && dialog.querySelector(".wk-detail-layout");
+    if (!layout || !layout.style) return;
+    if (typeof layout.style.removeProperty === "function") {
+      layout.style.removeProperty("--wk-viz-pad-top");
+    } else {
+      try { delete layout.style["--wk-viz-pad-top"]; } catch (ePad) {}
+    }
+  }
+
+  // Collapsed mobile: center the chart + reserved legend slot + capsule
+  // in the space between the title and the pager. Expanded: freeze the
+  // current pad so the stack does not jump. Overflow or landscape: pad 0.
+  function syncMobileVizCenter(viewportChanged) {
+    if (!isMobileDetail()) {
+      clearVizPadTop();
+      return;
+    }
+    if (!dialog || !dialog.open) return;
+    // 展开只冻结本次视口的锚点；旋转后按新视口重新计算。
+    if (dialog.classList.contains("is-extra-open") && !viewportChanged) return;
+    var scroller = bodyScroller();
+    var stack = dialog.querySelector(".wk-detail-viz-stack");
+    if (!scroller || !stack) return;
+
+    var landscape = false;
+    try {
+      landscape = window.matchMedia && window.matchMedia("(orientation: landscape)").matches;
+    } catch (eOri) {}
+    if (landscape) {
+      setVizPadTop(0);
+      return;
+    }
+
+    var prev = scroller.scrollTop || 0;
+    setVizPadTop(0);
+    try { scroller.scrollTop = 0; } catch (eScroll) {}
+    var leftover = 0;
+    try {
+      var sr = scroller.getBoundingClientRect();
+      var st = stack.getBoundingClientRect();
+      leftover = Math.floor((sr.height || 0) - (st.bottom - sr.top));
+    } catch (eRect) {
+      leftover = 0;
+    }
+    try { scroller.scrollTop = prev; } catch (eRestore) {}
+    setVizPadTop(leftover > 8 ? Math.floor(leftover / 2) : 0);
+  }
+
+  function scrollMinToShow(el, scroller) {
+    if (!el || !scroller) return;
+    if (typeof el.getBoundingClientRect !== "function" || typeof scroller.getBoundingClientRect !== "function") return;
+    var er = el.getBoundingClientRect();
+    var sr = scroller.getBoundingClientRect();
+    if (er.top < sr.top) scroller.scrollTop += (er.top - sr.top);
+    else if (er.bottom > sr.bottom) scroller.scrollTop += (er.bottom - sr.bottom);
+  }
+
+  function revealExtraStart() {
+    var scroller = bodyScroller();
+    var start = extraEl || metricsEl;
+    if (!scroller || !start || start.hidden) return;
+    if (typeof scroller.getBoundingClientRect !== "function" || typeof start.getBoundingClientRect !== "function") return;
+    var sr = scroller.getBoundingClientRect();
+    var startR = start.getBoundingClientRect();
+    var btnR = moreBtn ? moreBtn.getBoundingClientRect() : null;
+    var startVisible = startR.top >= sr.top && startR.top <= sr.bottom - 24;
+    var btnVisible = !btnR || (btnR.top >= sr.top && btnR.bottom <= sr.bottom);
+    if (startVisible && btnVisible) return;
+    if (btnR && btnR.top < sr.top) scroller.scrollTop += (btnR.top - sr.top);
+    startR = start.getBoundingClientRect();
+    sr = scroller.getBoundingClientRect();
+    if (startR.top < sr.top) {
+      scroller.scrollTop += (startR.top - sr.top);
+    } else if (startR.top > sr.bottom - 48) {
+      scroller.scrollTop += (startR.top - (sr.bottom - 48));
+      if (moreBtn) scrollMinToShow(moreBtn, scroller);
+    }
+  }
+
+  function revealChartIfNeeded() {
+    if (!isMobileDetail()) return;
+    var scroller = bodyScroller();
+    var chart = dialog.querySelector(".wk-viz-stage-wrap") || dialog.querySelector(".wk-viz-stage");
+    if (!scroller || !chart) return;
+    if (typeof chart.getBoundingClientRect !== "function" || typeof scroller.getBoundingClientRect !== "function") return;
+    var cr = chart.getBoundingClientRect();
+    var sr = scroller.getBoundingClientRect();
+    // Already showing the start of the chart; do not jump.
+    if (cr.top >= sr.top && cr.top < sr.bottom) return;
+    scroller.scrollTop += (cr.top - sr.top);
+  }
+
+  function setExtraOpen(open, opts) {
+    opts = opts || {};
+    var mobile = isMobileDetail();
+    var scroller = bodyScroller();
+    if (open && mobile && scroller && opts.saveScroll) {
+      extraScrollY = scroller.scrollTop;
+    }
+    dialog.classList.toggle("is-extra-open", !!(open && mobile));
+    if (moreBtn) {
+      var expanded = !!(open && mobile);
+      moreBtn.setAttribute("aria-expanded", expanded ? "true" : "false");
+      var label = moreBtn.querySelector(".wk-detail-more-label");
+      var copy = expanded ? "收起详情" : "查看详情";
+      if (label) label.textContent = copy;
+      moreBtn.setAttribute("aria-label", copy);
+    }
+    if (moreEndBtn) moreEndBtn.hidden = !(open && mobile);
+    if (extraEl) {
+      try {
+        if (mobile) {
+          extraEl.hidden = !open;
+          extraEl.inert = !open;
+        } else {
+          extraEl.hidden = false;
+          extraEl.inert = false;
+        }
+      } catch (eInert) {
+        extraEl.hidden = mobile ? !open : false;
+      }
+    }
+    if (open && mobile && hrSeries.length) {
+      requestAnimationFrame(function () {
+        updateHrReadout();
+        drawHrScrub();
+      });
+    }
+    if (mobile && opts.scroll !== false) {
+      requestAnimationFrame(function () {
+        if (open) {
+          revealExtraStart();
+          if (moreBtn && opts.focus !== false) {
+            try { moreBtn.focus(); } catch (eFocus) {}
+          }
+        } else {
+          // 先重算收起组的留白，再恢复滚动，避免旋转后按旧位置露出胶囊。
+          syncMobileVizCenter();
+          if (moreBtn && opts.focus !== false) {
+            try { moreBtn.focus({ preventScroll: true }); } catch (eFocus2) {}
+          }
+          if (scroller) {
+            scroller.scrollTop = extraScrollY;
+            scrollMinToShow(moreBtn, scroller);
+          }
+        }
+      });
+    } else if (mobile && opts.focus !== false && moreBtn && !open) {
+      try { moreBtn.focus(); } catch (eFocus3) {}
+    }
+    // 无滚动的重置路径也要刷新留白；交互收起已在上面的同一帧处理。
+    if (mobile && !open && opts.scroll === false) {
+      if (typeof requestAnimationFrame === "function") {
+        requestAnimationFrame(function () { syncMobileVizCenter(); });
+      } else {
+        syncMobileVizCenter();
+      }
+    }
+  }
+
+  function resetMobileDetailState() {
+    extraScrollY = 0;
+    setExtraOpen(false, { scroll: false, focus: false, saveScroll: false });
+  }
+
+  function syncMobileExtraChrome(viewportChanged) {
+    syncPagerPlacement();
+    if (!isMobileDetail()) {
+      setExtraOpen(false, { scroll: false, focus: false, saveScroll: false });
+      if (extraEl) {
+        extraEl.hidden = false;
+        try { extraEl.inert = false; } catch (eDesk) {}
+      }
+      if (moreEndBtn) moreEndBtn.hidden = true;
+      if (moreBtn) {
+        moreBtn.setAttribute("aria-expanded", "false");
+        var deskLabel = moreBtn.querySelector(".wk-detail-more-label");
+        if (deskLabel) deskLabel.textContent = "查看详情";
+        moreBtn.setAttribute("aria-label", "查看详情");
+      }
+      dialog.classList.remove("is-extra-open");
+      try {
+        var deskItem = itemsByIdx[currentIdx] || {};
+        var deskMap = mapPanel && !mapPanel.hidden;
+        syncLegendVis(deskItem.has_trail ? deskMap : false);
+      } catch (eDeskLeg) {}
+      clearVizPadTop();
+    } else {
+      try {
+        var mobItem = itemsByIdx[currentIdx] || {};
+        var mobMap = mapPanel && !mapPanel.hidden;
+        syncLegendVis(mobItem.has_trail ? mobMap : false);
+      } catch (eMobLeg) {}
+      setExtraOpen(dialog.classList.contains("is-extra-open"), { scroll: false, focus: false, saveScroll: false });
+      if (typeof requestAnimationFrame === "function") {
+        requestAnimationFrame(function () { syncMobileVizCenter(viewportChanged); });
+      } else {
+        syncMobileVizCenter(viewportChanged);
+      }
+    }
+  }
+
+  function isHrScrubInteractive() {
+    if (!hrScrubEl || hrScrubEl.hidden || !hrSeries.length) return false;
+    if (hrScrubEl.classList.contains("is-open")) return true;
+    return isMobileDetail() && dialog.classList.contains("is-extra-open");
+  }
+
   function resetDetailScroll() {
     var metaScroll = dialog.querySelector(".wk-detail-meta-scroll");
     if (metaScroll) metaScroll.scrollTop = 0;
@@ -1076,6 +1329,7 @@
       var accent = accentOf(cardEl) || accentFallback();
       try { dialog.style.setProperty("--workout-accent", accent); } catch (eAccent) {}
       fillMeta(item, accent);
+      resetMobileDetailState();
       resetDetailScroll();
       var hasTrail = !!item.has_trail;
       var session = Object.assign({}, item.session || {});
@@ -1111,7 +1365,12 @@
         updatePager(item);
         resetDetailScroll();
         if (typeof requestAnimationFrame === "function") {
-          requestAnimationFrame(function () { resetDetailScroll(); });
+          requestAnimationFrame(function () {
+            resetDetailScroll();
+            syncMobileVizCenter();
+          });
+        } else {
+          syncMobileVizCenter();
         }
       }
 
@@ -1155,6 +1414,7 @@
 
   function closeDetail() {
     closeTipSheet();
+    resetMobileDetailState();
     collapseHrScrub();
     setPageScrollLock(false);
     if (typeof dialog.close === "function") dialog.close();
@@ -1199,7 +1459,7 @@
 
   if (hrWrapEl && typeof hrWrapEl.addEventListener === "function") {
     hrWrapEl.addEventListener("pointerdown", function (e) {
-      if (!hrSeries.length || !hrScrubEl || !hrScrubEl.classList.contains("is-open")) return;
+      if (!isHrScrubInteractive()) return;
       hrDragging = true;
       try { hrWrapEl.setPointerCapture(e.pointerId); } catch (err) {}
       setHrIdxFromClientX(e.clientX);
@@ -1213,7 +1473,8 @@
   }
   if (typeof window.addEventListener === "function") {
     window.addEventListener("resize", function () {
-      if (hrScrubEl && hrScrubEl.classList.contains("is-open")) drawHrScrub();
+      syncMobileExtraChrome(true);
+      if (isHrScrubInteractive()) drawHrScrub();
     });
   }
 
@@ -1249,6 +1510,15 @@
   }
 
   document.addEventListener("click", function (ev) {
+    var moreToggle = ev.target.closest && ev.target.closest("[data-wk-detail-more], [data-wk-detail-more-end]");
+    if (moreToggle && dialog.contains(moreToggle)) {
+      ev.preventDefault();
+      var wantOpen = !dialog.classList.contains("is-extra-open");
+      if (moreToggle.hasAttribute("data-wk-detail-more-end")) wantOpen = false;
+      setExtraOpen(wantOpen, { saveScroll: wantOpen, scroll: true, focus: true });
+      return;
+    }
+
     var hrToggle = ev.target.closest && ev.target.closest("[data-wk-hr-toggle]");
     if (hrToggle && hrScrubEl && hrScrubEl.contains(hrToggle)) {
       ev.preventDefault();
@@ -1270,7 +1540,7 @@
     if (splitLink) return;
 
     var legendRow = ev.target.closest && ev.target.closest(".wk-legend-key[data-layer]");
-    if (legendRow && legendEl && legendEl.contains(legendRow) && !legendEl.hidden) {
+    if (legendRow && legendEl && legendEl.contains(legendRow) && isLegendVisible()) {
       ev.preventDefault();
       pinLegendLayer(legendRow.getAttribute("data-layer"));
       return;
@@ -1298,7 +1568,7 @@
       setViz(mode);
       var item = itemsByIdx[currentIdx] || {};
       syncLegendVis(item.has_trail ? mode !== "clock" : false);
-      if (!legendEl.hidden) {
+      if (isLegendVisible()) {
         updateLegend(item.session || {});
         refreshLegendChrome();
       }
@@ -1307,6 +1577,17 @@
           requestAnimationFrame(function () { appearDrawnClock(); });
         } else {
           appearDrawnClock();
+        }
+      }
+      if (isMobileDetail()) {
+        if (typeof requestAnimationFrame === "function") {
+          requestAnimationFrame(function () {
+            revealChartIfNeeded();
+            syncMobileVizCenter();
+          });
+        } else {
+          revealChartIfNeeded();
+          syncMobileVizCenter();
         }
       }
       return;
@@ -1335,7 +1616,7 @@
       return;
     }
     if (dialog.open && dialog.contains && dialog.contains(ev.target)) {
-      var inLegend = legendEl && !legendEl.hidden && legendEl.contains(ev.target);
+      var inLegend = isLegendVisible() && legendEl.contains(ev.target);
       if (!inLegend && clearLegendExplain()) ev.preventDefault();
     }
   });
@@ -1354,6 +1635,16 @@
       openDetail(itemFromCard(ev.target), ev.target);
     }
   });
+
+  syncMobileExtraChrome();
+  if (window.matchMedia) {
+    try {
+      var mq = window.matchMedia(MOBILE_DETAIL_MQ);
+      var onMq = function () { syncMobileExtraChrome(true); };
+      if (typeof mq.addEventListener === "function") mq.addEventListener("change", onMq);
+      else if (typeof mq.addListener === "function") mq.addListener(onMq);
+    } catch (eMq) {}
+  }
 
   window.__wkIndexItems = indexMany;
   window.__wkDrawMiniClock = function (svg, session, accent) {
