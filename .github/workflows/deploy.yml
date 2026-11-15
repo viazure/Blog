@@ -69,6 +69,19 @@ jobs:
           hugo-version: "latest"
           extended: true
 
+      # Hugo 0.170 dropped LibSass; toCSS needs Dart Sass on PATH.
+      - name: Setup Dart Sass
+        run: |
+          set -euo pipefail
+          version="1.108.2"
+          dest="${RUNNER_TEMP}/dart-sass"
+          curl -fsSL -o "${RUNNER_TEMP}/dart-sass.tgz" \
+            "https://github.com/sass/dart-sass/releases/download/${version}/dart-sass-${version}-linux-x64.tar.gz"
+          tar -xzf "${RUNNER_TEMP}/dart-sass.tgz" -C "${RUNNER_TEMP}"
+          echo "${dest}" >> "${GITHUB_PATH}"
+          export PATH="${dest}:${PATH}"
+          sass --version
+
       - name: Build Web
         run: hugo
 
