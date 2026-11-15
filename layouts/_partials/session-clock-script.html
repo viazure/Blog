@@ -28,6 +28,7 @@
     <div class="wk-detail-body">
     <div class="wk-detail-layout">
       <section class="wk-detail-viz" aria-label="活动可视化">
+        <div class="wk-detail-viz-stack">
         <div class="wk-viz-stage-wrap">
           <div class="wk-viz-stage">
             <div class="wk-viz-panel" data-panel="map" hidden>
@@ -60,6 +61,18 @@
           </div>
           <div class="wk-legend-slot" id="wk-legend-slot" data-wk-legend-slot aria-live="polite"></div>
         </div>
+        {{/* 仅手机：图例后展开入口。桌面隐藏，指标与心率趋势始终可见。 */}}
+        <button type="button" class="wk-detail-more" data-wk-detail-more aria-expanded="false" aria-controls="wk-detail-extra">
+          <span class="wk-detail-more-chip">
+            <span class="wk-detail-more-label">查看详情</span>
+            <span class="wk-detail-more-chev" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" focusable="false">
+                <path d="M2.75 4.5 L6 7.75 L9.25 4.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </span>
+        </button>
+        </div>
       </section>
       <section class="wk-detail-meta">
         <header class="wk-detail-meta-head">
@@ -67,7 +80,7 @@
           <h2 class="wk-detail-title display" id="wk-detail-title"></h2>
           <div class="wk-detail-when-row">
             <p class="wk-detail-when mono"></p>
-            {{/* 桌面：日期后小图标；手机：日期下文字链。仅跑步且 has_splits 时由 JS 显示。 */}}
+            {{/* 日期后三柱图标；手机只加大点击区域。仅跑步且 has_splits 时由 JS 显示。 */}}
             <a class="wk-split-link" data-wk-split-link hidden target="_blank" rel="noopener noreferrer" aria-label="分段分析，在新标签打开">
               <svg class="wk-split-link-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
                 <rect x="1.5" y="8" width="3.5" height="6.5" rx="0.75" fill="currentColor"/>
@@ -80,8 +93,10 @@
           </div>
         </header>
         <div class="wk-detail-meta-scroll">
+        <div class="wk-detail-extra" id="wk-detail-extra">
         <div class="wk-metrics" role="list"></div>
         <div class="wk-hr-scrub" id="wk-hr-scrub" hidden data-wk-hr-scrub>
+          <p class="wk-hr-scrub-heading">心率趋势</p>
           <button type="button" class="wk-hr-scrub-toggle" data-wk-hr-toggle aria-expanded="false" aria-controls="wk-hr-scrub-panel" aria-label="展开心率趋势">
             <span class="wk-hr-scrub-left"><span class="wk-hr-scrub-chev" aria-hidden="true">&rsaquo;</span>心率趋势</span>
           </button>
@@ -99,6 +114,17 @@
               <span data-wk-hr-axis-end></span>
             </div>
           </div>
+        </div>
+        <button type="button" class="wk-detail-more wk-detail-more-end" data-wk-detail-more-end hidden>
+          <span class="wk-detail-more-chip">
+            <span class="wk-detail-more-label">收起详情</span>
+            <span class="wk-detail-more-chev" aria-hidden="true">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" focusable="false">
+                <path d="M2.75 4.5 L6 7.75 L9.25 4.5" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </span>
+        </button>
         </div>
         </div>
         <nav class="wk-pager" aria-label="相邻活动" hidden>
