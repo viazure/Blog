@@ -1420,12 +1420,14 @@ body.wk-detail-open {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-self: stretch;
+  height: 100%;
   overflow: hidden;
   // Size container so the stage can cap to leftover height minus the
-  // legend stack. Leftover space stays below the legend, not between
-  // the grey stage and the keys.
+  // keys row. Description copy is a popover / overlay, not in this stack.
   container-type: size;
-  --wk-legend-stack: calc(12px + 5.28rem);
+  --wk-legend-stack: calc(12px + 3rem);
 }
 
 // Desktop: children stay in .wk-detail-viz flex. Mobile overrides this.
@@ -1436,12 +1438,13 @@ body.wk-detail-open {
 .wk-viz-tools {
   grid-column: 1;
   grid-row: 1;
-  align-self: start;
+  align-self: center;
+  z-index: 2;
   width: max-content;
   max-width: 100%;
   display: inline-flex;
   gap: 0.35rem;
-  margin-bottom: 10px;
+  margin-bottom: 0;
   padding: 0.2rem;
   border: 1px solid var(--wk-line);
   border-radius: 999px;
@@ -1567,7 +1570,7 @@ body.wk-detail-open {
   min-width: 0;
   min-height: 0;
   // Room for the sport-dot glow; left negative margin uses the column gap.
-  padding-top: 0.7rem;
+  padding-top: var(--wk-kicker-top, 0.7rem);
   padding-left: 0.65rem;
   margin-left: -0.65rem;
   display: flex;
@@ -1598,8 +1601,10 @@ body.wk-detail-open {
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--wk-ink) 28%, transparent) transparent;
+  // Hide until hover, including the Windows classic bar that
+  // scrollbar-width: thin would otherwise keep on screen.
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
   &::-webkit-scrollbar {
     width: 8px;
@@ -1610,10 +1615,24 @@ body.wk-detail-open {
   }
 
   &::-webkit-scrollbar-thumb {
-    border: 2px solid var(--wk-sheet);
+    border: 2px solid transparent;
     border-radius: 999px;
-    background: color-mix(in srgb, var(--wk-ink) 28%, transparent);
+    background: transparent;
     background-clip: padding-box;
+  }
+
+  @media (hover: hover) {
+    &:hover,
+    &:focus-within {
+      -ms-overflow-style: auto;
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in srgb, var(--wk-ink) 28%, transparent) transparent;
+
+      &::-webkit-scrollbar-thumb {
+        border: 2px solid var(--wk-sheet);
+        background: color-mix(in srgb, var(--wk-ink) 28%, transparent);
+      }
+    }
   }
 }
 
@@ -1622,10 +1641,13 @@ body.wk-detail-open {
   flex-shrink: 0;
   align-items: center;
   gap: 0.45rem;
-  margin-bottom: 0.55rem;
+  box-sizing: content-box;
+  height: calc(var(--wk-kicker-font, 0.72rem) * 1.2);
+  margin-bottom: var(--wk-kicker-gap, 0.55rem);
   overflow: visible;
   color: var(--workout-accent, var(--wk-accent-fallback));
-  font-size: 0.72rem;
+  font-size: var(--wk-kicker-font, 0.72rem);
+  line-height: 1.2;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1641,6 +1663,7 @@ body.wk-detail-open {
   box-shadow: 0 0 10px currentColor;
 }
 
+h2.wk-detail-title.display,
 .wk-detail-title {
   flex-shrink: 0;
   margin: 0 0 0.4rem;
@@ -1847,6 +1870,7 @@ body.wk-detail-open {
 }
 
 .wk-legend {
+  position: relative;
   display: flex;
   flex-direction: column;
   flex: none;
@@ -1856,16 +1880,19 @@ body.wk-detail-open {
   max-width: 100%;
   margin-top: 12px;
   color: var(--wk-muted);
-  font-size: 0.76rem;
+  font-size: 0.875rem;
 }
 
-// Keep leftover height stable when tabs or the legend are hidden, so the
-// chart frame does not jump between map/clock or run/strength.
-.wk-viz-tools[hidden],
-.wk-legend[hidden] {
+// Keep the tab track's height when it is hidden so the title row does not jump.
+// Hidden trail legend is out of flow so the map can vertically center.
+.wk-viz-tools[hidden] {
   display: flex;
   visibility: hidden;
   pointer-events: none;
+}
+
+.wk-legend[hidden] {
+  display: none;
 }
 
 .wk-legend-keys {
@@ -1879,18 +1906,20 @@ body.wk-detail-open {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 3rem;
+  height: 3rem;
   margin: 0;
   padding: 0;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 11px;
   background: transparent;
   color: inherit;
   cursor: pointer;
 
   svg {
     display: block;
+    width: 40px;
+    height: 40px;
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -1920,16 +1949,73 @@ body.wk-detail-open {
 
 .wk-legend-slot {
   box-sizing: border-box;
-  min-height: calc(2 * 1.5em);
+  min-height: 0;
   margin-top: 0.25rem;
   width: 100%;
   color: var(--wk-muted);
-  font-size: 0.76rem;
+  font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.5;
   text-align: start;
   overflow-wrap: break-word;
   font-variant-numeric: tabular-nums;
+}
+
+.wk-legend-slot:not(.is-filled) {
+  display: none;
+}
+
+.wk-legend-pop {
+  position: absolute;
+  z-index: 8;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: unquote("min(22rem, 380px)");
+  margin: 0;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid var(--wk-line, #{$rule});
+  border-radius: 8px;
+  background: var(--wk-sheet, #fff);
+  color: var(--wk-muted);
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.45;
+  text-align: start;
+  overflow-wrap: break-word;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.wk-legend-pop[hidden] {
+  display: none;
+}
+
+.wk-legend-overlay {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  box-sizing: border-box;
+  padding: 0.6rem 0.7rem 0.55rem;
+  pointer-events: none;
+  color: var(--wk-muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.45;
+  text-align: start;
+  overflow-wrap: break-word;
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--wk-sheet, #fff) 86%, transparent) 0%,
+    color-mix(in srgb, var(--wk-sheet, #fff) 50%, transparent) 60%,
+    transparent 100%
+  );
+}
+
+.wk-legend-overlay:not([hidden]) {
+  display: block;
 }
 
 .wk-legend-hint {
@@ -2411,13 +2497,13 @@ $wk-detail-compact-max-height: 600px;
     min-height: auto;
     height: auto;
     align-items: start;
-    // Inset the column so the sport dot and its glow stay inside
-    // overflow-x: hidden, without a negative margin that clips the dot.
-    padding-left: 0.65rem;
+    // Flush with the sheet padding so the chart and metrics share
+    // the same left edge and width. Do not re-add the 0.65rem inset.
+    padding-left: 0;
   }
 
-  // Chart + reserved two-line legend slot + capsule. Collapsed leftover
-  // space is applied as --wk-viz-pad-top (split above/below the stack).
+  // Chart + legend + capsule, top-aligned. --wk-viz-pad-top stays 0;
+  // leftover space sits below the stack instead of a centering gap.
   .wk-detail-viz-stack {
     display: flex;
     flex-direction: column;
@@ -2461,7 +2547,7 @@ $wk-detail-compact-max-height: 600px;
     flex: none;
     width: 100%;
     min-height: auto;
-    justify-content: center;
+    justify-content: flex-start;
     overflow: visible;
     container-type: normal;
   }
@@ -2473,9 +2559,10 @@ $wk-detail-compact-max-height: 600px;
     pointer-events: auto;
   }
 
-  // Trail view keeps the legend's layout height so the stack matches Clock.
+  // Unused leftover: trail no longer reserves a keys row (no capsule).
   .wk-legend.is-reserved {
     display: flex;
+    flex-direction: column;
     pointer-events: none;
   }
 
@@ -2485,30 +2572,51 @@ $wk-detail-compact-max-height: 600px;
   }
 
   .wk-viz-stage {
-    // Keep a readable ~300px chart; do not shrink it just to force one screen.
-    width: unquote("min(100%, 300px)");
+    // Square side follows the metrics row width.
+    width: 100%;
     max-width: 100%;
     height: auto;
     aspect-ratio: 1;
     flex: none;
   }
 
+  // Phone landscape / short compact: keep the square from eating the viewport.
+  @media screen and (max-height: $wk-detail-compact-max-height) {
+    .wk-viz-stage {
+      width: unquote("min(100%, 56svh)");
+    }
+  }
+
   .wk-legend {
-    grid-area: legend;
-    width: auto;
-    max-width: 100%;
-    align-self: stretch;
-    align-items: stretch;
-    // Grid gap already separates the chart; do not stack another margin.
-    margin-top: 0;
+    // Let keys and the slot join the stack so the capsule can sit
+    // directly under the keys. Trail still uses [hidden] { display: none }.
+    display: contents;
   }
 
   .wk-legend-keys {
+    order: 1;
     justify-content: flex-start;
   }
 
+  .wk-legend,
   .wk-legend-slot {
+    font-size: 0.76rem;
+  }
+
+  .wk-legend-slot {
+    order: 3;
+    min-height: 0;
+    margin-top: 0;
     text-align: start;
+  }
+
+  .wk-legend-slot:not(.is-filled) {
+    display: none;
+  }
+
+  .wk-legend-pop,
+  .wk-legend-overlay {
+    display: none !important;
   }
 
   .wk-legend-key {
@@ -2516,13 +2624,18 @@ $wk-detail-compact-max-height: 600px;
     height: 44px;
     min-width: 44px;
     min-height: 44px;
+
+    svg {
+      width: 36px;
+      height: 36px;
+    }
   }
 
-  // Full-row 44px hit target; the visible control is a shrink-to-text capsule.
+  // Capsule retired: metrics sit directly under the chart on compact.
   .wk-detail-more {
-    display: flex;
+    display: none !important;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
     min-height: 44px;
     margin: 0;
@@ -2583,11 +2696,12 @@ $wk-detail-compact-max-height: 600px;
     background-color: color-mix(in srgb, currentColor 5%, transparent);
   }
 
+  .wk-detail-more,
+  .wk-detail-more-end,
   .wk-detail-more:not(.wk-detail-more-end) {
+    display: none !important;
     grid-area: more;
-    // Sit the capsule just under the reserved slot (grid gap 0.4rem ≈ 8px
-    // with this 1.6px). Leftover 44px hit area hangs below, so the visual
-    // gap is not the full hit-row height. Do not shrink the two-line slot.
+    order: 2;
     margin-top: calc(8px - 0.4rem);
     align-items: flex-start;
   }
@@ -2622,13 +2736,11 @@ $wk-detail-compact-max-height: 600px;
 
   .wk-detail-extra {
     grid-area: extra;
-  }
-
-  .wk-detail:not(.is-extra-open) .wk-detail-extra {
-    display: none !important;
+    display: block;
   }
 
   .wk-sport-pill {
+    height: auto;
     margin-bottom: 0.35rem;
   }
 
@@ -2641,7 +2753,7 @@ $wk-detail-compact-max-height: 600px;
     margin-top: 0.35rem;
   }
 
-  // Mobile shows the full trend after「查看详情」; no second toggle.
+  // Mobile shows the full trend under the chart; no second toggle.
   .wk-hr-scrub-toggle {
     display: none !important;
   }
@@ -2831,6 +2943,147 @@ $wk-detail-compact-max-height: 600px;
     position: static;
     margin-top: 0.55rem;
     padding-top: 0.7rem;
+  }
+}
+
+// Wide and tall two-column sheet only. Put the sport pill on the same
+// row as the tabs, then start the big chart and「傍晚跑步」together on
+// the next row so their top edges actually line up. Compact and the
+// short stacked sheet keep their own layout.
+@media screen and (min-width: $on-tablet) and (min-height: $wk-detail-compact-max-height + 1px) and (min-height: 35rem) {
+  .wk-detail-sheet {
+    // Hug the taller column and cap at 625/84dvh. Row 4 hugs the
+    // metrics; 心率趋势 stays in overflow, so an in-flow spacer
+    // cannot sneak into the card height.
+    height: auto;
+    max-height: unquote("min(625px, 84dvh)");
+    // Hug the left 380 chart. Row 4 scrolls metrics + 心率趋势.
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  }
+
+  .wk-viz-tools {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    margin-bottom: 0.55rem;
+  }
+
+  .wk-detail-viz {
+    grid-column: 1;
+    grid-row: 2 / -1;
+    // Same 380 chart + keys-row height for trail and Clock, so the
+    // card frame does not jump. Description copy is not in this stack.
+    min-height: calc(380px + var(--wk-legend-stack));
+  }
+
+  // The hidden attribute is display:none !important in the UA sheet.
+  // Keep the keys row so trail and Clock stay the same height.
+  .wk-legend[hidden] {
+    display: flex !important;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .wk-legend[hidden] .wk-legend-slot,
+  .wk-legend[hidden] .wk-legend-pop {
+    display: none !important;
+  }
+
+  .wk-detail-meta {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-rows: subgrid;
+    min-height: 0;
+    padding-top: 0;
+  }
+
+  .wk-detail-meta-head {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: 1 / 4;
+    min-width: 0;
+  }
+
+  .wk-sport-pill {
+    grid-row: 1;
+    align-self: center;
+    height: auto;
+    margin-bottom: 0.55rem;
+  }
+
+  h2.wk-detail-title,
+  .wk-detail-title.display,
+  .wk-detail-title {
+    grid-row: 2;
+    margin-top: 0;
+  }
+
+  .wk-detail-when-row {
+    grid-row: 3;
+  }
+
+  .wk-detail-meta-scroll {
+    grid-row: 4;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: grid;
+    // Row 2 is 0fr so 心率趋势 does not inflate the card;
+    // it still lives in this scroller and shows on scroll.
+    grid-template-rows: auto 0fr;
+    align-content: start;
+  }
+
+  .wk-detail-extra {
+    display: contents;
+  }
+
+  .wk-metrics {
+    grid-row: 1;
+  }
+
+  .wk-hr-scrub {
+    grid-row: 2;
+    min-height: 0;
+    // Keep the block's content in the scroll overflow even though
+    // its grid row is 0fr (so it doesn't grow the card).
+    overflow: visible;
+    // No in-flow margin/border: either would inflate this
+    // height:auto sheet and show up as a large gap when scrolling.
+    // Section spacing lives on the overflowing heading instead.
+    border: 0;
+    background: transparent;
+    margin-top: 0;
+  }
+
+  .wk-pager {
+    grid-row: 5;
+    margin-top: 0;
+  }
+
+  // Show 心率趋势 directly in the right-column scroller, no extra
+  // toggle. The sheet stays as tall as the 380 chart, so the
+  // trend sits below the fold until you scroll.
+  .wk-hr-scrub-toggle {
+    display: none !important;
+  }
+
+  .wk-hr-scrub-heading {
+    display: block;
+    margin: 0;
+    // Match the metrics' flush edges; keep the top padding that
+    // spaces this heading from the metric row above.
+    padding: 0.7rem 0 0.25rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--wk-ink);
+  }
+
+  .wk-hr-scrub-panel {
+    display: block;
+    border-top: 0;
+    padding: 0 0 0.85rem;
   }
 }
 

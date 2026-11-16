@@ -37,6 +37,7 @@
             <div class="wk-viz-panel" data-panel="clock">
               <svg class="wk-sclock" viewBox="0 0 400 400" role="img" aria-label="Session Clock" aria-describedby="wk-legend-slot"></svg>
             </div>
+            <div class="wk-legend-overlay" id="wk-legend-overlay" data-wk-legend-overlay hidden></div>
           </div>
         </div>
         <div class="wk-legend" hidden data-wk-legend aria-label="图例">
@@ -60,6 +61,7 @@
             </button>
           </div>
           <div class="wk-legend-slot" id="wk-legend-slot" data-wk-legend-slot aria-live="polite"></div>
+          <div class="wk-legend-pop" id="wk-legend-pop" data-wk-legend-pop role="tooltip" hidden></div>
         </div>
         {{/* 仅手机：图例后展开入口。桌面隐藏，指标与心率趋势始终可见。 */}}
         <button type="button" class="wk-detail-more" data-wk-detail-more aria-expanded="false" aria-controls="wk-detail-extra">

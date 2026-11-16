@@ -18,6 +18,8 @@
   var metricsEl = dialog.querySelector(".wk-metrics");
   var legendEl = dialog.querySelector(".wk-legend");
   var legendSlot = dialog.querySelector("[data-wk-legend-slot]");
+  var legendPop = dialog.querySelector("[data-wk-legend-pop]");
+  var legendOverlay = dialog.querySelector("[data-wk-legend-overlay]");
   var toolsEl = dialog.querySelector(".wk-viz-tools");
   var mapPanel = dialog.querySelector('[data-panel="map"]');
   var clockPanel = dialog.querySelector('[data-panel="clock"]');
@@ -219,16 +221,83 @@
     return "";
   }
 
+  function useDesktopLegendChrome() {
+    return !isMobileDetail();
+  }
+
+  function layerLegendHtml(layer) {
+    if (!layer) return "";
+    return '<div class="wk-legend-line"><strong>' + esc(LEGEND_LABEL[layer]) + "</strong>" +
+      esc(legendCopy[layer] || "") + "</div>";
+  }
+
+  function setHiddenEl(el, hide) {
+    if (!el) return;
+    el.hidden = !!hide;
+    if (hide) el.innerHTML = "";
+  }
+
+  function positionLegendPop(layer) {
+    if (!legendPop || !legendEl || legendPop.hidden || !layer) return;
+    var key = legendEl.querySelector('.wk-legend-key[data-layer="' + layer + '"]');
+    if (!key) return;
+    var box = legendEl.getBoundingClientRect();
+    var keyBox = key.getBoundingClientRect();
+    var sheet = sheetEl || dialog;
+    var sheetBox = sheet.getBoundingClientRect();
+    var popW = legendPop.offsetWidth;
+    var popH = legendPop.offsetHeight;
+    var left = keyBox.left - box.left;
+    var top = keyBox.top - box.top - popH - 6;
+    var minTop = sheetBox.top - box.top + 4;
+    if (top < minTop) top = keyBox.bottom - box.top + 6;
+    var minLeft = sheetBox.left - box.left + 8;
+    var maxLeft = sheetBox.right - box.left - 8 - popW;
+    if (left > maxLeft) left = maxLeft;
+    if (left < minLeft) left = minLeft;
+    legendPop.style.left = Math.round(left) + "px";
+    legendPop.style.top = Math.round(top) + "px";
+  }
+
   function renderLegendSlot() {
-    if (!legendSlot) return;
-    var html = "";
     var layer = legendHover || legendFocus;
-    if (layer) {
-      html = '<div class="wk-legend-line"><strong>' + esc(LEGEND_LABEL[layer]) + "</strong>" +
-        esc(legendCopy[layer] || "") + "</div>";
-    } else {
-      html = zoneLegendHtml(currentZoneSession);
+    var layerHtml = layerLegendHtml(layer);
+    var zoneHtml = layer ? "" : zoneLegendHtml(currentZoneSession);
+    if (useDesktopLegendChrome()) {
+      if (legendSlot) {
+        legendSlot.innerHTML = "";
+        legendSlot.classList.remove("is-filled");
+      }
+      if (legendPop) {
+        if (layerHtml) {
+          legendPop.innerHTML = layerHtml;
+          legendPop.hidden = false;
+          positionLegendPop(layer);
+        } else {
+          setHiddenEl(legendPop, true);
+          legendPop.style.left = "";
+          legendPop.style.top = "";
+        }
+      }
+      if (legendOverlay) {
+        if (zoneHtml && isLegendVisible()) {
+          legendOverlay.innerHTML = zoneHtml;
+          legendOverlay.hidden = false;
+        } else {
+          setHiddenEl(legendOverlay, true);
+        }
+      }
+      if (clockSvg) {
+        if (zoneHtml && isLegendVisible()) clockSvg.setAttribute("aria-describedby", "wk-legend-overlay");
+        else clockSvg.setAttribute("aria-describedby", "wk-legend-slot");
+      }
+      return;
     }
+    setHiddenEl(legendPop, true);
+    setHiddenEl(legendOverlay, true);
+    if (clockSvg) clockSvg.setAttribute("aria-describedby", "wk-legend-slot");
+    if (!legendSlot) return;
+    var html = layerHtml || zoneHtml;
     legendSlot.innerHTML = html;
     legendSlot.classList.toggle("is-filled", !!(layer || html));
   }
@@ -753,11 +822,9 @@
 
   function syncLegendVis(hidden) {
     if (!legendEl) return;
-    var reserve = !!hidden && isMobileDetail();
-    legendEl.hidden = !!hidden && !reserve;
-    legendEl.classList.toggle("is-reserved", reserve);
-    if (reserve) legendEl.setAttribute("aria-hidden", "true");
-    else legendEl.removeAttribute("aria-hidden");
+    legendEl.hidden = !!hidden;
+    legendEl.classList.remove("is-reserved");
+    legendEl.removeAttribute("aria-hidden");
     if (hidden) {
       legendHover = null;
       legendFocus = null;
@@ -858,7 +925,11 @@
     var ctx = hrCanvas.getContext("2d");
     if (!ctx) return;
     var dpr = window.devicePixelRatio || 1;
-    var w = hrWrapEl.clientWidth || 280;
+    // Don't bake in a fallback width: on first paint the wrap can still
+    // be 0px (it lives in a 0fr overflow row), and an inline 280px stays
+    // until the next resize. Skip; ResizeObserver will redraw when ready.
+    var w = Math.round(hrWrapEl.clientWidth);
+    if (w < 2) return;
     var h = 88;
     hrCanvas.width = Math.round(w * dpr);
     hrCanvas.height = Math.round(h * dpr);
@@ -956,6 +1027,11 @@
     if (hrAxisMid) hrAxisMid.textContent = fmtElapsedSec(hrMovingSec / 2);
     if (hrAxisEnd) hrAxisEnd.textContent = fmtElapsedSec(hrMovingSec);
     updateHrReadout();
+    // Panel is shown directly in the scroller (no toggle), so draw now.
+    requestAnimationFrame(function () {
+      updateHrReadout();
+      drawHrScrub();
+    });
   }
 
   function toggleHrScrub() {
@@ -1058,43 +1134,10 @@
     }
   }
 
-  // Collapsed mobile: center the chart + reserved legend slot + capsule
-  // in the space between the title and the pager. Expanded: freeze the
-  // current pad so the stack does not jump. Overflow or landscape: pad 0.
-  function syncMobileVizCenter(viewportChanged) {
-    if (!isMobileDetail()) {
-      clearVizPadTop();
-      return;
-    }
-    if (!dialog || !dialog.open) return;
-    // 展开只冻结本次视口的锚点；旋转后按新视口重新计算。
-    if (dialog.classList.contains("is-extra-open") && !viewportChanged) return;
-    var scroller = bodyScroller();
-    var stack = dialog.querySelector(".wk-detail-viz-stack");
-    if (!scroller || !stack) return;
-
-    var landscape = false;
-    try {
-      landscape = window.matchMedia && window.matchMedia("(orientation: landscape)").matches;
-    } catch (eOri) {}
-    if (landscape) {
-      setVizPadTop(0);
-      return;
-    }
-
-    var prev = scroller.scrollTop || 0;
-    setVizPadTop(0);
-    try { scroller.scrollTop = 0; } catch (eScroll) {}
-    var leftover = 0;
-    try {
-      var sr = scroller.getBoundingClientRect();
-      var st = stack.getBoundingClientRect();
-      leftover = Math.floor((sr.height || 0) - (st.bottom - sr.top));
-    } catch (eRect) {
-      leftover = 0;
-    }
-    try { scroller.scrollTop = prev; } catch (eRestore) {}
-    setVizPadTop(leftover > 8 ? Math.floor(leftover / 2) : 0);
+  // Mobile stack stays top-aligned. Leftover space sits below the capsule,
+  // not as a centering gap above the chart.
+  function syncMobileVizCenter() {
+    clearVizPadTop();
   }
 
   function scrollMinToShow(el, scroller) {
@@ -1144,32 +1187,17 @@
   function setExtraOpen(open, opts) {
     opts = opts || {};
     var mobile = isMobileDetail();
-    var scroller = bodyScroller();
-    if (open && mobile && scroller && opts.saveScroll) {
-      extraScrollY = scroller.scrollTop;
-    }
+    // Mobile no longer folds the metrics; they stay visible under the chart.
+    if (mobile) open = true;
     dialog.classList.toggle("is-extra-open", !!(open && mobile));
     if (moreBtn) {
-      var expanded = !!(open && mobile);
-      moreBtn.setAttribute("aria-expanded", expanded ? "true" : "false");
-      var label = moreBtn.querySelector(".wk-detail-more-label");
-      var copy = expanded ? "收起详情" : "查看详情";
-      if (label) label.textContent = copy;
-      moreBtn.setAttribute("aria-label", copy);
+      moreBtn.hidden = true;
+      moreBtn.setAttribute("aria-expanded", mobile ? "true" : "false");
     }
-    if (moreEndBtn) moreEndBtn.hidden = !(open && mobile);
+    if (moreEndBtn) moreEndBtn.hidden = true;
     if (extraEl) {
-      try {
-        if (mobile) {
-          extraEl.hidden = !open;
-          extraEl.inert = !open;
-        } else {
-          extraEl.hidden = false;
-          extraEl.inert = false;
-        }
-      } catch (eInert) {
-        extraEl.hidden = mobile ? !open : false;
-      }
+      extraEl.hidden = false;
+      try { extraEl.inert = false; } catch (eInert) {}
     }
     if (open && mobile && hrSeries.length) {
       requestAnimationFrame(function () {
@@ -1177,30 +1205,7 @@
         drawHrScrub();
       });
     }
-    if (mobile && opts.scroll !== false) {
-      requestAnimationFrame(function () {
-        if (open) {
-          revealExtraStart();
-          if (moreBtn && opts.focus !== false) {
-            try { moreBtn.focus(); } catch (eFocus) {}
-          }
-        } else {
-          // 先重算收起组的留白，再恢复滚动，避免旋转后按旧位置露出胶囊。
-          syncMobileVizCenter();
-          if (moreBtn && opts.focus !== false) {
-            try { moreBtn.focus({ preventScroll: true }); } catch (eFocus2) {}
-          }
-          if (scroller) {
-            scroller.scrollTop = extraScrollY;
-            scrollMinToShow(moreBtn, scroller);
-          }
-        }
-      });
-    } else if (mobile && opts.focus !== false && moreBtn && !open) {
-      try { moreBtn.focus(); } catch (eFocus3) {}
-    }
-    // 无滚动的重置路径也要刷新留白；交互收起已在上面的同一帧处理。
-    if (mobile && !open && opts.scroll === false) {
+    if (mobile && opts.scroll === false) {
       if (typeof requestAnimationFrame === "function") {
         requestAnimationFrame(function () { syncMobileVizCenter(); });
       } else {
@@ -1211,7 +1216,7 @@
 
   function resetMobileDetailState() {
     extraScrollY = 0;
-    setExtraOpen(false, { scroll: false, focus: false, saveScroll: false });
+    setExtraOpen(true, { scroll: false, focus: false, saveScroll: false });
   }
 
   function syncMobileExtraChrome(viewportChanged) {
@@ -1242,7 +1247,7 @@
         var mobMap = mapPanel && !mapPanel.hidden;
         syncLegendVis(mobItem.has_trail ? mobMap : false);
       } catch (eMobLeg) {}
-      setExtraOpen(dialog.classList.contains("is-extra-open"), { scroll: false, focus: false, saveScroll: false });
+      setExtraOpen(true, { scroll: false, focus: false, saveScroll: false });
       if (typeof requestAnimationFrame === "function") {
         requestAnimationFrame(function () { syncMobileVizCenter(viewportChanged); });
       } else {
@@ -1253,8 +1258,8 @@
 
   function isHrScrubInteractive() {
     if (!hrScrubEl || hrScrubEl.hidden || !hrSeries.length) return false;
-    if (hrScrubEl.classList.contains("is-open")) return true;
-    return isMobileDetail() && dialog.classList.contains("is-extra-open");
+    // Panel is always shown in the (scrollable) data area now.
+    return true;
   }
 
   function resetDetailScroll() {
@@ -1471,10 +1476,17 @@
     hrWrapEl.addEventListener("pointerup", function () { hrDragging = false; });
     hrWrapEl.addEventListener("pointercancel", function () { hrDragging = false; });
   }
+  if (typeof ResizeObserver === "function" && hrWrapEl) {
+    new ResizeObserver(function () {
+      if (isHrScrubInteractive()) drawHrScrub();
+    }).observe(hrWrapEl);
+  }
   if (typeof window.addEventListener === "function") {
     window.addEventListener("resize", function () {
       syncMobileExtraChrome(true);
       if (isHrScrubInteractive()) drawHrScrub();
+      var layer = legendHover || legendFocus;
+      if (layer && legendPop && !legendPop.hidden) positionLegendPop(layer);
     });
   }
 
