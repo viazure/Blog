@@ -1,5 +1,5 @@
 /**
- * Regression: mobile workout detail default fold (metrics + HR together),
+ * Regression: mobile workout detail shows metrics + HR directly under the chart,
  * desktop unchanged, no dialog.wk-detail flex/min-height:0 + sheet flex:1.
  * Not a real browser/phone test. Run: node scripts/check_mobile_detail_extra.js
  */
@@ -65,57 +65,78 @@ function staticChecks(html, script, scss) {
     "wk-detail-viz-stack",
     "100svh",
     "wk-detail-compact",
-    "is-reserved",
     "--wk-viz-pad-top",
-    "查看详情",
-    "收起详情",
     "wk-detail-more-chip",
     'data-wk-hr-toggle',
     'aria-label="展开心率趋势"',
-    "padding-left: 0.65rem",
   ];
   for (const n of need) {
     if (!src.includes(n)) fail("missing " + n);
   }
   if (!html.includes('class="wk-split-link"')) fail("split link markup removed");
-  if (!scss.includes("min(100%, 300px)")) fail("mobile chart ~300px cap missing");
   const mobile = mobileDetailBlock(scss);
   if (mobile.includes('min(100%, 280px, 36dvh)')) {
     fail("mobile chart still uses 280px/36dvh squeeze");
   }
-  if (!mobile.includes('min(100%, 300px)')) fail("mobile block missing 300px chart cap");
-  if (!mobile.includes("padding-left: 0.65rem")) fail("mobile layout lost sport-dot inset");
+  if (mobile.includes("min(100%, 320px)") || mobile.includes("min(100%, 340px)")) {
+    fail("mobile chart still uses a fixed pixel cap");
+  }
+  if (!/\.wk-viz-stage\s*\{[\s\S]*?width:\s*(unquote\()?["']?100%/.test(mobile) && !mobile.includes("width: 100%")) {
+    fail("mobile chart must be 100% of the metrics row width");
+  }
+  if (!mobile.includes("aspect-ratio: 1")) fail("mobile chart must stay square");
+  const layoutStart = mobile.indexOf(".wk-detail-layout");
+  const layoutRule = layoutStart >= 0 ? mobile.slice(layoutStart, layoutStart + 420) : "";
+  if (/padding-left:\s*0\.65rem/.test(layoutRule)) fail("mobile layout still has the left inset");
   if (!/display:\s*none\s*!important/.test(mobile) || !mobile.includes(".wk-hr-scrub-toggle")) {
     fail("mobile must hide the HR toggle");
   }
   if (!mobile.includes(".wk-hr-scrub-panel") || !mobile.includes("display: block")) {
-    fail("mobile must show the HR panel once extra is open");
+    fail("mobile must show the HR panel under the chart");
   }
-  const moreStart = mobile.indexOf(".wk-detail-more {");
-  const chipStart = mobile.indexOf(".wk-detail-more-chip {");
-  if (moreStart < 0 || chipStart < 0) fail("mobile capsule rules missing");
-  const moreChunk = mobile.slice(moreStart, mobile.indexOf(".wk-detail-extra {", moreStart));
-  if (!moreChunk.includes("border-radius: 12px")) fail("capsule must use the existing 12px radius");
-  if (!moreChunk.includes("font-weight: 450")) fail("capsule must stay weight 450");
-  if (/font-weight:\s*700/.test(moreChunk)) fail("capsule must not use weight 700");
-  if (/border-top:\s*1px solid var\(--wk-line\)/.test(moreChunk)) {
-    fail("capsule must not use a full-bleed divider");
+  if (!mobile.includes(".wk-detail-more") || !/display:\s*none\s*!important/.test(mobile.slice(mobile.indexOf(".wk-detail-more"), mobile.indexOf(".wk-detail-more") + 400))) {
+    fail("mobile must hide the 查看详情 capsule");
   }
-  if (!moreChunk.includes("width: max-content")) fail("capsule should shrink to text, not span the row");
-  if (moreChunk.includes("calc(14px - 0.4rem)")) {
-    fail("entry margin should not restack a 14px band under the legend slot");
+  if (mobile.includes(".wk-detail:not(.is-extra-open) .wk-detail-extra")) {
+    fail("mobile must not fold metrics behind is-extra-open");
   }
-  // Legend slot reservation is a global rule; mobile must not shrink or cap it.
+  const deskTwoCol = scss.split("@media").filter((b) => b.includes("min-height: 35rem") && b.includes(".wk-detail-sheet")).pop() || "";
+  if (/\.wk-hr-scrub\s*\{[^}]*display:\s*none/.test(deskTwoCol)) {
+    fail("desktop two-column sheet must not hide 心率趋势");
+  }
+  if (!/display:\s*none\s*!important/.test(deskTwoCol) || !deskTwoCol.includes(".wk-hr-scrub-toggle")) {
+    fail("desktop must hide the HR toggle and show the trend in the scroller");
+  }
+  if (!deskTwoCol.includes(".wk-hr-scrub-panel") || !deskTwoCol.includes("display: block")) {
+    fail("desktop must show the HR panel in the right-column scroller");
+  }
+  if (!deskTwoCol.includes("minmax(0, 1fr)")) {
+    fail("desktop row 4 must be the scrolling metrics + HR area");
+  }
+  // Desktop no longer reserves a two-line empty description slot.
   const slotRule = scss.match(/\.wk-legend-slot\s*\{([\s\S]*?)\n\}/);
-  if (!slotRule || !slotRule[1].includes("min-height: calc(2 * 1.5em)")) {
-    fail("legend slot must keep a two-line min-height");
+  if (!slotRule || slotRule[1].includes("min-height: calc(2 * 1.5em)")) {
+    fail("legend slot must not reserve a two-line min-height");
   }
+  if (slotRule && !/min-height:\s*0/.test(slotRule[1])) fail("legend slot must collapse when empty");
   if (/max-height\s*:/.test(slotRule[1])) fail("legend slot must not gain a max-height");
+  if (!scss.includes(".wk-legend-pop") || !scss.includes(".wk-legend-overlay")) {
+    fail("desktop legend copy must use a popover and in-chart overlay");
+  }
+  if (!deskTwoCol.includes("display: flex !important") || !deskTwoCol.includes(".wk-legend[hidden]")) {
+    fail("desktop trail must reserve the keys-row height while hiding the icons");
+  }
+  if (deskTwoCol.includes("--wk-legend-stack: 0px")) {
+    fail("desktop must keep the same keys-row stack on trail and Clock");
+  }
+  if (!scss.includes("--wk-legend-stack: calc(12px + 3rem)")) {
+    fail("legend stack must be the keys row only, not a two-line text slot");
+  }
   if (mobile.includes(".wk-legend-slot") && /max-height\s*:/.test(mobile.slice(mobile.indexOf(".wk-legend-slot"), mobile.indexOf(".wk-legend-slot") + 280))) {
     fail("mobile must not cap the legend slot");
   }
-  if (!mobile.includes(".wk-legend.is-reserved")) fail("mobile must reserve the legend slot on trail view");
-  if (!mobile.includes("--wk-viz-pad-top")) fail("mobile must use a centering pad on the viz stack");
+  if (script.includes("classList.toggle(\"is-reserved\"")) fail("mobile trail must not reserve an empty legend gap");
+  if (!mobile.includes("--wk-viz-pad-top")) fail("mobile stack still references the (now unused) pad var");
   if (!mobile.includes("100svh")) fail("mobile sheet height must prefer svh");
   if (!html.includes("wk-detail-viz-stack")) fail("missing viz stack wrapper");
   const tabStart = mobile.indexOf(".wk-viz-tab {");
@@ -176,7 +197,7 @@ function staticChecks(html, script, scss) {
     fail("setExtraOpen must not redraw / restart the clock");
   }
   if (src.includes("wk-tip-sheet")) fail("leftover tip-sheet");
-  pass("static markup, mobile CSS contract, desktop hide, no flex-chain");
+  pass("static markup, mobile CSS contract, desktop HR in scroller, no flex-chain");
 }
 
 function extractHelpers(script) {
@@ -399,39 +420,25 @@ function runUnit(script, opts) {
 function behavior(script) {
   const mobile = runUnit(script, true);
   mobile.sandbox.resetMobileDetailState();
-  if (mobile.dialog.classList.contains("is-extra-open")) fail("mobile default should be collapsed");
-  if (!mobile.extra.hidden) fail("mobile default extra should be hidden");
-  if (mobile.moreBtn.getAttribute("aria-expanded") !== "false") fail("aria-expanded should start false");
-  if (mobile.moreLabel.textContent !== "查看详情") fail("default label 查看详情");
-  if (!mobile.moreEnd.hidden) fail("end collapse hidden when folded");
-  pass("mobile default collapsed + a11y");
-
-  mobile.sandbox.setExtraOpen(true, { saveScroll: true, scroll: true, focus: true });
-  if (!mobile.dialog.classList.contains("is-extra-open")) fail("expand should set is-extra-open");
-  if (mobile.extra.hidden) fail("expand should reveal extra");
-  if (mobile.extra.inert) fail("expanded extra should not be inert");
-  if (mobile.moreBtn.getAttribute("aria-expanded") !== "true") fail("aria-expanded true when open");
-  if (mobile.moreLabel.textContent !== "收起详情") fail("open label 收起详情");
-  if (mobile.moreEnd.hidden) fail("end collapse should show when open");
-  if (!mobile.moreBtn._focused) fail("focus should stay on the original more button");
-  if (!mobile.sandbox._hrDrawn) fail("expand should draw HR trend (no second click)");
-  pass("mobile expand reveals metrics+HR, focus stays, HR drawn");
+  if (!mobile.dialog.classList.contains("is-extra-open")) fail("mobile should show metrics by default");
+  if (mobile.extra.hidden || mobile.extra.inert) fail("mobile extra should be visible");
+  if (!mobile.moreBtn.hidden || !mobile.moreEnd.hidden) fail("mobile must hide the 查看详情 buttons");
+  if (!mobile.sandbox._hrDrawn) fail("mobile should draw HR trend without a second click");
+  pass("mobile default shows metrics+HR, hides the capsule");
 
   mobile.body.scrollTop = 240;
-  mobile.sandbox.setExtraOpen(false, { saveScroll: false, scroll: true, focus: true });
-  if (mobile.dialog.classList.contains("is-extra-open")) fail("collapse should clear is-extra-open");
-  if (!mobile.extra.hidden) fail("collapse should hide extra");
-  if (mobile.moreLabel.textContent !== "查看详情") fail("collapsed label restored");
-  if (!mobile.moreEnd.hidden) fail("end collapse hidden again");
-  pass("mobile collapse restores label and hides extra");
+  mobile.sandbox.setExtraOpen(false, { saveScroll: false, scroll: true, focus: false });
+  if (!mobile.dialog.classList.contains("is-extra-open") || mobile.extra.hidden) {
+    fail("mobile must ignore collapse and keep metrics visible");
+  }
+  pass("mobile does not fold metrics away");
 
-  mobile.sandbox.setExtraOpen(true, { saveScroll: false, scroll: false, focus: false });
   mobile.sandbox.resetMobileDetailState();
-  if (mobile.dialog.classList.contains("is-extra-open") || !mobile.extra.hidden) {
-    fail("resetMobileDetailState should collapse");
+  if (!mobile.dialog.classList.contains("is-extra-open") || mobile.extra.hidden) {
+    fail("resetMobileDetailState should keep metrics visible");
   }
   if (mobile.sandbox.extraScrollY !== 0) fail("reset should clear saved scroll");
-  pass("activity reset collapses and clears saved scroll");
+  pass("activity reset keeps metrics visible and clears saved scroll");
 
   mobile.sandbox.syncPagerPlacement();
   if (mobile.pager.parent !== mobile.sheet) fail("mobile pager should move to the sheet (outside the scroller)");
@@ -458,11 +465,11 @@ function behavior(script) {
   if (!short.sandbox.isMobileDetail()) fail("wide but height <=600 must use mobile detail");
   short.sandbox.setExtraOpen(true, { saveScroll: false, scroll: false, focus: false });
   if (!short.dialog.classList.contains("is-extra-open") || short.extra.hidden) {
-    fail("short viewport must keep the fold/expand path");
+    fail("short viewport must show metrics like other compact views");
   }
   short.sandbox.syncPagerPlacement();
   if (short.pager.parent !== short.sheet) fail("short viewport pager should sit on the sheet footer");
-  pass("short wide viewport uses compact mobile fold");
+  pass("short wide viewport uses compact mobile detail");
 }
 
 function rotationBehavior(script) {
@@ -476,11 +483,11 @@ function rotationBehavior(script) {
     t.flush();
   };
   resize(390, 800);
-  if (pad() !== 80) fail("portrait should center stack using actual geometry");
+  if (pad() !== 0) fail("portrait should top-align the stack, not center it");
   t.sandbox.setExtraOpen(true, { saveScroll: true, scroll: false, focus: false });
   t.flush();
   t.sandbox.syncMobileVizCenter();
-  if (pad() !== 80) fail("expand must keep the chart anchor");
+  if (pad() !== 0) fail("expand must keep the stack top-aligned");
   for (const [width, height] of [[800, 390], [873, 393]]) {
     resize(width, height);
     if (!t.sandbox.isMobileDetail() || !t.dialog.classList.contains("is-extra-open") || t.extra.hidden) {
@@ -489,16 +496,14 @@ function rotationBehavior(script) {
     if (pad() !== 0) fail("expanded landscape must discard portrait padding");
     t.sandbox.setExtraOpen(false, { scroll: true, focus: true });
     t.flush();
-    if (!t.extra.hidden || !t.extra.inert || t.moreBtn.getAttribute("aria-expanded") !== "false") {
-      fail("landscape collapse must restore a11y state");
+    if (t.extra.hidden || t.extra.inert || !t.dialog.classList.contains("is-extra-open")) {
+      fail("landscape must keep metrics visible at " + width + "x" + height);
     }
-    t.sandbox.setExtraOpen(true, { scroll: false, focus: false });
-    t.flush();
   }
   resize(390, 800);
   t.sandbox.setExtraOpen(false, { scroll: true, focus: true });
   t.flush();
-  if (pad() !== 80 || t.body.scrollTop !== 0) fail("back to portrait must center without extra scroll");
+  if (pad() !== 0) fail("back to portrait must stay top-aligned");
   t.sandbox.hrSeries = [];
   const draws = t.sandbox._hrDrawn;
   t.sandbox.setExtraOpen(true, { scroll: false, focus: false });
@@ -514,7 +519,7 @@ function rotationBehavior(script) {
   }
   resize(390, 500);
   if (pad() !== 0) fail("overflow portrait must top-align instead of adding padding");
-  pass("queued-rAF geometry: portrait center, expand anchor, 800x390 / 873x393 rotate and collapse, desktop restore, no HR, exact boundaries");
+  pass("queued-rAF geometry: portrait top-align, metrics stay visible on rotate, desktop restore, no HR, exact boundaries");
 }
 
 function legendBehavior(script) {
@@ -533,8 +538,8 @@ function legendBehavior(script) {
     vm.runInNewContext(fn[0], context);
   }
   context.syncLegendVis(true);
-  if (legend.hidden || !legend.classList.contains("is-reserved") || legend.getAttribute("aria-hidden") !== "true" || context.isLegendVisible()) {
-    fail("compact trail must reserve layout without exposing interactive legend");
+  if (!legend.hidden || legend.classList.contains("is-reserved") || context.isLegendVisible()) {
+    fail("compact trail must hide the legend without reserving a gap");
   }
   context.syncLegendVis(false);
   if (!context.isLegendVisible() || legend.getAttribute("aria-hidden") != null) fail("Clock/no-trail legend should be accessible");
@@ -544,11 +549,11 @@ function legendBehavior(script) {
   t.viewport.height = 800;
   context.syncLegendVis(true);
   if (!legend.hidden || legend.classList.contains("is-reserved")) fail("desktop trail should hide legend without reserved mobile slot");
-  pass("actual legend helpers: compact trail reserved/aria-hidden, Clock and no-trail visible, hidden panel inert, desktop restored");
+  pass("actual legend helpers: compact trail hidden with no reserved gap, Clock and no-trail visible, hidden panel inert, desktop restored");
 }
 
 function main() {
-  console.log("Mobile detail extra fold — NOT a real browser/phone test");
+  console.log("Mobile detail extra — NOT a real browser/phone test");
   const html = read(PARTIAL);
   const script = read(SCRIPT);
   const scss = read(SCSS);
@@ -560,7 +565,7 @@ function main() {
   rotationBehavior(script);
   legendBehavior(script);
   if (process.exitCode) fail("had failures");
-  console.log("ALL PASS — mobile fold/expand + desktop unchanged + no flex-chain");
+  console.log("ALL PASS — mobile metrics visible + desktop unchanged + no flex-chain");
 }
 
 main();
