@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:webfeeds="http://webfeeds.org/rss/1.0">
+  <channel>
+    <title>Docsify on viazure</title>
+    <link>https://viazure.cc/tags/docsify/</link>
+    <description>Recent content in Docsify on viazure</description><follow_challenge>
+    <feedId>96027576665585664</feedId>
+    <userId>59414119634735104</userId>
+    </follow_challenge><generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <webfeeds:icon>https://viazure.cc/icons/favicon.svg</webfeeds:icon>
+    <webfeeds:logo>https://viazure.cc/icons/favicon.svg</webfeeds:logo>
+    <image>
+      <url>https://viazure.cc/icons/favicon.svg</url>
+      <title>viazure</title>
+      <link>https://viazure.cc/</link>
+    </image>
+    
+    <lastBuildDate>Sun, 29 Dec 2024 09:05:52 +0800</lastBuildDate><atom:link href="https://viazure.cc/tags/docsify/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 docsify 在离线环境中部署文档服务</title>
+      <link>https://viazure.cc/posts/development/deploying-docsify-in-offline-environment/</link>
+      <pubDate>Sun, 29 Dec 2024 09:05:52 +0800</pubDate>
+      
+      <guid>https://viazure.cc/posts/development/deploying-docsify-in-offline-environment/</guid>
+      
+      <description>&lt;blockquote&gt;
+&lt;p&gt;本文初稿由 &lt;a href=&#34;https://kimi.moonshot.cn/&#34;&gt;Kimi&lt;/a&gt; 协助润色完成。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;2025-04-15 更新&lt;/strong&gt;：为方便快速上手，我已将本文中的示例代码和配置文件上传至 &lt;a href=&#34;https://github.com/viazure/docsify-in-offline-example&#34;&gt;GitHub&lt;/a&gt;/&lt;a href=&#34;https://gitee.com/viazure/docsify-in-offline-example&#34;&gt;Gitee&lt;/a&gt;。可以直接克隆或下载此项目作为模板，根据自身需求进行修改和使用。该示例项目包含了所有离线部署所需的基础文件和配置，能够在没有网络连接的环境中使用 IIS 或 Nginx 等工具迅速搭建起文档服务。如有任何问题或建议，欢迎通过评论和 GitHub Issues 与我交流。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;由于公司的开发服务器经历了一次被迫系统重装，导致之前使用 &lt;a href=&#34;https://docsify.js.org/#/&#34;&gt;docsify&lt;/a&gt; 部署的文档服务未能保留。今天着手重新部署该服务，鉴于当前服务器无法接入互联网，我计划实施一个适用于离线环境的部署方案。以下是我为此次部署过程所做的记录。&lt;/p&gt;
+&lt;h2 id=&#34;步骤-1在有网络的环境中准备&#34;&gt;步骤 1：在有网络的环境中准备&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;访问 &lt;a href=&#34;https://nodejs.org/&#34;&gt;Node.js 官网&lt;/a&gt; ，下载安装程序。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;运行安装程序，按照安装程序中的说明进行操作，同时安装 Node.js 和 &lt;code&gt;npm&lt;/code&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安装 &lt;code&gt;docsify-cli&lt;/code&gt; 与 &lt;code&gt;docsify-tools&lt;/code&gt;（若无「自动生成侧边栏」需求，可不安装 &lt;code&gt;docsify-tools&lt;/code&gt; ）。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;打开命令行工具，运行以下命令来安装 &lt;code&gt;docsify-cli&lt;/code&gt; 与 &lt;code&gt;docsify-tools&lt;/code&gt;：&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm install -g docsify-cli
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm install -g docsify-tools
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;创建一个新的目录 &lt;code&gt;docsify-setup&lt;/code&gt;，用于存放 &lt;code&gt;docsify-cli&lt;/code&gt; 与 &lt;code&gt;docsify-tools&lt;/code&gt; 及其依赖。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;mkdir docsify-setup
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; docsify-setup
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;运行以下命令，在新目录中初始化一个新的 &lt;code&gt;package.json&lt;/code&gt; 文件。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm init -y
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;运行以下命令，将 &lt;code&gt;docsify-cli&lt;/code&gt; 及其依赖保存到当前目录。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm install docsify-cli --save
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm install docsify-tools --save
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;下载并保存项目所需的资源文件。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;下载 &lt;code&gt;index.html&lt;/code&gt; 文件所需的 &lt;a href=&#34;https://cdn.jsdelivr.net/npm/docsify/themes/vue.css&#34;&gt;vue.css&lt;/a&gt; 与 &lt;a href=&#34;https://cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js&#34;&gt;docsify.min.js&lt;/a&gt; 文件。也可提前使用 &lt;code&gt;docsify init&lt;/code&gt; 命令生成初始的 &lt;code&gt;index.html&lt;/code&gt; 文件，用于获取最新引用的 &lt;code&gt;css&lt;/code&gt; 与 &lt;code&gt;js&lt;/code&gt; 地址。&lt;/li&gt;
+&lt;li&gt;按相同方式提前下载好需要使用的插件资源文件。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;步骤-2将目录传输到离线环境&#34;&gt;步骤 2：将目录传输到离线环境&lt;/h2&gt;
+&lt;p&gt;将 Node.js 安装包和整个 &lt;code&gt;docsify-setup&lt;/code&gt; 目录以及下载的资源文件拷贝到离线计算机中。&lt;/p&gt;
+&lt;h2 id=&#34;步骤-3在离线环境中安装&#34;&gt;步骤 3：在离线环境中安装&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;在离线计算机上，打开命令行工具，导航到包含 &lt;code&gt;docsify-setup&lt;/code&gt; 目录的位置。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在 &lt;code&gt;docsify-setup&lt;/code&gt; 目录中，运行以下命令来安装 &lt;code&gt;docsify-cli&lt;/code&gt; 及其依赖：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;npm install -g
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;安装完成后，将 &lt;code&gt;docsify-setup&lt;/code&gt; 所在目录的 &lt;code&gt;[你的路径]\node_modules\.bin&lt;/code&gt; 加入到环境变量 &lt;code&gt;PATH&lt;/code&gt; 中。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;可以通过运行以下命令来验证 &lt;code&gt;docsify-cli&lt;/code&gt; 是否安装成功，如果 &lt;code&gt;docsify-cli&lt;/code&gt; 安装成功，它将显示版本号。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;docsify -v
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&#34;步骤-4项目部署与运行&#34;&gt;步骤 4：项目部署与运行&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;在离线计算机中通过 &lt;code&gt;docsify init&lt;/code&gt; 命令生成初始项目文件，或直接拷贝本地已生成好的相关文件。&lt;/li&gt;
+&lt;li&gt;将 &lt;code&gt;index.html&lt;/code&gt; 中引用的资源文件路径替换为本地相对路径，配置可参考 &lt;a href=&#34;https://github.com/viazure/docsify-in-offline-example/blob/main/index.html&#34;&gt;docsify-in-offline-example/index.html&lt;/a&gt;。&lt;/li&gt;
+&lt;li&gt;运行 &lt;code&gt;docsify serve&lt;/code&gt; 命令启动文档服务，或通过 IIS 或 Nginx 等工具直接部署修改好的静态页面。（注：在 IIS 中部署时需要添加 MIME 类型 &lt;code&gt;text/markdown&lt;/code&gt;。）&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+      
+    </item>
+    
+  </channel>
+</rss>
